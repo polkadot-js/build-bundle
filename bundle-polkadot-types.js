@@ -6217,6 +6217,64 @@
     }
   }
 
+  class Float extends Number {
+    #bitLength;
+    constructor(registry, value, {
+      bitLength = 32
+    } = {}) {
+      super(util.isU8a(value) || util.isHex(value) ? value.length === 0 ? 0 : util.u8aToFloat(util.u8aToU8a(value), {
+        bitLength
+      }) : value || 0);
+      this.#bitLength = bitLength;
+      this.encodedLength = bitLength / 8;
+      this.initialU8aLength = this.encodedLength;
+      this.registry = registry;
+    }
+    static with(bitLength) {
+      return class extends Float {
+        constructor(registry, value) {
+          super(registry, value, {
+            bitLength
+          });
+        }
+      };
+    }
+    get hash() {
+      return this.registry.hash(this.toU8a());
+    }
+    get isEmpty() {
+      return this.valueOf() === 0;
+    }
+    eq(other) {
+      return this.valueOf() === Number(other);
+    }
+    inspect() {
+      return {
+        outer: [this.toU8a()]
+      };
+    }
+    toHex() {
+      return util.u8aToHex(this.toU8a());
+    }
+    toHuman() {
+      return this.toString();
+    }
+    toJSON() {
+      return this.toHex();
+    }
+    toNumber() {
+      return this.valueOf();
+    }
+    toRawType() {
+      return `f${this.#bitLength}`;
+    }
+    toU8a() {
+      return util.floatToU8a(this, {
+        bitLength: this.#bitLength
+      });
+    }
+  }
+
   function decodeJson(value) {
     return Object.entries(value || {});
   }
@@ -6407,6 +6465,14 @@
         isLe: true
       });
     }
+  }
+
+  class f32 extends Float.with(32) {
+    __FloatType = 'f32';
+  }
+
+  class f64 extends Float.with(64) {
+    __FloatType = 'f64';
   }
 
   class i8 extends Int.with(8) {
@@ -8102,6 +8168,20 @@
       }],
       type: 'U256'
     },
+    feeHistory: {
+      description: 'Returns fee history for given block count & reward percentiles',
+      params: [{
+        name: 'blockCount',
+        type: 'U256'
+      }, {
+        name: 'newestBlock',
+        type: 'BlockNumber'
+      }, {
+        name: 'rewardPercentiles',
+        type: 'Option<Vec<f64>>'
+      }],
+      type: 'EthFeeHistory'
+    },
     gasPrice: {
       description: 'Returns current gas price.',
       params: [],
@@ -8321,6 +8401,11 @@
     },
     hashrate: {
       description: 'Returns the number of hashes per second that the node is mining with.',
+      params: [],
+      type: 'U256'
+    },
+    maxPriorityFeePerGas: {
+      description: 'Returns max priority fee per gas',
       params: [],
       type: 'U256'
     },
@@ -8569,6 +8654,12 @@
       value: 'Option<U256>',
       data: 'Option<Bytes>',
       nonce: 'Option<U256>'
+    },
+    EthFeeHistory: {
+      oldestBlock: 'U256',
+      baseFeePerGas: 'Vec<U256>',
+      gasUsedRatio: 'Vec<f64>',
+      reward: 'Option<Vec<Vec<U256>>>'
     },
     EthFilter: {
       fromBlock: 'Option<BlockNumber>',
@@ -11510,6 +11601,10 @@
     bool: bool,
     Bool: bool,
     Bytes: Bytes,
+    f32: f32,
+    F32: f32,
+    f64: f64,
+    F64: f64,
     i8: i8,
     I8: i8,
     i16: i16,
@@ -13973,7 +14068,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.9.2-9'
+    version: '8.10.1'
   };
 
   exports.BTreeMap = BTreeMap;
@@ -13987,6 +14082,8 @@
   exports.Data = Data;
   exports.DoNotConstruct = DoNotConstruct;
   exports.Enum = Enum;
+  exports.F32 = f32;
+  exports.F64 = f64;
   exports.GenericAccountId = GenericAccountId;
   exports.GenericAccountIndex = GenericAccountIndex;
   exports.GenericAddress = GenericMultiAddress;
@@ -14065,6 +14162,8 @@
   exports.decorateStorage = decorateStorage;
   exports.encodeTypeDef = encodeTypeDef;
   exports.expandMetadata = expandMetadata;
+  exports.f32 = f32;
+  exports.f64 = f64;
   exports.getTypeClass = getTypeClass;
   exports.getTypeDef = getTypeDef;
   exports.i128 = i128;

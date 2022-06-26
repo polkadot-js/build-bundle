@@ -22,7 +22,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.5.2-15'
+    version: '9.6.2'
   });
 
   function evaluateThis(fn) {
@@ -34,7 +34,7 @@
     name: '@polkadot/x-fetch',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.5.2-15'
+    version: '9.6.2'
   });
 
   const fetch = xglobal.fetch;
@@ -545,7 +545,7 @@
     name: '@polkadot/x-ws',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.5.2-15'
+    version: '9.6.2'
   });
 
   const WebSocket = xglobal.WebSocket;
@@ -1044,7 +1044,7 @@
     name: '@polkadot/api',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.9.2-9'
+    version: '8.10.1'
   };
 
   /*! *****************************************************************************
@@ -3541,7 +3541,7 @@
     name: '@polkadot/rpc-core',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.9.2-9'
+    version: '8.10.1'
   });
 
   const l$4 = util.logger('rpc-core');
@@ -7360,7 +7360,7 @@
 
   const upgrades$3 = [[0, 0], [29231, 1], [188836, 5], [199405, 6], [214264, 7], [244358, 8], [303079, 9], [314201, 10], [342400, 11], [443963, 12], [528470, 13], [687751, 14], [746085, 15], [787923, 16], [799302, 17], [1205128, 18], [1603423, 23], [1733218, 24], [2005673, 25], [2436698, 26], [3613564, 27], [3899547, 28], [4345767, 29], [4876134, 30], [5661442, 9050], [6321619, 9080], [6713249, 9090], [7217907, 9100], [7229126, 9110], [7560558, 9122], [8115869, 9140], [8638103, 9151], [9280179, 9170], [9738717, 9180], [10156856, 9190], [10458576, 9200], [10655116, 9220]];
 
-  const upgrades$2 = [[214356, 4], [392764, 7], [409740, 8], [809976, 20], [877581, 24], [879238, 25], [889472, 26], [902937, 27], [932751, 28], [991142, 29], [1030162, 31], [1119657, 32], [1199282, 33], [1342534, 34], [1392263, 35], [1431703, 36], [1433369, 37], [1490972, 41], [2087397, 43], [2316688, 44], [2549864, 45], [3925782, 46], [3925843, 47], [4207800, 48], [4627944, 49], [5124076, 50], [5478664, 900], [5482450, 9000], [5584305, 9010], [5784566, 9030], [5879822, 9031], [5896856, 9032], [5897316, 9033], [6117927, 9050], [6210274, 9070], [6379314, 9080], [6979141, 9090], [7568453, 9100], [7766394, 9111], [7911691, 9120], [7968866, 9121], [7982889, 9122], [8514322, 9130], [9091726, 9140], [9091774, 9150], [9406726, 9160], [9921066, 9170], [10007115, 9180], [10480973, 9190], [10578091, 9200], [10678509, 9210], [10811001, 9220], [11096116, 9230]];
+  const upgrades$2 = [[214356, 4], [392764, 7], [409740, 8], [809976, 20], [877581, 24], [879238, 25], [889472, 26], [902937, 27], [932751, 28], [991142, 29], [1030162, 31], [1119657, 32], [1199282, 33], [1342534, 34], [1392263, 35], [1431703, 36], [1433369, 37], [1490972, 41], [2087397, 43], [2316688, 44], [2549864, 45], [3925782, 46], [3925843, 47], [4207800, 48], [4627944, 49], [5124076, 50], [5478664, 900], [5482450, 9000], [5584305, 9010], [5784566, 9030], [5879822, 9031], [5896856, 9032], [5897316, 9033], [6117927, 9050], [6210274, 9070], [6379314, 9080], [6979141, 9090], [7568453, 9100], [7766394, 9111], [7911691, 9120], [7968866, 9121], [7982889, 9122], [8514322, 9130], [9091726, 9140], [9091774, 9150], [9406726, 9160], [9921066, 9170], [10007115, 9180], [10480973, 9190], [10578091, 9200], [10678509, 9210], [10811001, 9220], [11096116, 9230], [11409279, 9250]];
 
   const allKnown = {
     kusama: upgrades$4,
