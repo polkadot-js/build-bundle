@@ -16,7 +16,7 @@
     name: '@polkadot/ui-shared',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '2.6.2'
+    version: '2.7.1'
   };
 
   util.detectPackage(packageInfo$1, null, others);
@@ -1938,21 +1938,21 @@
   }
 
   const Beachball = Vue__default["default"].extend({
-    created: function () {
-      this.createHtml();
-    },
-    data: function () {
-      return {
-        html: `<div />`
-      };
-    },
-    methods: {
-      createHtml: function () {
-        this.html = beachballIcon(this.address, this.size).outerHTML;
-      }
-    },
-    props: ['address', 'size'],
-    template: `<div v-html="html" />`
+    props: ['address', 'size', 'isAlternative'],
+    render(h) {
+      const {
+        address,
+        isAlternative,
+        size
+      } = this.$props;
+      const bb = beachballIcon(address, {
+        isAlternative,
+        size
+      });
+      return h(Vue__default["default"].component('VCBeachball', {
+        template: bb.outerHTML
+      }));
+    }
   });
 
   const Empty = Vue__default["default"].extend({
@@ -2471,47 +2471,52 @@
       typeof document !== "undefined" && document.querySelectorAll.bind(document));
 
   const Jdenticon = Vue__default["default"].extend({
-    created: function () {
-      this.createSvgHtml();
-    },
-    data: function () {
-      return {
-        svgHtml: `<svg viewBox="0 0 64 64" />`
-      };
-    },
-    methods: {
-      createSvgHtml: function () {
-        this.svgHtml = toSvg(this.publicKey.substr(2), this.size);
-      }
-    },
     props: ['publicKey', 'size'],
-    template: `<div v-html="svgHtml" />`
+    render(h) {
+      const {
+        publicKey,
+        size
+      } = this.$props;
+      const cmp = Vue__default["default"].component('CJdenticon', {
+        template: toSvg(publicKey.substring(2), size)
+      });
+      return h(cmp);
+    }
   });
 
   const Polkadot = Vue__default["default"].extend({
-    created: function () {
-      this.createSvgHtml();
-    },
-    data: function () {
-      return {
-        svgHtml: `<svg viewBox="0 0 64 64" />`
-      };
-    },
-    methods: {
-      createSvgHtml: function () {
-        const circles = polkadotIcon(this.address, {
-          isAlternative: this.isAlternative || false
-        }).map(({
-          cx,
-          cy,
-          fill,
-          r
-        }) => `<circle cx=${cx} cy=${cy} fill="${fill}" r=${r} />`).join('');
-        this.svgHtml = `<svg height=${this.size} viewBox='0 0 64 64' width=${this.size}>${circles}</svg>`;
-      }
-    },
     props: ['address', 'isAlternative', 'size'],
-    template: `<div v-html="svgHtml" />`
+    render(h) {
+      const {
+        address,
+        isAlternative,
+        size
+      } = this.$props;
+      const circles = polkadotIcon(address, {
+        isAlternative: isAlternative || false
+      }).map(({
+        cx,
+        cy,
+        fill,
+        r
+      }) => {
+        return h('circle', {
+          attrs: {
+            cx,
+            cy,
+            fill,
+            r
+          }
+        }, []);
+      });
+      return h('svg', {
+        attrs: {
+          height: size,
+          viewBox: '0 0 64 64',
+          width: size
+        }
+      }, circles);
+    }
   });
 
   const DEFAULT_SIZE = 64;
@@ -2544,6 +2549,7 @@
       return {
         address: '',
         iconSize: DEFAULT_SIZE,
+        isAlternative: false,
         publicKey: '0x',
         type: 'empty'
       };
@@ -2564,20 +2570,41 @@
       }
     },
     props: ['prefix', 'isAlternative', 'size', 'theme', 'value'],
-    template: `
-    <div v-if="type === 'empty' || address === ''">
-      <Empty :key="address" :size="iconSize" />
-    </div>
-    <div v-else-if="type === 'beachball'">
-      <Beachball :key="address" :address="address" :size="iconSize" />
-    </div>
-    <div v-else-if="type === 'polkadot'">
-      <Polkadot :key="address" :address="address" :isAlternative="isAlternative" :size="iconSize" />
-    </div>
-    <div v-else>
-      <Jdenticon :key="address" :publicKey="publicKey" :size="iconSize" />
-    </div>
-  `,
+    render(h) {
+      const {
+        address,
+        iconSize,
+        isAlternative,
+        publicKey,
+        type
+      } = this.$data;
+      if (type === 'empty') {
+        return h('Empty', {
+          attrs: {
+            key: address,
+            size: iconSize
+          }
+        }, []);
+      } else if (type === 'jdenticon') {
+        return h('Jdenticon', {
+          attrs: {
+            key: address,
+            publicKey,
+            size: iconSize
+          }
+        }, []);
+      } else {
+        const cmp = type.charAt(0).toUpperCase() + type.slice(1);
+        return h(cmp, {
+          attrs: {
+            address,
+            isAlternative,
+            key: address,
+            size: iconSize
+          }
+        }, []);
+      }
+    },
     watch: {
       value: function () {
         this.recodeAddress();
@@ -2589,7 +2616,7 @@
     name: '@polkadot/vue-identicon',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '2.6.2'
+    version: '2.7.1'
   };
 
   exports.Identicon = Identicon;
