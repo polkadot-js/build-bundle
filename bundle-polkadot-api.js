@@ -22,7 +22,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.6.2'
+    version: '9.7.1'
   });
 
   function evaluateThis(fn) {
@@ -34,7 +34,7 @@
     name: '@polkadot/x-fetch',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.6.2'
+    version: '9.7.1'
   });
 
   const fetch = xglobal.fetch;
@@ -545,7 +545,7 @@
     name: '@polkadot/x-ws',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.6.2'
+    version: '9.7.1'
   });
 
   const WebSocket = xglobal.WebSocket;
@@ -1044,7 +1044,7 @@
     name: '@polkadot/api',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.10.1'
+    version: '8.11.1'
   };
 
   /*! *****************************************************************************
@@ -3541,7 +3541,7 @@
     name: '@polkadot/rpc-core',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.10.1'
+    version: '8.11.1'
   });
 
   const l$4 = util.logger('rpc-core');
@@ -7405,7 +7405,7 @@
   function filterVersions(versions = [], specVersion) {
     return versions.filter(({
       minmax: [min, max]
-    }) => (util.isUndefined(min) || util.isNull(min) || specVersion >= min) && (util.isUndefined(max) || util.isNull(max) || specVersion <= max)).reduce((result, {
+    }) => (min === undefined || min === null || specVersion >= min) && (max === undefined || max === null || specVersion <= max)).reduce((result, {
       types
     }) => util.objectSpread(result, types), {});
   }
@@ -7444,13 +7444,21 @@
       return util.objectSpread({}, (_knownTypes$typesBund19 = knownTypes.typesBundle) === null || _knownTypes$typesBund19 === void 0 ? void 0 : (_knownTypes$typesBund20 = _knownTypes$typesBund19.spec) === null || _knownTypes$typesBund20 === void 0 ? void 0 : (_knownTypes$typesBund21 = _knownTypes$typesBund20[s]) === null || _knownTypes$typesBund21 === void 0 ? void 0 : _knownTypes$typesBund21.rpc, (_knownTypes$typesBund22 = knownTypes.typesBundle) === null || _knownTypes$typesBund22 === void 0 ? void 0 : (_knownTypes$typesBund23 = _knownTypes$typesBund22.chain) === null || _knownTypes$typesBund23 === void 0 ? void 0 : (_knownTypes$typesBund24 = _knownTypes$typesBund23[c]) === null || _knownTypes$typesBund24 === void 0 ? void 0 : _knownTypes$typesBund24.rpc);
     });
   }
-  function getSpecAlias({
+  function getSpecRuntime({
     knownTypes
   }, chainName, specName) {
     return withNames(chainName, specName, (c, s) => {
       var _knownTypes$typesBund25, _knownTypes$typesBund26, _knownTypes$typesBund27, _knownTypes$typesBund28, _knownTypes$typesBund29, _knownTypes$typesBund30;
+      return util.objectSpread({}, (_knownTypes$typesBund25 = knownTypes.typesBundle) === null || _knownTypes$typesBund25 === void 0 ? void 0 : (_knownTypes$typesBund26 = _knownTypes$typesBund25.spec) === null || _knownTypes$typesBund26 === void 0 ? void 0 : (_knownTypes$typesBund27 = _knownTypes$typesBund26[s]) === null || _knownTypes$typesBund27 === void 0 ? void 0 : _knownTypes$typesBund27.runtime, (_knownTypes$typesBund28 = knownTypes.typesBundle) === null || _knownTypes$typesBund28 === void 0 ? void 0 : (_knownTypes$typesBund29 = _knownTypes$typesBund28.chain) === null || _knownTypes$typesBund29 === void 0 ? void 0 : (_knownTypes$typesBund30 = _knownTypes$typesBund29[c]) === null || _knownTypes$typesBund30 === void 0 ? void 0 : _knownTypes$typesBund30.runtime);
+    });
+  }
+  function getSpecAlias({
+    knownTypes
+  }, chainName, specName) {
+    return withNames(chainName, specName, (c, s) => {
+      var _knownTypes$typesBund31, _knownTypes$typesBund32, _knownTypes$typesBund33, _knownTypes$typesBund34, _knownTypes$typesBund35, _knownTypes$typesBund36;
       return (
-        util.objectSpread({}, (_knownTypes$typesBund25 = knownTypes.typesBundle) === null || _knownTypes$typesBund25 === void 0 ? void 0 : (_knownTypes$typesBund26 = _knownTypes$typesBund25.spec) === null || _knownTypes$typesBund26 === void 0 ? void 0 : (_knownTypes$typesBund27 = _knownTypes$typesBund26[s]) === null || _knownTypes$typesBund27 === void 0 ? void 0 : _knownTypes$typesBund27.alias, (_knownTypes$typesBund28 = knownTypes.typesBundle) === null || _knownTypes$typesBund28 === void 0 ? void 0 : (_knownTypes$typesBund29 = _knownTypes$typesBund28.chain) === null || _knownTypes$typesBund29 === void 0 ? void 0 : (_knownTypes$typesBund30 = _knownTypes$typesBund29[c]) === null || _knownTypes$typesBund30 === void 0 ? void 0 : _knownTypes$typesBund30.alias, knownTypes.typesAlias)
+        util.objectSpread({}, (_knownTypes$typesBund31 = knownTypes.typesBundle) === null || _knownTypes$typesBund31 === void 0 ? void 0 : (_knownTypes$typesBund32 = _knownTypes$typesBund31.spec) === null || _knownTypes$typesBund32 === void 0 ? void 0 : (_knownTypes$typesBund33 = _knownTypes$typesBund32[s]) === null || _knownTypes$typesBund33 === void 0 ? void 0 : _knownTypes$typesBund33.alias, (_knownTypes$typesBund34 = knownTypes.typesBundle) === null || _knownTypes$typesBund34 === void 0 ? void 0 : (_knownTypes$typesBund35 = _knownTypes$typesBund34.chain) === null || _knownTypes$typesBund35 === void 0 ? void 0 : (_knownTypes$typesBund36 = _knownTypes$typesBund35[c]) === null || _knownTypes$typesBund36 === void 0 ? void 0 : _knownTypes$typesBund36.alias, knownTypes.typesAlias)
       );
     });
   }
@@ -7585,12 +7593,14 @@
     #storageGetQ = [];
     #storageSubQ = [];
     __phantom = new util.BN(0);
+    _call = {};
     _consts = {};
     _errors = {};
     _events = {};
     _extrinsicType = 4;
     _isReady = false;
     _query = {};
+    _runtimeMap = {};
     _rx = {
       consts: {},
       query: {},
@@ -7628,6 +7638,7 @@
     }
     _emptyDecorated(registry, blockHash) {
       return {
+        call: {},
         consts: {},
         errors: {},
         events: {},
@@ -7646,6 +7657,7 @@
       if (fromEmpty || !registry.decoratedMeta) {
         registry.decoratedMeta = types.expandMetadata(registry.registry, registry.metadata);
       }
+      const runtime = this._decorateCalls(registry, this._decorateMethod, blockHash);
       const storage = this._decorateStorage(registry.decoratedMeta, this._decorateMethod, blockHash);
       const storageRx = this._decorateStorage(registry.decoratedMeta, this._rxDecorateMethod, blockHash);
       augmentObject('consts', registry.decoratedMeta.consts, decoratedApi.consts, fromEmpty);
@@ -7653,6 +7665,7 @@
       augmentObject('events', registry.decoratedMeta.events, decoratedApi.events, fromEmpty);
       augmentObject('query', storage, decoratedApi.query, fromEmpty);
       augmentObject('query', storageRx, decoratedApi.rx.query, fromEmpty);
+      augmentObject('call', runtime, decoratedApi.call, fromEmpty);
       decoratedApi.findCall = callIndex => findCall(registry.registry, callIndex);
       decoratedApi.findError = errorIndex => findError(registry.registry, errorIndex);
       decoratedApi.queryMulti = blockHash ? this._decorateMultiAt(decoratedApi, this._decorateMethod, blockHash) : this._decorateMulti(this._decorateMethod);
@@ -7670,6 +7683,7 @@
         decoratedApi,
         decoratedMeta
       } = this._createDecorated(registry, fromEmpty, registry.decoratedApi);
+      this._call = decoratedApi.call;
       this._consts = decoratedApi.consts;
       this._errors = decoratedApi.errors;
       this._events = decoratedApi.events;
@@ -7709,6 +7723,18 @@
         this._rpcCore.addUserInterfaces(additional);
         this._decorateRpc(this._rpcCore, this._decorateMethod, this._rpc);
         this._decorateRpc(this._rpcCore, this._rxDecorateMethod, this._rx.rpc);
+      }
+      const sectionMap = {};
+      for (let i = 0; i < methods.length; i++) {
+        const [section] = methods[i].split('_');
+        sectionMap[section] = true;
+      }
+      const sections = Object.keys(sectionMap);
+      for (let i = 0; i < sections.length; i++) {
+        const nameA = util.stringUpperFirst(sections[i]);
+        const nameB = `${nameA}Api`;
+        this._runtimeMap[utilCrypto.blake2AsHex(nameA, 64)] = nameA;
+        this._runtimeMap[utilCrypto.blake2AsHex(nameB, 64)] = nameB;
       }
       this._filterRpcMethods(methods);
     }
@@ -7784,6 +7810,113 @@
         }
       }
       return out;
+    }
+    _addRuntimeDef(result, additional) {
+      if (!additional) {
+        return;
+      }
+      const entries = Object.entries(additional);
+      for (let j = 0; j < entries.length; j++) {
+        const [key, defs] = entries[j];
+        if (result[key]) {
+          for (let k = 0; k < defs.length; k++) {
+            const def = defs[k];
+            const prev = result[key].find(({
+              version
+            }) => def.version === version);
+            if (prev) {
+              util.objectSpread(prev.methods, def.methods);
+            } else {
+              result[key].push(def);
+            }
+          }
+        } else {
+          result[key] = defs;
+        }
+      }
+    }
+    _getRuntimeDefs(registry, specName, chain = '') {
+      const result = {};
+      const defValues = Object.values(types.typeDefinitions);
+      for (let i = 0; i < defValues.length; i++) {
+        this._addRuntimeDef(result, defValues[i].runtime);
+      }
+      this._addRuntimeDef(result, getSpecRuntime(registry, chain, specName));
+      this._addRuntimeDef(result, this._options.runtime);
+      return Object.entries(result);
+    }
+    _decorateCalls({
+      registry,
+      runtimeVersion: {
+        apis,
+        specName
+      }
+    }, decorateMethod, blockHash) {
+      const result = {};
+      const named = {};
+      const hashes = {};
+      const sections = this._getRuntimeDefs(registry, specName, this._runtimeChain);
+      const older = [];
+      for (let i = 0; i < sections.length; i++) {
+        const [_section, secs] = sections[i];
+        const sectionHash = utilCrypto.blake2AsHex(_section, 64);
+        const rtApi = apis.find(([a]) => a.eq(sectionHash));
+        hashes[sectionHash] = true;
+        if (rtApi) {
+          const all = secs.map(({
+            version
+          }) => version).sort();
+          const sec = secs.find(({
+            version
+          }) => rtApi[1].eq(version));
+          if (sec) {
+            const section = util.stringCamelCase(_section);
+            const methods = Object.entries(sec.methods);
+            if (methods.length) {
+              if (!named[section]) {
+                named[section] = {};
+              }
+              for (let m = 0; m < methods.length; m++) {
+                const [_method, def] = methods[m];
+                const method = util.stringCamelCase(_method);
+                named[section][method] = util.objectSpread({
+                  method,
+                  name: `${_section}_${_method}`,
+                  section,
+                  sectionHash
+                }, def);
+              }
+            }
+          } else {
+            older.push(`${_section}/${rtApi[1].toString()} (${all.join('/')} known)`);
+          }
+        }
+      }
+      const notFound = apis.map(([a, v]) => [a.toHex(), v.toString()]).filter(([a]) => !hashes[a]).map(([a, v]) => `${this._runtimeMap[a] || a}/${v}`);
+      if (older.length) {
+        l$1.warn(`Not decorating runtime apis without matching versions: ${older.join(', ')}`);
+      }
+      if (notFound.length) {
+        l$1.warn(`Not decorating unknown runtime apis: ${notFound.join(', ')}`);
+      }
+      const stateCall = blockHash ? (name, bytes) => this._rpcCore.state.call(name, bytes, blockHash) : (name, bytes) => this._rpcCore.state.call(name, bytes);
+      const lazySection = section => util.lazyMethods({}, Object.keys(named[section]), method => this._decorateCall(registry, named[section][method], stateCall, decorateMethod));
+      const modules = Object.keys(named);
+      for (let i = 0; i < modules.length; i++) {
+        util.lazyMethod(result, modules[i], lazySection);
+      }
+      return result;
+    }
+    _decorateCall(registry, def, stateCall, decorateMethod) {
+      const decorated = decorateMethod((...args) => {
+        if (args.length !== def.params.length) {
+          throw new Error(`${def.name}:: Expected ${def.params.length} arguments, found ${args.length}`);
+        }
+        const bytes = registry.createType('Raw', util.u8aConcatStrict(args.map((a, i) => registry.createTypeUnsafe(def.params[i].type, [a]).toU8a())));
+        return stateCall(def.name, bytes).pipe(map(r => registry.createTypeUnsafe(def.type, [r])));
+      });
+      decorated.meta = def;
+      return decorated;
     }
     _decorateMulti(decorateMethod) {
       return decorateMethod(keys => (this.hasSubscriptions ? this._rpcCore.state.subscribeStorage : this._rpcCore.state.queryStorageAt)(keys.map(args => Array.isArray(args) ? args[0].creator.meta.type.isPlain ? [args[0].creator] : args[0].creator.meta.type.asMap.hashers.length === 1 ? [args[0].creator, args.slice(1)] : [args[0].creator, ...args.slice(1)] : [args.creator])));
@@ -8252,9 +8385,15 @@
   }
 
   function assertResult(value) {
-    return util.assertReturn(value, 'Api needs to be initialized before using, listen on \'ready\'');
+    if (value === undefined) {
+      throw new Error("Api interfaces needs to be initialized before using, wait for 'isReady'");
+    }
+    return value;
   }
   class Getters extends Init {
+    get call() {
+      return assertResult(this._call);
+    }
     get consts() {
       return assertResult(this._consts);
     }

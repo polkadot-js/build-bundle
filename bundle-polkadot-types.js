@@ -16,6 +16,19 @@
     Identity: null
   };
 
+  const runtime$m = {
+    Metadata: [{
+      methods: {
+        metadata: {
+          description: 'Returns the metadata of a runtime',
+          params: [],
+          type: 'OpaqueMetadata'
+        }
+      },
+      version: 1
+    }]
+  };
+
   const v9 = {
     ErrorMetadataV9: {
       name: 'Text',
@@ -443,8 +456,9 @@
     StorageHasherV14: 'StorageHasherV13'
   };
 
-  const definitions$W = {
+  const definitions$12 = {
     rpc: {},
+    runtime: runtime$m,
     types: util.objectSpread({}, v9, v10, v11, v12, v13, v14, {
       ErrorMetadataLatest: 'ErrorMetadataV14',
       EventMetadataLatest: 'EventMetadataV14',
@@ -464,6 +478,7 @@
       StorageEntryModifierLatest: 'StorageEntryModifierV14',
       StorageEntryTypeLatest: 'StorageEntryTypeV14',
       StorageHasher: 'StorageHasherV14',
+      OpaqueMetadata: 'Bytes',
       MetadataAll: {
         _enum: {
           V0: 'DoNotConstruct<MetadataV0>',
@@ -484,6 +499,88 @@
         }
       }
     })
+  };
+
+  const CORE_V1_TO_V4 = {
+    execute_block: {
+      description: 'Execute the given block.',
+      params: [{
+        name: 'block',
+        type: 'Block'
+      }],
+      type: 'Null'
+    }
+  };
+  const CORE_V1_TO_V2 = {
+    version: {
+      description: 'Returns the version of the runtime.',
+      params: [],
+      type: 'RuntimeVersionPre3'
+    }
+  };
+  const CORE_V2_TO_V4 = {
+    initialize_block: {
+      description: 'Initialize a block with the given header.',
+      params: [{
+        name: 'header',
+        type: 'Header'
+      }],
+      type: 'Null'
+    }
+  };
+  const runtime$l = {
+    Core: [{
+      methods: util.objectSpread({
+        version: {
+          description: 'Returns the version of the runtime.',
+          params: [],
+          type: 'RuntimeVersion'
+        }
+      }, CORE_V1_TO_V4, CORE_V2_TO_V4),
+      version: 4
+    }, {
+      methods: util.objectSpread({
+        version: {
+          description: 'Returns the version of the runtime.',
+          params: [],
+          type: 'RuntimeVersionPre4'
+        }
+      }, CORE_V1_TO_V4, CORE_V2_TO_V4),
+      version: 3
+    }, {
+      methods: util.objectSpread({}, CORE_V1_TO_V2, CORE_V1_TO_V4, CORE_V2_TO_V4),
+      version: 2
+    }, {
+      methods: util.objectSpread({
+        initialise_block: {
+          description: 'Initialize a block with the given header.',
+          params: [{
+            name: 'header',
+            type: 'Header'
+          }],
+          type: 'Null'
+        }
+      }, CORE_V1_TO_V2, CORE_V1_TO_V4),
+      version: 1
+    }],
+    TryRuntime: [{
+      methods: {
+        execute_block_no_check: {
+          description: "Execute the given block, but don't check that its state root matches that of yours.",
+          params: [{
+            name: 'block',
+            type: 'Block'
+          }],
+          type: 'Weight'
+        },
+        on_runtime_upgrade: {
+          description: 'dry-run runtime upgrades, returning the total weight consumed.',
+          params: [],
+          type: '(Weight, Weight)'
+        }
+      },
+      version: 1
+    }]
   };
 
   const numberTypes = {
@@ -510,8 +607,9 @@
     Authority: 'AuthorityOrigin',
     GeneralCouncil: 'CollectiveOrigin'
   };
-  const definitions$V = {
+  const definitions$11 = {
     rpc: {},
+    runtime: runtime$l,
     types: util.objectSpread({}, numberTypes, {
       AccountId: 'AccountId32',
       AccountId20: 'GenericEthereumAccountId',
@@ -641,11 +739,21 @@
         justifications: 'Option<Justifications>'
       },
       Slot: 'u64',
+      SlotDuration: 'u64',
       StorageData: 'Bytes',
+      StorageInfo: {
+        palletName: 'Bytes',
+        storage_name: 'Bytes',
+        prefix: 'Bytes',
+        maxValues: 'Option<u32>',
+        maxSize: 'Option<u32>'
+      },
       StorageProof: {
         trieNodes: 'Vec<Bytes>'
       },
       TransactionPriority: 'u64',
+      TransactionLongevity: 'u64',
+      TransactionTag: 'Bytes',
       TransactionInfo: {
         _alias: {
           dataSize: 'size'
@@ -735,7 +843,7 @@
     }
   };
 
-  const definitions$U = {
+  const definitions$10 = {
     rpc: {},
     types: util.objectSpread({}, v0$1, v1$1, {
       SiField: 'Si1Field',
@@ -756,7 +864,7 @@
     })
   };
 
-  const definitions$T = {
+  const definitions$$ = {
     rpc: {},
     types: {
       AssetApprovalKey: {
@@ -803,7 +911,7 @@
     }
   };
 
-  const definitions$S = {
+  const definitions$_ = {
     rpc: {},
     types: {
       UncleEntryItem: {
@@ -815,8 +923,27 @@
     }
   };
 
-  const definitions$R = {
+  const runtime$k = {
+    AuraApi: [{
+      methods: {
+        authorities: {
+          description: 'Return the current set of authorities.',
+          params: [],
+          type: 'Vec<AuthorityId>'
+        },
+        slot_duration: {
+          description: 'Returns the slot duration for Aura.',
+          params: [],
+          type: 'SlotDuration'
+        }
+      },
+      version: 1
+    }]
+  };
+
+  const definitions$Z = {
     rpc: {},
+    runtime: runtime$k,
     types: {
       RawAuraPreDigest: {
         slotNumber: 'u64'
@@ -824,14 +951,78 @@
     }
   };
 
-  const definitions$Q = {
-    rpc: {
-      epochAuthorship: {
-        description: 'Returns data about which slots (primary or secondary) can be claimed in the current epoch with the keys in the keystore',
-        params: [],
-        type: 'HashMap<AuthorityId, EpochAuthorship>'
-      }
+  const rpc$g = {
+    epochAuthorship: {
+      description: 'Returns data about which slots (primary or secondary) can be claimed in the current epoch with the keys in the keystore',
+      params: [],
+      type: 'HashMap<AuthorityId, EpochAuthorship>'
+    }
+  };
+
+  const V1_V2_SHARED = {
+    current_epoch: {
+      description: 'Returns information regarding the current epoch.',
+      params: [],
+      type: 'Epoch'
     },
+    current_epoch_start: {
+      description: 'Returns the slot that started the current epoch.',
+      params: [],
+      type: 'Slot'
+    },
+    generate_key_ownership_proof: {
+      description: 'Generates a proof of key ownership for the given authority in the current epoch.',
+      params: [{
+        name: 'slot',
+        type: 'Slot'
+      }, {
+        name: 'authorityId',
+        type: 'AuthorityId'
+      }],
+      type: 'Option<OpaqueKeyOwnershipProof>'
+    },
+    next_epoch: {
+      description: 'Returns information regarding the next epoch (which was already previously announced).',
+      params: [],
+      type: 'Epoch'
+    },
+    submit_report_equivocation_unsigned_extrinsic: {
+      description: 'Submits an unsigned extrinsic to report an equivocation.',
+      params: [{
+        name: 'equivocationProof',
+        type: 'BabeEquivocationProof'
+      }, {
+        name: 'keyOwnerProof',
+        type: 'OpaqueKeyOwnershipProof'
+      }],
+      type: 'Option<Null>'
+    }
+  };
+  const runtime$j = {
+    BabeApi: [{
+      methods: util.objectSpread({
+        configuration: {
+          description: 'Return the genesis configuration for BABE. The configuration is only read on genesis.',
+          params: [],
+          type: 'BabeGenesisConfiguration'
+        }
+      }, V1_V2_SHARED),
+      version: 2
+    }, {
+      methods: util.objectSpread({
+        configuration: {
+          description: 'Return the configuration for BABE. Version 1.',
+          params: [],
+          type: 'BabeGenesisConfigurationV1'
+        }
+      }, V1_V2_SHARED),
+      version: 1
+    }]
+  };
+
+  const definitions$Y = {
+    rpc: rpc$g,
+    runtime: runtime$j,
     types: {
       AllowedSlots: {
         _enum: ['PrimarySlots', 'PrimaryAndSecondaryPlainSlots', 'PrimaryAndSecondaryVRFSlots']
@@ -848,9 +1039,33 @@
         firstHeader: 'Header',
         secondHeader: 'Header'
       },
+      BabeGenesisConfiguration: {
+        slotDuration: 'u64',
+        epochLength: 'u64',
+        c: '(u64, u64)',
+        genesisAuthorities: 'Vec<(AuthorityId, BabeAuthorityWeight)>',
+        randomness: 'Randomness',
+        allowedSlots: 'AllowedSlots'
+      },
+      BabeGenesisConfigurationV1: {
+        slotDuration: 'u64',
+        epochLength: 'u64',
+        c: '(u64, u64)',
+        genesisAuthorities: 'Vec<(AuthorityId, BabeAuthorityWeight)>',
+        randomness: 'Randomness',
+        secondarySlots: 'bool'
+      },
       BabeWeight: 'u64',
       MaybeRandomness: 'Option<Randomness>',
       MaybeVrf: 'Option<VrfData>',
+      Epoch: {
+        epochIndex: 'u64',
+        startSlot: 'Slot',
+        duration: 'u64',
+        authorities: 'Vec<(AuthorityId, BabeAuthorityWeight)>',
+        randomness: 'Hash',
+        config: 'BabeEpochConfiguration'
+      },
       EpochAuthorship: {
         primary: 'Vec<u64>',
         secondary: 'Vec<u64>',
@@ -866,6 +1081,7 @@
         c: '(u64, u64)',
         allowedSlots: 'AllowedSlots'
       },
+      OpaqueKeyOwnershipProof: 'Bytes',
       Randomness: 'Hash',
       RawBabePreDigest: {
         _enum: {
@@ -924,7 +1140,7 @@
     }
   };
 
-  const definitions$P = {
+  const definitions$X = {
     rpc: {},
     types: {
       AccountData: {
@@ -972,21 +1188,57 @@
     }
   };
 
-  const definitions$O = {
-    rpc: {
-      subscribeJustifications: {
-        description: 'Returns the block most recently finalized by BEEFY, alongside side its justification.',
-        params: [],
-        pubsub: ['justifications', 'subscribeJustifications', 'unsubscribeJustifications'],
-        type: 'BeefySignedCommitment'
-      },
-      getFinalizedHead: {
-        description: 'Returns hash of the latest BEEFY finalized block as seen by this client.',
-        params: [],
-        type: 'H256'
-      }
+  const rpc$f = {
+    getFinalizedHead: {
+      description: 'Returns hash of the latest BEEFY finalized block as seen by this client.',
+      params: [],
+      type: 'H256'
     },
+    subscribeJustifications: {
+      description: 'Returns the block most recently finalized by BEEFY, alongside side its justification.',
+      params: [],
+      pubsub: ['justifications', 'subscribeJustifications', 'unsubscribeJustifications'],
+      type: 'BeefySignedCommitment'
+    }
+  };
+
+  const runtime$i = {
+    BeefyApi: [{
+      methods: {
+        validator_set: {
+          description: 'Return the current active BEEFY validator set',
+          params: [],
+          type: 'Option<ValidatorSet>'
+        }
+      },
+      version: 1
+    }],
+    BeefyMmrApi: [{
+      methods: {
+        authority_set_proof: {
+          description: 'Return the currently active BEEFY authority set proof.',
+          params: [],
+          type: 'BeefyAuthoritySet'
+        },
+        next_authority_set_proof: {
+          description: 'Return the next/queued BEEFY authority set proof.',
+          params: [],
+          type: 'BeefyNextAuthoritySet'
+        }
+      },
+      version: 1
+    }]
+  };
+
+  const definitions$W = {
+    rpc: rpc$f,
+    runtime: runtime$i,
     types: {
+      BeefyAuthoritySet: {
+        id: 'u64',
+        len: 'u32',
+        root: 'H256'
+      },
       BeefyCommitment: {
         payload: 'BeefyPayload',
         blockNumber: 'BlockNumber',
@@ -1005,11 +1257,135 @@
       BeefyPayload: 'Vec<(BeefyPayloadId, Bytes)>',
       BeefyPayloadId: '[u8;2]',
       MmrRootHash: 'H256',
-      ValidatorSetId: 'u64'
+      ValidatorSetId: 'u64',
+      ValidatorSet: {
+        validators: 'Vec<AuthorityId>',
+        id: 'ValidatorSetId'
+      }
     }
   };
 
-  const definitions$N = {
+  const runtime$h = {
+    Benchmark: [{
+      methods: {
+        benchmark_metadata: {
+          description: 'Get the benchmark metadata available for this runtime.',
+          params: [{
+            name: 'extra',
+            type: 'bool'
+          }],
+          type: '(Vec<BenchmarkList>, Vec<StorageInfo>)'
+        },
+        dispatch_benchmark: {
+          description: 'Dispatch the given benchmark.',
+          params: [{
+            name: 'config',
+            type: 'BenchmarkConfig'
+          }],
+          type: 'Result<Vec<BenchmarkBatch>, Text>'
+        }
+      },
+      version: 1
+    }]
+  };
+
+  const definitions$V = {
+    rpc: {},
+    runtime: runtime$h,
+    types: {
+      BenchmarkConfig: {
+        pallet: 'Bytes',
+        benchmark: 'Bytes',
+        selectedComponents: 'Vec<(BenchmarkParameter, u32)>',
+        verify: 'bool',
+        internalRepeats: 'u32'
+      },
+      BenchmarkList: {
+        pallet: 'Bytes',
+        instance: 'Bytes',
+        benchmarks: 'Vec<BenchmarkMetadata>'
+      },
+      BenchmarkMetadata: {
+        name: 'Bytes',
+        components: 'Vec<(BenchmarkParameter, u32, u32)>'
+      },
+      BenchmarkParameter: {
+        _enum: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+      }
+    }
+  };
+
+  const BB_V5_TO_V6 = {
+    check_inherents: {
+      description: 'Check that the inherents are valid.',
+      params: [{
+        name: 'block',
+        type: 'Block'
+      }, {
+        name: 'data',
+        type: 'InherentData'
+      }],
+      type: 'CheckInherentsResult'
+    },
+    finalize_block: {
+      description: 'Finish the current block.',
+      params: [],
+      type: 'Header'
+    },
+    inherent_extrinsics: {
+      description: 'Generate inherent extrinsics.',
+      params: [{
+        name: 'inherent',
+        type: 'InherentData'
+      }],
+      type: 'Vec<Extrinsic>'
+    }
+  };
+  const runtime$g = {
+    BlockBuilder: [{
+      methods: util.objectSpread({
+        apply_extrinsic: {
+          description: 'Apply the given extrinsic.',
+          params: [{
+            name: 'extrinsic',
+            type: 'Extrinsic'
+          }],
+          type: 'ApplyExtrinsicResult'
+        }
+      }, BB_V5_TO_V6),
+      version: 6
+    }, {
+      methods: util.objectSpread({
+        apply_extrinsic: {
+          description: 'Apply the given extrinsic.',
+          params: [{
+            name: 'extrinsic',
+            type: 'Extrinsic'
+          }],
+          type: 'ApplyExtrinsicResultPre6'
+        }
+      }, BB_V5_TO_V6),
+      version: 5
+    }]
+  };
+
+  const definitions$U = {
+    rpc: {},
+    runtime: runtime$g,
+    types: {
+      CheckInherentsResult: {
+        okay: 'bool',
+        fatalError: 'bool',
+        errors: 'InherentData'
+      },
+      InherentData: {
+        data: 'BTreeMap<InherentIdentifier, Bytes>'
+      },
+      InherentIdentifier: '[u8; 8]'
+    }
+  };
+
+  const definitions$T = {
     rpc: {},
     types: {
       CollectiveOrigin: {
@@ -1036,7 +1412,7 @@
     }
   };
 
-  const definitions$M = {
+  const definitions$S = {
     rpc: {},
     types: {
       AuthorityId: 'AccountId',
@@ -1044,46 +1420,19 @@
     }
   };
 
-  const rpc$2 = {
+  const rpc$e = {
     call: {
       description: 'Executes a call to a contract',
       params: [{
         name: 'callRequest',
         type: 'ContractCallRequest'
       }, {
-        name: 'at',
-        type: 'BlockHash',
         isHistoric: true,
-        isOptional: true
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
       }],
       type: 'ContractExecResult'
-    },
-    instantiate: {
-      description: 'Instantiate a new contract',
-      params: [{
-        name: 'request',
-        type: 'InstantiateRequest'
-      }, {
-        name: 'at',
-        type: 'BlockHash',
-        isHstoric: true,
-        isOptional: true
-      }],
-      type: 'ContractInstantiateResult'
-    },
-    uploadCode: {
-      endpoint: 'contracts_upload_code',
-      description: 'Upload new code without instantiating a contract from it',
-      params: [{
-        name: 'uploadRequest',
-        type: 'CodeUploadRequest'
-      }, {
-        name: 'at',
-        type: 'BlockHash',
-        isHstoric: true,
-        isOptional: true
-      }],
-      type: 'CodeUploadResult'
     },
     getStorage: {
       description: 'Returns the value under a specified storage key in a contract',
@@ -1094,12 +1443,25 @@
         name: 'key',
         type: 'H256'
       }, {
-        name: 'at',
-        type: 'BlockHash',
         isHistoric: true,
-        isOptional: true
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
       }],
       type: 'Option<Bytes>'
+    },
+    instantiate: {
+      description: 'Instantiate a new contract',
+      params: [{
+        name: 'request',
+        type: 'InstantiateRequest'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'ContractInstantiateResult'
     },
     rentProjection: {
       description: 'Returns the projected time a given contract will be able to sustain paying its rent',
@@ -1107,17 +1469,114 @@
         name: 'address',
         type: 'AccountId'
       }, {
-        name: 'at',
-        type: 'BlockHash',
         isHistoric: true,
-        isOptional: true
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
       }],
       type: 'Option<BlockNumber>'
+    },
+    uploadCode: {
+      description: 'Upload new code without instantiating a contract from it',
+      endpoint: 'contracts_upload_code',
+      params: [{
+        name: 'uploadRequest',
+        type: 'CodeUploadRequest'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'CodeUploadResult'
     }
   };
 
-  const definitions$L = {
-    rpc: rpc$2,
+  const runtime$f = {
+    ContractsApi: [{
+      methods: {
+        call: {
+          description: 'Perform a call from a specified account to a given contract.',
+          params: [{
+            name: 'origin',
+            type: 'AccountId'
+          }, {
+            name: 'dest',
+            type: 'AccountId'
+          }, {
+            name: 'value',
+            type: 'Balance'
+          }, {
+            name: 'gasLimit',
+            type: 'u64'
+          }, {
+            name: 'storageDepositLimit',
+            type: 'Option<Balance>'
+          }, {
+            name: 'inputData',
+            type: 'Vec<u8>'
+          }],
+          type: 'ContractExecResult'
+        },
+        get_storage: {
+          description: 'Query a given storage key in a given contract.',
+          params: [{
+            name: 'address',
+            type: 'AccountId'
+          }, {
+            name: 'key',
+            type: 'Bytes'
+          }],
+          type: 'Option<Bytes>'
+        },
+        instantiate: {
+          description: 'Instantiate a new contract.',
+          params: [{
+            name: 'origin',
+            type: 'AccountId'
+          }, {
+            name: 'value',
+            type: 'Balance'
+          }, {
+            name: 'gasLimit',
+            type: 'u64'
+          }, {
+            name: 'storageDepositLimit',
+            type: 'Option<Balance>'
+          }, {
+            name: 'code',
+            type: 'Bytes'
+          }, {
+            name: 'data',
+            type: 'Bytes'
+          }, {
+            name: 'salt',
+            type: 'Bytes'
+          }],
+          type: 'ContractInstantiateResult'
+        },
+        upload_code: {
+          description: 'Upload new code without instantiating a contract from it.',
+          params: [{
+            name: 'origin',
+            type: 'AccountId'
+          }, {
+            name: 'code',
+            type: 'Bytes'
+          }, {
+            name: 'storageDepositLimit',
+            type: 'Option<Balance>'
+          }],
+          type: 'CodeUploadResult'
+        }
+      },
+      version: 1
+    }]
+  };
+
+  const definitions$R = {
+    rpc: rpc$e,
+    runtime: runtime$f,
     types: {
       AliveContractInfo: {
         trieId: 'TrieId',
@@ -1531,7 +1990,7 @@
   'Locked4x',
   'Locked5x',
   'Locked6x'];
-  const definitions$K = {
+  const definitions$Q = {
     rpc: {},
     types: {
       AccountVote: {
@@ -1628,18 +2087,20 @@
     }
   };
 
-  const definitions$J = {
-    rpc: {
-      getBlockStats: {
-        description: 'Reexecute the specified `block_hash` and gather statistics while doing so',
-        params: [{
-          name: 'at',
-          type: 'Hash',
-          isHistoric: true
-        }],
-        type: 'Option<BlockStats>'
-      }
-    },
+  const rpc$d = {
+    getBlockStats: {
+      description: 'Reexecute the specified `block_hash` and gather statistics while doing so',
+      params: [{
+        isHistoric: true,
+        name: 'at',
+        type: 'Hash'
+      }],
+      type: 'Option<BlockStats>'
+    }
+  };
+
+  const definitions$P = {
+    rpc: rpc$d,
     types: {
       BlockStats: {
         witnessLen: 'u64',
@@ -1650,7 +2111,26 @@
     }
   };
 
-  const definitions$I = {
+  const runtime$e = {
+    AuthorityDiscoveryApi: [{
+      methods: {
+        authorities: {
+          description: 'Retrieve authority identifiers of the current and next authority set.',
+          params: [],
+          type: 'Vec<AuthorityId>'
+        }
+      },
+      version: 1
+    }]
+  };
+
+  const definitions$O = {
+    rpc: {},
+    runtime: runtime$e,
+    types: {}
+  };
+
+  const definitions$N = {
     rpc: {},
     types: {
       ApprovalFlag: 'u32',
@@ -1681,36 +2161,38 @@
     }
   };
 
-  const definitions$H = {
-    rpc: {
-      createBlock: {
-        description: 'Instructs the manual-seal authorship task to create a new block',
-        params: [{
-          name: 'createEmpty',
-          type: 'bool'
-        }, {
-          name: 'finalize',
-          type: 'bool'
-        }, {
-          name: 'parentHash',
-          type: 'BlockHash',
-          isOptional: true
-        }],
-        type: 'CreatedBlock'
-      },
-      finalizeBlock: {
-        description: 'Instructs the manual-seal authorship task to finalize a block',
-        params: [{
-          name: 'hash',
-          type: 'BlockHash'
-        }, {
-          name: 'justification',
-          type: 'Justification',
-          isOptional: true
-        }],
+  const rpc$c = {
+    createBlock: {
+      description: 'Instructs the manual-seal authorship task to create a new block',
+      params: [{
+        name: 'createEmpty',
         type: 'bool'
-      }
+      }, {
+        name: 'finalize',
+        type: 'bool'
+      }, {
+        isOptional: true,
+        name: 'parentHash',
+        type: 'BlockHash'
+      }],
+      type: 'CreatedBlock'
     },
+    finalizeBlock: {
+      description: 'Instructs the manual-seal authorship task to finalize a block',
+      params: [{
+        name: 'hash',
+        type: 'BlockHash'
+      }, {
+        isOptional: true,
+        name: 'justification',
+        type: 'Justification'
+      }],
+      type: 'bool'
+    }
+  };
+
+  const definitions$M = {
+    rpc: rpc$c,
     types: {
       CreatedBlock: {
         _alias: {
@@ -1730,12 +2212,24 @@
     }
   };
 
-  const definitions$G = {
+  const definitions$L = {
     rpc: {},
     types: {
       EvmAccount: {
         nonce: 'u256',
         balance: 'u256'
+      },
+      EvmCallInfo: {
+        exitReason: 'ExitReason',
+        value: 'Bytes',
+        usedGas: 'U256',
+        logs: 'Vec<EvmLog>'
+      },
+      EvmCreateInfo: {
+        exitReason: 'ExitReason',
+        value: 'H160',
+        usedGas: 'U256',
+        logs: 'Vec<EvmLog>'
       },
       EvmLog: {
         address: 'H160',
@@ -1789,7 +2283,7 @@
     }
   };
 
-  const definitions$F = {
+  const definitions$K = {
     rpc: {},
     types: {
       Extrinsic: 'GenericExtrinsic',
@@ -1820,7 +2314,7 @@
     }
   };
 
-  const definitions$E = {
+  const definitions$J = {
     rpc: {},
     types: {
       AssetOptions: {
@@ -1847,7 +2341,7 @@
     }
   };
 
-  const definitions$D = {
+  const definitions$I = {
     rpc: {},
     types: {
       ActiveGilt: {
@@ -1870,28 +2364,71 @@
     }
   };
 
-  const definitions$C = {
-    rpc: {
-      proveFinality: {
-        description: 'Prove finality for the given block number, returning the Justification for the last block in the set.',
-        params: [{
-          name: 'blockNumber',
-          type: 'BlockNumber'
-        }],
-        type: 'Option<EncodedFinalityProofs>'
-      },
-      roundState: {
-        description: 'Returns the state of the current best round state as well as the ongoing background rounds',
-        params: [],
-        type: 'ReportedRoundStates'
-      },
-      subscribeJustifications: {
-        description: 'Subscribes to grandpa justifications',
-        params: [],
-        pubsub: ['justifications', 'subscribeJustifications', 'unsubscribeJustifications'],
-        type: 'JustificationNotification'
-      }
+  const rpc$b = {
+    proveFinality: {
+      description: 'Prove finality for the given block number, returning the Justification for the last block in the set.',
+      params: [{
+        name: 'blockNumber',
+        type: 'BlockNumber'
+      }],
+      type: 'Option<EncodedFinalityProofs>'
     },
+    roundState: {
+      description: 'Returns the state of the current best round state as well as the ongoing background rounds',
+      params: [],
+      type: 'ReportedRoundStates'
+    },
+    subscribeJustifications: {
+      description: 'Subscribes to grandpa justifications',
+      params: [],
+      pubsub: ['justifications', 'subscribeJustifications', 'unsubscribeJustifications'],
+      type: 'JustificationNotification'
+    }
+  };
+
+  const runtime$d = {
+    GrandpaApi: [{
+      methods: {
+        current_set_id: {
+          description: 'Get current GRANDPA authority set id.',
+          params: [],
+          type: 'SetId'
+        },
+        generate_key_ownership_proof: {
+          description: 'Generates a proof of key ownership for the given authority in the given set.',
+          params: [{
+            name: 'setId',
+            type: 'SetId'
+          }, {
+            name: 'authorityId',
+            type: 'AuthorityId'
+          }],
+          type: 'Option<OpaqueKeyOwnershipProof>'
+        },
+        grandpa_authorities: {
+          description: 'Get the current GRANDPA authorities and weights. This should not change except for when changes are scheduled and the corresponding delay has passed.',
+          params: [],
+          type: 'AuthorityList'
+        },
+        submit_report_equivocation_unsigned_extrinsic: {
+          description: 'Submits an unsigned extrinsic to report an equivocation.',
+          params: [{
+            name: 'equivocationProof',
+            type: 'GrandpaEquivocationProof'
+          }, {
+            name: 'keyOwnerProof',
+            type: 'OpaqueKeyOwnershipProof'
+          }],
+          type: 'Option<Null>'
+        }
+      },
+      version: 3
+    }]
+  };
+
+  const definitions$H = {
+    rpc: rpc$b,
+    runtime: runtime$d,
     types: {
       AuthorityIndex: 'u64',
       AuthorityList: 'Vec<NextAuthority>',
@@ -2019,7 +2556,7 @@
     }
   };
 
-  const definitions$B = {
+  const definitions$G = {
     rpc: {},
     types: {
       IdentityFields: {
@@ -2090,7 +2627,7 @@
     }
   };
 
-  const definitions$A = {
+  const definitions$F = {
     rpc: {},
     types: {
       AuthIndex: 'u32',
@@ -2117,7 +2654,7 @@
     }
   };
 
-  const definitions$z = {
+  const definitions$E = {
     rpc: {},
     types: {
       CallIndex: '(u8, u8)',
@@ -2131,50 +2668,148 @@
     }
   };
 
-  const definitions$y = {
-    rpc: {
-      generateBatchProof: {
-        description: 'Generate MMR proof for the given leaf indices.',
-        params: [{
-          name: 'leafIndices',
-          type: 'Vec<u64>'
-        }, {
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'MmrLeafProof'
-      },
-      generateProof: {
-        description: 'Generate MMR proof for given leaf index.',
-        params: [{
-          name: 'leafIndex',
-          type: 'u64'
-        }, {
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'MmrLeafBatchProof'
-      }
+  const rpc$a = {
+    generateBatchProof: {
+      description: 'Generate MMR proof for the given leaf indices.',
+      params: [{
+        name: 'leafIndices',
+        type: 'Vec<u64>'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'MmrLeafProof'
     },
+    generateProof: {
+      description: 'Generate MMR proof for given leaf index.',
+      params: [{
+        name: 'leafIndex',
+        type: 'u64'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'MmrLeafBatchProof'
+    }
+  };
+
+  const runtime$c = {
+    MmrApi: [{
+      methods: {
+        generate_batch_proof: {
+          description: 'Generate MMR proof for a series of leaves under given indices.',
+          params: [{
+            name: 'leafIndices',
+            type: 'Vec<MmrLeafIndex>'
+          }],
+          type: 'Result<(Vec<MmrEncodableOpaqueLeaf>, MmrBatchProof), MmrError>'
+        },
+        generate_proof: {
+          description: 'Generate MMR proof for a leaf under given index.',
+          params: [{
+            name: 'leafIndex',
+            type: 'MmrLeafIndex'
+          }],
+          type: 'Result<(MmrEncodableOpaqueLeaf, MmrProof), MmrError>'
+        },
+        mmr_root: {
+          description: 'Return the on-chain MMR root hash.',
+          params: [],
+          type: 'Result<Hash, MmrError>'
+        },
+        verify_batch_proof: {
+          description: 'Verify MMR proof against on-chain MMR for a batch of leaves.',
+          params: [{
+            name: 'leaves',
+            type: 'Vec<MmrEncodableOpaqueLeaf>'
+          }, {
+            name: 'proof',
+            type: 'MmrBatchProof'
+          }],
+          type: 'Result<(), MmrError>'
+        },
+        verify_batch_proof_stateless: {
+          description: 'Verify MMR proof against given root hash or a batch of leaves.',
+          params: [{
+            name: 'root',
+            type: 'Hash'
+          }, {
+            name: 'leaves',
+            type: 'Vec<MmrEncodableOpaqueLeaf>'
+          }, {
+            name: 'proof',
+            type: 'MmrBatchProof'
+          }],
+          type: 'Result<(), MmrError>'
+        },
+        verify_proof: {
+          description: 'Verify MMR proof against on-chain MMR.',
+          params: [{
+            name: 'leaf',
+            type: 'MmrEncodableOpaqueLeaf'
+          }, {
+            name: 'proof',
+            type: 'MmrProof'
+          }],
+          type: 'Result<(), MmrError>'
+        },
+        verify_proof_stateless: {
+          description: 'Verify MMR proof against given root hash.',
+          params: [{
+            name: 'root',
+            type: 'Hash'
+          }, {
+            name: 'leaf',
+            type: 'MmrEncodableOpaqueLeaf'
+          }, {
+            name: 'proof',
+            type: 'MmrProof'
+          }],
+          type: 'Result<(), MmrError>'
+        }
+      },
+      version: 1
+    }]
+  };
+
+  const definitions$D = {
+    rpc: rpc$a,
+    runtime: runtime$c,
     types: {
+      MmrBatchProof: {
+        leafIndices: 'Vec<MmrLeafIndex>',
+        leafCount: 'MmrNodeIndex',
+        items: 'Vec<Hash>'
+      },
+      MmrEncodableOpaqueLeaf: 'Bytes',
+      MmrError: {
+        _enum: ['Push', 'GetRoot', 'Commit', 'GenerateProof', 'Verify', 'LeafNotFound', ' PalletNotIncluded', 'InvalidLeafIndex']
+      },
       MmrLeafBatchProof: {
         blockHash: 'BlockHash',
         leaves: 'Bytes',
         proof: 'Bytes'
       },
+      MmrLeafIndex: 'u64',
       MmrLeafProof: {
         blockHash: 'BlockHash',
         leaf: 'Bytes',
         proof: 'Bytes'
+      },
+      MmrNodeIndex: 'u64',
+      MmrProof: {
+        leafIndex: 'MmrLeafIndex',
+        leafCount: 'MmrNodeIndex',
+        items: 'Vec<Hash>'
       }
     }
   };
 
-  const definitions$x = {
+  const definitions$C = {
     rpc: {},
     types: {
       DeferredOffenceOf: '(Vec<OffenceDetails>, Vec<Perbill>, SessionIndex)',
@@ -2190,7 +2825,36 @@
     }
   };
 
-  const definitions$w = {
+  const runtime$b = {
+    DifficultyApi: [{
+      methods: {
+        difficulty: {
+          description: 'Return the target difficulty of the next block.',
+          params: [],
+          type: 'Raw'
+        }
+      },
+      version: 1
+    }],
+    TimestampApi: [{
+      methods: {
+        timestamp: {
+          description: 'API necessary for timestamp-based difficulty adjustment algorithms.',
+          params: [],
+          type: 'Moment'
+        }
+      },
+      version: 1
+    }]
+  };
+
+  const definitions$B = {
+    rpc: {},
+    runtime: runtime$b,
+    types: {}
+  };
+
+  const definitions$A = {
     rpc: {},
     types: {
       ProxyDefinition: {
@@ -2209,7 +2873,7 @@
     }
   };
 
-  const definitions$v = {
+  const definitions$z = {
     rpc: {},
     types: {
       ActiveRecovery: {
@@ -2226,7 +2890,7 @@
     }
   };
 
-  const definitions$u = {
+  const definitions$y = {
     rpc: {},
     types: {
       Period: '(BlockNumber, u32)',
@@ -2250,6 +2914,30 @@
     }
   };
 
+  const runtime$a = {
+    SessionKeys: [{
+      methods: {
+        decode_session_keys: {
+          description: 'Decode the given public session keys.',
+          params: [{
+            name: 'encoded',
+            type: 'Bytes'
+          }],
+          type: 'Option<Vec<(Bytes, KeyTypeId)>>'
+        },
+        generate_session_keys: {
+          description: 'Generate a set of session keys with optionally using the given seed.',
+          params: [{
+            name: 'seed',
+            type: 'Option<Bytes>'
+          }],
+          type: 'Bytes'
+        }
+      },
+      version: 1
+    }]
+  };
+
   const keyTypes = {
     BeefyKey: '[u8; 33]',
     Keys: 'SessionKeys4',
@@ -2269,14 +2957,15 @@
     SessionKeys10: '(AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId)',
     SessionKeys10B: '(AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, BeefyKey)'
   };
-  const definitions$t = {
+  const definitions$x = {
     rpc: {},
+    runtime: runtime$a,
     types: util.objectSpread({}, keyTypes, {
       FullIdentification: 'Exposure',
       IdentificationTuple: '(ValidatorId, FullIdentification)',
       MembershipProof: {
         session: 'SessionIndex',
-        trieNodes: 'Vec<Vec<u8>>',
+        trieNodes: 'Vec<Bytes>',
         validatorCount: 'ValidatorCount'
       },
       SessionIndex: 'u32',
@@ -2284,7 +2973,7 @@
     })
   };
 
-  const definitions$s = {
+  const definitions$w = {
     rpc: {},
     types: {
       Bid: {
@@ -2471,7 +3160,7 @@
     },
     VoteWeight: 'u64'
   };
-  const definitions$r = {
+  const definitions$v = {
     rpc: {},
     types: util.objectSpread({}, deprecated, phragmen, {
       ActiveEraInfo: {
@@ -2595,7 +3284,7 @@
     })
   };
 
-  const definitions$q = {
+  const definitions$u = {
     rpc: {},
     types: {
       WeightToFeeCoefficient: {
@@ -2607,22 +3296,24 @@
     }
   };
 
-  const definitions$p = {
-    rpc: {
-      genSyncSpec: {
-        endpoint: 'sync_state_genSyncSpec',
-        description: 'Returns the json-serialized chainspec running the node, with a sync state.',
-        params: [{
-          name: 'raw',
-          type: 'bool'
-        }],
-        type: 'Json'
-      }
-    },
+  const rpc$9 = {
+    genSyncSpec: {
+      description: 'Returns the json-serialized chainspec running the node, with a sync state.',
+      endpoint: 'sync_state_genSyncSpec',
+      params: [{
+        name: 'raw',
+        type: 'bool'
+      }],
+      type: 'Json'
+    }
+  };
+
+  const definitions$t = {
+    rpc: rpc$9,
     types: {}
   };
 
-  const rpc$1 = {
+  const rpc$8 = {
     accountNextIndex: {
       alias: ['account_nextIndex'],
       description: 'Retrieves the next accountIndex as available on the node',
@@ -2744,8 +3435,25 @@
     }
   };
 
-  const definitions$o = {
-    rpc: rpc$1,
+  const runtime$9 = {
+    AccountNonceApi: [{
+      methods: {
+        account_nonce: {
+          description: 'The API to query account nonce (aka transaction index)',
+          params: [{
+            name: 'accountId',
+            type: 'AccountId'
+          }],
+          type: 'Index'
+        }
+      },
+      version: 1
+    }]
+  };
+
+  const definitions$s = {
+    rpc: rpc$8,
+    runtime: runtime$9,
     types: {
       AccountInfo: 'AccountInfoWithTripleRefCount',
       AccountInfoWithRefCountU8: {
@@ -2776,6 +3484,7 @@
         data: 'AccountData'
       },
       ApplyExtrinsicResult: 'Result<DispatchOutcome, TransactionValidityError>',
+      ApplyExtrinsicResultPre6: 'Result<DispatchOutcomePre6, TransactionValidityError>',
       ArithmeticError: {
         _enum: ['Underflow', 'Overflow', 'DivisionByZero']
       },
@@ -2815,6 +3524,20 @@
           Transactional: 'TransactionalError'
         }
       },
+      DispatchErrorPre6: {
+        _enum: {
+          Other: 'Null',
+          CannotLookup: 'Null',
+          BadOrigin: 'Null',
+          Module: 'DispatchErrorModulePre6',
+          ConsumerRemaining: 'Null',
+          NoProviders: 'Null',
+          TooManyConsumers: 'Null',
+          Token: 'TokenError',
+          Arithmetic: 'ArithmeticError',
+          Transactional: 'TransactionalError'
+        }
+      },
       DispatchErrorModuleU8: {
         index: 'u8',
         error: 'u8'
@@ -2824,6 +3547,7 @@
         error: '[u8; 4]'
       },
       DispatchErrorModule: 'DispatchErrorModuleU8a',
+      DispatchErrorModulePre6: 'DispatchErrorModuleU8',
       DispatchErrorTo198: {
         module: 'Option<u8>',
         error: 'u8'
@@ -2843,6 +3567,7 @@
         paysFee: 'bool'
       },
       DispatchOutcome: 'Result<(), DispatchError>',
+      DispatchOutcomePre6: 'Result<(), DispatchErrorPre6>',
       DispatchResult: 'Result<(), DispatchError>',
       DispatchResultOf: 'DispatchResult',
       DispatchResultTo198: 'Result<(), Text>',
@@ -2870,7 +3595,8 @@
           ExhaustsResources: 'Null',
           Custom: 'u8',
           BadMandatory: 'Null',
-          MandatoryDispatch: 'Null'
+          MandatoryDispatch: 'Null',
+          BadSigner: 'Null'
         }
       },
       Key: 'Bytes',
@@ -3005,7 +3731,7 @@
     }
   };
 
-  const definitions$n = {
+  const definitions$r = {
     rpc: {},
     types: {
       Bounty: {
@@ -3066,14 +3792,81 @@
     }
   };
 
-  const definitions$m = {
+  const definitions$q = {
     rpc: {},
     types: {
       Multiplier: 'Fixed128'
     }
   };
 
-  const definitions$l = {
+  const runtime$8 = {
+    TaggedTransactionQueue: [{
+      methods: {
+        validate_transaction: {
+          description: 'Validate the transaction.',
+          params: [{
+            name: 'source',
+            type: 'TransactionSource'
+          }, {
+            name: 'tx',
+            type: 'Extrinsic'
+          }, {
+            name: 'blockHash',
+            type: 'BlockHash'
+          }],
+          type: 'TransactionValidity'
+        }
+      },
+      version: 3
+    }, {
+      methods: {
+        validate_transaction: {
+          description: 'Validate the transaction.',
+          params: [{
+            name: 'source',
+            type: 'TransactionSource'
+          }, {
+            name: 'tx',
+            type: 'Extrinsic'
+          }],
+          type: 'TransactionValidity'
+        }
+      },
+      version: 2
+    }, {
+      methods: {
+        validate_transaction: {
+          description: 'Validate the transaction.',
+          params: [{
+            name: 'tx',
+            type: 'Extrinsic'
+          }],
+          type: 'TransactionValidity'
+        }
+      },
+      version: 1
+    }]
+  };
+
+  const definitions$p = {
+    rpc: {},
+    runtime: runtime$8,
+    types: {
+      TransactionSource: {
+        _enum: ['InBlock', 'Local', 'External']
+      },
+      TransactionValidity: 'Result<ValidTransaction, TransactionValidityError>',
+      ValidTransaction: {
+        priority: 'TransactionPriority',
+        requires: 'Vec<TransactionTag>',
+        provides: 'Vec<TransactionTag>',
+        longevity: 'TransactionLongevity',
+        propagate: 'bool'
+      }
+    }
+  };
+
+  const definitions$o = {
     rpc: {},
     types: {
       ClassId: 'u32',
@@ -3116,7 +3909,7 @@
     }
   };
 
-  const definitions$k = {
+  const definitions$n = {
     rpc: {},
     types: {
       Multisig: {
@@ -3132,7 +3925,7 @@
     }
   };
 
-  const definitions$j = {
+  const definitions$m = {
     rpc: {},
     types: {
       VestingInfo: {
@@ -3143,7 +3936,7 @@
     }
   };
 
-  const definitions$i = {
+  const definitions$l = {
     rpc: {},
     types: {
       BlockAttestations: {
@@ -3162,7 +3955,7 @@
     }
   };
 
-  const definitions$h = {
+  const definitions$k = {
     rpc: {},
     types: {
       BridgedBlockHash: 'H256',
@@ -3248,7 +4041,7 @@
     }
   };
 
-  const definitions$g = {
+  const definitions$j = {
     rpc: {},
     types: {
       StatementKind: {
@@ -3257,7 +4050,7 @@
     }
   };
 
-  const definitions$f = {
+  const definitions$i = {
     rpc: {},
     types: {
       FundIndex: 'u32',
@@ -3284,7 +4077,47 @@
     }
   };
 
+  const runtime$7 = {
+    CollectCollationInfo: [{
+      methods: {
+        collect_collation_info: {
+          description: 'Collect information about a collation.',
+          params: [{
+            name: 'header',
+            type: 'Header'
+          }],
+          type: 'CollationInfo'
+        }
+      },
+      version: 2
+    }, {
+      methods: {
+        collect_collation_info: {
+          description: 'Collect information about a collation.',
+          params: [],
+          type: 'CollationInfoV1'
+        }
+      },
+      version: 1
+    }]
+  };
+
   const dmpQueue = {
+    CollationInfo: {
+      upwardMessages: 'Vec<UpwardMessage>',
+      horizontalMessages: 'Vec<OutboundHrmpMessage>',
+      newValidationCode: 'Option<ValidationCode>',
+      processedDownwardMessages: 'u32',
+      hrmpWatermark: 'RelayBlockNumber',
+      headData: 'HeadData'
+    },
+    CollationInfoV1: {
+      upwardMessages: 'Vec<UpwardMessage>',
+      horizontalMessages: 'Vec<OutboundHrmpMessage>',
+      newValidationCode: 'Option<ValidationCode>',
+      processedDownwardMessages: 'u32',
+      hrmpWatermark: 'RelayBlockNumber'
+    },
     ConfigData: {
       maxIndividual: 'Weight'
     },
@@ -3297,9 +4130,33 @@
       overweightCount: 'OverweightIndex'
     }
   };
-  const definitions$e = {
+  const definitions$h = {
     rpc: {},
+    runtime: runtime$7,
     types: dmpQueue
+  };
+
+  const finalityV1 = {
+    methods: {
+      best_finalized: {
+        description: 'Returns number and hash of the best finalized header known to the bridge module.',
+        params: [],
+        type: '(BlockNumber, Hash)'
+      }
+    },
+    version: 1
+  };
+  const runtime$6 = {
+    KusamaFinalityApi: [finalityV1],
+    PolkadotFinalityApi: [finalityV1],
+    RococoFinalityApi: [finalityV1],
+    WestendFinalityApi: [finalityV1]
+  };
+
+  const definitions$g = {
+    rpc: {},
+    runtime: runtime$6,
+    types: {}
   };
 
   const hrmpTypes = {
@@ -3325,6 +4182,169 @@
       maxCapacity: 'u32',
       maxTotalSize: 'u32'
     }
+  };
+
+  const PH_V1_TO_V2 = {
+    assumed_validation_data: {
+      description: 'Returns the persisted validation data for the given `ParaId` along with the corresponding validation code hash.',
+      params: [{
+        name: 'paraId',
+        type: 'ParaId'
+      }, {
+        name: 'hash',
+        type: 'Hash'
+      }],
+      type: 'Option<(PersistedValidationData, ValidationCodeHash)>'
+    },
+    availability_cores: {
+      description: 'Yields information on all availability cores as relevant to the child block.',
+      params: [],
+      type: 'Vec<CoreState>'
+    },
+    candidate_events: {
+      description: 'Get a vector of events concerning candidates that occurred within a block.',
+      params: [],
+      type: 'Vec<CandidateEvent>'
+    },
+    candidate_pending_availability: {
+      description: 'Get the receipt of a candidate pending availability.',
+      params: [{
+        name: 'paraId',
+        type: 'ParaId'
+      }],
+      type: 'Option<CommittedCandidateReceipt>'
+    },
+    check_validation_outputs: {
+      description: 'Checks if the given validation outputs pass the acceptance criteria.',
+      params: [{
+        name: 'paraId',
+        type: 'ParaId'
+      }, {
+        name: 'outputs',
+        type: 'CandidateCommitments'
+      }],
+      type: 'bool'
+    },
+    dmq_contents: {
+      description: 'Get all the pending inbound messages in the downward message queue for a para.',
+      params: [{
+        name: 'paraId',
+        type: 'ParaId'
+      }],
+      type: 'Vec<InboundDownwardMessage>'
+    },
+    inbound_hrmp_channels_contents: {
+      description: 'Get the contents of all channels addressed to the given recipient.',
+      params: [{
+        name: 'paraId',
+        type: 'ParaId'
+      }],
+      type: 'Vec<InboundHrmpMessage>'
+    },
+    on_chain_votes: {
+      description: 'Scrape dispute relevant from on-chain, backing votes and resolved disputes.',
+      params: [],
+      type: 'Option<ScrapedOnChainVotes>'
+    },
+    persisted_validation_data: {
+      description: 'Yields the persisted validation data for the given `ParaId` along with an assumption that should be used if the para currently occupies a core.',
+      params: [{
+        name: 'paraId',
+        type: 'ParaId'
+      }, {
+        name: 'assumption',
+        type: 'OccupiedCoreAssumption'
+      }],
+      type: 'Option<PersistedValidationData>'
+    },
+    session_index_for_child: {
+      description: 'Returns the session index expected at a child of the block.',
+      params: [],
+      type: 'SessionIndex'
+    },
+    validation_code: {
+      description: 'Fetch the validation code used by a para, making the given `OccupiedCoreAssumption`.',
+      params: [{
+        name: 'paraId',
+        type: 'ParaId'
+      }, {
+        name: 'assumption',
+        type: 'OccupiedCoreAssumption'
+      }],
+      type: 'ValidationCode'
+    },
+    validation_code_by_hash: {
+      description: 'Get the validation code from its hash.',
+      params: [{
+        name: 'hash',
+        type: 'ValidationCodeHash'
+      }],
+      type: 'Option<ValidationCode>'
+    },
+    validator_groups: {
+      description: 'Returns the validator groups and rotation info localized based on the hypothetical child of a block whose state  this is invoked on',
+      params: [],
+      type: '(Vec<Vec<ParaValidatorIndex>>, GroupRotationInfo)'
+    },
+    validators: {
+      description: 'Get the current validators.',
+      params: [],
+      type: 'Vec<ValidatorId>'
+    }
+  };
+  const runtime$5 = {
+    ParachainHost: [{
+      methods: util.objectSpread({
+        pvfs_require_precheck: {
+          description: 'Returns code hashes of PVFs that require pre-checking by validators in the active set.',
+          params: [],
+          type: 'Vec<ValidationCodeHash>'
+        },
+        session_info: {
+          description: 'Get the session info for the given session, if stored.',
+          params: [{
+            name: 'index',
+            type: 'SessionIndex'
+          }],
+          type: 'Option<SessionInfo>'
+        },
+        submit_pvf_check_statement: {
+          description: 'Submits a PVF pre-checking statement into the transaction pool.',
+          params: [{
+            name: 'stmt',
+            type: 'PvfCheckStatement'
+          }, {
+            name: 'signature',
+            type: 'ValidatorSignature'
+          }],
+          type: 'Null'
+        },
+        validation_code_hash: {
+          description: 'Fetch the hash of the validation code used by a para, making the given `OccupiedCoreAssumption`.',
+          params: [{
+            name: 'paraId',
+            type: 'ParaId'
+          }, {
+            name: 'assumption',
+            type: 'OccupiedCoreAssumption'
+          }],
+          type: 'Option<ValidationCodeHash>'
+        }
+      }, PH_V1_TO_V2),
+      version: 2
+    }, {
+      methods: util.objectSpread({
+        session_info: {
+          description: 'Get the session info for the given session, if stored.',
+          params: [{
+            name: 'index',
+            type: 'SessionIndex'
+          }],
+          type: 'Option<OldV1SessionInfo>'
+        }
+      }, PH_V1_TO_V2),
+      version: 1
+    }]
   };
 
   const SlotRange10 = {
@@ -3437,8 +4457,9 @@
       }
     }
   };
-  const definitions$d = {
+  const definitions$f = {
     rpc: {},
+    runtime: runtime$5,
     types: util.objectSpread({}, cumulusTypes, disputeTypes, hrmpTypes, proposeTypes, slotTypes, {
       AbridgedCandidateReceipt: {
         parachainIndex: 'ParaId',
@@ -3516,6 +4537,13 @@
         paraHead: 'Hash',
         validationCodeHash: 'ValidationCodeHash'
       },
+      CandidateEvent: {
+        _enum: {
+          CandidateBacked: '(CandidateReceipt, HeadData, CoreIndex, GroupIndex)',
+          CandidateIncluded: '(CandidateReceipt, HeadData, CoreIndex, GroupIndex)',
+          CandidateTimedOut: '(CandidateReceipt, HeadData, CoreIndex)'
+        }
+      },
       CandidateHash: 'Hash',
       CandidateInfo: {
         who: 'AccountId',
@@ -3559,6 +4587,13 @@
           Parachain: 'Null'
         }
       },
+      CoreState: {
+        _enum: {
+          Occupied: 'OccupiedCore',
+          Scheduled: 'ScheduledCore',
+          Free: 'Null'
+        }
+      },
       DoubleVoteReport: {
         identity: 'ValidatorId',
         first: '(Statement, ValidatorSignature)',
@@ -3568,6 +4603,11 @@
       },
       DownwardMessage: 'Bytes',
       GroupIndex: 'u32',
+      GroupRotationInfo: {
+        sessionStartBlock: 'BlockNumber',
+        groupRotationFrequency: 'BlockNumber',
+        now: 'BlockNumber'
+      },
       GlobalValidationSchedule: {
         maxCodeSize: 'u32',
         maxHeadDataSize: 'u32',
@@ -3635,6 +4675,19 @@
         horizontalMessages: 'BTreeMap<ParaId, InboundHrmpMessages>'
       },
       MessageQueueChain: 'RelayChainHash',
+      OccupiedCore: {
+        nextUpOnAvailable: 'Option<ScheduledCore>',
+        occupiedSince: 'BlockNumber',
+        timeOutAt: 'BlockNumber',
+        nextUpOnTimeOut: 'Option<ScheduledCore>',
+        availability: 'BitVec',
+        groupResponsible: 'GroupIndex',
+        candidateHash: 'CandidateHash',
+        candidateDescriptor: 'CandidateDescriptor'
+      },
+      OccupiedCoreAssumption: {
+        _enum: ['Included,', 'TimedOut', 'Free']
+      },
       OutboundHrmpMessage: {
         recipient: 'u32',
         data: 'Bytes'
@@ -3691,6 +4744,12 @@
         relayParentStorageRoot: 'Hash',
         maxPovSize: 'u32'
       },
+      PvfCheckStatement: {
+        accept: 'bool',
+        subject: 'ValidationCodeHash',
+        sessionIndex: 'SessionIndex',
+        validatorIndex: 'ParaValidatorIndex'
+      },
       QueuedParathread: {
         claim: 'ParathreadEntry',
         coreOffset: 'u32'
@@ -3710,14 +4769,38 @@
           WithRetries: 'u32'
         }
       },
+      ScheduledCore: {
+        paraId: 'ParaId',
+        collator: 'Option<CollatorId>'
+      },
       Scheduling: {
         _enum: ['Always', 'Dynamic']
       },
+      ScrapedOnChainVotes: {
+        session: 'SessionIndex',
+        backingValidatorsPerCandidate: 'Vec<(CandidateReceipt, Vec<(ParaValidatorIndex, ValidityAttestation)>)>',
+        disputes: 'MultiDisputeStatementSet'
+      },
       SessionInfo: {
+        activeValidatorIndices: 'Vec<ParaValidatorIndex>',
+        randomSeed: '[u8; 32]',
+        disputePeriod: 'SessionIndex',
         validators: 'Vec<ValidatorId>',
         discoveryKeys: 'Vec<AuthorityDiscoveryId>',
         assignmentKeys: 'Vec<AssignmentId>',
-        validatorGroups: 'Vec<SessionInfoValidatorGroup>',
+        validatorGroups: 'Vec<Vec<ValidatorIndex>>',
+        nCores: 'u32',
+        zerothDelayTrancheWidth: 'u32',
+        relayVrfModuloSamples: 'u32',
+        nDelayTranches: 'u32',
+        noShowSlots: 'u32',
+        neededApprovals: 'u32'
+      },
+      OldV1SessionInfo: {
+        validators: 'Vec<ValidatorId>',
+        discoveryKeys: 'Vec<AuthorityDiscoveryId>',
+        assignmentKeys: 'Vec<AssignmentId>',
+        validatorGroups: 'Vec<Vec<ParaValidatorIndex>>',
         nCores: 'u32',
         zerothDelayTrancheWidth: 'u32',
         relayVrfModuloSamples: 'u32',
@@ -3791,14 +4874,14 @@
     })
   };
 
-  const definitions$c = {
+  const definitions$e = {
     rpc: {},
     types: {
       Approvals: '[bool; 4]'
     }
   };
 
-  const definitions$b = {
+  const definitions$d = {
     rpc: {},
     types: {
       AccountStatus: {
@@ -7763,7 +8846,7 @@
       }
     }
   };
-  const definitions$a = {
+  const definitions$c = {
     rpc: {},
     types: util.objectSpread({}, location, xcm, v0, v1, v2, mapXcmTypes(XCM_LATEST), {
       DoubleEncodedCall: {
@@ -8039,7 +9122,7 @@
     ContractMessageSpecLatest: 'ContractMessageSpecV2',
     ContractMetadataLatest: 'ContractMetadataV3'
   };
-  const definitions$9 = {
+  const definitions$b = {
     rpc: {},
     types: util.objectSpread({}, layout, spec, latest, {
       ContractProjectInfo,
@@ -8121,7 +9204,7 @@
       type: 'H256'
     }
   };
-  const rpc = util.objectSpread({}, netRpc, web3Rpc, {
+  const rpc$7 = util.objectSpread({}, netRpc, web3Rpc, {
     accounts: {
       description: 'Returns accounts list.',
       params: [],
@@ -8506,6 +9589,169 @@
     }
   });
 
+  const runtime$4 = {
+    ConvertTransactionRuntimeApi: [{
+      methods: {
+        convert_transaction: {
+          description: 'Converts an Ethereum-style transaction to Extrinsic',
+          params: [{
+            name: 'transaction',
+            type: 'TransactionV2'
+          }],
+          type: 'Extrinsic'
+        }
+      },
+      version: 2
+    }],
+    EthereumRuntimeRPCApi: [{
+      methods: {
+        account_basic: {
+          description: 'Returns pallet_evm::Accounts by address.',
+          params: [{
+            name: 'address',
+            type: 'H160'
+          }],
+          type: 'EvmAccount'
+        },
+        account_code_at: {
+          description: 'For a given account address, returns pallet_evm::AccountCodes.',
+          params: [{
+            name: 'address',
+            type: 'H160'
+          }],
+          type: 'Bytes'
+        },
+        author: {
+          description: 'Returns the converted FindAuthor::find_author authority id.',
+          params: [],
+          type: 'H160'
+        },
+        call: {
+          description: 'Returns a frame_ethereum::call response. If `estimate` is true,',
+          params: [{
+            name: 'from',
+            type: 'H160'
+          }, {
+            name: 'to',
+            type: 'H160'
+          }, {
+            name: 'data',
+            type: 'Vec<u8>'
+          }, {
+            name: 'value',
+            type: 'U256'
+          }, {
+            name: 'gasLimit',
+            type: 'U256'
+          }, {
+            name: 'maxFeePerGas',
+            type: 'Option<U256>'
+          }, {
+            name: 'maxPriorityFeePerGas',
+            type: 'Option<U256>'
+          }, {
+            name: 'nonce',
+            type: 'Option<U256>'
+          }, {
+            name: 'estimate',
+            type: 'bool'
+          }, {
+            name: 'accessList',
+            type: 'Option<Vec<(H160, Vec<H256>)>>'
+          }],
+          type: 'Result<EvmCallInfo, DispatchError>'
+        },
+        chain_id: {
+          description: 'Returns runtime defined pallet_evm::ChainId.',
+          params: [],
+          type: 'u64'
+        },
+        create: {
+          description: 'Returns a frame_ethereum::call response. If `estimate` is true,',
+          params: [{
+            name: 'from',
+            type: 'H160'
+          }, {
+            name: 'data',
+            type: 'Vec<u8>'
+          }, {
+            name: 'value',
+            type: 'U256'
+          }, {
+            name: 'gasLimit',
+            type: 'U256'
+          }, {
+            name: 'maxFeePerGas',
+            type: 'Option<U256>'
+          }, {
+            name: 'maxPriorityFeePerGas',
+            type: 'Option<U256>'
+          }, {
+            name: 'nonce',
+            type: 'Option<U256>'
+          }, {
+            name: 'estimate',
+            type: 'bool'
+          }, {
+            name: 'accessList',
+            type: 'Option<Vec<(H160, Vec<H256>)>>'
+          }],
+          type: 'Result<EvmCreateInfo, DispatchError>'
+        },
+        current_all: {
+          description: 'Return all the current data for a block in a single runtime call.',
+          params: [],
+          type: '(Option<BlockV2>, Option<Vec<ReceiptV0>>, Option<Vec<TransactionStatus>>)'
+        },
+        current_block: {
+          description: 'Return the current block.',
+          params: [],
+          type: 'BlockV2'
+        },
+        current_receipts: {
+          description: 'Return the current receipt.',
+          params: [],
+          type: 'Option<Vec<EthReceiptV3>>'
+        },
+        current_transaction_statuses: {
+          description: 'Return the current transaction status.',
+          params: [],
+          type: 'Option<Vec<EthTransactionStatus>>'
+        },
+        elasticity: {
+          description: 'Return the elasticity multiplier.',
+          params: [],
+          type: 'Option<Permill>'
+        },
+        extrinsic_filter: {
+          description: 'Receives a `Vec<OpaqueExtrinsic>` and filters all the ethereum transactions.',
+          params: [{
+            name: 'xts',
+            type: 'Vec<Extrinsic>'
+          }],
+          type: 'Vec<TransactionV2>'
+        },
+        gas_price: {
+          description: 'Returns FixedGasPrice::min_gas_price',
+          params: [],
+          type: 'u256'
+        },
+        storage_at: {
+          description: 'For a given account address and index, returns pallet_evm::AccountStorages.',
+          params: [{
+            name: 'address',
+            type: 'H160'
+          }, {
+            name: 'index',
+            type: 'u256'
+          }],
+          type: 'H256'
+        }
+      },
+      version: 4
+    }]
+  };
+
   const V0 = {
     BlockV0: {
       header: 'EthHeader',
@@ -8747,6 +9993,8 @@
       logsBloom: 'EthBloom',
       statusCode: 'Option<U64>'
     },
+    EthReceiptV0: 'EthReceipt',
+    EthReceiptV3: 'EthReceipt',
     EthStorageProof: {
       key: 'U256',
       value: 'U256',
@@ -8825,19 +10073,77 @@
       number: 'Option<u64>'
     }
   });
-  const definitions$8 = {
-    rpc,
+  const definitions$a = {
+    rpc: rpc$7,
+    runtime: runtime$4,
     types
   };
 
-  const definitions$7 = {
-    rpc: {
+  const runtime$3 = {
+    OracleApi: [{
       methods: {
-        description: 'Retrieves the list of RPC methods that are exposed by the node',
-        params: [],
-        type: 'RpcMethods'
-      }
-    },
+        get_all_values: {
+          description: 'Retrieves all values',
+          params: [{
+            name: 'providerId',
+            type: 'Raw'
+          }],
+          type: 'Raw'
+        },
+        get_value: {
+          description: 'Retrieves a single value',
+          params: [{
+            name: 'providerId',
+            type: 'Raw'
+          }, {
+            name: 'key',
+            type: 'Raw'
+          }],
+          type: 'Option<Raw>'
+        }
+      },
+      version: 1
+    }]
+  };
+
+  const definitions$9 = {
+    rpc: {},
+    runtime: runtime$3,
+    types: {}
+  };
+
+  const runtime$2 = {
+    TokensApi: [{
+      methods: {
+        query_existential_deposit: {
+          description: 'Query the existential amount for a specific currency',
+          params: [{
+            name: 'currencyId',
+            type: 'Raw'
+          }],
+          type: 'u128'
+        }
+      },
+      version: 1
+    }]
+  };
+
+  const definitions$8 = {
+    rpc: {},
+    runtime: runtime$2,
+    types: {}
+  };
+
+  const rpc$6 = {
+    methods: {
+      description: 'Retrieves the list of RPC methods that are exposed by the node',
+      params: [],
+      type: 'RpcMethods'
+    }
+  };
+
+  const definitions$7 = {
+    rpc: rpc$6,
     types: {
       RpcMethods: {
         version: 'u32',
@@ -8846,79 +10152,81 @@
     }
   };
 
-  const definitions$6 = {
-    rpc: {
-      hasKey: {
-        description: 'Returns true if the keystore has private keys for the given public key and key type.',
-        params: [{
-          name: 'publicKey',
-          type: 'Bytes'
-        }, {
-          name: 'keyType',
-          type: 'Text'
-        }],
-        type: 'bool'
-      },
-      hasSessionKeys: {
-        description: 'Returns true if the keystore has private keys for the given session public keys.',
-        params: [{
-          name: 'sessionKeys',
-          type: 'Bytes'
-        }],
-        type: 'bool'
-      },
-      removeExtrinsic: {
-        description: 'Remove given extrinsic from the pool and temporarily ban it to prevent reimporting',
-        params: [{
-          name: 'bytesOrHash',
-          type: 'Vec<ExtrinsicOrHash>'
-        }],
-        type: 'Vec<Hash>'
-      },
-      insertKey: {
-        description: 'Insert a key into the keystore.',
-        params: [{
-          name: 'keyType',
-          type: 'Text'
-        }, {
-          name: 'suri',
-          type: 'Text'
-        }, {
-          name: 'publicKey',
-          type: 'Bytes'
-        }],
+  const rpc$5 = {
+    hasKey: {
+      description: 'Returns true if the keystore has private keys for the given public key and key type.',
+      params: [{
+        name: 'publicKey',
         type: 'Bytes'
-      },
-      rotateKeys: {
-        description: 'Generate new session keys and returns the corresponding public keys',
-        params: [],
-        type: 'Bytes'
-      },
-      pendingExtrinsics: {
-        description: 'Returns all pending extrinsics, potentially grouped by sender',
-        params: [],
-        type: 'Vec<Extrinsic>'
-      },
-      submitExtrinsic: {
-        isSigned: true,
-        description: 'Submit a fully formatted extrinsic for block inclusion',
-        params: [{
-          name: 'extrinsic',
-          type: 'Extrinsic'
-        }],
-        type: 'Hash'
-      },
-      submitAndWatchExtrinsic: {
-        description: 'Submit and subscribe to watch an extrinsic until unsubscribed',
-        isSigned: true,
-        params: [{
-          name: 'extrinsic',
-          type: 'Extrinsic'
-        }],
-        pubsub: ['extrinsicUpdate', 'submitAndWatchExtrinsic', 'unwatchExtrinsic'],
-        type: 'ExtrinsicStatus'
-      }
+      }, {
+        name: 'keyType',
+        type: 'Text'
+      }],
+      type: 'bool'
     },
+    hasSessionKeys: {
+      description: 'Returns true if the keystore has private keys for the given session public keys.',
+      params: [{
+        name: 'sessionKeys',
+        type: 'Bytes'
+      }],
+      type: 'bool'
+    },
+    insertKey: {
+      description: 'Insert a key into the keystore.',
+      params: [{
+        name: 'keyType',
+        type: 'Text'
+      }, {
+        name: 'suri',
+        type: 'Text'
+      }, {
+        name: 'publicKey',
+        type: 'Bytes'
+      }],
+      type: 'Bytes'
+    },
+    pendingExtrinsics: {
+      description: 'Returns all pending extrinsics, potentially grouped by sender',
+      params: [],
+      type: 'Vec<Extrinsic>'
+    },
+    removeExtrinsic: {
+      description: 'Remove given extrinsic from the pool and temporarily ban it to prevent reimporting',
+      params: [{
+        name: 'bytesOrHash',
+        type: 'Vec<ExtrinsicOrHash>'
+      }],
+      type: 'Vec<Hash>'
+    },
+    rotateKeys: {
+      description: 'Generate new session keys and returns the corresponding public keys',
+      params: [],
+      type: 'Bytes'
+    },
+    submitAndWatchExtrinsic: {
+      description: 'Submit and subscribe to watch an extrinsic until unsubscribed',
+      isSigned: true,
+      params: [{
+        name: 'extrinsic',
+        type: 'Extrinsic'
+      }],
+      pubsub: ['extrinsicUpdate', 'submitAndWatchExtrinsic', 'unwatchExtrinsic'],
+      type: 'ExtrinsicStatus'
+    },
+    submitExtrinsic: {
+      description: 'Submit a fully formatted extrinsic for block inclusion',
+      isSigned: true,
+      params: [{
+        name: 'extrinsic',
+        type: 'Extrinsic'
+      }],
+      type: 'Hash'
+    }
+  };
+
+  const definitions$6 = {
+    rpc: rpc$5,
     types: {
       ExtrinsicOrHash: {
         _enum: {
@@ -8943,210 +10251,245 @@
     }
   };
 
-  const definitions$5 = {
-    rpc: {
-      getHeader: {
-        alias: ['chain_getHead'],
-        description: 'Retrieves the header for a specific block',
-        params: [{
-          name: 'hash',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'Header'
-      },
-      getBlock: {
-        description: 'Get header and body of a relay chain block',
-        params: [{
-          name: 'hash',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'SignedBlock'
-      },
-      getBlockHash: {
-        description: 'Get the block hash for a specific block',
-        params: [{
-          name: 'blockNumber',
-          type: 'BlockNumber',
-          isOptional: true
-        }],
+  const rpc$4 = {
+    getBlock: {
+      description: 'Get header and body of a relay chain block',
+      params: [{
+        isHistoric: true,
+        isOptional: true,
+        name: 'hash',
         type: 'BlockHash'
-      },
-      getFinalizedHead: {
-        alias: ['chain_getFinalisedHead'],
-        description: 'Get hash of the last finalized block in the canon chain',
-        params: [],
-        type: 'BlockHash'
-      },
-      subscribeNewHeads: {
-        alias: ['chain_unsubscribeNewHeads', 'subscribe_newHead', 'unsubscribe_newHead'],
-        description: 'Retrieves the best header via subscription',
-        params: [],
-        pubsub: ['newHead', 'subscribeNewHead', 'unsubscribeNewHead'],
-        type: 'Header'
-      },
-      subscribeFinalizedHeads: {
-        alias: ['chain_subscribeFinalisedHeads', 'chain_unsubscribeFinalisedHeads'],
-        description: 'Retrieves the best finalized header via subscription',
-        params: [],
-        pubsub: ['finalizedHead', 'subscribeFinalizedHeads', 'unsubscribeFinalizedHeads'],
-        type: 'Header'
-      },
-      subscribeAllHeads: {
-        description: 'Retrieves the newest header via subscription',
-        params: [],
-        pubsub: ['allHead', 'subscribeAllHeads', 'unsubscribeAllHeads'],
-        type: 'Header'
-      }
+      }],
+      type: 'SignedBlock'
     },
+    getBlockHash: {
+      description: 'Get the block hash for a specific block',
+      params: [{
+        isOptional: true,
+        name: 'blockNumber',
+        type: 'BlockNumber'
+      }],
+      type: 'BlockHash'
+    },
+    getFinalizedHead: {
+      alias: ['chain_getFinalisedHead'],
+      description: 'Get hash of the last finalized block in the canon chain',
+      params: [],
+      type: 'BlockHash'
+    },
+    getHeader: {
+      alias: ['chain_getHead'],
+      description: 'Retrieves the header for a specific block',
+      params: [{
+        isHistoric: true,
+        isOptional: true,
+        name: 'hash',
+        type: 'BlockHash'
+      }],
+      type: 'Header'
+    },
+    subscribeAllHeads: {
+      description: 'Retrieves the newest header via subscription',
+      params: [],
+      pubsub: ['allHead', 'subscribeAllHeads', 'unsubscribeAllHeads'],
+      type: 'Header'
+    },
+    subscribeFinalizedHeads: {
+      alias: ['chain_subscribeFinalisedHeads', 'chain_unsubscribeFinalisedHeads'],
+      description: 'Retrieves the best finalized header via subscription',
+      params: [],
+      pubsub: ['finalizedHead', 'subscribeFinalizedHeads', 'unsubscribeFinalizedHeads'],
+      type: 'Header'
+    },
+    subscribeNewHeads: {
+      alias: ['chain_unsubscribeNewHeads', 'subscribe_newHead', 'unsubscribe_newHead'],
+      description: 'Retrieves the best header via subscription',
+      params: [],
+      pubsub: ['newHead', 'subscribeNewHead', 'unsubscribeNewHead'],
+      type: 'Header'
+    }
+  };
+
+  const definitions$5 = {
+    rpc: rpc$4,
     types: {
       BlockHash: 'Hash'
     }
   };
 
-  const definitions$4 = {
-    rpc: {
-      getKeys: {
-        description: 'Returns the keys with prefix from a child storage, leave empty to get all the keys',
-        params: [{
-          name: 'childKey',
-          type: 'PrefixedStorageKey'
-        }, {
-          name: 'prefix',
-          type: 'StorageKey'
-        }, {
-          name: 'at',
-          type: 'Hash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'Vec<StorageKey>'
-      },
-      getKeysPaged: {
-        alias: ['childstate_getKeysPagedAt'],
-        description: 'Returns the keys with prefix from a child storage with pagination support',
-        params: [{
-          name: 'childKey',
-          type: 'PrefixedStorageKey'
-        }, {
-          name: 'prefix',
-          type: 'StorageKey'
-        }, {
-          name: 'count',
-          type: 'u32'
-        }, {
-          name: 'startKey',
-          type: 'StorageKey',
-          isOptional: true
-        }, {
-          name: 'at',
-          type: 'Hash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'Vec<StorageKey>'
-      },
-      getStorage: {
-        description: 'Returns a child storage entry at a specific block state',
-        params: [{
-          name: 'childKey',
-          type: 'PrefixedStorageKey'
-        }, {
-          name: 'key',
-          type: 'StorageKey'
-        }, {
-          name: 'at',
-          type: 'Hash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'Option<StorageData>'
-      },
-      getStorageEntries: {
-        description: 'Returns child storage entries for multiple keys at a specific block state',
-        params: [{
-          name: 'childKey',
-          type: 'PrefixedStorageKey'
-        }, {
-          name: 'keys',
-          type: 'Vec<StorageKey>'
-        }, {
-          name: 'at',
-          type: 'Hash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'Vec<Option<StorageData>>'
-      },
-      getStorageHash: {
-        description: 'Returns the hash of a child storage entry at a block state',
-        params: [{
-          name: 'childKey',
-          type: 'PrefixedStorageKey'
-        }, {
-          name: 'key',
-          type: 'StorageKey'
-        }, {
-          name: 'at',
-          type: 'Hash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'Option<Hash>'
-      },
-      getStorageSize: {
-        description: 'Returns the size of a child storage entry at a block state',
-        params: [{
-          name: 'childKey',
-          type: 'PrefixedStorageKey'
-        }, {
-          name: 'key',
-          type: 'StorageKey'
-        }, {
-          name: 'at',
-          type: 'Hash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'Option<u64>'
-      }
+  const rpc$3 = {
+    getKeys: {
+      description: 'Returns the keys with prefix from a child storage, leave empty to get all the keys',
+      params: [{
+        name: 'childKey',
+        type: 'PrefixedStorageKey'
+      }, {
+        name: 'prefix',
+        type: 'StorageKey'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'Hash'
+      }],
+      type: 'Vec<StorageKey>'
     },
+    getKeysPaged: {
+      alias: ['childstate_getKeysPagedAt'],
+      description: 'Returns the keys with prefix from a child storage with pagination support',
+      params: [{
+        name: 'childKey',
+        type: 'PrefixedStorageKey'
+      }, {
+        name: 'prefix',
+        type: 'StorageKey'
+      }, {
+        name: 'count',
+        type: 'u32'
+      }, {
+        isOptional: true,
+        name: 'startKey',
+        type: 'StorageKey'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'Hash'
+      }],
+      type: 'Vec<StorageKey>'
+    },
+    getStorage: {
+      description: 'Returns a child storage entry at a specific block state',
+      params: [{
+        name: 'childKey',
+        type: 'PrefixedStorageKey'
+      }, {
+        name: 'key',
+        type: 'StorageKey'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'Hash'
+      }],
+      type: 'Option<StorageData>'
+    },
+    getStorageEntries: {
+      description: 'Returns child storage entries for multiple keys at a specific block state',
+      params: [{
+        name: 'childKey',
+        type: 'PrefixedStorageKey'
+      }, {
+        name: 'keys',
+        type: 'Vec<StorageKey>'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'Hash'
+      }],
+      type: 'Vec<Option<StorageData>>'
+    },
+    getStorageHash: {
+      description: 'Returns the hash of a child storage entry at a block state',
+      params: [{
+        name: 'childKey',
+        type: 'PrefixedStorageKey'
+      }, {
+        name: 'key',
+        type: 'StorageKey'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'Hash'
+      }],
+      type: 'Option<Hash>'
+    },
+    getStorageSize: {
+      description: 'Returns the size of a child storage entry at a block state',
+      params: [{
+        name: 'childKey',
+        type: 'PrefixedStorageKey'
+      }, {
+        name: 'key',
+        type: 'StorageKey'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'Hash'
+      }],
+      type: 'Option<u64>'
+    }
+  };
+
+  const definitions$4 = {
+    rpc: rpc$3,
     types: {
       PrefixedStorageKey: 'StorageKey'
     }
   };
 
-  const definitions$3 = {
-    rpc: {
-      localStorageSet: {
-        description: 'Set offchain local storage under given key and prefix',
-        params: [{
-          name: 'kind',
-          type: 'StorageKind'
-        }, {
-          name: 'key',
-          type: 'Bytes'
-        }, {
-          name: 'value',
-          type: 'Bytes'
-        }],
-        type: 'Null'
-      },
-      localStorageGet: {
-        description: 'Get offchain local storage under given key and prefix',
-        params: [{
-          name: 'kind',
-          type: 'StorageKind'
-        }, {
-          name: 'key',
-          type: 'Bytes'
-        }],
-        type: 'Option<Bytes>'
-      }
+  const rpc$2 = {
+    localStorageGet: {
+      description: 'Get offchain local storage under given key and prefix',
+      params: [{
+        name: 'kind',
+        type: 'StorageKind'
+      }, {
+        name: 'key',
+        type: 'Bytes'
+      }],
+      type: 'Option<Bytes>'
     },
+    localStorageSet: {
+      description: 'Set offchain local storage under given key and prefix',
+      params: [{
+        name: 'kind',
+        type: 'StorageKind'
+      }, {
+        name: 'key',
+        type: 'Bytes'
+      }, {
+        name: 'value',
+        type: 'Bytes'
+      }],
+      type: 'Null'
+    }
+  };
+
+  const runtime$1 = {
+    OffchainWorkerApi: [{
+      methods: {
+        offchain_worker: {
+          description: 'Starts the off-chain task for given block header.',
+          params: [{
+            name: 'header',
+            type: 'Header'
+          }],
+          type: 'Null'
+        }
+      },
+      version: 2
+    }, {
+      methods: {
+        offchain_worker: {
+          description: 'Starts the off-chain task for given block header.',
+          params: [{
+            name: 'number',
+            type: 'BlockNumber'
+          }],
+          type: 'Null'
+        }
+      },
+      version: 1
+    }]
+  };
+
+  const definitions$3 = {
+    rpc: rpc$2,
+    runtime: runtime$1,
     types: {
       StorageKind: {
         _enum: {
@@ -9157,28 +10500,68 @@
     }
   };
 
-  const QUERY_PARAMS = [{
-    name: 'extrinsic',
-    type: 'Bytes'
-  }, {
-    name: 'at',
-    type: 'BlockHash',
-    isHistoric: true,
-    isOptional: true
-  }];
-  const definitions$2 = {
-    rpc: {
-      queryInfo: {
-        description: 'Retrieves the fee information for an encoded extrinsic',
-        params: QUERY_PARAMS,
-        type: 'RuntimeDispatchInfo'
-      },
-      queryFeeDetails: {
-        description: 'Query the detailed fee of a given encoded extrinsic',
-        params: QUERY_PARAMS,
-        type: 'FeeDetails'
-      }
+  const rpc$1 = {
+    queryFeeDetails: {
+      description: 'Query the detailed fee of a given encoded extrinsic',
+      params: [{
+        name: 'extrinsic',
+        type: 'Bytes'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'FeeDetails'
     },
+    queryInfo: {
+      description: 'Retrieves the fee information for an encoded extrinsic',
+      params: [{
+        name: 'extrinsic',
+        type: 'Bytes'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'RuntimeDispatchInfo'
+    }
+  };
+
+  const runtime = {
+    TransactionPaymentApi: [{
+      methods: {
+        query_fee_details: {
+          description: 'The transaction fee details',
+          params: [{
+            name: 'uxt',
+            type: 'Extrinsic'
+          }, {
+            name: 'len',
+            type: 'u32'
+          }],
+          type: 'FeeDetails'
+        },
+        query_info: {
+          description: 'The transaction info',
+          params: [{
+            name: 'uxt',
+            type: 'Extrinsic'
+          }, {
+            name: 'len',
+            type: 'u32'
+          }],
+          type: 'RuntimeDispatchInfo'
+        }
+      },
+      version: 1
+    }]
+  };
+
+  const definitions$2 = {
+    rpc: rpc$1,
+    runtime,
     types: {
       FeeDetails: {
         inclusionFee: 'Option<InclusionFee>'
@@ -9196,325 +10579,327 @@
     }
   };
 
-  const definitions$1 = {
-    rpc: {
-      call: {
-        alias: ['state_callAt'],
-        description: 'Perform a call to a builtin on the chain',
-        params: [{
-          name: 'method',
-          type: 'Text'
-        }, {
-          name: 'data',
-          type: 'Bytes'
-        }, {
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
+  const rpc = {
+    call: {
+      alias: ['state_callAt'],
+      description: 'Perform a call to a builtin on the chain',
+      params: [{
+        name: 'method',
+        type: 'Text'
+      }, {
+        name: 'data',
         type: 'Bytes'
-      },
-      getKeys: {
-        description: 'Retrieves the keys with a certain prefix',
-        params: [{
-          name: 'key',
-          type: 'StorageKey'
-        }, {
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'Vec<StorageKey>'
-      },
-      getPairs: {
-        description: 'Returns the keys with prefix, leave empty to get all the keys (deprecated: Use getKeysPaged)',
-        params: [{
-          name: 'prefix',
-          type: 'StorageKey'
-        }, {
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'Vec<KeyValue>'
-      },
-      getKeysPaged: {
-        alias: ['state_getKeysPagedAt'],
-        description: 'Returns the keys with prefix with pagination support.',
-        params: [{
-          name: 'key',
-          type: 'StorageKey'
-        }, {
-          name: 'count',
-          type: 'u32'
-        }, {
-          name: 'startKey',
-          type: 'StorageKey',
-          isOptional: true
-        }, {
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'Vec<StorageKey>'
-      },
-      getStorage: {
-        alias: ['state_getStorageAt'],
-        description: 'Retrieves the storage for a key',
-        params: [{
-          name: 'key',
-          type: 'StorageKey'
-        }, {
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'StorageData'
-      },
-      getStorageHash: {
-        alias: ['state_getStorageHashAt'],
-        description: 'Retrieves the storage hash',
-        params: [{
-          name: 'key',
-          type: 'StorageKey'
-        }, {
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'Hash'
-      },
-      getStorageSize: {
-        alias: ['state_getStorageSizeAt'],
-        description: 'Retrieves the storage size',
-        params: [{
-          name: 'key',
-          type: 'StorageKey'
-        }, {
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'u64'
-      },
-      getChildKeys: {
-        description: 'Retrieves the keys with prefix of a specific child storage',
-        params: [{
-          name: 'childStorageKey',
-          type: 'StorageKey'
-        }, {
-          name: 'childDefinition',
-          type: 'StorageKey'
-        }, {
-          name: 'childType',
-          type: 'u32'
-        }, {
-          name: 'key',
-          type: 'StorageKey'
-        }, {
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'Vec<StorageKey>'
-      },
-      getChildStorage: {
-        description: 'Retrieves the child storage for a key',
-        params: [{
-          name: 'childStorageKey',
-          type: 'StorageKey'
-        }, {
-          name: 'childDefinition',
-          type: 'StorageKey'
-        }, {
-          name: 'childType',
-          type: 'u32'
-        }, {
-          name: 'key',
-          type: 'StorageKey'
-        }, {
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'StorageData'
-      },
-      getChildStorageHash: {
-        description: 'Retrieves the child storage hash',
-        params: [{
-          name: 'childStorageKey',
-          type: 'StorageKey'
-        }, {
-          name: 'childDefinition',
-          type: 'StorageKey'
-        }, {
-          name: 'childType',
-          type: 'u32'
-        }, {
-          name: 'key',
-          type: 'StorageKey'
-        }, {
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'Hash'
-      },
-      getChildStorageSize: {
-        description: 'Retrieves the child storage size',
-        params: [{
-          name: 'childStorageKey',
-          type: 'StorageKey'
-        }, {
-          name: 'childDefinition',
-          type: 'StorageKey'
-        }, {
-          name: 'childType',
-          type: 'u32'
-        }, {
-          name: 'key',
-          type: 'StorageKey'
-        }, {
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'u64'
-      },
-      getMetadata: {
-        description: 'Returns the runtime metadata',
-        params: [{
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'Metadata'
-      },
-      getRuntimeVersion: {
-        alias: ['chain_getRuntimeVersion'],
-        description: 'Get the runtime version',
-        params: [{
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'RuntimeVersion'
-      },
-      queryStorage: {
-        description: 'Query historical storage entries (by key) starting from a start block',
-        params: [{
-          name: 'keys',
-          type: 'Vec<StorageKey>'
-        }, {
-          name: 'fromBlock',
-          type: 'Hash'
-        }, {
-          name: 'toBlock',
-          type: 'BlockHash',
-          isOptional: true
-        }],
-        type: 'Vec<StorageChangeSet>'
-      },
-      queryStorageAt: {
-        description: 'Query storage entries (by key) starting at block hash given as the second parameter',
-        params: [{
-          name: 'keys',
-          type: 'Vec<StorageKey>'
-        }, {
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'Vec<StorageChangeSet>'
-      },
-      getChildReadProof: {
-        description: 'Returns proof of storage for child key entries at a specific block state.',
-        params: [{
-          name: 'childStorageKey',
-          type: 'PrefixedStorageKey'
-        }, {
-          name: 'keys',
-          type: 'Vec<StorageKey>'
-        }, {
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'ReadProof'
-      },
-      getReadProof: {
-        description: 'Returns proof of storage entries at a specific block state',
-        params: [{
-          name: 'keys',
-          type: 'Vec<StorageKey>'
-        }, {
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'ReadProof'
-      },
-      subscribeRuntimeVersion: {
-        alias: ['chain_subscribeRuntimeVersion', 'chain_unsubscribeRuntimeVersion'],
-        description: 'Retrieves the runtime version via subscription',
-        params: [],
-        pubsub: ['runtimeVersion', 'subscribeRuntimeVersion', 'unsubscribeRuntimeVersion'],
-        type: 'RuntimeVersion'
-      },
-      subscribeStorage: {
-        description: 'Subscribes to storage changes for the provided keys',
-        params: [{
-          name: 'keys',
-          type: 'Vec<StorageKey>',
-          isOptional: true
-        }],
-        pubsub: ['storage', 'subscribeStorage', 'unsubscribeStorage'],
-        type: 'StorageChangeSet'
-      },
-      traceBlock: {
-        description: 'Provides a way to trace the re-execution of a single block',
-        params: [{
-          name: 'block',
-          type: 'Hash'
-        }, {
-          name: 'targets',
-          type: 'Option<Text>'
-        }, {
-          name: 'storageKeys',
-          type: 'Option<Text>'
-        }, {
-          name: 'methods',
-          type: 'Option<Text>'
-        }],
-        type: 'TraceBlockResponse'
-      },
-      trieMigrationStatus: {
-        description: 'Check current migration state',
-        params: [{
-          name: 'at',
-          type: 'BlockHash',
-          isHistoric: true,
-          isOptional: true
-        }],
-        type: 'MigrationStatusResult'
-      }
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'Bytes'
     },
+    getChildKeys: {
+      description: 'Retrieves the keys with prefix of a specific child storage',
+      params: [{
+        name: 'childStorageKey',
+        type: 'StorageKey'
+      }, {
+        name: 'childDefinition',
+        type: 'StorageKey'
+      }, {
+        name: 'childType',
+        type: 'u32'
+      }, {
+        name: 'key',
+        type: 'StorageKey'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'Vec<StorageKey>'
+    },
+    getChildReadProof: {
+      description: 'Returns proof of storage for child key entries at a specific block state.',
+      params: [{
+        name: 'childStorageKey',
+        type: 'PrefixedStorageKey'
+      }, {
+        name: 'keys',
+        type: 'Vec<StorageKey>'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'ReadProof'
+    },
+    getChildStorage: {
+      description: 'Retrieves the child storage for a key',
+      params: [{
+        name: 'childStorageKey',
+        type: 'StorageKey'
+      }, {
+        name: 'childDefinition',
+        type: 'StorageKey'
+      }, {
+        name: 'childType',
+        type: 'u32'
+      }, {
+        name: 'key',
+        type: 'StorageKey'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'StorageData'
+    },
+    getChildStorageHash: {
+      description: 'Retrieves the child storage hash',
+      params: [{
+        name: 'childStorageKey',
+        type: 'StorageKey'
+      }, {
+        name: 'childDefinition',
+        type: 'StorageKey'
+      }, {
+        name: 'childType',
+        type: 'u32'
+      }, {
+        name: 'key',
+        type: 'StorageKey'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'Hash'
+    },
+    getChildStorageSize: {
+      description: 'Retrieves the child storage size',
+      params: [{
+        name: 'childStorageKey',
+        type: 'StorageKey'
+      }, {
+        name: 'childDefinition',
+        type: 'StorageKey'
+      }, {
+        name: 'childType',
+        type: 'u32'
+      }, {
+        name: 'key',
+        type: 'StorageKey'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'u64'
+    },
+    getKeys: {
+      description: 'Retrieves the keys with a certain prefix',
+      params: [{
+        name: 'key',
+        type: 'StorageKey'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'Vec<StorageKey>'
+    },
+    getKeysPaged: {
+      alias: ['state_getKeysPagedAt'],
+      description: 'Returns the keys with prefix with pagination support.',
+      params: [{
+        name: 'key',
+        type: 'StorageKey'
+      }, {
+        name: 'count',
+        type: 'u32'
+      }, {
+        isOptional: true,
+        name: 'startKey',
+        type: 'StorageKey'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'Vec<StorageKey>'
+    },
+    getMetadata: {
+      description: 'Returns the runtime metadata',
+      params: [{
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'Metadata'
+    },
+    getPairs: {
+      description: 'Returns the keys with prefix, leave empty to get all the keys (deprecated: Use getKeysPaged)',
+      params: [{
+        name: 'prefix',
+        type: 'StorageKey'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'Vec<KeyValue>'
+    },
+    getReadProof: {
+      description: 'Returns proof of storage entries at a specific block state',
+      params: [{
+        name: 'keys',
+        type: 'Vec<StorageKey>'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'ReadProof'
+    },
+    getRuntimeVersion: {
+      alias: ['chain_getRuntimeVersion'],
+      description: 'Get the runtime version',
+      params: [{
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'RuntimeVersion'
+    },
+    getStorage: {
+      alias: ['state_getStorageAt'],
+      description: 'Retrieves the storage for a key',
+      params: [{
+        name: 'key',
+        type: 'StorageKey'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'StorageData'
+    },
+    getStorageHash: {
+      alias: ['state_getStorageHashAt'],
+      description: 'Retrieves the storage hash',
+      params: [{
+        name: 'key',
+        type: 'StorageKey'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'Hash'
+    },
+    getStorageSize: {
+      alias: ['state_getStorageSizeAt'],
+      description: 'Retrieves the storage size',
+      params: [{
+        name: 'key',
+        type: 'StorageKey'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'u64'
+    },
+    queryStorage: {
+      description: 'Query historical storage entries (by key) starting from a start block',
+      params: [{
+        name: 'keys',
+        type: 'Vec<StorageKey>'
+      }, {
+        name: 'fromBlock',
+        type: 'Hash'
+      }, {
+        isOptional: true,
+        name: 'toBlock',
+        type: 'BlockHash'
+      }],
+      type: 'Vec<StorageChangeSet>'
+    },
+    queryStorageAt: {
+      description: 'Query storage entries (by key) starting at block hash given as the second parameter',
+      params: [{
+        name: 'keys',
+        type: 'Vec<StorageKey>'
+      }, {
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'Vec<StorageChangeSet>'
+    },
+    subscribeRuntimeVersion: {
+      alias: ['chain_subscribeRuntimeVersion', 'chain_unsubscribeRuntimeVersion'],
+      description: 'Retrieves the runtime version via subscription',
+      params: [],
+      pubsub: ['runtimeVersion', 'subscribeRuntimeVersion', 'unsubscribeRuntimeVersion'],
+      type: 'RuntimeVersion'
+    },
+    subscribeStorage: {
+      description: 'Subscribes to storage changes for the provided keys',
+      params: [{
+        isOptional: true,
+        name: 'keys',
+        type: 'Vec<StorageKey>'
+      }],
+      pubsub: ['storage', 'subscribeStorage', 'unsubscribeStorage'],
+      type: 'StorageChangeSet'
+    },
+    traceBlock: {
+      description: 'Provides a way to trace the re-execution of a single block',
+      params: [{
+        name: 'block',
+        type: 'Hash'
+      }, {
+        name: 'targets',
+        type: 'Option<Text>'
+      }, {
+        name: 'storageKeys',
+        type: 'Option<Text>'
+      }, {
+        name: 'methods',
+        type: 'Option<Text>'
+      }],
+      type: 'TraceBlockResponse'
+    },
+    trieMigrationStatus: {
+      description: 'Check current migration state',
+      params: [{
+        isHistoric: true,
+        isOptional: true,
+        name: 'at',
+        type: 'BlockHash'
+      }],
+      type: 'MigrationStatusResult'
+    }
+  };
+
+  const definitions$1 = {
+    rpc,
     types: {
       ApiId: '[u8; 8]',
       BlockTrace: {
@@ -9557,11 +10942,30 @@
         specVersion: 'u32',
         implVersion: 'u32',
         apis: 'Vec<RuntimeVersionApi>',
+        transactionVersion: 'u32',
+        stateVersion: 'u8'
+      },
+      RuntimeVersionPre4: {
+        specName: 'Text',
+        implName: 'Text',
+        authoringVersion: 'u32',
+        specVersion: 'u32',
+        implVersion: 'u32',
+        apis: 'Vec<RuntimeVersionApi>',
         transactionVersion: 'u32'
+      },
+      RuntimeVersionPre3: {
+        specName: 'Text',
+        implName: 'Text',
+        authoringVersion: 'u32',
+        specVersion: 'u32',
+        implVersion: 'u32',
+        apis: 'Vec<RuntimeVersionApi>'
       },
       RuntimeVersionPartial: {
         specName: 'Text',
-        specVersion: 'u32'
+        specVersion: 'u32',
+        apis: 'Vec<RuntimeVersionApi>'
       },
       SpecVersion: 'u32',
       StorageChangeSet: {
@@ -9582,54 +10986,62 @@
 
   const definitions = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    assets: definitions$T,
-    authorship: definitions$S,
-    aura: definitions$R,
-    babe: definitions$Q,
-    balances: definitions$P,
-    beefy: definitions$O,
-    collective: definitions$N,
-    consensus: definitions$M,
-    contracts: definitions$L,
-    democracy: definitions$K,
-    dev: definitions$J,
-    elections: definitions$I,
-    engine: definitions$H,
-    evm: definitions$G,
-    extrinsics: definitions$F,
-    genericAsset: definitions$E,
-    gilt: definitions$D,
-    grandpa: definitions$C,
-    identity: definitions$B,
-    imOnline: definitions$A,
-    lottery: definitions$z,
-    mmr: definitions$y,
-    offences: definitions$x,
-    proxy: definitions$w,
-    recovery: definitions$v,
-    scheduler: definitions$u,
-    session: definitions$t,
-    society: definitions$s,
-    staking: definitions$r,
-    support: definitions$q,
-    syncstate: definitions$p,
-    system: definitions$o,
-    treasury: definitions$n,
-    txpayment: definitions$m,
-    uniques: definitions$l,
-    utility: definitions$k,
-    vesting: definitions$j,
-    attestations: definitions$i,
-    bridges: definitions$h,
-    claims: definitions$g,
-    crowdloan: definitions$f,
-    cumulus: definitions$e,
-    parachains: definitions$d,
-    poll: definitions$c,
-    purchase: definitions$b,
-    xcm: definitions$a,
-    contractsAbi: definitions$9,
-    eth: definitions$8,
+    assets: definitions$$,
+    authorship: definitions$_,
+    aura: definitions$Z,
+    babe: definitions$Y,
+    balances: definitions$X,
+    beefy: definitions$W,
+    benchmark: definitions$V,
+    blockbuilder: definitions$U,
+    collective: definitions$T,
+    consensus: definitions$S,
+    contracts: definitions$R,
+    democracy: definitions$Q,
+    dev: definitions$P,
+    discovery: definitions$O,
+    elections: definitions$N,
+    engine: definitions$M,
+    evm: definitions$L,
+    extrinsics: definitions$K,
+    genericAsset: definitions$J,
+    gilt: definitions$I,
+    grandpa: definitions$H,
+    identity: definitions$G,
+    imOnline: definitions$F,
+    lottery: definitions$E,
+    mmr: definitions$D,
+    offences: definitions$C,
+    pow: definitions$B,
+    proxy: definitions$A,
+    recovery: definitions$z,
+    scheduler: definitions$y,
+    session: definitions$x,
+    society: definitions$w,
+    staking: definitions$v,
+    support: definitions$u,
+    syncstate: definitions$t,
+    system: definitions$s,
+    treasury: definitions$r,
+    txpayment: definitions$q,
+    txqueue: definitions$p,
+    uniques: definitions$o,
+    utility: definitions$n,
+    vesting: definitions$m,
+    attestations: definitions$l,
+    bridges: definitions$k,
+    claims: definitions$j,
+    crowdloan: definitions$i,
+    cumulus: definitions$h,
+    finality: definitions$g,
+    parachains: definitions$f,
+    poll: definitions$e,
+    purchase: definitions$d,
+    xcm: definitions$c,
+    contractsAbi: definitions$b,
+    eth: definitions$a,
+    ormlOracle: definitions$9,
+    ormlTokens: definitions$8,
     rpc: definitions$7,
     author: definitions$6,
     chain: definitions$5,
@@ -9637,9 +11049,9 @@
     offchain: definitions$3,
     payment: definitions$2,
     state: definitions$1,
-    metadata: definitions$W,
-    runtime: definitions$V,
-    scaleInfo: definitions$U
+    metadata: definitions$12,
+    runtime: definitions$11,
+    scaleInfo: definitions$10
   });
 
   const jsonrpc = {};
@@ -14068,7 +15480,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.10.1'
+    version: '8.11.1'
   };
 
   exports.BTreeMap = BTreeMap;
