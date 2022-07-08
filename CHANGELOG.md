@@ -2,6 +2,7 @@
 
 ## master
 
+- hw-ledger, keyring, util, util-crypto 10.0.1
 - wasm-crypto 6.2.3
 - api, api-contract, types 8.11.3
 - api, api-contract, types 8.11.2

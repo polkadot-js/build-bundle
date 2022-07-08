@@ -3915,7 +3915,7 @@
 		  name: '@polkadot/hw-ledger-transports',
 		  path: typeof __dirname === 'string' ? __dirname : 'auto',
 		  type: 'cjs',
-		  version: '9.7.2'
+		  version: '10.0.1'
 		};
 		packageInfo$1.packageInfo = packageInfo;
 		return packageInfo$1;
@@ -4659,6 +4659,7 @@
 		  BIFROST: 0xa1,
 		  REEF: 0xa2,
 		  XXNETWORK: 0xa3,
+		  ALEPHZERO: 0xa4,
 		  PARALLEL: 0xa6,
 		  COMPOSABLE: 0xa8,
 		  ASTAR: 0xa9,
@@ -4686,7 +4687,8 @@
 		  PARALLEL: 0x80000162,
 		  ASTAR: 0x8000032a,
 		  COMPOSABLE: 0x80000162,
-		  STAFI: 0x8000038b
+		  STAFI: 0x8000038b,
+		  ALEPHZERO: 0x80000283
 		};
 		var SS58_ADDR_TYPE = {
 		  POLKADOT: 0,
@@ -4710,7 +4712,8 @@
 		  PARALLEL: 172,
 		  ASTAR: 5,
 		  COMPOSABLE: 49,
-		  STAFI: 20
+		  STAFI: 20,
+		  ALEPHZERO: 42
 		};
 		config = {
 		  CLA: CLA,
@@ -5320,6 +5323,9 @@
 	function newStafiApp(transport) {
 	  return new SubstrateApp(transport, _config.CLA.STAFI, _config.SLIP0044.STAFI);
 	}
+	function newAlephZeroApp(transport) {
+	  return new SubstrateApp(transport, _config.CLA.ALEPHZERO, _config.SLIP0044.ALEPHZERO);
+	}
 	function sha512(data) {
 	  var digest = hash.sha512().update(data).digest();
 	  return Buffer.from(digest);
@@ -5417,11 +5423,13 @@
 	  newParallelApp: newParallelApp,
 	  newAstarApp: newAstarApp,
 	  newComposableApp: newComposableApp,
-	  newStafiApp: newStafiApp
+	  newStafiApp: newStafiApp,
+	  newAlephZeroApp: newAlephZeroApp
 	};
 
 	const ledgerApps = {
 	  acala: dist.newAcalaApp,
+	  'aleph-node': dist.newAlephZeroApp,
 	  astar: dist.newAstarApp,
 	  bifrost: dist.newBifrostApp,
 	  centrifuge: dist.newCentrifugeApp,
@@ -5438,6 +5446,7 @@
 	  polkadot: dist.newPolkadotApp,
 	  polymesh: dist.newPolymeshApp,
 	  sora: dist.newSoraApp,
+	  stafi: dist.newStafiApp,
 	  statemine: dist.newStatemineApp,
 	  statemint: dist.newStatemintApp,
 	  xxnetwork: dist.newXXNetworkApp
@@ -5447,7 +5456,7 @@
 	  name: '@polkadot/hw-ledger',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '9.7.2'
+	  version: '10.0.1'
 	};
 
 	class Ledger {

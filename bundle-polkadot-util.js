@@ -10,7 +10,7 @@
     name: '@polkadot/util',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.7.2'
+    version: '10.0.1'
   };
 
   function arrayChunk(array, chunkSize) {
@@ -103,7 +103,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.7.2'
+    version: '10.0.1'
   };
 
   function evaluateThis(fn) {
@@ -131,7 +131,7 @@
     name: '@polkadot/x-bigint',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.7.2'
+    version: '10.0.1'
   });
 
   const BigInt = typeof xglobal.BigInt === 'function' && typeof xglobal.BigInt.asIntN === 'function' ? xglobal.BigInt : () => Number.NaN;
@@ -142,16 +142,6 @@
   const _1Bn = BigInt(1000000000);
   const _1Qn = _1Bn * _1Bn;
   const _2pow53n = BigInt(Number.MAX_SAFE_INTEGER);
-
-  function objectSpread(dest, ...sources) {
-    for (let i = 0; i < sources.length; i++) {
-      const src = sources[i];
-      if (src) {
-        Object.assign(dest, src);
-      }
-    }
-    return dest;
-  }
 
   const U8_MAX = BigInt(256);
   const U16_MAX = BigInt(256 * 256);
@@ -218,11 +208,14 @@
     return result;
   }
 
-  function hexToBigInt(value, options = {}) {
-    return !value || value === '0x' ? BigInt(0) : u8aToBigInt(hexToU8a(value), objectSpread({
-      isLe: false,
-      isNegative: false
-    }, options));
+  function hexToBigInt(value, {
+    isLe = false,
+    isNegative = false
+  } = {}) {
+    return !value || value === '0x' ? BigInt(0) : u8aToBigInt(hexToU8a(value), {
+      isLe,
+      isNegative
+    });
   }
 
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
@@ -3044,7 +3037,7 @@
     name: '@polkadot/x-textencoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '9.7.2'
+    version: '10.0.1'
   };
   packageInfo$3.packageInfo = packageInfo$2;
 
@@ -3182,17 +3175,10 @@
     return u8as.sort(u8aCmp);
   }
 
-  function isBoolean(value) {
-    return typeof value === 'boolean';
-  }
-
-  function u8aToBn(value, options = {}) {
-    const {
-      isLe = true,
-      isNegative = false
-    } = isBoolean(options) ? {
-      isLe: options
-    } : options;
+  function u8aToBn(value, {
+    isLe = true,
+    isNegative = false
+  } = {}) {
     const count = value.length;
     if (count <= 6) {
       if (isNegative) {
@@ -3370,7 +3356,7 @@
     name: '@polkadot/x-textdecoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '9.7.2'
+    version: '10.0.1'
   };
   packageInfo$1.packageInfo = packageInfo;
 
@@ -3416,10 +3402,7 @@
 
   const DIV = BigInt(256);
   const NEG_MASK = BigInt(0xff);
-  function toU8a(value, {
-    isLe,
-    isNegative
-  }) {
+  function toU8a(value, isLe, isNegative) {
     const arr = [];
     if (isNegative) {
       value = (value + _1n) * -_1n;
@@ -3436,36 +3419,39 @@
     }
     return Uint8Array.from(arr);
   }
-  function nToU8a(value, options) {
-    const opts = objectSpread({
-      bitLength: -1,
-      isLe: true,
-      isNegative: false
-    }, options);
+  function nToU8a(value, {
+    bitLength = -1,
+    isLe = true,
+    isNegative = false
+  } = {}) {
     const valueBi = nToBigInt(value);
     if (valueBi === _0n) {
-      return opts.bitLength === -1 ? new Uint8Array() : new Uint8Array(Math.ceil((opts.bitLength || 0) / 8));
+      return bitLength === -1 ? new Uint8Array() : new Uint8Array(Math.ceil((bitLength || 0) / 8));
     }
-    const u8a = toU8a(valueBi, opts);
-    if (opts.bitLength === -1) {
+    const u8a = toU8a(valueBi, isLe, isNegative);
+    if (bitLength === -1) {
       return u8a;
     }
-    const byteLength = Math.ceil((opts.bitLength || 0) / 8);
+    const byteLength = Math.ceil((bitLength || 0) / 8);
     const output = new Uint8Array(byteLength);
-    if (opts.isNegative) {
+    if (isNegative) {
       output.fill(0xff);
     }
-    output.set(u8a, opts.isLe ? 0 : byteLength - u8a.length);
+    output.set(u8a, isLe ? 0 : byteLength - u8a.length);
     return output;
   }
 
   const ZERO_STR$1 = '0x00';
-  function nToHex(value, options) {
-    return !value ? ZERO_STR$1 : u8aToHex(nToU8a(value, objectSpread(
-    {
-      isLe: false,
-      isNegative: false
-    }, options)));
+  function nToHex(value, {
+    bitLength,
+    isLe = false,
+    isNegative = false
+  } = {}) {
+    return !value ? ZERO_STR$1 : u8aToHex(nToU8a(value, {
+      bitLength,
+      isLe,
+      isNegative
+    }));
   }
 
   const BN_ZERO = new BN(0);
@@ -3497,16 +3483,13 @@
     throw new Error(`Expected hex value to convert, found '${value}'`);
   }
 
-  function hexToBn(value, options = {}) {
+  function hexToBn(value, {
+    isLe = false,
+    isNegative = false
+  } = {}) {
     if (!value || value === '0x') {
       return new BN(0);
     }
-    const {
-      isLe = false,
-      isNegative = false
-    } = isBoolean(options) ? {
-      isLe: options
-    } : options;
     const stripped = hexStripPrefix(value);
     const bn = new BN(stripped, 16, isLe ? 'le' : 'be');
     return isNegative ? bn.fromTwos(stripped.length * 4) : bn;
@@ -3542,24 +3525,16 @@
     }
   }
 
-  function isNumber(value) {
-    return typeof value === 'number';
-  }
-
-  const DEFAULT_OPTS$1 = {
+  const DEFAULT_OPTS = {
     bitLength: -1,
     isLe: true,
     isNegative: false
   };
-  function bnToU8a(value, arg1 = DEFAULT_OPTS$1, arg2 = true) {
-    const {
-      bitLength = -1,
-      isLe = true,
-      isNegative = false
-    } = isNumber(arg1) ? {
-      bitLength: arg1,
-      isLe: arg2
-    } : arg1;
+  function bnToU8a(value, {
+    bitLength = -1,
+    isLe = true,
+    isNegative = false
+  } = DEFAULT_OPTS) {
     const valueBn = bnToBn(value);
     const byteLength = bitLength === -1 ? Math.ceil(valueBn.bitLength() / 8) : Math.ceil((bitLength || 0) / 8);
     if (!value) {
@@ -3572,20 +3547,16 @@
   }
 
   const ZERO_STR = '0x00';
-  const DEFAULT_OPTS = {
-    bitLength: -1,
-    isLe: false,
-    isNegative: false
-  };
-  function bnToHex(value, arg1 = DEFAULT_OPTS, arg2 = false) {
-    return !value ? ZERO_STR : u8aToHex(bnToU8a(value, objectSpread(
-    {
-      isLe: false,
-      isNegative: false
-    }, isNumber(arg1) ? {
-      bitLength: arg1,
-      isLe: arg2
-    } : arg1)));
+  function bnToHex(value, {
+    bitLength = -1,
+    isLe = false,
+    isNegative = false
+  } = {}) {
+    return !value ? ZERO_STR : u8aToHex(bnToU8a(value, {
+      bitLength,
+      isLe,
+      isNegative
+    }));
   }
 
   function bufferToU8a(buffer) {
@@ -3750,6 +3721,10 @@
     return result;
   }
 
+  function isBoolean(value) {
+    return typeof value === 'boolean';
+  }
+
   const NUMBER_REGEX = new RegExp('(\\d+?)(?=(\\d{3})+(?!\\d)|$)', 'g');
   function formatDecimal(value) {
     const isNegative = value[0].startsWith('-');
@@ -3863,20 +3838,17 @@
     const postfix = `${`${new Array(padding + 1).join('0')}${text}`.substring(mid < 0 ? 0 : mid)}0000`.substring(0, 4);
     return [si, prefix || '0', postfix];
   }
-  function _formatBalance(input, options = true, optDecimals = defaultDecimals) {
+  function _formatBalance(input, {
+    decimals = defaultDecimals,
+    forceUnit,
+    withSi = true,
+    withSiFull = false,
+    withUnit = true
+  } = {}) {
     let text = bnToBn(input).toString();
     if (text.length === 0 || text === '0') {
       return '0';
     }
-    const {
-      decimals = optDecimals,
-      forceUnit = undefined,
-      withSi = true,
-      withSiFull = false,
-      withUnit = true
-    } = isBoolean(options) ? {
-      withSi: options
-    } : options;
     let sign = '';
     if (text[0].startsWith('-')) {
       sign = '-';
@@ -4017,47 +3989,32 @@
     return (value && value.constructor) === Clazz || value instanceof Clazz;
   }
 
-  const word = '[a-fA-F\\d:]';
-  const b = options => options && options.includeBoundaries ?
-  	`(?:(?<=\\s|^)(?=${word})|(?<=${word})(?=\\s|$))` :
-  	'';
   const v4 = '(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)){3}';
-  const v6seg = '[a-fA-F\\d]{1,4}';
+  const v6s = '[a-fA-F\\d]{1,4}';
   const v6 = `
 (?:
-(?:${v6seg}:){7}(?:${v6seg}|:)|                                    // 1:2:3:4:5:6:7::  1:2:3:4:5:6:7:8
-(?:${v6seg}:){6}(?:${v4}|:${v6seg}|:)|                             // 1:2:3:4:5:6::    1:2:3:4:5:6::8   1:2:3:4:5:6::8  1:2:3:4:5:6::1.2.3.4
-(?:${v6seg}:){5}(?::${v4}|(?::${v6seg}){1,2}|:)|                   // 1:2:3:4:5::      1:2:3:4:5::7:8   1:2:3:4:5::8    1:2:3:4:5::7:1.2.3.4
-(?:${v6seg}:){4}(?:(?::${v6seg}){0,1}:${v4}|(?::${v6seg}){1,3}|:)| // 1:2:3:4::        1:2:3:4::6:7:8   1:2:3:4::8      1:2:3:4::6:7:1.2.3.4
-(?:${v6seg}:){3}(?:(?::${v6seg}){0,2}:${v4}|(?::${v6seg}){1,4}|:)| // 1:2:3::          1:2:3::5:6:7:8   1:2:3::8        1:2:3::5:6:7:1.2.3.4
-(?:${v6seg}:){2}(?:(?::${v6seg}){0,3}:${v4}|(?::${v6seg}){1,5}|:)| // 1:2::            1:2::4:5:6:7:8   1:2::8          1:2::4:5:6:7:1.2.3.4
-(?:${v6seg}:){1}(?:(?::${v6seg}){0,4}:${v4}|(?::${v6seg}){1,6}|:)| // 1::              1::3:4:5:6:7:8   1::8            1::3:4:5:6:7:1.2.3.4
-(?::(?:(?::${v6seg}){0,5}:${v4}|(?::${v6seg}){1,7}|:))             // ::2:3:4:5:6:7:8  ::2:3:4:5:6:7:8  ::8             ::1.2.3.4
+(?:${v6s}:){7}(?:${v6s}|:)|                                    // 1:2:3:4:5:6:7::  1:2:3:4:5:6:7:8
+(?:${v6s}:){6}(?:${v4}|:${v6s}|:)|                             // 1:2:3:4:5:6::    1:2:3:4:5:6::8   1:2:3:4:5:6::8  1:2:3:4:5:6::1.2.3.4
+(?:${v6s}:){5}(?::${v4}|(?::${v6s}){1,2}|:)|                   // 1:2:3:4:5::      1:2:3:4:5::7:8   1:2:3:4:5::8    1:2:3:4:5::7:1.2.3.4
+(?:${v6s}:){4}(?:(?::${v6s}){0,1}:${v4}|(?::${v6s}){1,3}|:)| // 1:2:3:4::        1:2:3:4::6:7:8   1:2:3:4::8      1:2:3:4::6:7:1.2.3.4
+(?:${v6s}:){3}(?:(?::${v6s}){0,2}:${v4}|(?::${v6s}){1,4}|:)| // 1:2:3::          1:2:3::5:6:7:8   1:2:3::8        1:2:3::5:6:7:1.2.3.4
+(?:${v6s}:){2}(?:(?::${v6s}){0,3}:${v4}|(?::${v6s}){1,5}|:)| // 1:2::            1:2::4:5:6:7:8   1:2::8          1:2::4:5:6:7:1.2.3.4
+(?:${v6s}:){1}(?:(?::${v6s}){0,4}:${v4}|(?::${v6s}){1,6}|:)| // 1::              1::3:4:5:6:7:8   1::8            1::3:4:5:6:7:1.2.3.4
+(?::(?:(?::${v6s}){0,5}:${v4}|(?::${v6s}){1,7}|:))             // ::2:3:4:5:6:7:8  ::2:3:4:5:6:7:8  ::8             ::1.2.3.4
 )(?:%[0-9a-zA-Z]{1,})?                                             // %eth0            %1
 `.replace(/\s*\/\/.*$/gm, '').replace(/\n/g, '').trim();
   const v46Exact = new RegExp(`(?:^${v4}$)|(?:^${v6}$)`);
   const v4exact = new RegExp(`^${v4}$`);
   const v6exact = new RegExp(`^${v6}$`);
-  const ip = options => options && options.exact ?
-  	v46Exact :
-  	new RegExp(`(?:${b(options)}${v4}${b(options)})|(?:${b(options)}${v6}${b(options)})`, 'g');
-  ip.v4 = options => options && options.exact ? v4exact : new RegExp(`${b(options)}${v4}${b(options)}`, 'g');
-  ip.v6 = options => options && options.exact ? v6exact : new RegExp(`${b(options)}${v6}${b(options)}`, 'g');
-  var ipRegex = ip;
-
   function isIp(value, type) {
-    if (type === 'v4') {
-      return ipRegex.v4({
-        exact: true
-      }).test(value);
-    } else if (type === 'v6') {
-      return ipRegex.v6({
-        exact: true
-      }).test(value);
+    switch (type) {
+      case 'v4':
+        return v4exact.test(value);
+      case 'v6':
+        return v6exact.test(value);
+      default:
+        return v46Exact.test(value);
     }
-    return ipRegex({
-      exact: true
-    }).test(value);
   }
 
   function replacer(_, v) {
@@ -4079,6 +4036,10 @@
 
   function isNull(value) {
     return value === null;
+  }
+
+  function isNumber(value) {
+    return typeof value === 'number';
   }
 
   const isObservable = isOn('next');
@@ -4401,6 +4362,16 @@
       delete value[keys[i]];
     }
     return value;
+  }
+
+  function objectSpread(dest, ...sources) {
+    for (let i = 0; i < sources.length; i++) {
+      const src = sources[i];
+      if (src) {
+        Object.assign(dest, src);
+      }
+    }
+    return dest;
   }
 
   function objectCopy(source) {
