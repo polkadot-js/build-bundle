@@ -22,7 +22,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.7.2'
+    version: '10.0.1'
   });
 
   function evaluateThis(fn) {
@@ -34,7 +34,7 @@
     name: '@polkadot/x-fetch',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.7.2'
+    version: '10.0.1'
   });
 
   const fetch = xglobal.fetch;
@@ -545,7 +545,7 @@
     name: '@polkadot/x-ws',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.7.2'
+    version: '10.0.1'
   });
 
   const WebSocket = xglobal.WebSocket;
@@ -929,10 +929,12 @@
           maxReceivedFrameSize: 24 * MEGABYTE,
           maxReceivedMessageSize: 24 * MEGABYTE
         });
-        _classPrivateFieldBase(this, _websocket)[_websocket].onclose = _classPrivateFieldBase(this, _onSocketClose)[_onSocketClose];
-        _classPrivateFieldBase(this, _websocket)[_websocket].onerror = _classPrivateFieldBase(this, _onSocketError)[_onSocketError];
-        _classPrivateFieldBase(this, _websocket)[_websocket].onmessage = _classPrivateFieldBase(this, _onSocketMessage)[_onSocketMessage];
-        _classPrivateFieldBase(this, _websocket)[_websocket].onopen = _classPrivateFieldBase(this, _onSocketOpen)[_onSocketOpen];
+        if (_classPrivateFieldBase(this, _websocket)[_websocket]) {
+          _classPrivateFieldBase(this, _websocket)[_websocket].onclose = _classPrivateFieldBase(this, _onSocketClose)[_onSocketClose];
+          _classPrivateFieldBase(this, _websocket)[_websocket].onerror = _classPrivateFieldBase(this, _onSocketError)[_onSocketError];
+          _classPrivateFieldBase(this, _websocket)[_websocket].onmessage = _classPrivateFieldBase(this, _onSocketMessage)[_onSocketMessage];
+          _classPrivateFieldBase(this, _websocket)[_websocket].onopen = _classPrivateFieldBase(this, _onSocketOpen)[_onSocketOpen];
+        }
         _classPrivateFieldBase(this, _timeoutId)[_timeoutId] = setInterval(() => _classPrivateFieldBase(this, _timeoutHandlers)[_timeoutHandlers](), TIMEOUT_INTERVAL);
       } catch (error) {
         l$6.error(error);
@@ -1044,7 +1046,7 @@
     name: '@polkadot/api',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.11.3'
+    version: '8.12.1'
   };
 
   /*! *****************************************************************************
@@ -3541,7 +3543,7 @@
     name: '@polkadot/rpc-core',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.11.3'
+    version: '8.12.1'
   });
 
   const l$4 = util.logger('rpc-core');
@@ -5657,9 +5659,9 @@
     };
   }
   function accounts(instanceId, api) {
-    return memo(instanceId, accountIds => api.derive.session.info().pipe(switchMap(sessionInfo => combineLatest([api.derive.staking.keysMulti(accountIds), api.derive.staking.queryMulti(accountIds, QUERY_OPTS)]).pipe(map(([keys, queries]) => queries.map((q, index) => parseResult$1(api, sessionInfo, keys[index], q)))))));
+    return memo(instanceId, (accountIds, opts = QUERY_OPTS) => api.derive.session.info().pipe(switchMap(sessionInfo => combineLatest([api.derive.staking.keysMulti(accountIds), api.derive.staking.queryMulti(accountIds, opts)]).pipe(map(([keys, queries]) => queries.map((q, index) => parseResult$1(api, sessionInfo, keys[index], q)))))));
   }
-  const account = firstMemo((api, accountId) => api.derive.staking.accounts([accountId]));
+  const account = firstMemo((api, accountId, opts) => api.derive.staking.accounts([accountId], opts));
 
   function currentPoints(instanceId, api) {
     return memo(instanceId, () => api.derive.session.indexes().pipe(switchMap(({

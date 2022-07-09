@@ -478,7 +478,7 @@
       StorageEntryModifierLatest: 'StorageEntryModifierV14',
       StorageEntryTypeLatest: 'StorageEntryTypeV14',
       StorageHasher: 'StorageHasherV14',
-      OpaqueMetadata: 'Bytes',
+      OpaqueMetadata: 'Opaque<Bytes>',
       MetadataAll: {
         _enum: {
           V0: 'DoNotConstruct<MetadataV0>',
@@ -2645,8 +2645,8 @@
         sessionIndex: 'SessionIndex',
         authorityIndex: 'AuthIndex'
       },
-      OpaqueMultiaddr: 'Bytes',
-      OpaquePeerId: 'Bytes',
+      OpaqueMultiaddr: 'Opaque<Bytes>',
+      OpaquePeerId: 'Opaque<Bytes>',
       OpaqueNetworkState: {
         peerId: 'OpaquePeerId',
         externalAddresses: 'Vec<OpaqueMultiaddr>'
@@ -5291,7 +5291,7 @@
   }
 
   const BOUNDED = ['BTreeMap', 'BTreeSet', 'HashMap', 'Vec'];
-  const ALLOWED_BOXES = BOUNDED.concat(['Compact', 'DoNotConstruct', 'Int', 'Linkage', 'Range', 'RangeInclusive', 'Result', 'Option', 'UInt', 'WrapperKeepOpaque', 'WrapperOpaque']);
+  const ALLOWED_BOXES = BOUNDED.concat(['Compact', 'DoNotConstruct', 'Int', 'Linkage', 'Range', 'RangeInclusive', 'Result', 'Opaque', 'Option', 'UInt', 'WrapperKeepOpaque', 'WrapperOpaque']);
   const BOX_PRECEDING = ['<', '(', '[', '"', ',', ' '];
   const mappings = [
   alias('<T::InherentOfflineReport as InherentOfflineReport>::Inherent', 'InherentOfflineReport', false), alias('VecDeque<', 'Vec<', false),
@@ -7225,7 +7225,7 @@
     const Type = typeToConstructor(registry, typeName);
     if (util.isU8a(value) || util.isHex(value)) {
       try {
-        const [, u8a] = util.isHex(value) || value instanceof Raw ? [0, value] : util.compactStripLength(value);
+        const [, u8a] = util.isHex(value) ? [0, util.u8aToU8a(value)] : value instanceof Raw ? [0, value.subarray()] : util.compactStripLength(value);
         return [Type, new Type(registry, u8a), value];
       } catch {
         return [Type, null, value];
@@ -7799,7 +7799,7 @@
   }
   const nestedExtraction = [['[', ']', exports.TypeDefInfo.VecFixed, _decodeFixedVec], ['{', '}', exports.TypeDefInfo.Struct, _decodeStruct], ['(', ')', exports.TypeDefInfo.Tuple, _decodeTuple],
   ['BTreeMap<', '>', exports.TypeDefInfo.BTreeMap, _decodeTuple], ['HashMap<', '>', exports.TypeDefInfo.HashMap, _decodeTuple], ['Int<', '>', exports.TypeDefInfo.Int, _decodeInt], ['Result<', '>', exports.TypeDefInfo.Result, _decodeTuple], ['UInt<', '>', exports.TypeDefInfo.UInt, _decodeUInt], ['DoNotConstruct<', '>', exports.TypeDefInfo.DoNotConstruct, _decodeDoNotConstruct]];
-  const wrappedExtraction = [['BTreeSet<', '>', exports.TypeDefInfo.BTreeSet], ['Compact<', '>', exports.TypeDefInfo.Compact], ['Linkage<', '>', exports.TypeDefInfo.Linkage], ['Option<', '>', exports.TypeDefInfo.Option], ['Range<', '>', exports.TypeDefInfo.Range], ['RangeInclusive<', '>', exports.TypeDefInfo.RangeInclusive], ['Vec<', '>', exports.TypeDefInfo.Vec], ['WrapperKeepOpaque<', '>', exports.TypeDefInfo.WrapperKeepOpaque], ['WrapperOpaque<', '>', exports.TypeDefInfo.WrapperOpaque]];
+  const wrappedExtraction = [['BTreeSet<', '>', exports.TypeDefInfo.BTreeSet], ['Compact<', '>', exports.TypeDefInfo.Compact], ['Linkage<', '>', exports.TypeDefInfo.Linkage], ['Opaque<', '>', exports.TypeDefInfo.WrapperOpaque], ['Option<', '>', exports.TypeDefInfo.Option], ['Range<', '>', exports.TypeDefInfo.Range], ['RangeInclusive<', '>', exports.TypeDefInfo.RangeInclusive], ['Vec<', '>', exports.TypeDefInfo.Vec], ['WrapperKeepOpaque<', '>', exports.TypeDefInfo.WrapperKeepOpaque], ['WrapperOpaque<', '>', exports.TypeDefInfo.WrapperOpaque]];
   function extractSubType(type, [start, end]) {
     return type.substring(start.length, type.length - end.length);
   }
@@ -8386,7 +8386,7 @@
           effects: 'Vec<XcmOrderV0>'
         },
         InitiateTeleport: {
-          assets: 'Vec<MultiAsset>',
+          assets: 'Vec<MultiAssetV0>',
           dest: 'MultiLocationV0',
           effects: 'Vec<XcmOrderV0>'
         },
@@ -8396,7 +8396,7 @@
           assets: 'Vec<MultiAssetV0>'
         },
         BuyExecution: {
-          fees: 'MultiAsset',
+          fees: 'MultiAssetV0',
           weight: 'u64',
           debt: 'u64',
           haltOnError: 'bool',
@@ -12106,7 +12106,7 @@
   const ACCOUNT_ID_PREFIX$1 = new Uint8Array([0xff]);
   function decodeString$1(registry, value) {
     const decoded = utilCrypto.decodeAddress(value);
-    return decoded.length === 20 ? registry.createTypeUnsafe('EthereumAccountId', [decoded]) : registry.createTypeUnsafe('AccountIndex', [util.u8aToBn(decoded, true)]);
+    return decoded.length === 20 ? registry.createTypeUnsafe('EthereumAccountId', [decoded]) : registry.createTypeUnsafe('AccountIndex', [util.u8aToBn(decoded)]);
   }
   function decodeU8a$3(registry, value) {
     if (value.length === 20) {
@@ -12411,7 +12411,7 @@
   const ACCOUNT_ID_PREFIX = new Uint8Array([0xff]);
   function decodeString(registry, value) {
     const decoded = utilCrypto.decodeAddress(value);
-    return decoded.length === 32 ? registry.createTypeUnsafe('AccountId', [decoded]) : registry.createTypeUnsafe('AccountIndex', [util.u8aToBn(decoded, true)]);
+    return decoded.length === 32 ? registry.createTypeUnsafe('AccountId', [decoded]) : registry.createTypeUnsafe('AccountIndex', [util.u8aToBn(decoded)]);
   }
   function decodeU8a$2(registry, value) {
     if (value.length === 32) {
@@ -13580,11 +13580,12 @@
     }
   }
 
-  const VERSION_IDX = 4;
   const EMPTY_METADATA = new Uint8Array([0x6d, 0x65, 0x74, 0x61, 9]);
-  function decodeU8a(registry, value) {
-    const u8a = value.length === 0 ? EMPTY_METADATA : value;
-    if (u8a[VERSION_IDX] === 9) {
+  const VERSION_IDX = EMPTY_METADATA.length - 1;
+  function decodeU8a(registry, u8a) {
+    if (u8a.length === 0) {
+      return EMPTY_METADATA;
+    } else if (u8a[VERSION_IDX] === 9) {
       try {
         return new MetadataVersioned(registry, u8a);
       } catch (error) {
@@ -14154,6 +14155,7 @@
   'sp_core::crypto::AccountId32', 'sp_runtime::generic::era::Era', 'sp_runtime::multiaddress::MultiAddress',
   'account::AccountId20', 'polkadot_runtime_common::claims::EthereumAddress',
   '*_democracy::vote::Vote', '*_conviction_voting::vote::Vote', '*_identity::types::Data',
+  'sp_core::OpaqueMetadata', 'sp_core::OpaquePeerId', 'sp_core::offchain::OpaqueMultiaddr',
   'primitive_types::*', 'sp_arithmetic::per_things::*',
   'ink_env::types::*']);
   const PATHS_SET = splitNamespace(['pallet_identity::types::BitFlags']);
@@ -15480,7 +15482,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.11.3'
+    version: '8.12.1'
   };
 
   exports.BTreeMap = BTreeMap;
