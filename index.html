@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Bundler tests</title>
+    <style>
+      pre {
+        margin: 0.5rem 0;
+      }
+
+      pre.header {
+        background: #ddd;
+        margin-top: 1.5rem;
+        padding: 0.25rem 0.75rem;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      function log (label, result) {
+        const pre = document.createElement('pre');
+
+        if (typeof result !== 'undefined') {
+          pre.innerHTML = `${label.padStart(24)} = ${result}`;
+        } else {
+          pre.innerHTML = label;
+          pre.className = 'header';
+        }
+
+        document.body.appendChild(pre);
+      }
+    </script>
+    <script src="bundle-polkadot-util.js"></script>
+    <script>
+      log('polkadotUtil');
+
+      const { bnToBn, u8aToHex } = polkadotUtil;
+
+      log('u8aToHex', u8aToHex(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8])));
+      log('bnToBn', bnToBn(123).addn(1).toString());
+    </script>
+    <script src="bundle-polkadot-util-crypto.js"></script>
+    <script>
+      log('polkadotUtilCrypto');
+
+      const { blake2AsHex, randomAsHex, selectableNetworks } = polkadotUtilCrypto;
+
+      log('blake2AsHex', blake2AsHex(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8])));
+      log('blake2AsHex (js)', blake2AsHex(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]), 256, null, true));
+      log('randomAsHex', randomAsHex());
+      log('selectableNetworks', selectableNetworks.map(({ displayName }) => displayName).join('; '));
+    </script>
+    <script src="bundle-polkadot-keyring.js"></script>
+    <script>
+      log('polkadotKeyring');
+
+      const { Keyring } = polkadotKeyring;
+      const { cryptoWaitReady } = polkadotUtilCrypto;
+
+      cryptoWaitReady().then(() => {
+        const keyring = new Keyring({ type: 'sr25519' });
+        const alice = keyring.addFromUri('//Alice');
+
+        log('alice.address', alice.address);
+        log('signature', u8aToHex(alice.sign('hello world')));
+      });
+    </script>
+		<script src="bundle-polkadot-types.js"></script>
+    <script>
+      log('polkadotTypes');
+
+      const { TypeRegistry } = polkadotTypes;
+      const registry = new TypeRegistry();
+
+      log('createType', registry.createType('Balance', 1234567890).toHuman());
+    </script>
+    <script src="bundle-polkadot-api.js"></script>
+    <script>
+      log('polkadotApi');
+
+      const { ApiPromise, WsProvider } = polkadotApi;
+      const provider = new WsProvider('wss://rpc.polkadot.io');
+
+      ApiPromise
+        .create({ provider })
+        .then((api) =>
+          // use the derive version, checking that that also works
+          api.derive.chain.subscribeNewHeads((h) =>
+            log(polkadotUtil.formatNumber(h.number.unwrap()), h.hash.toHex())
+          )
+        );
+    </script>
+  </body>
+</html>
