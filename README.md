@@ -11,7 +11,7 @@ For a full example of the bundles being includes, look at the [index.html](index
     <title>build-bundle</title>
   </head>
   <body>
-		<!-- @polkadot/util -->
+    <!-- @polkadot/util -->
     <script src="bundle-polkadot-util.js"></script>
     <script>
       console.log('polkadotUtil');
@@ -21,7 +21,7 @@ For a full example of the bundles being includes, look at the [index.html](index
       console.log('u8aToHex', u8aToHex(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8])));
     </script>
 
-		<!-- @polkadot/util-crypto -->
+    <!-- @polkadot/util-crypto -->
     <script src="bundle-polkadot-util-crypto.js"></script>
     <script>
       console.log('polkadotUtilCrypto');
@@ -31,7 +31,7 @@ For a full example of the bundles being includes, look at the [index.html](index
       console.log('blake2AsHex', blake2AsHex(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8])));
     </script>
 
-		<!-- @polkadot/keyring -->
+    <!-- @polkadot/keyring -->
     <script src="bundle-polkadot-keyring.js"></script>
     <script>
       console.log('polkadotKeyring');
