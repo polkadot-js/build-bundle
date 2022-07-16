@@ -112,7 +112,9 @@
       V0: json
     });
     const converter = convertVersions.find(([v]) => metadata[`is${v}`]);
-    util.assert(converter, () => `Unable to convert ABI with version ${metadata.type} to latest`);
+    if (!converter) {
+      throw new Error(`Unable to convert ABI with version ${metadata.type} to latest`);
+    }
     return converter[1](registry, metadata[`as${converter[0]}`]);
   }
   function parseJson(json, chainProperties) {
@@ -151,7 +153,9 @@
     decodeEvent(data) {
       const index = data[0];
       const event = this.events[index];
-      util.assert(event, () => `Unable to find event with index ${index}`);
+      if (!event) {
+        throw new Error(`Unable to find event with index ${index}`);
+      }
       return event.fromU8a(data.subarray(1));
     }
     decodeConstructor(data) {
@@ -172,7 +176,9 @@
         type
       }, index) => {
         try {
-          util.assert(util.isObject(type), 'Invalid type definition found');
+          if (!util.isObject(type)) {
+            throw new Error('Invalid type definition found');
+          }
           const displayName = type.displayName.length ? type.displayName[type.displayName.length - 1].toString() : undefined;
           const camelName = util.stringCamelCase(label);
           if (displayName && PRIMITIVE_ALWAYS.includes(displayName)) {
@@ -248,14 +254,18 @@
       const [, trimmed] = util.compactStripLength(data);
       const selector = trimmed.subarray(0, 4);
       const message = list.find(m => m.selector.eq(selector));
-      util.assert(message, `Unable to find ${type} with selector ${util.u8aToHex(selector)}`);
+      if (!message) {
+        throw new Error(`Unable to find ${type} with selector ${util.u8aToHex(selector)}`);
+      }
       return message.fromU8a(trimmed.subarray(4));
     };
     #encodeArgs = ({
       label,
       selector
     }, args, data) => {
-      util.assert(data.length === args.length, () => `Expected ${args.length} arguments to contract message '${label.toString()}', found ${data.length}`);
+      if (data.length !== args.length) {
+        throw new Error(`Expected ${args.length} arguments to contract message '${label.toString()}', found ${data.length}`);
+      }
       return util.compactAddLength(util.u8aConcat(this.registry.createType('ContractSelector', selector).toU8a(), ...args.map(({
         type: {
           lookupName,
@@ -269,7 +279,7 @@
     name: '@polkadot/api-contract',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.12.2'
+    version: '8.13.1'
   };
 
   function applyOnEvent(result, types, fn) {
@@ -297,9 +307,13 @@
       this.abi = abi instanceof Abi ? abi : new Abi(abi, api.registry.getChainProperties());
       this.api = api;
       this._decorateMethod = decorateMethod;
-      util.assert(!!(api && api.isConnected && api.tx), 'Your API has not been initialized correctly and is not connected to a chain');
-      util.assert(!!(api.tx.contracts && Object.keys(api.tx.contracts).length), 'You need to connect to a chain with a runtime that supports contracts');
-      util.assert(util.isFunction(api.tx.contracts.instantiateWithCode), 'You need to connect to a chain with a runtime with a V3 contracts module. The runtime does not expose api.tx.contracts.instantiateWithCode');
+      if (!api || !api.isConnected || !api.tx) {
+        throw new Error('Your API has not been initialized correctly and is not connected to a chain');
+      } else if (!api.tx.contracts || !Object.keys(api.tx.contracts).length) {
+        throw new Error('You need to connect to a chain with a runtime that supports contracts');
+      } else if (!util.isFunction(api.tx.contracts.instantiateWithCode)) {
+        throw new Error('You need to connect to a chain with a runtime with a V3 contracts module. The runtime does not expose api.tx.contracts.instantiateWithCode');
+      }
     }
     get registry() {
       return this.api.registry;
@@ -697,7 +711,7 @@
           var partialObserver;
           if (isFunction(observerOrNext) || !observerOrNext) {
               partialObserver = {
-                  next: observerOrNext !== null && observerOrNext !== void 0 ? observerOrNext : undefined,
+                  next: (observerOrNext !== null && observerOrNext !== void 0 ? observerOrNext : undefined),
                   error: error !== null && error !== void 0 ? error : undefined,
                   complete: complete !== null && complete !== void 0 ? complete : undefined,
               };
@@ -1920,7 +1934,9 @@
       return util.isFunction((_this$api$rx$rpc$cont = this.api.rx.rpc.contracts) === null || _this$api$rx$rpc$cont === void 0 ? void 0 : _this$api$rx$rpc$cont.call);
     }
     get query() {
-      util.assert(this.hasRpcContractsCall, ERROR_NO_CALL);
+      if (!this.hasRpcContractsCall) {
+        throw new Error(ERROR_NO_CALL);
+      }
       return this.#query;
     }
     get tx() {
@@ -1959,7 +1975,9 @@
       storageDepositLimit = null,
       value = util.BN_ZERO
     }, params) => {
-      util.assert(this.hasRpcContractsCall, ERROR_NO_CALL);
+      if (!this.hasRpcContractsCall) {
+        throw new Error(ERROR_NO_CALL);
+      }
       const message = this.abi.findMessage(messageOrId);
       return {
         send: this._decorateMethod(origin => {
@@ -2048,7 +2066,9 @@
     constructor(api, abi, wasm, decorateMethod) {
       super(api, abi, decorateMethod);
       this.code = util.isWasm(this.abi.info.source.wasm) ? this.abi.info.source.wasm : util.u8aToU8a(wasm);
-      util.assert(util.isWasm(this.code), 'No WASM code provided');
+      if (!util.isWasm(this.code)) {
+        throw new Error('No WASM code provided');
+      }
       this.abi.constructors.forEach(c => {
         if (util.isUndefined(this.#tx[c.method])) {
           this.#tx[c.method] = createBluePrintTx(c, (o, p) => this.#instantiate(c, o, p));

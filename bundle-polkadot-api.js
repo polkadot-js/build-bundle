@@ -1046,7 +1046,7 @@
     name: '@polkadot/api',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.12.2'
+    version: '8.13.1'
   };
 
   /*! *****************************************************************************
@@ -1497,7 +1497,7 @@
           var partialObserver;
           if (isFunction(observerOrNext) || !observerOrNext) {
               partialObserver = {
-                  next: observerOrNext !== null && observerOrNext !== void 0 ? observerOrNext : undefined,
+                  next: (observerOrNext !== null && observerOrNext !== void 0 ? observerOrNext : undefined),
                   error: error !== null && error !== void 0 ? error : undefined,
                   complete: complete !== null && complete !== void 0 ? complete : undefined,
               };
@@ -3309,7 +3309,7 @@
       var connector = config.connector;
       return operate(function (source, subscriber) {
           var subject = connector();
-          from(selector(fromSubscribable(subject))).subscribe(subscriber);
+          innerFrom(selector(fromSubscribable(subject))).subscribe(subscriber);
           subscriber.add(source.subscribe(subject));
       });
   }
@@ -3543,7 +3543,7 @@
     name: '@polkadot/rpc-core',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.12.2'
+    version: '8.13.1'
   });
 
   const l$4 = util.logger('rpc-core');
@@ -3843,6 +3843,10 @@
         throw new Error(`Unable to decode storage ${key.section || 'unknown'}.${key.method || 'unknown'}:${entryNum}: ${error.message}`);
       }
     }
+  }
+
+  function unwrapBlockNumber(hdr) {
+    return util.isCompact(hdr.number) ? hdr.number.unwrap() : hdr.number;
   }
 
   const deriveNoopCache = {
@@ -4430,13 +4434,24 @@
     bounties: bounties$1
   });
 
-  function unwrapBlockNumber(fn) {
-    return (instanceId, api) => memo(instanceId, () => fn(api).pipe(map(r => r.number.unwrap())));
+  function createBlockNumberDerive(fn) {
+    return (instanceId, api) => memo(instanceId, () => fn(api).pipe(map(unwrapBlockNumber)));
+  }
+  function getAuthorDetails(header, queryAt) {
+    if (queryAt.authorMapping && queryAt.authorMapping.mappingWithDeposit) {
+      const mapId = header.digest.logs[0] && (header.digest.logs[0].isConsensus && header.digest.logs[0].asConsensus[1] || header.digest.logs[0].isPreRuntime && header.digest.logs[0].asPreRuntime[1]);
+      if (mapId) {
+        return combineLatest([of(header), queryAt.session ? queryAt.session.validators() : of(null), queryAt.authorMapping.mappingWithDeposit(mapId).pipe(map(opt => opt.unwrapOr({
+          account: null
+        }).account))]);
+      }
+    }
+    return combineLatest([of(header), queryAt.session ? queryAt.session.validators() : of(null), of(null)]);
   }
 
-  const bestNumber = unwrapBlockNumber(api => api.derive.chain.subscribeNewHeads());
+  const bestNumber = createBlockNumberDerive(api => api.rpc.chain.subscribeNewHeads());
 
-  const bestNumberFinalized = unwrapBlockNumber(api => api.rpc.chain.subscribeFinalizedHeads());
+  const bestNumberFinalized = createBlockNumberDerive(api => api.rpc.chain.subscribeFinalizedHeads());
 
   function bestNumberLag(instanceId, api) {
     return memo(instanceId, () => combineLatest([api.derive.chain.bestNumber(), api.derive.chain.bestNumberFinalized()]).pipe(map(([bestNumber, bestNumberFinalized]) => api.registry.createType('BlockNumber', bestNumber.sub(bestNumberFinalized)))));
@@ -4465,25 +4480,20 @@
     return accountId;
   }
 
-  function createHeaderExtended(registry, header, validators) {
+  function createHeaderExtended(registry, header, validators, author) {
     const HeaderBase = registry.createClass('Header');
     class Implementation extends HeaderBase {
       #author;
-      #validators;
-      constructor(registry, header, validators) {
+      constructor(registry, header, validators, author) {
         super(registry, header);
-        this.#author = extractAuthor(this.digest, validators);
-        this.#validators = validators;
+        this.#author = author || extractAuthor(this.digest, validators || []);
         this.createdAtHash = header === null || header === void 0 ? void 0 : header.createdAtHash;
       }
       get author() {
         return this.#author;
       }
-      get validators() {
-        return this.#validators;
-      }
     }
-    return new Implementation(registry, header, validators);
+    return new Implementation(registry, header, validators, author);
   }
 
   function mapExtrinsics(extrinsics, records) {
@@ -4513,15 +4523,15 @@
       };
     });
   }
-  function createSignedBlockExtended(registry, block, events, validators) {
+  function createSignedBlockExtended(registry, block, events, validators, author) {
     const SignedBlockBase = registry.createClass('SignedBlock');
     class Implementation extends SignedBlockBase {
       #author;
       #events;
       #extrinsics;
-      constructor(registry, block, events, validators) {
+      constructor(registry, block, events, validators, author) {
         super(registry, block);
-        this.#author = extractAuthor(this.block.header.digest, validators);
+        this.#author = author || extractAuthor(this.block.header.digest, validators || []);
         this.#events = events || [];
         this.#extrinsics = mapExtrinsics(this.block.extrinsics, this.#events);
         this.createdAtHash = block === null || block === void 0 ? void 0 : block.createdAtHash;
@@ -4536,34 +4546,44 @@
         return this.#extrinsics;
       }
     }
-    return new Implementation(registry, block, events, validators);
+    return new Implementation(registry, block, events, validators, author);
   }
 
   function getHeader(instanceId, api) {
-    return memo(instanceId, blockHash => combineLatest([api.rpc.chain.getHeader(blockHash), api.queryAt(blockHash).pipe(switchMap(queryAt => queryAt.session ? queryAt.session.validators() : of([])))]).pipe(map(([header, validators]) => createHeaderExtended(header.registry, header, validators)), catchError(() =>
-    of())));
+    return memo(instanceId, blockHash => combineLatest([api.rpc.chain.getHeader(blockHash), api.queryAt(blockHash)]).pipe(switchMap(([header, queryAt]) => getAuthorDetails(header, queryAt)), map(([header, validators, author]) => createHeaderExtended((validators || header).registry, header, validators, author))));
   }
 
   function getBlock(instanceId, api) {
-    return memo(instanceId, blockHash => combineLatest([api.rpc.chain.getBlock(blockHash), api.queryAt(blockHash).pipe(switchMap(queryAt => combineLatest([queryAt.system.events(), queryAt.session ? queryAt.session.validators() : of([])])))]).pipe(map(([signedBlock, [events, validators]]) => createSignedBlockExtended(api.registry, signedBlock, events, validators)), catchError(() =>
-    of())));
+    return memo(instanceId, blockHash => combineLatest([api.rpc.chain.getBlock(blockHash), api.queryAt(blockHash)]).pipe(switchMap(([signedBlock, queryAt]) => combineLatest([of(signedBlock), queryAt.system.events(), getAuthorDetails(signedBlock.block.header, queryAt)])), map(([signedBlock, events, [, validators, author]]) => createSignedBlockExtended(events.registry, signedBlock, events, validators, author))));
   }
 
   function getBlockByNumber(instanceId, api) {
     return memo(instanceId, blockNumber => api.rpc.chain.getBlockHash(blockNumber).pipe(switchMap(h => api.derive.chain.getBlock(h))));
   }
 
+  function _getHeaderRange(instanceId, api) {
+    return memo(instanceId, (startHash, endHash, prev = []) => api.rpc.chain.getHeader(startHash).pipe(switchMap(header => header.parentHash.eq(endHash) ? of([header, ...prev]) : api.derive.chain._getHeaderRange(header.parentHash, endHash, [header, ...prev]))));
+  }
+  function subscribeFinalizedHeads(instanceId, api) {
+    return memo(instanceId, () => {
+      let prevHash = null;
+      return api.rpc.chain.subscribeFinalizedHeads().pipe(switchMap(header => {
+        const endHash = prevHash;
+        const startHash = header.parentHash;
+        prevHash = header.createdAtHash = header.hash;
+        return endHash === null || startHash.eq(endHash) ? of(header) : api.derive.chain._getHeaderRange(startHash, endHash, [header]).pipe(switchMap(headers => from(headers)));
+      }));
+    });
+  }
+
   function subscribeNewBlocks(instanceId, api) {
-    return memo(instanceId, () => api.derive.chain.subscribeNewHeads().pipe(switchMap(header => {
-      const blockHash = header.createdAtHash || header.hash;
-      return combineLatest([of(header), api.rpc.chain.getBlock(blockHash), api.queryAt(blockHash).pipe(switchMap(queryAt => queryAt.system.events()))]);
-    }), map(([header, block, events]) => createSignedBlockExtended(block.registry, block, events, header.validators))));
+    return memo(instanceId, () => api.derive.chain.subscribeNewHeads().pipe(switchMap(header => api.derive.chain.getBlock(header.createdAtHash || header.hash))));
   }
 
   function subscribeNewHeads(instanceId, api) {
-    return memo(instanceId, () => combineLatest([api.rpc.chain.subscribeNewHeads(), api.query.session ? api.query.session.validators() : of(undefined)]).pipe(map(([header, validators]) => {
+    return memo(instanceId, () => api.rpc.chain.subscribeNewHeads().pipe(switchMap(header => combineLatest([of(header), api.queryAt(header.hash)])), switchMap(([header, queryAt]) => getAuthorDetails(header, queryAt)), map(([header, validators, author]) => {
       header.createdAtHash = header.hash;
-      return createHeaderExtended(header.registry, header, validators);
+      return createHeaderExtended(header.registry, header, validators, author);
     })));
   }
 
@@ -4575,6 +4595,8 @@
     getHeader: getHeader,
     getBlock: getBlock,
     getBlockByNumber: getBlockByNumber,
+    _getHeaderRange: _getHeaderRange,
+    subscribeFinalizedHeads: subscribeFinalizedHeads,
     subscribeNewBlocks: subscribeNewBlocks,
     subscribeNewHeads: subscribeNewHeads
   });
@@ -6431,7 +6453,7 @@
     return combineLatest([api.rpc.chain.getHeader().pipe(switchMap(header =>
     header.parentHash.isEmpty ? of(header)
     : api.rpc.chain.getHeader(header.parentHash))), api.rpc.chain.getFinalizedHead().pipe(switchMap(hash => api.rpc.chain.getHeader(hash)))]).pipe(map(([current, finalized]) =>
-    current.number.unwrap().sub(finalized.number.unwrap()).gt(MAX_FINALITY_LAG) ? current : finalized));
+    unwrapBlockNumber(current).sub(unwrapBlockNumber(finalized)).gt(MAX_FINALITY_LAG) ? current : finalized));
   }
   function signingInfo(_instanceId, api) {
     return (address, nonce, era) => combineLatest([
@@ -6687,7 +6709,9 @@
     nonce
   }) {
     if (!header) {
-      util.assert(partialOptions.era === 0 || !util.isUndefined(partialOptions.blockHash), 'Expected blockHash to be passed alongside non-immortal era options');
+      if (partialOptions.era && !partialOptions.blockHash) {
+        throw new Error('Expected blockHash to be passed alongside non-immortal era options');
+      }
       if (util.isNumber(partialOptions.era)) {
         delete partialOptions.era;
         delete partialOptions.blockHash;
@@ -6834,7 +6858,9 @@
       };
       #signViaSigner = async (address, options, header) => {
         const signer = options.signer || api.signer;
-        util.assert(signer, 'No signer specified, either via api.setSigner or via sign options. You possibly need to pass through an explicit keypair for the origin so it can be used for signing.');
+        if (!signer) {
+          throw new Error('No signer specified, either via api.setSigner or via sign options. You possibly need to pass through an explicit keypair for the origin so it can be used for signing.');
+        }
         const payload = this.registry.createTypeUnsafe('SignerPayload', [util.objectSpread({}, options, {
           address,
           blockNumber: header ? header.number : 0,
@@ -7266,7 +7292,9 @@
   };
   const versioned$1 = [{
     minmax: [0, 3],
-    types: util.objectSpread({}, sharedTypes$1, mapXcmTypes('V0'))
+    types: util.objectSpread({
+      DispatchError: 'DispatchErrorPre6First'
+    }, sharedTypes$1, mapXcmTypes('V0'))
   }, {
     minmax: [4, 5],
     types: util.objectSpread({}, sharedTypes$1, mapXcmTypes('V1'))
@@ -7362,7 +7390,7 @@
     westmint: versioned$1
   };
 
-  const upgrades$4 = [[0, 1020], [26669, 1021], [38245, 1022], [54248, 1023], [59659, 1024], [67651, 1025], [82191, 1027], [83238, 1028], [101503, 1029], [203466, 1030], [295787, 1031], [461692, 1032], [504329, 1033], [569327, 1038], [587687, 1039], [653183, 1040], [693488, 1042], [901442, 1045], [1375086, 1050], [1445458, 1051], [1472960, 1052], [1475648, 1053], [1491596, 1054], [1574408, 1055], [2064961, 1058], [2201991, 1062], [2671528, 2005], [2704202, 2007], [2728002, 2008], [2832534, 2011], [2962294, 2012], [3240000, 2013], [3274408, 2015], [3323565, 2019], [3534175, 2022], [3860281, 2023], [4143129, 2024], [4401242, 2025], [4841367, 2026], [5961600, 2027], [6137912, 2028], [6561855, 2029], [7100891, 2030], [7468792, 9010], [7668600, 9030], [7812476, 9040], [8010981, 9050], [8073833, 9070], [8555825, 9080], [8945245, 9090], [9611377, 9100], [9625129, 9111], [9866422, 9122], [10403784, 9130], [10960765, 9150], [11006614, 9151], [11404482, 9160], [11601803, 9170], [12008022, 9180], [12405451, 9190], [12665416, 9200], [12909508, 9220], [13109752, 9230]];
+  const upgrades$4 = [[0, 1020], [26669, 1021], [38245, 1022], [54248, 1023], [59659, 1024], [67651, 1025], [82191, 1027], [83238, 1028], [101503, 1029], [203466, 1030], [295787, 1031], [461692, 1032], [504329, 1033], [569327, 1038], [587687, 1039], [653183, 1040], [693488, 1042], [901442, 1045], [1375086, 1050], [1445458, 1051], [1472960, 1052], [1475648, 1053], [1491596, 1054], [1574408, 1055], [2064961, 1058], [2201991, 1062], [2671528, 2005], [2704202, 2007], [2728002, 2008], [2832534, 2011], [2962294, 2012], [3240000, 2013], [3274408, 2015], [3323565, 2019], [3534175, 2022], [3860281, 2023], [4143129, 2024], [4401242, 2025], [4841367, 2026], [5961600, 2027], [6137912, 2028], [6561855, 2029], [7100891, 2030], [7468792, 9010], [7668600, 9030], [7812476, 9040], [8010981, 9050], [8073833, 9070], [8555825, 9080], [8945245, 9090], [9611377, 9100], [9625129, 9111], [9866422, 9122], [10403784, 9130], [10960765, 9150], [11006614, 9151], [11404482, 9160], [11601803, 9170], [12008022, 9180], [12405451, 9190], [12665416, 9200], [12909508, 9220], [13109752, 9230], [13555777, 9250]];
 
   const upgrades$3 = [[0, 0], [29231, 1], [188836, 5], [199405, 6], [214264, 7], [244358, 8], [303079, 9], [314201, 10], [342400, 11], [443963, 12], [528470, 13], [687751, 14], [746085, 15], [787923, 16], [799302, 17], [1205128, 18], [1603423, 23], [1733218, 24], [2005673, 25], [2436698, 26], [3613564, 27], [3899547, 28], [4345767, 29], [4876134, 30], [5661442, 9050], [6321619, 9080], [6713249, 9090], [7217907, 9100], [7229126, 9110], [7560558, 9122], [8115869, 9140], [8638103, 9151], [9280179, 9170], [9738717, 9180], [10156856, 9190], [10458576, 9200], [10655116, 9220]];
 
@@ -7551,14 +7579,18 @@
   function extractStorageArgs(registry, creator, _args) {
     const args = _args.filter(a => !util.isUndefined(a));
     if (creator.meta.type.isPlain) {
-      util.assert(args.length === 0, () => `${sig(registry, creator, [])} does not take any arguments, ${args.length} found`);
+      if (args.length !== 0) {
+        throw new Error(`${sig(registry, creator, [])} does not take any arguments, ${args.length} found`);
+      }
     } else {
       const {
         hashers,
         key
       } = creator.meta.type.asMap;
       const keys = hashers.length === 1 ? [key] : registry.lookup.getSiType(key).def.asTuple.map(t => t);
-      util.assert(args.length === keys.length, () => `${sig(registry, creator, keys)} is a map, requiring ${keys.length} arguments, ${args.length} found`);
+      if (args.length !== keys.length) {
+        throw new Error(`${sig(registry, creator, keys)} is a map, requiring ${keys.length} arguments, ${args.length} found`);
+      }
     }
     return [creator, args];
   }
@@ -8065,7 +8097,9 @@
       method,
       section
     }, at, args) {
-      util.assert(iterKey && meta.type.isMap, 'keys can only be retrieved on maps');
+      if (!iterKey || !meta.type.isMap) {
+        throw new Error('keys can only be retrieved on maps');
+      }
       const headKey = iterKey(...args).toHex();
       const startSubject = new BehaviorSubject(headKey);
       const query = at ? startKey => this._rpcCore.state.getKeysPaged(headKey, PAGE_SIZE_K, startKey, at) : startKey => this._rpcCore.state.getKeysPaged(headKey, PAGE_SIZE_K, startKey);
@@ -8081,7 +8115,9 @@
       method,
       section
     }, at, opts) {
-      util.assert(iterKey && meta.type.isMap, 'keys can only be retrieved on maps');
+      if (!iterKey || !meta.type.isMap) {
+        throw new Error('keys can only be retrieved on maps');
+      }
       const setMeta = key => key.setMeta(meta, section, method);
       const query = at ? headKey => this._rpcCore.state.getKeysPaged(headKey, opts.pageSize, opts.startKey || headKey, at) : headKey => this._rpcCore.state.getKeysPaged(headKey, opts.pageSize, opts.startKey || headKey);
       return query(iterKey(...opts.args).toHex()).pipe(map(keys => keys.map(setMeta)));
@@ -8239,12 +8275,16 @@
       return null;
     }
     async _getBlockRegistryViaHash(blockHash) {
-      util.assert(this._genesisHash && this._runtimeVersion, 'Cannot retrieve data on an uninitialized chain');
+      if (!this._genesisHash || !this._runtimeVersion) {
+        throw new Error('Cannot retrieve data on an uninitialized chain');
+      }
       const header = this.registry.createType('HeaderPartial', this._genesisHash.eq(blockHash) ? {
         number: util.BN_ZERO,
         parentHash: this._genesisHash
       } : await firstValueFrom(this._rpcCore.chain.getHeader.raw(blockHash)));
-      util.assert(!header.parentHash.isEmpty, 'Unable to retrieve header and parent from supplied hash');
+      if (header.parentHash.isEmpty) {
+        throw new Error('Unable to retrieve header and parent from supplied hash');
+      }
       const [firstVersion, lastVersion] = getUpgradeVersion(this._genesisHash, header.number);
       const version = this.registry.createType('RuntimeVersionPartial', firstVersion && (lastVersion || firstVersion.specVersion.eq(this._runtimeVersion.specVersion)) ? {
         specName: this._runtimeVersion.specName,
@@ -8481,7 +8521,9 @@
     } = {}) {
       if (util.isString(address)) {
         const _signer = signer || this._rx.signer;
-        util.assert(_signer === null || _signer === void 0 ? void 0 : _signer.signRaw, 'No signer exists with a signRaw interface. You possibly need to pass through an explicit keypair for the origin so it can be used for signing.');
+        if (!_signer || !_signer.signRaw) {
+          throw new Error('No signer exists with a signRaw interface. You possibly need to pass through an explicit keypair for the origin so it can be used for signing.');
+        }
         return (await _signer.signRaw(util.objectSpread({
           type: 'bytes'
         }, data, {
@@ -8567,7 +8609,9 @@
   function extractArgs(args, needsCallback) {
     const actualArgs = args.slice();
     const callback = args.length && util.isFunction(args[args.length - 1]) ? actualArgs.pop() : undefined;
-    util.assert(!needsCallback || util.isFunction(callback), 'Expected a callback to be passed with subscriptions');
+    if (needsCallback && !util.isFunction(callback)) {
+      throw new Error('Expected a callback to be passed with subscriptions');
+    }
     return [actualArgs, callback];
   }
   function decorateCall(method, args) {

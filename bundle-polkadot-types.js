@@ -16,7 +16,7 @@
     Identity: null
   };
 
-  const runtime$m = {
+  const runtime$o = {
     Metadata: [{
       methods: {
         metadata: {
@@ -456,9 +456,9 @@
     StorageHasherV14: 'StorageHasherV13'
   };
 
-  const definitions$12 = {
+  const definitions$14 = {
     rpc: {},
-    runtime: runtime$m,
+    runtime: runtime$o,
     types: util.objectSpread({}, v9, v10, v11, v12, v13, v14, {
       ErrorMetadataLatest: 'ErrorMetadataV14',
       EventMetadataLatest: 'EventMetadataV14',
@@ -528,7 +528,7 @@
       type: 'Null'
     }
   };
-  const runtime$l = {
+  const runtime$n = {
     Core: [{
       methods: util.objectSpread({
         version: {
@@ -607,9 +607,9 @@
     Authority: 'AuthorityOrigin',
     GeneralCouncil: 'CollectiveOrigin'
   };
-  const definitions$11 = {
+  const definitions$13 = {
     rpc: {},
-    runtime: runtime$l,
+    runtime: runtime$n,
     types: util.objectSpread({}, numberTypes, {
       AccountId: 'AccountId32',
       AccountId20: 'GenericEthereumAccountId',
@@ -843,7 +843,7 @@
     }
   };
 
-  const definitions$10 = {
+  const definitions$12 = {
     rpc: {},
     types: util.objectSpread({}, v0$1, v1$1, {
       SiField: 'Si1Field',
@@ -864,7 +864,7 @@
     })
   };
 
-  const definitions$$ = {
+  const definitions$11 = {
     rpc: {},
     types: {
       AssetApprovalKey: {
@@ -911,7 +911,7 @@
     }
   };
 
-  const definitions$_ = {
+  const definitions$10 = {
     rpc: {},
     types: {
       UncleEntryItem: {
@@ -923,7 +923,7 @@
     }
   };
 
-  const runtime$k = {
+  const runtime$m = {
     AuraApi: [{
       methods: {
         authorities: {
@@ -941,9 +941,9 @@
     }]
   };
 
-  const definitions$Z = {
+  const definitions$$ = {
     rpc: {},
-    runtime: runtime$k,
+    runtime: runtime$m,
     types: {
       RawAuraPreDigest: {
         slotNumber: 'u64'
@@ -998,7 +998,7 @@
       type: 'Option<Null>'
     }
   };
-  const runtime$j = {
+  const runtime$l = {
     BabeApi: [{
       methods: util.objectSpread({
         configuration: {
@@ -1020,9 +1020,9 @@
     }]
   };
 
-  const definitions$Y = {
+  const definitions$_ = {
     rpc: rpc$g,
-    runtime: runtime$j,
+    runtime: runtime$l,
     types: {
       AllowedSlots: {
         _enum: ['PrimarySlots', 'PrimaryAndSecondaryPlainSlots', 'PrimaryAndSecondaryVRFSlots']
@@ -1140,7 +1140,7 @@
     }
   };
 
-  const definitions$X = {
+  const definitions$Z = {
     rpc: {},
     types: {
       AccountData: {
@@ -1202,7 +1202,7 @@
     }
   };
 
-  const runtime$i = {
+  const runtime$k = {
     BeefyApi: [{
       methods: {
         validator_set: {
@@ -1230,9 +1230,9 @@
     }]
   };
 
-  const definitions$W = {
+  const definitions$Y = {
     rpc: rpc$f,
-    runtime: runtime$i,
+    runtime: runtime$k,
     types: {
       BeefyAuthoritySet: {
         id: 'u64',
@@ -1265,7 +1265,7 @@
     }
   };
 
-  const runtime$h = {
+  const runtime$j = {
     Benchmark: [{
       methods: {
         benchmark_metadata: {
@@ -1289,9 +1289,9 @@
     }]
   };
 
-  const definitions$V = {
+  const definitions$X = {
     rpc: {},
-    runtime: runtime$h,
+    runtime: runtime$j,
     types: {
       BenchmarkConfig: {
         pallet: 'Bytes',
@@ -1315,7 +1315,24 @@
     }
   };
 
-  const BB_V5_TO_V6 = {
+  const BB_V2_TO_V4 = {
+    random_seed: {
+      description: 'Generate a random seed.',
+      params: [],
+      type: 'Hash'
+    }
+  };
+  const BB_V2_TO_V5 = {
+    apply_extrinsic: {
+      description: 'Apply the given extrinsic.',
+      params: [{
+        name: 'extrinsic',
+        type: 'Extrinsic'
+      }],
+      type: 'ApplyExtrinsicResultPre6'
+    }
+  };
+  const BB_V2_TO_V6 = {
     check_inherents: {
       description: 'Check that the inherents are valid.',
       params: [{
@@ -1327,11 +1344,6 @@
       }],
       type: 'CheckInherentsResult'
     },
-    finalize_block: {
-      description: 'Finish the current block.',
-      params: [],
-      type: 'Header'
-    },
     inherent_extrinsics: {
       description: 'Generate inherent extrinsics.',
       params: [{
@@ -1341,7 +1353,14 @@
       type: 'Vec<Extrinsic>'
     }
   };
-  const runtime$g = {
+  const BB_V3_TO_V6 = {
+    finalize_block: {
+      description: 'Finish the current block.',
+      params: [],
+      type: 'Header'
+    }
+  };
+  const runtime$i = {
     BlockBuilder: [{
       methods: util.objectSpread({
         apply_extrinsic: {
@@ -1352,26 +1371,35 @@
           }],
           type: 'ApplyExtrinsicResult'
         }
-      }, BB_V5_TO_V6),
+      }, BB_V2_TO_V6, BB_V3_TO_V6),
       version: 6
     }, {
       methods: util.objectSpread({
-        apply_extrinsic: {
-          description: 'Apply the given extrinsic.',
-          params: [{
-            name: 'extrinsic',
-            type: 'Extrinsic'
-          }],
-          type: 'ApplyExtrinsicResultPre6'
-        }
-      }, BB_V5_TO_V6),
+      }, BB_V2_TO_V5, BB_V2_TO_V6, BB_V3_TO_V6),
       version: 5
+    }, {
+      methods: util.objectSpread({
+      }, BB_V2_TO_V4, BB_V2_TO_V5, BB_V2_TO_V6, BB_V3_TO_V6),
+      version: 4
+    }, {
+      methods: util.objectSpread({
+      }, BB_V2_TO_V4, BB_V2_TO_V6, BB_V3_TO_V6),
+      version: 3
+    }, {
+      methods: util.objectSpread({
+        finalise_block: {
+          description: 'Finish the current block.',
+          params: [],
+          type: 'Header'
+        }
+      }, BB_V2_TO_V4, BB_V2_TO_V6),
+      version: 2
     }]
   };
 
-  const definitions$U = {
+  const definitions$W = {
     rpc: {},
-    runtime: runtime$g,
+    runtime: runtime$i,
     types: {
       CheckInherentsResult: {
         okay: 'bool',
@@ -1385,7 +1413,7 @@
     }
   };
 
-  const definitions$T = {
+  const definitions$V = {
     rpc: {},
     types: {
       CollectiveOrigin: {
@@ -1412,7 +1440,7 @@
     }
   };
 
-  const definitions$S = {
+  const definitions$U = {
     rpc: {},
     types: {
       AuthorityId: 'AccountId',
@@ -1492,7 +1520,7 @@
     }
   };
 
-  const runtime$f = {
+  const runtime$h = {
     ContractsApi: [{
       methods: {
         call: {
@@ -1574,9 +1602,9 @@
     }]
   };
 
-  const definitions$R = {
+  const definitions$T = {
     rpc: rpc$e,
-    runtime: runtime$f,
+    runtime: runtime$h,
     types: {
       AliveContractInfo: {
         trieId: 'TrieId',
@@ -1990,7 +2018,7 @@
   'Locked4x',
   'Locked5x',
   'Locked6x'];
-  const definitions$Q = {
+  const definitions$S = {
     rpc: {},
     types: {
       AccountVote: {
@@ -2099,7 +2127,7 @@
     }
   };
 
-  const definitions$P = {
+  const definitions$R = {
     rpc: rpc$d,
     types: {
       BlockStats: {
@@ -2111,7 +2139,7 @@
     }
   };
 
-  const runtime$e = {
+  const runtime$g = {
     AuthorityDiscoveryApi: [{
       methods: {
         authorities: {
@@ -2124,13 +2152,13 @@
     }]
   };
 
-  const definitions$O = {
+  const definitions$Q = {
     rpc: {},
-    runtime: runtime$e,
+    runtime: runtime$g,
     types: {}
   };
 
-  const definitions$N = {
+  const definitions$P = {
     rpc: {},
     types: {
       ApprovalFlag: 'u32',
@@ -2191,7 +2219,7 @@
     }
   };
 
-  const definitions$M = {
+  const definitions$O = {
     rpc: rpc$c,
     types: {
       CreatedBlock: {
@@ -2212,7 +2240,7 @@
     }
   };
 
-  const definitions$L = {
+  const definitions$N = {
     rpc: {},
     types: {
       EvmAccount: {
@@ -2283,7 +2311,7 @@
     }
   };
 
-  const definitions$K = {
+  const definitions$M = {
     rpc: {},
     types: {
       Extrinsic: 'GenericExtrinsic',
@@ -2314,7 +2342,7 @@
     }
   };
 
-  const definitions$J = {
+  const definitions$L = {
     rpc: {},
     types: {
       AssetOptions: {
@@ -2341,7 +2369,7 @@
     }
   };
 
-  const definitions$I = {
+  const definitions$K = {
     rpc: {},
     types: {
       ActiveGilt: {
@@ -2386,49 +2414,54 @@
     }
   };
 
-  const runtime$d = {
+  const GRANDPA_V2_V3 = {
+    generate_key_ownership_proof: {
+      description: 'Generates a proof of key ownership for the given authority in the given set.',
+      params: [{
+        name: 'setId',
+        type: 'SetId'
+      }, {
+        name: 'authorityId',
+        type: 'AuthorityId'
+      }],
+      type: 'Option<OpaqueKeyOwnershipProof>'
+    },
+    grandpa_authorities: {
+      description: 'Get the current GRANDPA authorities and weights. This should not change except for when changes are scheduled and the corresponding delay has passed.',
+      params: [],
+      type: 'AuthorityList'
+    },
+    submit_report_equivocation_unsigned_extrinsic: {
+      description: 'Submits an unsigned extrinsic to report an equivocation.',
+      params: [{
+        name: 'equivocationProof',
+        type: 'GrandpaEquivocationProof'
+      }, {
+        name: 'keyOwnerProof',
+        type: 'OpaqueKeyOwnershipProof'
+      }],
+      type: 'Option<Null>'
+    }
+  };
+  const runtime$f = {
     GrandpaApi: [{
-      methods: {
+      methods: util.objectSpread({
         current_set_id: {
           description: 'Get current GRANDPA authority set id.',
           params: [],
           type: 'SetId'
-        },
-        generate_key_ownership_proof: {
-          description: 'Generates a proof of key ownership for the given authority in the given set.',
-          params: [{
-            name: 'setId',
-            type: 'SetId'
-          }, {
-            name: 'authorityId',
-            type: 'AuthorityId'
-          }],
-          type: 'Option<OpaqueKeyOwnershipProof>'
-        },
-        grandpa_authorities: {
-          description: 'Get the current GRANDPA authorities and weights. This should not change except for when changes are scheduled and the corresponding delay has passed.',
-          params: [],
-          type: 'AuthorityList'
-        },
-        submit_report_equivocation_unsigned_extrinsic: {
-          description: 'Submits an unsigned extrinsic to report an equivocation.',
-          params: [{
-            name: 'equivocationProof',
-            type: 'GrandpaEquivocationProof'
-          }, {
-            name: 'keyOwnerProof',
-            type: 'OpaqueKeyOwnershipProof'
-          }],
-          type: 'Option<Null>'
         }
-      },
+      }, GRANDPA_V2_V3),
       version: 3
+    }, {
+      methods: GRANDPA_V2_V3,
+      version: 2
     }]
   };
 
-  const definitions$H = {
+  const definitions$J = {
     rpc: rpc$b,
-    runtime: runtime$d,
+    runtime: runtime$f,
     types: {
       AuthorityIndex: 'u64',
       AuthorityList: 'Vec<NextAuthority>',
@@ -2556,7 +2589,7 @@
     }
   };
 
-  const definitions$G = {
+  const definitions$I = {
     rpc: {},
     types: {
       IdentityFields: {
@@ -2627,7 +2660,7 @@
     }
   };
 
-  const definitions$F = {
+  const definitions$H = {
     rpc: {},
     types: {
       AuthIndex: 'u32',
@@ -2654,7 +2687,7 @@
     }
   };
 
-  const definitions$E = {
+  const definitions$G = {
     rpc: {},
     types: {
       CallIndex: '(u8, u8)',
@@ -2697,7 +2730,7 @@
     }
   };
 
-  const runtime$c = {
+  const runtime$e = {
     MmrApi: [{
       methods: {
         generate_batch_proof: {
@@ -2776,9 +2809,9 @@
     }]
   };
 
-  const definitions$D = {
+  const definitions$F = {
     rpc: rpc$a,
-    runtime: runtime$c,
+    runtime: runtime$e,
     types: {
       MmrBatchProof: {
         leafIndices: 'Vec<MmrLeafIndex>',
@@ -2809,7 +2842,33 @@
     }
   };
 
-  const definitions$C = {
+  const runtime$d = {
+    NominationPoolsApi: [{
+      methods: {
+        pending_rewards: {
+          description: 'Returns the pending rewards for the given member.',
+          params: [{
+            name: 'member',
+            type: 'AccountId'
+          }],
+          type: 'Result<Balance, NpApiError>'
+        }
+      },
+      version: 1
+    }]
+  };
+
+  const definitions$E = {
+    rpc: {},
+    runtime: runtime$d,
+    types: {
+      NpApiError: {
+        _enum: ['MemberNotFound', 'OverflowInPendingRewards']
+      }
+    }
+  };
+
+  const definitions$D = {
     rpc: {},
     types: {
       DeferredOffenceOf: '(Vec<OffenceDetails>, Vec<Perbill>, SessionIndex)',
@@ -2825,7 +2884,7 @@
     }
   };
 
-  const runtime$b = {
+  const runtime$c = {
     DifficultyApi: [{
       methods: {
         difficulty: {
@@ -2848,13 +2907,13 @@
     }]
   };
 
-  const definitions$B = {
+  const definitions$C = {
     rpc: {},
-    runtime: runtime$b,
+    runtime: runtime$c,
     types: {}
   };
 
-  const definitions$A = {
+  const definitions$B = {
     rpc: {},
     types: {
       ProxyDefinition: {
@@ -2873,7 +2932,7 @@
     }
   };
 
-  const definitions$z = {
+  const definitions$A = {
     rpc: {},
     types: {
       ActiveRecovery: {
@@ -2890,7 +2949,7 @@
     }
   };
 
-  const definitions$y = {
+  const definitions$z = {
     rpc: {},
     types: {
       Period: '(BlockNumber, u32)',
@@ -2914,7 +2973,7 @@
     }
   };
 
-  const runtime$a = {
+  const runtime$b = {
     SessionKeys: [{
       methods: {
         decode_session_keys: {
@@ -2957,9 +3016,9 @@
     SessionKeys10: '(AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId)',
     SessionKeys10B: '(AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, BeefyKey)'
   };
-  const definitions$x = {
+  const definitions$y = {
     rpc: {},
-    runtime: runtime$a,
+    runtime: runtime$b,
     types: util.objectSpread({}, keyTypes, {
       FullIdentification: 'Exposure',
       IdentificationTuple: '(ValidatorId, FullIdentification)',
@@ -2973,7 +3032,7 @@
     })
   };
 
-  const definitions$w = {
+  const definitions$x = {
     rpc: {},
     types: {
       Bid: {
@@ -3160,7 +3219,7 @@
     },
     VoteWeight: 'u64'
   };
-  const definitions$v = {
+  const definitions$w = {
     rpc: {},
     types: util.objectSpread({}, deprecated, phragmen, {
       ActiveEraInfo: {
@@ -3284,7 +3343,7 @@
     })
   };
 
-  const definitions$u = {
+  const definitions$v = {
     rpc: {},
     types: {
       WeightToFeeCoefficient: {
@@ -3308,7 +3367,7 @@
     }
   };
 
-  const definitions$t = {
+  const definitions$u = {
     rpc: rpc$9,
     types: {}
   };
@@ -3435,7 +3494,7 @@
     }
   };
 
-  const runtime$9 = {
+  const runtime$a = {
     AccountNonceApi: [{
       methods: {
         account_nonce: {
@@ -3451,9 +3510,9 @@
     }]
   };
 
-  const definitions$s = {
+  const definitions$t = {
     rpc: rpc$8,
-    runtime: runtime$9,
+    runtime: runtime$a,
     types: {
       AccountInfo: 'AccountInfoWithTripleRefCount',
       AccountInfoWithRefCountU8: {
@@ -3533,6 +3592,19 @@
           ConsumerRemaining: 'Null',
           NoProviders: 'Null',
           TooManyConsumers: 'Null',
+          Token: 'TokenError',
+          Arithmetic: 'ArithmeticError',
+          Transactional: 'TransactionalError'
+        }
+      },
+      DispatchErrorPre6First: {
+        _enum: {
+          Other: 'Null',
+          CannotLookup: 'Null',
+          BadOrigin: 'Null',
+          Module: 'DispatchErrorModulePre6',
+          ConsumerRemaining: 'Null',
+          NoProviders: 'Null',
           Token: 'TokenError',
           Arithmetic: 'ArithmeticError',
           Transactional: 'TransactionalError'
@@ -3731,7 +3803,7 @@
     }
   };
 
-  const definitions$r = {
+  const definitions$s = {
     rpc: {},
     types: {
       Bounty: {
@@ -3792,14 +3864,14 @@
     }
   };
 
-  const definitions$q = {
+  const definitions$r = {
     rpc: {},
     types: {
       Multiplier: 'Fixed128'
     }
   };
 
-  const runtime$8 = {
+  const runtime$9 = {
     TaggedTransactionQueue: [{
       methods: {
         validate_transaction: {
@@ -3848,9 +3920,9 @@
     }]
   };
 
-  const definitions$p = {
+  const definitions$q = {
     rpc: {},
-    runtime: runtime$8,
+    runtime: runtime$9,
     types: {
       TransactionSource: {
         _enum: ['InBlock', 'Local', 'External']
@@ -3866,7 +3938,7 @@
     }
   };
 
-  const definitions$o = {
+  const definitions$p = {
     rpc: {},
     types: {
       ClassId: 'u32',
@@ -3909,7 +3981,7 @@
     }
   };
 
-  const definitions$n = {
+  const definitions$o = {
     rpc: {},
     types: {
       Multisig: {
@@ -3925,7 +3997,7 @@
     }
   };
 
-  const definitions$m = {
+  const definitions$n = {
     rpc: {},
     types: {
       VestingInfo: {
@@ -3936,7 +4008,7 @@
     }
   };
 
-  const definitions$l = {
+  const definitions$m = {
     rpc: {},
     types: {
       BlockAttestations: {
@@ -3955,7 +4027,7 @@
     }
   };
 
-  const definitions$k = {
+  const definitions$l = {
     rpc: {},
     types: {
       BridgedBlockHash: 'H256',
@@ -4041,7 +4113,7 @@
     }
   };
 
-  const definitions$j = {
+  const definitions$k = {
     rpc: {},
     types: {
       StatementKind: {
@@ -4050,7 +4122,7 @@
     }
   };
 
-  const definitions$i = {
+  const definitions$j = {
     rpc: {},
     types: {
       FundIndex: 'u32',
@@ -4077,7 +4149,7 @@
     }
   };
 
-  const runtime$7 = {
+  const runtime$8 = {
     CollectCollationInfo: [{
       methods: {
         collect_collation_info: {
@@ -4130,9 +4202,9 @@
       overweightCount: 'OverweightIndex'
     }
   };
-  const definitions$h = {
+  const definitions$i = {
     rpc: {},
-    runtime: runtime$7,
+    runtime: runtime$8,
     types: dmpQueue
   };
 
@@ -4146,16 +4218,16 @@
     },
     version: 1
   };
-  const runtime$6 = {
+  const runtime$7 = {
     KusamaFinalityApi: [finalityV1],
     PolkadotFinalityApi: [finalityV1],
     RococoFinalityApi: [finalityV1],
     WestendFinalityApi: [finalityV1]
   };
 
-  const definitions$g = {
+  const definitions$h = {
     rpc: {},
-    runtime: runtime$6,
+    runtime: runtime$7,
     types: {}
   };
 
@@ -4292,7 +4364,7 @@
       type: 'Vec<ValidatorId>'
     }
   };
-  const runtime$5 = {
+  const runtime$6 = {
     ParachainHost: [{
       methods: util.objectSpread({
         pvfs_require_precheck: {
@@ -4457,9 +4529,9 @@
       }
     }
   };
-  const definitions$f = {
+  const definitions$g = {
     rpc: {},
-    runtime: runtime$5,
+    runtime: runtime$6,
     types: util.objectSpread({}, cumulusTypes, disputeTypes, hrmpTypes, proposeTypes, slotTypes, {
       AbridgedCandidateReceipt: {
         parachainIndex: 'ParaId',
@@ -4874,14 +4946,14 @@
     })
   };
 
-  const definitions$e = {
+  const definitions$f = {
     rpc: {},
     types: {
       Approvals: '[bool; 4]'
     }
   };
 
-  const definitions$d = {
+  const definitions$e = {
     rpc: {},
     types: {
       AccountStatus: {
@@ -4984,14 +5056,14 @@
     toHuman(isExtended) {
       const result = new Array(this.length);
       for (let i = 0; i < this.length; i++) {
-        result[i] = this[i].toHuman(isExtended);
+        result[i] = this[i] && this[i].toHuman(isExtended);
       }
       return result;
     }
     toJSON() {
       const result = new Array(this.length);
       for (let i = 0; i < this.length; i++) {
-        result[i] = this[i].toJSON();
+        result[i] = this[i] && this[i].toJSON();
       }
       return result;
     }
@@ -5216,7 +5288,7 @@
     return false;
   }
 
-  function formatFailure(registry, {
+  function formatFailure(registry, result, {
     message
   }, u8a, i, count, Type, key) {
     let type = '';
@@ -5238,7 +5310,7 @@
         i++;
       }
     } catch (error) {
-      throw new Error(formatFailure(registry, error, u8a.subarray(offset), i, count, Types[i], keys[i]));
+      throw new Error(formatFailure(registry, result, error, u8a.subarray(offset), i, count, Types[i], keys[i]));
     }
     return [result, offset];
   }
@@ -5254,7 +5326,7 @@
         i++;
       }
     } catch (error) {
-      throw new Error(formatFailure(registry, error, u8a.subarray(offset), i, count, Types[i], keys[i]));
+      throw new Error(formatFailure(registry, result, error, u8a.subarray(offset), i, count, Types[i], keys[i]));
     }
     return [result, offset];
   }
@@ -5270,7 +5342,7 @@
         i++;
       }
     } catch (error) {
-      throw new Error(formatFailure(registry, error, u8a.subarray(offset), i, count, Type));
+      throw new Error(formatFailure(registry, result, error, u8a.subarray(offset), i, count, Type));
     }
     return [offset, offset - startAt];
   }
@@ -8846,7 +8918,7 @@
       }
     }
   };
-  const definitions$c = {
+  const definitions$d = {
     rpc: {},
     types: util.objectSpread({}, location, xcm, v0, v1, v2, mapXcmTypes(XCM_LATEST), {
       DoubleEncodedCall: {
@@ -9122,7 +9194,7 @@
     ContractMessageSpecLatest: 'ContractMessageSpecV2',
     ContractMetadataLatest: 'ContractMetadataV3'
   };
-  const definitions$b = {
+  const definitions$c = {
     rpc: {},
     types: util.objectSpread({}, layout, spec, latest, {
       ContractProjectInfo,
@@ -9589,7 +9661,7 @@
     }
   });
 
-  const runtime$4 = {
+  const runtime$5 = {
     ConvertTransactionRuntimeApi: [{
       methods: {
         convert_transaction: {
@@ -9602,6 +9674,33 @@
         }
       },
       version: 2
+    }],
+    DebugRuntimeApi: [{
+      methods: {
+        trace_block: {
+          description: 'Trace all block extrinsics',
+          params: [{
+            name: 'extrinsics',
+            type: 'Vec<Extrinsic>'
+          }, {
+            name: 'knownTransactions',
+            type: 'Vec<H256>'
+          }],
+          type: 'Result<(), DispatchError>'
+        },
+        trace_transaction: {
+          description: 'Trace transaction extrinsics',
+          params: [{
+            name: 'extrinsics',
+            type: 'Vec<Extrinsic>'
+          }, {
+            name: 'transaction',
+            type: 'EthTransaction'
+          }],
+          type: 'Result<(), DispatchError>'
+        }
+      },
+      version: 4
     }],
     EthereumRuntimeRPCApi: [{
       methods: {
@@ -10030,7 +10129,31 @@
         None: 'Null'
       }
     },
-    EthTransaction: 'LegacyTransaction',
+    EthTransaction: {
+      hash: 'H256',
+      nonce: 'U256',
+      blockHash: 'Option<H256>',
+      blockNumber: 'Option<U256>',
+      transactionIndex: 'Option<U256>',
+      from: 'H160',
+      to: 'Option<H160>',
+      value: 'U256',
+      gasPrice: 'Option<U256>',
+      maxFeePerGas: 'Option<U256>',
+      maxPriorityFeePerGas: 'Option<U256>',
+      gas: 'U256',
+      input: 'Bytes',
+      creates: 'Option<H160>',
+      raw: 'Bytes',
+      publicKey: 'Option<H512>',
+      chainId: 'Option<U64>',
+      standardV: 'U256',
+      v: 'U256',
+      r: 'U256',
+      s: 'U256',
+      accessList: 'Option<Vec<EthAccessListItem>>',
+      transactionType: 'Option<U256>'
+    },
     EthTransactionSignature: {
       v: 'u64',
       r: 'H256',
@@ -10073,10 +10196,72 @@
       number: 'Option<u64>'
     }
   });
-  const definitions$a = {
+  const definitions$b = {
     rpc: rpc$7,
-    runtime: runtime$4,
+    runtime: runtime$5,
     types
+  };
+
+  const runtime$4 = {
+    AuthorFilterAPI: [{
+      methods: {
+        can_author: {
+          description: 'The runtime api used to predict whether an author will be eligible in the given slot',
+          params: [{
+            name: 'author',
+            type: 'AccountId'
+          }, {
+            name: 'relayParent',
+            type: 'u32'
+          }, {
+            name: 'parentHeader',
+            type: 'Header'
+          }],
+          type: 'bool'
+        }
+      },
+      version: 2
+    }, {
+      methods: {
+        can_author: {
+          description: 'The runtime api used to predict whether an author will be eligible in the given slot',
+          params: [{
+            name: 'author',
+            type: 'AccountId'
+          }, {
+            name: 'relayParent',
+            type: 'u32'
+          }],
+          type: 'bool'
+        }
+      },
+      version: 1
+    }],
+    NimbusApi: [{
+      methods: {
+        can_author: {
+          description: 'The runtime api used to predict whether a Nimbus author will be eligible in the given slot',
+          params: [{
+            name: 'author',
+            type: 'AccountId'
+          }, {
+            name: 'relayParent',
+            type: 'u32'
+          }, {
+            name: 'parentHeader',
+            type: 'Header'
+          }],
+          type: 'bool'
+        }
+      },
+      version: 1
+    }]
+  };
+
+  const definitions$a = {
+    rpc: {},
+    runtime: runtime$4,
+    types: {}
   };
 
   const runtime$3 = {
@@ -10986,60 +11171,62 @@
 
   const definitions = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    assets: definitions$$,
-    authorship: definitions$_,
-    aura: definitions$Z,
-    babe: definitions$Y,
-    balances: definitions$X,
-    beefy: definitions$W,
-    benchmark: definitions$V,
-    blockbuilder: definitions$U,
-    collective: definitions$T,
-    consensus: definitions$S,
-    contracts: definitions$R,
-    democracy: definitions$Q,
-    dev: definitions$P,
-    discovery: definitions$O,
-    elections: definitions$N,
-    engine: definitions$M,
-    evm: definitions$L,
-    extrinsics: definitions$K,
-    genericAsset: definitions$J,
-    gilt: definitions$I,
-    grandpa: definitions$H,
-    identity: definitions$G,
-    imOnline: definitions$F,
-    lottery: definitions$E,
-    mmr: definitions$D,
-    offences: definitions$C,
-    pow: definitions$B,
-    proxy: definitions$A,
-    recovery: definitions$z,
-    scheduler: definitions$y,
-    session: definitions$x,
-    society: definitions$w,
-    staking: definitions$v,
-    support: definitions$u,
-    syncstate: definitions$t,
-    system: definitions$s,
-    treasury: definitions$r,
-    txpayment: definitions$q,
-    txqueue: definitions$p,
-    uniques: definitions$o,
-    utility: definitions$n,
-    vesting: definitions$m,
-    attestations: definitions$l,
-    bridges: definitions$k,
-    claims: definitions$j,
-    crowdloan: definitions$i,
-    cumulus: definitions$h,
-    finality: definitions$g,
-    parachains: definitions$f,
-    poll: definitions$e,
-    purchase: definitions$d,
-    xcm: definitions$c,
-    contractsAbi: definitions$b,
-    eth: definitions$a,
+    assets: definitions$11,
+    authorship: definitions$10,
+    aura: definitions$$,
+    babe: definitions$_,
+    balances: definitions$Z,
+    beefy: definitions$Y,
+    benchmark: definitions$X,
+    blockbuilder: definitions$W,
+    collective: definitions$V,
+    consensus: definitions$U,
+    contracts: definitions$T,
+    democracy: definitions$S,
+    dev: definitions$R,
+    discovery: definitions$Q,
+    elections: definitions$P,
+    engine: definitions$O,
+    evm: definitions$N,
+    extrinsics: definitions$M,
+    genericAsset: definitions$L,
+    gilt: definitions$K,
+    grandpa: definitions$J,
+    identity: definitions$I,
+    imOnline: definitions$H,
+    lottery: definitions$G,
+    mmr: definitions$F,
+    nompools: definitions$E,
+    offences: definitions$D,
+    pow: definitions$C,
+    proxy: definitions$B,
+    recovery: definitions$A,
+    scheduler: definitions$z,
+    session: definitions$y,
+    society: definitions$x,
+    staking: definitions$w,
+    support: definitions$v,
+    syncstate: definitions$u,
+    system: definitions$t,
+    treasury: definitions$s,
+    txpayment: definitions$r,
+    txqueue: definitions$q,
+    uniques: definitions$p,
+    utility: definitions$o,
+    vesting: definitions$n,
+    attestations: definitions$m,
+    bridges: definitions$l,
+    claims: definitions$k,
+    crowdloan: definitions$j,
+    cumulus: definitions$i,
+    finality: definitions$h,
+    parachains: definitions$g,
+    poll: definitions$f,
+    purchase: definitions$e,
+    xcm: definitions$d,
+    contractsAbi: definitions$c,
+    eth: definitions$b,
+    nimbus: definitions$a,
     ormlOracle: definitions$9,
     ormlTokens: definitions$8,
     rpc: definitions$7,
@@ -11049,9 +11236,9 @@
     offchain: definitions$3,
     payment: definitions$2,
     state: definitions$1,
-    metadata: definitions$12,
-    runtime: definitions$11,
-    scaleInfo: definitions$10
+    metadata: definitions$14,
+    runtime: definitions$13,
+    scaleInfo: definitions$12
   });
 
   const jsonrpc = {};
@@ -15482,7 +15669,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.12.2'
+    version: '8.13.1'
   };
 
   exports.BTreeMap = BTreeMap;
