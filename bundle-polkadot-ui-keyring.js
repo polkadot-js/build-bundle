@@ -454,7 +454,7 @@
             var partialObserver;
             if (isFunction$2(observerOrNext) || !observerOrNext) {
                 partialObserver = {
-                    next: observerOrNext !== null && observerOrNext !== void 0 ? observerOrNext : undefined,
+                    next: (observerOrNext !== null && observerOrNext !== void 0 ? observerOrNext : undefined),
                     error: error !== null && error !== void 0 ? error : undefined,
                     complete: complete !== null && complete !== void 0 ? complete : undefined,
                 };
@@ -3461,7 +3461,7 @@
       name: '@polkadot/ui-keyring',
       path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
       type: 'esm',
-      version: '2.8.2'
+      version: '2.9.1'
     };
 
     const keyring = new Keyring();
