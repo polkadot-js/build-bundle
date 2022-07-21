@@ -3915,7 +3915,7 @@
 		  name: '@polkadot/hw-ledger-transports',
 		  path: typeof __dirname === 'string' ? __dirname : 'auto',
 		  type: 'cjs',
-		  version: '10.0.2'
+		  version: '10.1.1'
 		};
 		packageInfo$1.packageInfo = packageInfo;
 		return packageInfo$1;
@@ -4660,10 +4660,12 @@
 		  REEF: 0xa2,
 		  XXNETWORK: 0xa3,
 		  ALEPHZERO: 0xa4,
+		  INTERLAY: 0xa5,
 		  PARALLEL: 0xa6,
 		  COMPOSABLE: 0xa8,
 		  ASTAR: 0xa9,
-		  STAFI: 0xac
+		  STAFI: 0xac,
+		  UNIQUE: 0xad
 		};
 		var SLIP0044 = {
 		  POLKADOT: 0x80000162,
@@ -4688,7 +4690,9 @@
 		  ASTAR: 0x8000032a,
 		  COMPOSABLE: 0x80000162,
 		  STAFI: 0x8000038b,
-		  ALEPHZERO: 0x80000283
+		  ALEPHZERO: 0x80000283,
+		  INTERLAY: 0x80000162,
+		  UNIQUE: 0x80000162
 		};
 		var SS58_ADDR_TYPE = {
 		  POLKADOT: 0,
@@ -4713,7 +4717,9 @@
 		  ASTAR: 5,
 		  COMPOSABLE: 49,
 		  STAFI: 20,
-		  ALEPHZERO: 42
+		  ALEPHZERO: 42,
+		  INTERLAY: 2032,
+		  UNIQUE: 7391
 		};
 		config = {
 		  CLA: CLA,
@@ -5326,6 +5332,12 @@
 	function newAlephZeroApp(transport) {
 	  return new SubstrateApp(transport, _config.CLA.ALEPHZERO, _config.SLIP0044.ALEPHZERO);
 	}
+	function newInterlayApp(transport) {
+	  return new SubstrateApp(transport, _config.CLA.INTERLAY, _config.SLIP0044.INTERLAY);
+	}
+	function newUniqueApp(transport) {
+	  return new SubstrateApp(transport, _config.CLA.UNIQUE, _config.SLIP0044.UNIQUE);
+	}
 	function sha512(data) {
 	  var digest = hash.sha512().update(data).digest();
 	  return Buffer.from(digest);
@@ -5424,7 +5436,9 @@
 	  newAstarApp: newAstarApp,
 	  newComposableApp: newComposableApp,
 	  newStafiApp: newStafiApp,
-	  newAlephZeroApp: newAlephZeroApp
+	  newAlephZeroApp: newAlephZeroApp,
+	  newInterlayApp: newInterlayApp,
+	  newUniqueApp: newUniqueApp
 	};
 
 	const ledgerApps = {
@@ -5438,6 +5452,7 @@
 	  edgeware: dist.newEdgewareApp,
 	  equilibrium: dist.newEquilibriumApp,
 	  genshiro: dist.newGenshiroApp,
+	  'interlay-parachain': dist.newInterlayApp,
 	  karura: dist.newKaruraApp,
 	  kusama: dist.newKusamaApp,
 	  'nodle-para': dist.newNodleApp,
@@ -5449,6 +5464,7 @@
 	  stafi: dist.newStafiApp,
 	  statemine: dist.newStatemineApp,
 	  statemint: dist.newStatemintApp,
+	  unique: dist.newUniqueApp,
 	  xxnetwork: dist.newXXNetworkApp
 	};
 
@@ -5456,7 +5472,7 @@
 	  name: '@polkadot/hw-ledger',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '10.0.2'
+	  version: '10.1.1'
 	};
 
 	class Ledger {

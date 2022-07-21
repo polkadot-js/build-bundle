@@ -10,7 +10,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.0.2'
+    version: '10.1.1'
   };
 
   function evaluateThis(fn) {
@@ -38,7 +38,7 @@
     name: '@polkadot/x-bigint',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.0.2'
+    version: '10.1.1'
   });
 
   const BigInt$1 = typeof xglobal.BigInt === 'function' && typeof xglobal.BigInt.asIntN === 'function' ? xglobal.BigInt : () => Number.NaN;
@@ -161,11 +161,10 @@
           return this.add(other.negate());
       }
       multiplyUnsafe(scalar) {
-          let n = normalizeScalar(scalar);
-          JacobianPoint.BASE;
           const P0 = JacobianPoint.ZERO;
-          if (n === _0n$1)
+          if (typeof scalar === 'bigint' && scalar === _0n$1)
               return P0;
+          let n = normalizeScalar(scalar);
           if (n === _1n$1)
               return this;
           if (!USE_ENDOMORPHISM) {
@@ -357,8 +356,6 @@
           if (recovery !== 0 && recovery !== 1) {
               throw new Error('Cannot recover signature: invalid recovery bit');
           }
-          if (h === _0n$1)
-              throw new Error('Cannot recover signature: msgHash cannot be 0');
           const prefix = recovery & 1 ? '03' : '02';
           const R = Point.fromHex(prefix + numTo32bStr(r));
           const { n } = CURVE;
@@ -890,7 +887,7 @@
       },
       privateAdd: (privateKey, tweak) => {
           const p = normalizePrivateKey(privateKey);
-          const t = bytesToNumber(ensureBytes(tweak));
+          const t = normalizePrivateKey(tweak);
           return numTo32b(mod(p + t, CURVE.n));
       },
       privateNegate: (privateKey) => {
@@ -899,7 +896,7 @@
       },
       pointAddScalar: (p, tweak, isCompressed) => {
           const P = Point.fromHex(p);
-          const t = bytesToNumber(ensureBytes(tweak));
+          const t = normalizePrivateKey(tweak);
           const Q = Point.BASE.multiplyAndAddUnsafe(P, t, _1n$1);
           if (!Q)
               throw new Error('Tweaked point at infinity');
@@ -1005,7 +1002,7 @@
     name: '@polkadot/wasm-bridge',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '6.2.3'
+    version: '6.3.1'
   };
 
   util.detectPackage(packageInfo$5, null, others$2);
@@ -1051,7 +1048,7 @@
     name: '@polkadot/x-randomvalues',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.0.2'
+    version: '10.1.1'
   };
   packageInfo$4.packageInfo = packageInfo$3;
 
@@ -1263,7 +1260,7 @@
     name: '@polkadot/wasm-crypto-wasm',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '6.2.3'
+    version: '6.3.1'
   };
 
   util.detectPackage(packageInfo$2, null, others$1);
@@ -1272,7 +1269,7 @@
     name: '@polkadot/wasm-util',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '6.2.3'
+    version: '6.3.1'
   };
 
   const others = [packageInfo$1];
@@ -1280,16 +1277,17 @@
   util.detectPackage(packageInfo$1, null, others);
 
   const chr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-  const map = {};
+  const map = new Array(256);
   for (let i = 0; i < chr.length; i++) {
-    map[chr[i]] = i;
+    map[chr.charCodeAt(i)] = i;
   }
   function base64Decode$1(data, out) {
+    const len = out.length;
     let byte = 0;
     let bits = 0;
     let pos = -1;
-    for (let i = 0; i < data.length && data[i] !== '='; i++) {
-      byte = byte << 6 | map[data[i]];
+    for (let i = 0; pos < len; i++) {
+      byte = byte << 6 | map[data.charCodeAt(i)];
       if ((bits += 6) >= 8) {
         out[++pos] = byte >>> (bits -= 8) & 0xff;
       }
@@ -1533,7 +1531,7 @@
     name: '@polkadot/wasm-crypto-init',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '6.2.3'
+    version: '6.3.1'
   });
 
   const createWasm = createWasmFn('crypto', wasmBytes, null);
@@ -1547,7 +1545,7 @@
     name: '@polkadot/wasm-crypto',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '6.2.3'
+    version: '6.3.1'
   });
 
   function withWasm(fn) {
@@ -2295,7 +2293,7 @@
     name: '@polkadot/util-crypto',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.0.2'
+    version: '10.1.1'
   };
 
   /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
@@ -3960,6 +3958,19 @@
   		"website": "https://invarch.network"
   	},
   	{
+  		"prefix": 126,
+  		"network": "joystream",
+  		"displayName": "Joystream",
+  		"symbols": [
+  			"JOY"
+  		],
+  		"decimals": [
+  			10
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://www.joystream.org"
+  	},
+  	{
   		"prefix": 128,
   		"network": "clover",
   		"displayName": "Clover Finance",
@@ -4237,7 +4248,7 @@
   		"network": "tidefi",
   		"displayName": "Tidefi",
   		"symbols": [
-  			"TIFI"
+  			"TDFY"
   		],
   		"decimals": [
   			12
@@ -4371,6 +4382,7 @@
     '0x3d75507dd46301767e601265791da1d9cb47b6ebc94e87347b635e5bf58bd047',
     '0x0ed32bfcab4a83517fac88f2aa7cbc2f88d3ab93be9a12b6188a036bf8a943c2'
     ],
+    'interlay-parachain': ['0xbf88efe70e9e0e916416e8bed61f2b45717f517d7f3523e33c7b001e5ffcbc72'],
     karura: ['0xbaf5aabe40646d11f0ee8abbdc64f4a4b7674925cba08e4a05ff9ebed6e2126b'],
     kulupu: ['0xf7a99d3cb92853d00d5275c971c132c074636256583fee53b3bbe60d7b8769ba'],
     kusama: ['0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe',
@@ -4389,6 +4401,7 @@
     statemine: ['0x48239ef607d7928874027a43a67689209727dfb3d3dc5e5b03a39bdc2eda771a'],
     statemint: ['0x68d56f15f85d3136970ec16946040bc1752654e906147f7e43e9d539d7c3de2f'],
     subsocial: ['0x0bd72c1c305172e1275278aaeb3f161e02eccb7a819e63f62d47bd53a28189f8'],
+    unique: ['0x84322d9cddbf35088f1e54e9a85c967a41a56a4f43445768125e61af166c7d31'],
     westend: ['0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e'],
     xxnetwork: ['0x50dd5d206917bf10502c68fb4d18a59fc8aa31586f4e8856b493e43544aa82aa']
   };
@@ -4414,6 +4427,7 @@
     edgeware: 0x0000020b,
     equilibrium: 0x05f5e0fd,
     genshiro: 0x05f5e0fc,
+    'interlay-parachain': 0x00000162,
     karura: 0x000002ae,
     kusama: 0x000001b2,
     'nodle-para': 0x000003eb,
@@ -4425,6 +4439,7 @@
     stafi: 0x0000038b,
     statemine: 0x000001b2,
     statemint: 0x00000162,
+    unique: 0x00000162,
     xxnetwork: 0x000007a3
   };
 
@@ -4474,7 +4489,7 @@
     name: '@polkadot/networks',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.0.2'
+    version: '10.1.1'
   });
 
   const defaults = {

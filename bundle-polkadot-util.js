@@ -10,7 +10,7 @@
     name: '@polkadot/util',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.0.2'
+    version: '10.1.1'
   };
 
   function arrayChunk(array, chunkSize) {
@@ -74,6 +74,15 @@
     return result;
   }
 
+  function arrayUnzip(entries) {
+    const keys = new Array(entries.length);
+    const values = new Array(entries.length);
+    for (let i = 0; i < entries.length; i++) {
+      [keys[i], values[i]] = entries[i];
+    }
+    return [keys, values];
+  }
+
   function arrayZip(keys, values) {
     const result = new Array(keys.length);
     for (let i = 0; i < keys.length; i++) {
@@ -103,7 +112,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.0.2'
+    version: '10.1.1'
   };
 
   function evaluateThis(fn) {
@@ -131,7 +140,7 @@
     name: '@polkadot/x-bigint',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.0.2'
+    version: '10.1.1'
   });
 
   const BigInt = typeof xglobal.BigInt === 'function' && typeof xglobal.BigInt.asIntN === 'function' ? xglobal.BigInt : () => Number.NaN;
@@ -174,36 +183,32 @@
     return isNegative ? result * -_1n - _1n : result;
   }
 
-  const REGEX_HEX_PREFIXED = /^0x[\da-fA-F]+$/;
-  const REGEX_HEX_NOPREFIX = /^[\da-fA-F]+$/;
-  function isHex(value, bitLength = -1, ignoreLength) {
-    return typeof value === 'string' && (value === '0x' || REGEX_HEX_PREFIXED.test(value)) && (bitLength === -1 ? ignoreLength || value.length % 2 === 0 : value.length === 2 + Math.ceil(bitLength / 4));
-  }
-
-  const CHARS = '0123456789abcdef';
-  const UNHEX = new Array(256);
-  for (let i = 0; i < CHARS.length; i++) {
-    UNHEX[CHARS[i].charCodeAt(0)] = i;
+  const CHR = '0123456789abcdef';
+  const U8$1 = new Array(256);
+  const U16$1 = new Array(256 * 256);
+  for (let i = 0; i < CHR.length; i++) {
+    U8$1[CHR[i].charCodeAt(0) | 0] = i | 0;
     if (i > 9) {
-      UNHEX[CHARS[i].toUpperCase().charCodeAt(0)] = i;
+      U8$1[CHR[i].toUpperCase().charCodeAt(0) | 0] = i | 0;
+    }
+  }
+  for (let i = 0; i < 256; i++) {
+    const s = i << 8;
+    for (let j = 0; j < 256; j++) {
+      U16$1[s | j] = U8$1[i] << 4 | U8$1[j];
     }
   }
   function hexToU8a(value, bitLength = -1) {
-    if (!value || value === '0x') {
+    if (!value) {
       return new Uint8Array();
     }
-    let s = 0;
-    if (REGEX_HEX_PREFIXED.test(value)) {
-      s = 2;
-    } else if (!REGEX_HEX_NOPREFIX.test(value)) {
-      throw new Error(`Expected hex value to convert, found '${value}'`);
-    }
-    const strLength = (value.length - s) / 2;
-    const endLength = Math.ceil(bitLength === -1 ? strLength : bitLength / 8);
+    let s = value.startsWith('0x') ? 2 : 0;
+    const decLength = Math.ceil((value.length - s) / 2);
+    const endLength = Math.ceil(bitLength === -1 ? decLength : bitLength / 8);
     const result = new Uint8Array(endLength);
-    const offset = endLength > strLength ? endLength - strLength : 0;
+    const offset = endLength > decLength ? endLength - decLength : 0;
     for (let i = offset; i < endLength; i++, s += 2) {
-      result[i] = (UNHEX[value.charCodeAt(s)] << 4) + UNHEX[value.charCodeAt(s + 1)];
+      result[i] = U16$1[value.charCodeAt(s) << 8 | value.charCodeAt(s + 1)];
     }
     return result;
   }
@@ -2934,6 +2939,12 @@
     return BN.isBN(value);
   }
 
+  const REGEX_HEX_PREFIXED = /^0x[\da-fA-F]+$/;
+  const REGEX_HEX_NOPREFIX = /^[\da-fA-F]+$/;
+  function isHex(value, bitLength = -1, ignoreLength) {
+    return typeof value === 'string' && (value === '0x' || REGEX_HEX_PREFIXED.test(value)) && (bitLength === -1 ? ignoreLength || value.length % 2 === 0 : value.length === 2 + Math.ceil(bitLength / 4));
+  }
+
   function isObject(value) {
     return !!value && typeof value === 'object';
   }
@@ -3037,7 +3048,7 @@
     name: '@polkadot/x-textencoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.0.2'
+    version: '10.1.1'
   };
   packageInfo$3.packageInfo = packageInfo$2;
 
@@ -3114,9 +3125,9 @@
   }
 
   function u8aEmpty(value) {
-    const len = value.length;
+    const len = value.length | 0;
     for (let i = 0; i < len; i++) {
-      if (value[i]) {
+      if (value[i] | 0) {
         return false;
       }
     }
@@ -3129,8 +3140,8 @@
     if (u8aa.length === u8ab.length) {
       const dvA = new DataView(u8aa.buffer, u8aa.byteOffset);
       const dvB = new DataView(u8ab.buffer, u8ab.byteOffset);
-      const mod = u8aa.length % 4;
-      const length = u8aa.length - mod;
+      const mod = u8aa.length % 4 | 0;
+      const length = u8aa.length - mod | 0;
       for (let i = 0; i < length; i += 4) {
         if (dvA.getUint32(i) !== dvB.getUint32(i)) {
           return false;
@@ -3255,22 +3266,28 @@
       U16[s | j] = U8[i] + U8[j];
     }
   }
-  function hex(value) {
-    const mod = value.length % 2;
-    const length = value.length - mod;
-    const dv = new DataView(value.buffer, value.byteOffset);
-    let result = '';
+  function hex(value, result) {
+    const mod = value.length % 2 | 0;
+    const length = value.length - mod | 0;
     for (let i = 0; i < length; i += 2) {
-      result += U16[dv.getUint16(i)];
+      result += U16[value[i] << 8 | value[i + 1]];
     }
     if (mod) {
-      result += U8[dv.getUint8(length)];
+      result += U8[value[length] | 0];
     }
     return result;
   }
   function u8aToHex(value, bitLength = -1, isPrefixed = true) {
-    const length = Math.ceil(bitLength / 8);
-    return `${isPrefixed ? '0x' : ''}${!value || !value.length ? '' : bitLength > 0 && value.length > length ? `${hex(value.subarray(0, length / 2))}…${hex(value.subarray(value.length - length / 2))}` : hex(value)}`;
+    const empty = isPrefixed ? '0x' : '';
+    if (!value || !value.length) {
+      return empty;
+    } else if (bitLength > 0) {
+      const length = Math.ceil(bitLength / 8);
+      if (value.length > length) {
+        return `${hex(value.subarray(0, length / 2), empty)}…${hex(value.subarray(value.length - length / 2), '')}`;
+      }
+    }
+    return hex(value, empty);
   }
 
   function u8aToNumber(value, {
@@ -3356,7 +3373,7 @@
     name: '@polkadot/x-textdecoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.0.2'
+    version: '10.1.1'
   };
   packageInfo$1.packageInfo = packageInfo;
 
@@ -3945,20 +3962,20 @@
   }
 
   function isAsciiStr(str) {
-    const count = str.length;
+    const count = str.length | 0;
     for (let i = 0; i < count; i++) {
       const b = str.charCodeAt(i);
-      if (!(b < 127 && (b >= 32 || b === 10 || b === 9 || b === 13))) {
+      if (b < 32 || b > 126) {
         return false;
       }
     }
     return true;
   }
   function isAsciiBytes(u8a) {
-    const count = u8a.length;
+    const count = u8a.length | 0;
     for (let i = 0; i < count; i++) {
-      const b = u8a[i];
-      if (!(b < 127 && (b >= 32 || b === 10 || b === 9 || b === 13))) {
+      const b = u8a[i] | 0;
+      if (b < 32 || b > 126) {
         return false;
       }
     }
@@ -4199,15 +4216,15 @@
     return isU8a(value) && u8aEq(value.subarray(0, 4), WASM_MAGIC);
   }
 
-  function lazyMethod(result, item, creator, getName) {
-    const name = getName ? getName(item) : item.toString();
+  function lazyMethod(result, item, creator, getName, index = 0) {
+    const name = getName ? getName(item, index) : item.toString();
     let value;
     Object.defineProperty(result, name, {
       configurable: true,
       enumerable: true,
       get: function () {
         if (value === undefined) {
-          value = creator(item);
+          value = creator(item, index, this);
           try {
             Object.defineProperty(this, name, {
               value
@@ -4221,7 +4238,7 @@
   }
   function lazyMethods(result, items, creator, getName) {
     for (let i = 0; i < items.length; i++) {
-      lazyMethod(result, items[i], creator, getName);
+      lazyMethod(result, items[i], creator, getName, i);
     }
     return result;
   }
@@ -4368,7 +4385,13 @@
     for (let i = 0; i < sources.length; i++) {
       const src = sources[i];
       if (src) {
-        Object.assign(dest, src);
+        if (typeof src.entries === 'function') {
+          for (const [key, value] of src.entries()) {
+            dest[key] = value;
+          }
+        } else {
+          Object.assign(dest, src);
+        }
       }
     }
     return dest;
@@ -4386,17 +4409,20 @@
     return Object.keys(value);
   }
 
-  function objectProperty(that, key, getter) {
-    if (!(key in that)) {
-      Object.defineProperty(that, key, {
+  function objectProperty(that, key, getter, getName, index = 0) {
+    const name = getName ? getName(key, index) : key;
+    if (!(name in that)) {
+      Object.defineProperty(that, name, {
         enumerable: true,
-        get: () => getter(key)
+        get: function () {
+          return getter(key, index, this);
+        }
       });
     }
   }
-  function objectProperties(that, keys, getter) {
+  function objectProperties(that, keys, getter, getName) {
     for (let i = 0; i < keys.length; i++) {
-      objectProperty(that, keys[i], k => getter(k, i));
+      objectProperty(that, keys[i], getter, getName, i);
     }
   }
 
@@ -4569,6 +4595,7 @@
   exports.arrayFlatten = arrayFlatten;
   exports.arrayRange = arrayRange;
   exports.arrayShuffle = arrayShuffle;
+  exports.arrayUnzip = arrayUnzip;
   exports.arrayZip = arrayZip;
   exports.assert = assert;
   exports.assertReturn = assertReturn;
