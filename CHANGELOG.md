@@ -2,6 +2,7 @@
 
 ## master
 
+- wasm-crypto 6.3.1
 - api, api-contract, types 8.13.1
 - api, api-contract, types 8.12.2
 - react-{identicon, qr}, ui-{keyring, settings}, vue-identicon 2.8.2
