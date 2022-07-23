@@ -5067,6 +5067,13 @@
       }
       return result;
     }
+    toPrimitive() {
+      const result = new Array(this.length);
+      for (let i = 0; i < this.length; i++) {
+        result[i] = this[i] && this[i].toPrimitive();
+      }
+      return result;
+    }
     toString() {
       const result = new Array(this.length);
       for (let i = 0; i < this.length; i++) {
@@ -5120,6 +5127,9 @@
     }
     toJSON() {
       return this.#raw.toJSON();
+    }
+    toPrimitive() {
+      return this.#raw.toPrimitive();
     }
     toString() {
       return this.#raw.toString();
@@ -5238,6 +5248,9 @@
     }
     toJSON(onlyHex = false) {
       return onlyHex || super.bitLength() > MAX_NUMBER_BITS ? this.toHex() : this.toNumber();
+    }
+    toPrimitive() {
+      return super.bitLength() > MAX_NUMBER_BITS ? this.toString() : this.toNumber();
     }
     toRawType() {
       return this instanceof this.registry.createClassUnsafe('Balance') ? 'Balance' : `${this.isUnsigned ? 'u' : 'i'}${this.bitLength()}`;
@@ -5671,6 +5684,9 @@
     toNumber() {
       return this.#raw.toNumber();
     }
+    toPrimitive() {
+      return this.#raw.toPrimitive();
+    }
     toRawType() {
       return `Compact<${this.registry.getClassName(this.#Type) || this.#raw.toRawType()}>`;
     }
@@ -5723,6 +5739,9 @@
     toJSON() {
       throw this.#neverError;
     }
+    toPrimitive() {
+      throw this.#neverError;
+    }
     toRawType() {
       throw this.#neverError;
     }
@@ -5757,6 +5776,9 @@
       return this.toJSON();
     }
     toJSON() {
+      return null;
+    }
+    toPrimitive() {
       return null;
     }
     toRawType() {
@@ -6026,6 +6048,11 @@
     toNumber() {
       return this.index;
     }
+    toPrimitive() {
+      return this.#isBasic ? this.type : {
+        [util.stringCamelCase(this.type)]: this.#raw.toPrimitive()
+      };
+    }
     _toRawStruct() {
       if (this.#isBasic) {
         return this.#isIndexed ? this.defKeys.reduce((out, key, index) => {
@@ -6174,6 +6201,9 @@
     }
     toJSON() {
       return this.isNone ? null : this.#raw.toJSON();
+    }
+    toPrimitive() {
+      return this.isNone ? null : this.#raw.toPrimitive();
     }
     toRawType(isBare) {
       const wrapped = this.registry.getClassName(this.#Type) || new this.#Type(this.registry).toRawType();
@@ -6498,6 +6528,12 @@
       return util.u8aToHex(this);
     }
     toHuman() {
+      return this.toPrimitive();
+    }
+    toJSON() {
+      return this.toHex();
+    }
+    toPrimitive() {
       if (this.isAscii) {
         const text = this.toUtf8();
         if (util.isAscii(text)) {
@@ -6505,9 +6541,6 @@
         }
       }
       return this.toJSON();
-    }
-    toJSON() {
-      return this.toHex();
     }
     toRawType() {
       return 'Raw';
@@ -6723,6 +6756,14 @@
       }
       return json;
     }
+    toPrimitive() {
+      const json = {};
+      for (const [k, v] of this.entries()) {
+        const jsonKey = this.#jsonMap.get(k) || k;
+        json[jsonKey] = v && v.toPrimitive();
+      }
+      return json;
+    }
     toRawType() {
       return util.stringify(typesToMap(this.registry, this.#Types));
     }
@@ -6827,7 +6868,7 @@
     toHuman(isExtended) {
       const json = {};
       for (const [k, v] of this.entries()) {
-        json[k.toString()] = v.toHuman(isExtended);
+        json[k instanceof Raw && k.isAscii ? k.toUtf8() : k.toString()] = v.toHuman(isExtended);
       }
       return json;
     }
@@ -6835,6 +6876,13 @@
       const json = {};
       for (const [k, v] of this.entries()) {
         json[k.toString()] = v.toJSON();
+      }
+      return json;
+    }
+    toPrimitive() {
+      const json = {};
+      for (const [k, v] of this.entries()) {
+        json[k instanceof Raw && k.isAscii ? k.toUtf8() : k.toString()] = v.toPrimitive();
       }
       return json;
     }
@@ -6965,6 +7013,13 @@
     toRawType() {
       return `BTreeSet<${this.registry.getClassName(this.#ValClass) || new this.#ValClass(this.registry).toRawType()}>`;
     }
+    toPrimitive() {
+      const json = [];
+      for (const v of this.values()) {
+        json.push(v.toPrimitive());
+      }
+      return json;
+    }
     toString() {
       return util.stringify(this.toJSON());
     }
@@ -7091,6 +7146,9 @@
     }
     toJSON() {
       return this.valueOf();
+    }
+    toPrimitive() {
+      return this.toJSON();
     }
     toRawType() {
       return 'bool';
@@ -7240,6 +7298,9 @@
     toJSON() {
       return this.toString();
     }
+    toPrimitive() {
+      return this.toJSON();
+    }
     toRawType() {
       return 'Text';
     }
@@ -7340,6 +7401,9 @@
     toHuman(isExtended) {
       return this.#decoded ? this.#decoded.toHuman(isExtended) : super.toHuman();
     }
+    toPrimitive() {
+      return this.#decoded ? this.#decoded.toPrimitive() : super.toPrimitive();
+    }
     toRawType() {
       return `${this.#opaqueName}<${this.registry.getClassName(this.#Type) || (this.#decoded ? this.#decoded.toRawType() : new this.#Type(this.registry).toRawType())}>`;
     }
@@ -7420,6 +7484,9 @@
     toNumber() {
       return this.valueOf();
     }
+    toPrimitive() {
+      return this.toNumber();
+    }
     toRawType() {
       return `f${this.#bitLength}`;
     }
@@ -7470,6 +7537,12 @@
     toJSON() {
       return [...this.entries()].reduce((json, [key, value]) => {
         json[key] = value;
+        return json;
+      }, {});
+    }
+    toPrimitive() {
+      return [...this.entries()].reduce((json, [key, value]) => {
+        json[key] = util.isFunction(value.toHuman) ? value.toPrimitive() : value;
         return json;
       }, {});
     }
@@ -7605,6 +7678,9 @@
     }
     toNumber() {
       return this.valueEncoded.toNumber();
+    }
+    toPrimitive() {
+      return this.toJSON();
     }
     toRawType() {
       return util.stringify({
@@ -10741,6 +10817,33 @@
         }
       },
       version: 1
+    }],
+    TransactionPaymentCallApi: [{
+      methods: {
+        query_call_fee_details: {
+          description: 'The call fee details',
+          params: [{
+            name: 'call',
+            type: 'Call'
+          }, {
+            name: 'len',
+            type: 'u32'
+          }],
+          type: 'FeeDetails'
+        },
+        query_call_info: {
+          description: 'The call info',
+          params: [{
+            name: 'call',
+            type: 'Call'
+          }, {
+            name: 'len',
+            type: 'u32'
+          }],
+          type: 'RuntimeDispatchInfo'
+        }
+      },
+      version: 1
     }]
   };
 
@@ -12208,6 +12311,9 @@
     toJSON() {
       return this.toString();
     }
+    toPrimitive() {
+      return this.toJSON();
+    }
     toString() {
       return utilCrypto.ethereumEncode(this);
     }
@@ -12280,6 +12386,9 @@
     }
     toJSON() {
       return this.toString();
+    }
+    toPrimitive() {
+      return this.toJSON();
     }
     toString() {
       const length = GenericAccountIndex.calcLength(this);
@@ -12360,6 +12469,9 @@
     toJSON() {
       return this.toString();
     }
+    toPrimitive() {
+      return this.toJSON();
+    }
     toString() {
       return utilCrypto.encodeAddress(this, this.registry.chainSS58);
     }
@@ -12434,6 +12546,9 @@
   class GenericCallIndex extends U8aFixed {
     constructor(registry, value) {
       super(registry, value, 16);
+    }
+    toPrimitive() {
+      return this.toHex();
     }
   }
   class GenericCall extends Struct {
@@ -12748,6 +12863,12 @@
         vote: this.isAye ? 'Aye' : 'Nay'
       };
     }
+    toPrimitive() {
+      return {
+        aye: this.isAye,
+        conviction: this.conviction.toPrimitive()
+      };
+    }
     toRawType() {
       return 'Vote';
     }
@@ -12998,9 +13119,9 @@
           type
         }) => registry.createTypeUnsafe('PortableType', [{
           id,
-          type: { ...type,
+          type: util.objectSpread({}, type, {
             docs: trimDocs(type.docs)
-          }
+          })
         }]))
       },
       pallets: pallets.map(({
@@ -13246,27 +13367,27 @@
   }
   function createStorageType(registry, entryType) {
     if (entryType.isMap) {
-      return [{ ...entryType.asMap,
+      return [util.objectSpread({}, entryType.asMap, {
         hasher: createStorageHasher(registry, entryType.asMap.hasher)
-      }, 1];
+      }), 1];
     }
     if (entryType.isDoubleMap) {
-      return [{ ...entryType.asDoubleMap,
+      return [util.objectSpread({}, entryType.asDoubleMap, {
         hasher: createStorageHasher(registry, entryType.asDoubleMap.hasher),
         key2Hasher: createStorageHasher(registry, entryType.asDoubleMap.key2Hasher)
-      }, 2];
+      }), 2];
     }
     return [entryType.asPlain, 0];
   }
   function convertModule(registry, mod) {
     const storage = mod.storage.unwrapOr(null);
-    return registry.createTypeUnsafe('ModuleMetadataV10', [{ ...mod,
-      storage: storage ? { ...storage,
-        items: storage.items.map(item => ({ ...item,
+    return registry.createTypeUnsafe('ModuleMetadataV10', [util.objectSpread({}, mod, {
+      storage: storage ? util.objectSpread({}, storage, {
+        items: storage.items.map(item => util.objectSpread({}, item, {
           type: registry.createTypeUnsafe('StorageEntryTypeV10', createStorageType(registry, item.type))
         }))
-      } : null
-    }]);
+      }) : null
+    })]);
   }
   function toV10(registry, {
     modules
@@ -13294,9 +13415,9 @@
   }) {
     return registry.createTypeUnsafe('MetadataV12', [{
       extrinsic,
-      modules: modules.map(mod => registry.createTypeUnsafe('ModuleMetadataV12', [{ ...mod,
+      modules: modules.map(mod => registry.createTypeUnsafe('ModuleMetadataV12', [util.objectSpread({}, mod, {
         index: 255
-      }]))
+      })]))
     }]);
   }
 
@@ -13650,7 +13771,7 @@
     return registry.createTypeUnsafe('PalletMetadataV14', [{
       calls: calls && convertCalls(specs, registry, mod.name, calls, sectionTypes),
       constants: convertConstants(specs, registry, constants, sectionTypes),
-      errors: errors && convertErrors(specs, registry, mod.name, errors, sectionTypes),
+      errors: errors && convertErrors(specs, registry, mod.name, errors),
       events: events && convertEvents(specs, registry, mod.name, events, sectionTypes),
       index: mod.index,
       name: mod.name,
@@ -13695,7 +13816,8 @@
     }
   }
 
-  const LATEST_VERSION = 14;
+  const KNOWN_VERSIONS = [14, 13, 12, 11, 10, 9];
+  const LATEST_VERSION = KNOWN_VERSIONS[0];
   class MetadataVersioned extends Struct {
     #converted = new Map();
     constructor(registry, value) {
@@ -15368,9 +15490,10 @@
   function injectExtrinsics(registry, {
     lookup,
     pallets
-  }, version, result) {
+  }, version, result, mapping) {
     const filtered = pallets.filter(filterCallsSome);
     clearRecord(result);
+    clearRecord(mapping);
     for (let i = 0; i < filtered.length; i++) {
       const {
         calls,
@@ -15378,7 +15501,22 @@
         name
       } = filtered[i];
       const sectionIndex = version >= 12 ? index.toNumber() : i;
-      util.lazyMethod(result, sectionIndex, () => lazyVariants(lookup, calls.unwrap(), getVariantStringIdx, variant => createCallFunction(registry, lookup, variant, util.stringCamelCase(name), sectionIndex)));
+      const sectionName = util.stringCamelCase(name);
+      const allCalls = calls.unwrap();
+      util.lazyMethod(result, sectionIndex, () => lazyVariants(lookup, allCalls, getVariantStringIdx, variant => createCallFunction(registry, lookup, variant, sectionName, sectionIndex)));
+      const {
+        path
+      } = registry.lookup.getSiType(allCalls.type);
+      const palletIdx = path.findIndex(v => v.eq('pallet'));
+      if (palletIdx !== -1) {
+        const name = util.stringCamelCase(path.slice(0, palletIdx).map((p, i) => i === 0
+        ? p.replace(/^(frame|pallet)_/, '') : p).join(' '));
+        if (!mapping[name]) {
+          mapping[name] = [sectionName];
+        } else {
+          mapping[name].push(sectionName);
+        }
+      }
     }
   }
   function extractProperties(registry, metadata) {
@@ -15408,6 +15546,7 @@
     #metadataCalls = {};
     #metadataErrors = {};
     #metadataEvents = {};
+    #moduleMap = {};
     #unknownTypes = new Map();
     #chainProperties;
     #hasher = utilCrypto.blake2AsU8a;
@@ -15557,7 +15696,7 @@
     }
     getModuleInstances(specName, moduleName) {
       var _this$knownTypes, _this$knownTypes$type, _this$knownTypes$type2, _this$knownTypes$type3, _this$knownTypes$type4;
-      return (_this$knownTypes = this.#knownTypes) === null || _this$knownTypes === void 0 ? void 0 : (_this$knownTypes$type = _this$knownTypes.typesBundle) === null || _this$knownTypes$type === void 0 ? void 0 : (_this$knownTypes$type2 = _this$knownTypes$type.spec) === null || _this$knownTypes$type2 === void 0 ? void 0 : (_this$knownTypes$type3 = _this$knownTypes$type2[specName]) === null || _this$knownTypes$type3 === void 0 ? void 0 : (_this$knownTypes$type4 = _this$knownTypes$type3.instances) === null || _this$knownTypes$type4 === void 0 ? void 0 : _this$knownTypes$type4[moduleName];
+      return ((_this$knownTypes = this.#knownTypes) === null || _this$knownTypes === void 0 ? void 0 : (_this$knownTypes$type = _this$knownTypes.typesBundle) === null || _this$knownTypes$type === void 0 ? void 0 : (_this$knownTypes$type2 = _this$knownTypes$type.spec) === null || _this$knownTypes$type2 === void 0 ? void 0 : (_this$knownTypes$type3 = _this$knownTypes$type2[specName.toString()]) === null || _this$knownTypes$type3 === void 0 ? void 0 : (_this$knownTypes$type4 = _this$knownTypes$type3.instances) === null || _this$knownTypes$type4 === void 0 ? void 0 : _this$knownTypes$type4[moduleName]) || this.#moduleMap[moduleName];
     }
     getOrThrow(name, msg) {
       const Clazz = this.get(name);
@@ -15639,7 +15778,7 @@
       this.#metadataVersion = metadata.version;
       this.#firstCallIndex = null;
       this.setLookup(this.#metadata.lookup);
-      injectExtrinsics(this, this.#metadata, this.#metadataVersion, this.#metadataCalls);
+      injectExtrinsics(this, this.#metadata, this.#metadataVersion, this.#metadataCalls, this.#moduleMap);
       injectErrors(this, this.#metadata, this.#metadataVersion, this.#metadataErrors);
       injectEvents(this, this.#metadata, this.#metadataVersion, this.#metadataEvents);
       const [defSection] = Object.keys(this.#metadataCalls).sort(sortDecimalStrings);
@@ -15669,7 +15808,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.13.1'
+    version: '8.14.1'
   };
 
   exports.BTreeMap = BTreeMap;

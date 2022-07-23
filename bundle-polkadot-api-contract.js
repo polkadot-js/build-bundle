@@ -84,6 +84,7 @@
     }));
   }
 
+  const enumVersions = ['V3', 'V2', 'V1'];
   function createConverter(next, step) {
     return (registry, input) => next(registry, step(registry, input));
   }
@@ -93,7 +94,6 @@
   const v2ToLatest = createConverter(v3ToLatest, v2ToV3);
   const v1ToLatest = createConverter(v2ToLatest, v1ToV2);
   const v0ToLatest = createConverter(v1ToLatest, v0ToV1);
-  const enumVersions = ['V3', 'V2', 'V1'];
   const convertVersions = [['V3', v3ToLatest], ['V2', v2ToLatest], ['V1', v1ToLatest], ['V0', v0ToLatest]];
 
   const l$1 = util.logger('Abi');
@@ -279,7 +279,7 @@
     name: '@polkadot/api-contract',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.13.1'
+    version: '8.14.1'
   };
 
   function applyOnEvent(result, types, fn) {

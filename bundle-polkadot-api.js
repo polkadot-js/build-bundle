@@ -22,7 +22,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.0.2'
+    version: '10.1.1'
   });
 
   function evaluateThis(fn) {
@@ -34,7 +34,7 @@
     name: '@polkadot/x-fetch',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.0.2'
+    version: '10.1.1'
   });
 
   const fetch = xglobal.fetch;
@@ -545,7 +545,7 @@
     name: '@polkadot/x-ws',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.0.2'
+    version: '10.1.1'
   });
 
   const WebSocket = xglobal.WebSocket;
@@ -1046,7 +1046,7 @@
     name: '@polkadot/api',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.13.1'
+    version: '8.14.1'
   };
 
   /*! *****************************************************************************
@@ -3543,7 +3543,7 @@
     name: '@polkadot/rpc-core',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.13.1'
+    version: '8.14.1'
   });
 
   const l$4 = util.logger('rpc-core');
@@ -4309,7 +4309,7 @@
     }));
   }
   function all(instanceId, api) {
-    const balanceInstances = api.registry.getModuleInstances(api.runtimeVersion.specName.toString(), 'balances');
+    const balanceInstances = api.registry.getModuleInstances(api.runtimeVersion.specName, 'balances');
     return memo(instanceId, address => {
       var _api$query$system, _api$query$balances;
       return combineLatest([api.derive.balances.account(address), util.isFunction((_api$query$system = api.query.system) === null || _api$query$system === void 0 ? void 0 : _api$query$system.account) || util.isFunction((_api$query$balances = api.query.balances) === null || _api$query$balances === void 0 ? void 0 : _api$query$balances.account) ? queryCurrent(api, address, balanceInstances) : queryOld(api, address)]).pipe(switchMap(([account, locks]) => combineLatest([of(account), of(locks), api.derive.chain.bestNumber()])), map(result => calcBalances$1(api, result)));
@@ -4378,10 +4378,11 @@
     }));
   }
   function account$1(instanceId, api) {
-    const balanceInstances = api.registry.getModuleInstances(api.runtimeVersion.specName.toString(), 'balances');
+    const balanceInstances = api.registry.getModuleInstances(api.runtimeVersion.specName, 'balances');
+    const nonDefaultBalances = balanceInstances && (balanceInstances.length !== 1 || balanceInstances[0] !== 'balances');
     return memo(instanceId, address => api.derive.accounts.accountId(address).pipe(switchMap(accountId => {
       var _api$query$system, _api$query$balances, _api$query$balances2;
-      return accountId ? combineLatest([of(accountId), balanceInstances ? queryBalancesAccount(api, accountId, balanceInstances) : util.isFunction((_api$query$system = api.query.system) === null || _api$query$system === void 0 ? void 0 : _api$query$system.account) ? querySystemAccount(api, accountId) : util.isFunction((_api$query$balances = api.query.balances) === null || _api$query$balances === void 0 ? void 0 : _api$query$balances.account) ? queryBalancesAccount(api, accountId) : util.isFunction((_api$query$balances2 = api.query.balances) === null || _api$query$balances2 === void 0 ? void 0 : _api$query$balances2.freeBalance) ? queryBalancesFree(api, accountId) : queryNonceOnly(api, accountId)]) : of([api.registry.createType('AccountId'), [api.registry.createType('Index'), [[zeroBalance(api), zeroBalance(api), zeroBalance(api), zeroBalance(api)]]]]);
+      return accountId ? combineLatest([of(accountId), nonDefaultBalances ? queryBalancesAccount(api, accountId, balanceInstances) : util.isFunction((_api$query$system = api.query.system) === null || _api$query$system === void 0 ? void 0 : _api$query$system.account) ? querySystemAccount(api, accountId) : util.isFunction((_api$query$balances = api.query.balances) === null || _api$query$balances === void 0 ? void 0 : _api$query$balances.account) ? queryBalancesAccount(api, accountId) : util.isFunction((_api$query$balances2 = api.query.balances) === null || _api$query$balances2 === void 0 ? void 0 : _api$query$balances2.freeBalance) ? queryBalancesFree(api, accountId) : queryNonceOnly(api, accountId)]) : of([api.registry.createType('AccountId'), [api.registry.createType('Index'), [[zeroBalance(api), zeroBalance(api), zeroBalance(api), zeroBalance(api)]]]]);
     }), map(result => calcBalances(api, result))));
   }
 
@@ -4629,7 +4630,7 @@
   });
 
   function getInstance(api, section) {
-    const instances = api.registry.getModuleInstances(api.runtimeVersion.specName.toString(), section);
+    const instances = api.registry.getModuleInstances(api.runtimeVersion.specName, section);
     const name = instances && instances.length ? instances[0] : section;
     return api.query[name];
   }
@@ -5349,7 +5350,7 @@
     } : {};
   }
   function getModules(api) {
-    const [council] = api.registry.getModuleInstances(api.runtimeVersion.specName.toString(), 'council') || ['council'];
+    const [council] = api.registry.getModuleInstances(api.runtimeVersion.specName, 'council') || ['council'];
     const elections = api.query.phragmenElection ? 'phragmenElection' : api.query.electionsPhragmen ? 'electionsPhragmen' : api.query.elections ? 'elections' : null;
     return [council, elections];
   }
@@ -6565,7 +6566,7 @@
     const result = {};
     const names = Object.keys(derives);
     const keys = Object.keys(api.query);
-    const specName = api.runtimeVersion.specName.toString();
+    const specName = api.runtimeVersion.specName;
     const filterKeys = q => keys.includes(q);
     const filterInstances = q => getModuleInstances(api, specName, q).some(filterKeys);
     const filterMethods = all => m => all.some(q => keys.includes(q) && api.query[q][m]);
@@ -7390,16 +7391,16 @@
     westmint: versioned$1
   };
 
-  const upgrades$4 = [[0, 1020], [26669, 1021], [38245, 1022], [54248, 1023], [59659, 1024], [67651, 1025], [82191, 1027], [83238, 1028], [101503, 1029], [203466, 1030], [295787, 1031], [461692, 1032], [504329, 1033], [569327, 1038], [587687, 1039], [653183, 1040], [693488, 1042], [901442, 1045], [1375086, 1050], [1445458, 1051], [1472960, 1052], [1475648, 1053], [1491596, 1054], [1574408, 1055], [2064961, 1058], [2201991, 1062], [2671528, 2005], [2704202, 2007], [2728002, 2008], [2832534, 2011], [2962294, 2012], [3240000, 2013], [3274408, 2015], [3323565, 2019], [3534175, 2022], [3860281, 2023], [4143129, 2024], [4401242, 2025], [4841367, 2026], [5961600, 2027], [6137912, 2028], [6561855, 2029], [7100891, 2030], [7468792, 9010], [7668600, 9030], [7812476, 9040], [8010981, 9050], [8073833, 9070], [8555825, 9080], [8945245, 9090], [9611377, 9100], [9625129, 9111], [9866422, 9122], [10403784, 9130], [10960765, 9150], [11006614, 9151], [11404482, 9160], [11601803, 9170], [12008022, 9180], [12405451, 9190], [12665416, 9200], [12909508, 9220], [13109752, 9230], [13555777, 9250]];
+  const upgrades$3 = [[0, 1020], [26669, 1021], [38245, 1022], [54248, 1023], [59659, 1024], [67651, 1025], [82191, 1027], [83238, 1028], [101503, 1029], [203466, 1030], [295787, 1031], [461692, 1032], [504329, 1033], [569327, 1038], [587687, 1039], [653183, 1040], [693488, 1042], [901442, 1045], [1375086, 1050], [1445458, 1051], [1472960, 1052], [1475648, 1053], [1491596, 1054], [1574408, 1055], [2064961, 1058], [2201991, 1062], [2671528, 2005], [2704202, 2007], [2728002, 2008], [2832534, 2011], [2962294, 2012], [3240000, 2013], [3274408, 2015], [3323565, 2019], [3534175, 2022], [3860281, 2023], [4143129, 2024], [4401242, 2025], [4841367, 2026], [5961600, 2027], [6137912, 2028], [6561855, 2029], [7100891, 2030], [7468792, 9010], [7668600, 9030], [7812476, 9040], [8010981, 9050], [8073833, 9070], [8555825, 9080], [8945245, 9090], [9611377, 9100], [9625129, 9111], [9866422, 9122], [10403784, 9130], [10960765, 9150], [11006614, 9151], [11404482, 9160], [11601803, 9170], [12008022, 9180], [12405451, 9190], [12665416, 9200], [12909508, 9220], [13109752, 9230], [13555777, 9250]];
 
-  const upgrades$3 = [[0, 0], [29231, 1], [188836, 5], [199405, 6], [214264, 7], [244358, 8], [303079, 9], [314201, 10], [342400, 11], [443963, 12], [528470, 13], [687751, 14], [746085, 15], [787923, 16], [799302, 17], [1205128, 18], [1603423, 23], [1733218, 24], [2005673, 25], [2436698, 26], [3613564, 27], [3899547, 28], [4345767, 29], [4876134, 30], [5661442, 9050], [6321619, 9080], [6713249, 9090], [7217907, 9100], [7229126, 9110], [7560558, 9122], [8115869, 9140], [8638103, 9151], [9280179, 9170], [9738717, 9180], [10156856, 9190], [10458576, 9200], [10655116, 9220]];
+  const upgrades$2 = [[0, 0], [29231, 1], [188836, 5], [199405, 6], [214264, 7], [244358, 8], [303079, 9], [314201, 10], [342400, 11], [443963, 12], [528470, 13], [687751, 14], [746085, 15], [787923, 16], [799302, 17], [1205128, 18], [1603423, 23], [1733218, 24], [2005673, 25], [2436698, 26], [3613564, 27], [3899547, 28], [4345767, 29], [4876134, 30], [5661442, 9050], [6321619, 9080], [6713249, 9090], [7217907, 9100], [7229126, 9110], [7560558, 9122], [8115869, 9140], [8638103, 9151], [9280179, 9170], [9738717, 9180], [10156856, 9190], [10458576, 9200], [10655116, 9220]];
 
-  const upgrades$2 = [[214356, 4], [392764, 7], [409740, 8], [809976, 20], [877581, 24], [879238, 25], [889472, 26], [902937, 27], [932751, 28], [991142, 29], [1030162, 31], [1119657, 32], [1199282, 33], [1342534, 34], [1392263, 35], [1431703, 36], [1433369, 37], [1490972, 41], [2087397, 43], [2316688, 44], [2549864, 45], [3925782, 46], [3925843, 47], [4207800, 48], [4627944, 49], [5124076, 50], [5478664, 900], [5482450, 9000], [5584305, 9010], [5784566, 9030], [5879822, 9031], [5896856, 9032], [5897316, 9033], [6117927, 9050], [6210274, 9070], [6379314, 9080], [6979141, 9090], [7568453, 9100], [7766394, 9111], [7911691, 9120], [7968866, 9121], [7982889, 9122], [8514322, 9130], [9091726, 9140], [9091774, 9150], [9406726, 9160], [9921066, 9170], [10007115, 9180], [10480973, 9190], [10578091, 9200], [10678509, 9210], [10811001, 9220], [11096116, 9230], [11409279, 9250]];
+  const upgrades$1 = [[214356, 4], [392764, 7], [409740, 8], [809976, 20], [877581, 24], [879238, 25], [889472, 26], [902937, 27], [932751, 28], [991142, 29], [1030162, 31], [1119657, 32], [1199282, 33], [1342534, 34], [1392263, 35], [1431703, 36], [1433369, 37], [1490972, 41], [2087397, 43], [2316688, 44], [2549864, 45], [3925782, 46], [3925843, 47], [4207800, 48], [4627944, 49], [5124076, 50], [5478664, 900], [5482450, 9000], [5584305, 9010], [5784566, 9030], [5879822, 9031], [5896856, 9032], [5897316, 9033], [6117927, 9050], [6210274, 9070], [6379314, 9080], [6979141, 9090], [7568453, 9100], [7766394, 9111], [7911691, 9120], [7968866, 9121], [7982889, 9122], [8514322, 9130], [9091726, 9140], [9091774, 9150], [9406726, 9160], [9921066, 9170], [10007115, 9180], [10480973, 9190], [10578091, 9200], [10678509, 9210], [10811001, 9220], [11096116, 9230], [11409279, 9250]];
 
   const allKnown = {
-    kusama: upgrades$4,
-    polkadot: upgrades$3,
-    westend: upgrades$2
+    kusama: upgrades$3,
+    polkadot: upgrades$2,
+    westend: upgrades$1
   };
   const NET_EXTRA = {
     westend: {
@@ -7431,7 +7432,6 @@
     };
   }
   const upgrades = Object.entries(allKnown).map(mapRaw);
-  const upgrades$1 = upgrades;
 
   function withNames(chainName, specName, fn) {
     return fn(chainName.toString(), specName.toString());
@@ -7497,7 +7497,7 @@
     });
   }
   function getUpgradeVersion(genesisHash, blockNumber) {
-    const known = upgrades$1.find(u => genesisHash.eq(u.genesisHash));
+    const known = upgrades.find(u => genesisHash.eq(u.genesisHash));
     return known ? [known.versions.reduce((last, version) => {
       return blockNumber.gt(version.blockNumber) ? version : last;
     }, undefined), known.versions.find(version => blockNumber.lte(version.blockNumber))] : [undefined, undefined];
@@ -7974,7 +7974,7 @@
       tx
     }, decorateMethod) {
       const result = createSubmittable(this._type, this._rx, decorateMethod);
-      const lazySection = section => util.lazyMethods({}, Object.keys(tx[section]), method => this._decorateExtrinsicEntry(tx[section][method], result));
+      const lazySection = section => util.lazyMethods({}, Object.keys(tx[section]), method => method.startsWith('$') ? tx[section][method] : this._decorateExtrinsicEntry(tx[section][method], result));
       const sections = Object.keys(tx);
       for (let i = 0; i < sections.length; i++) {
         util.lazyMethod(result, sections[i], lazySection);
