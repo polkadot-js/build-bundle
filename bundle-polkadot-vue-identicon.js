@@ -16,7 +16,7 @@
     name: '@polkadot/ui-shared',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '2.9.1'
+    version: '2.9.2'
   };
 
   util.detectPackage(packageInfo$1, null, others);
@@ -2549,7 +2549,7 @@
       return {
         address: '',
         iconSize: DEFAULT_SIZE,
-        isAlternative: false,
+        isAlternativeIcon: false,
         publicKey: '0x',
         type: 'empty'
       };
@@ -2558,6 +2558,7 @@
       createData: function () {
         this.iconSize = this.size || DEFAULT_SIZE;
         this.type = this.theme;
+        this.isAlternativeIcon = this.isAlternative || false;
         this.recodeAddress();
       },
       recodeAddress: function () {
@@ -2574,7 +2575,7 @@
       const {
         address,
         iconSize,
-        isAlternative,
+        isAlternativeIcon,
         publicKey,
         type
       } = this.$data;
@@ -2598,7 +2599,7 @@
         return h(cmp, {
           attrs: {
             address,
-            isAlternative,
+            isAlternative: isAlternativeIcon,
             key: address,
             size: iconSize
           }
@@ -2616,7 +2617,7 @@
     name: '@polkadot/vue-identicon',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '2.9.1'
+    version: '2.9.2'
   };
 
   exports.Identicon = Identicon;
