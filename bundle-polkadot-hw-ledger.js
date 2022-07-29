@@ -52,7 +52,22 @@
 		'default': EventEmitter
 	});
 
-	var __values$1 = (undefined && undefined.__values) || function(o) {
+	var __extends$2 = (undefined && undefined.__extends) || (function () {
+	    var extendStatics = function (d, b) {
+	        extendStatics = Object.setPrototypeOf ||
+	            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+	        return extendStatics(d, b);
+	    };
+	    return function (d, b) {
+	        if (typeof b !== "function" && b !== null)
+	            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	(undefined && undefined.__values) || function(o) {
 	    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
 	    if (m) return m.call(o);
 	    if (o && typeof o.length === "number") return {
@@ -63,213 +78,130 @@
 	    };
 	    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 	};
-	var errorClasses = {};
-	var deserializers = {};
-	var addCustomErrorDeserializer = function (name, deserializer) {
-	    deserializers[name] = deserializer;
-	};
 	var createCustomErrorClass = function (name) {
-	    var C = function CustomError(message, fields) {
-	        Object.assign(this, fields);
-	        this.name = name;
-	        this.message = message || name;
-	        this.stack = new Error().stack;
-	    };
-	    C.prototype = new Error();
-	    errorClasses[name] = C;
-	    return C;
-	};
-	var deserializeError = function (object) {
-	    if (typeof object === "object" && object) {
-	        try {
-	            var msg = JSON.parse(object.message);
-	            if (msg.message && msg.name) {
-	                object = msg;
+	    var CustomErrorClass =  (function (_super) {
+	        __extends$2(CustomErrorClass, _super);
+	        function CustomErrorClass(message, fields, options) {
+	            var _this =
+	            _super.call(this, message || name, options) || this;
+	            Object.setPrototypeOf(_this, CustomErrorClass.prototype);
+	            _this.name = name;
+	            for (var k in fields) {
+	                _this[k] = fields[k];
 	            }
-	        }
-	        catch (e) {
-	        }
-	        var error = void 0;
-	        if (typeof object.name === "string") {
-	            var name_1 = object.name;
-	            var des = deserializers[name_1];
-	            if (des) {
-	                error = des(object);
-	            }
-	            else {
-	                var constructor = name_1 === "Error" ? Error : errorClasses[name_1];
-	                if (!constructor) {
-	                    console.warn("deserializing an unknown class '" + name_1 + "'");
-	                    constructor = createCustomErrorClass(name_1);
-	                }
-	                error = Object.create(constructor.prototype);
-	                try {
-	                    for (var prop in object) {
-	                        if (object.hasOwnProperty(prop)) {
-	                            error[prop] = object[prop];
-	                        }
-	                    }
-	                }
-	                catch (e) {
+	            if (isObject(options) && "cause" in options && !("cause" in _this)) {
+	                var cause = options.cause;
+	                _this.cause = cause;
+	                if ("stack" in cause) {
+	                    _this.stack = _this.stack + "\nCAUSE: " + cause.stack;
 	                }
 	            }
+	            return _this;
 	        }
-	        else {
-	            error = new Error(object.message);
-	        }
-	        if (!error.stack && Error.captureStackTrace) {
-	            Error.captureStackTrace(error, deserializeError);
-	        }
-	        return error;
-	    }
-	    return new Error(String(object));
+	        return CustomErrorClass;
+	    }(Error));
+	    return CustomErrorClass;
 	};
-	var serializeError = function (value) {
-	    if (!value)
-	        return value;
-	    if (typeof value === "object") {
-	        return destroyCircular(value, []);
-	    }
-	    if (typeof value === "function") {
-	        return "[Function: " + (value.name || "anonymous") + "]";
-	    }
-	    return value;
-	};
-	function destroyCircular(from, seen) {
-	    var e_1, _a;
-	    var to = {};
-	    seen.push(from);
-	    try {
-	        for (var _b = __values$1(Object.keys(from)), _c = _b.next(); !_c.done; _c = _b.next()) {
-	            var key = _c.value;
-	            var value = from[key];
-	            if (typeof value === "function") {
-	                continue;
-	            }
-	            if (!value || typeof value !== "object") {
-	                to[key] = value;
-	                continue;
-	            }
-	            if (seen.indexOf(from[key]) === -1) {
-	                to[key] = destroyCircular(from[key], seen.slice(0));
-	                continue;
-	            }
-	            to[key] = "[Circular]";
-	        }
-	    }
-	    catch (e_1_1) { e_1 = { error: e_1_1 }; }
-	    finally {
-	        try {
-	            if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
-	        }
-	        finally { if (e_1) throw e_1.error; }
-	    }
-	    if (typeof from.name === "string") {
-	        to.name = from.name;
-	    }
-	    if (typeof from.message === "string") {
-	        to.message = from.message;
-	    }
-	    if (typeof from.stack === "string") {
-	        to.stack = from.stack;
-	    }
-	    return to;
+	function isObject(value) {
+	    return value !== null && typeof value === "object";
 	}
 
-	var AccountNameRequiredError = createCustomErrorClass("AccountNameRequired");
-	var AccountNotSupported = createCustomErrorClass("AccountNotSupported");
-	var AmountRequired = createCustomErrorClass("AmountRequired");
-	var BluetoothRequired = createCustomErrorClass("BluetoothRequired");
-	var BtcUnmatchedApp = createCustomErrorClass("BtcUnmatchedApp");
-	var CantOpenDevice = createCustomErrorClass("CantOpenDevice");
-	var CashAddrNotSupported = createCustomErrorClass("CashAddrNotSupported");
-	var CurrencyNotSupported = createCustomErrorClass("CurrencyNotSupported");
-	var DeviceAppVerifyNotSupported = createCustomErrorClass("DeviceAppVerifyNotSupported");
-	var DeviceGenuineSocketEarlyClose = createCustomErrorClass("DeviceGenuineSocketEarlyClose");
-	var DeviceNotGenuineError = createCustomErrorClass("DeviceNotGenuine");
-	var DeviceOnDashboardExpected = createCustomErrorClass("DeviceOnDashboardExpected");
-	var DeviceOnDashboardUnexpected = createCustomErrorClass("DeviceOnDashboardUnexpected");
-	var DeviceInOSUExpected = createCustomErrorClass("DeviceInOSUExpected");
-	var DeviceHalted = createCustomErrorClass("DeviceHalted");
-	var DeviceNameInvalid = createCustomErrorClass("DeviceNameInvalid");
-	var DeviceSocketFail = createCustomErrorClass("DeviceSocketFail");
-	var DeviceSocketNoBulkStatus = createCustomErrorClass("DeviceSocketNoBulkStatus");
+	createCustomErrorClass("AccountNameRequired");
+	createCustomErrorClass("AccountNotSupported");
+	createCustomErrorClass("AmountRequired");
+	createCustomErrorClass("BluetoothRequired");
+	createCustomErrorClass("BtcUnmatchedApp");
+	createCustomErrorClass("CantOpenDevice");
+	createCustomErrorClass("CashAddrNotSupported");
+	createCustomErrorClass("CurrencyNotSupported");
+	createCustomErrorClass("DeviceAppVerifyNotSupported");
+	createCustomErrorClass("DeviceGenuineSocketEarlyClose");
+	createCustomErrorClass("DeviceNotGenuine");
+	createCustomErrorClass("DeviceOnDashboardExpected");
+	createCustomErrorClass("DeviceOnDashboardUnexpected");
+	createCustomErrorClass("DeviceInOSUExpected");
+	createCustomErrorClass("DeviceHalted");
+	createCustomErrorClass("DeviceNameInvalid");
+	createCustomErrorClass("DeviceSocketFail");
+	createCustomErrorClass("DeviceSocketNoBulkStatus");
 	var DisconnectedDevice = createCustomErrorClass("DisconnectedDevice");
 	var DisconnectedDeviceDuringOperation = createCustomErrorClass("DisconnectedDeviceDuringOperation");
-	var EnpointConfigError = createCustomErrorClass("EnpointConfig");
-	var EthAppPleaseEnableContractData = createCustomErrorClass("EthAppPleaseEnableContractData");
-	var FeeEstimationFailed = createCustomErrorClass("FeeEstimationFailed");
-	var FirmwareNotRecognized = createCustomErrorClass("FirmwareNotRecognized");
-	var HardResetFail = createCustomErrorClass("HardResetFail");
-	var InvalidXRPTag = createCustomErrorClass("InvalidXRPTag");
-	var InvalidAddress = createCustomErrorClass("InvalidAddress");
-	var InvalidAddressBecauseDestinationIsAlsoSource = createCustomErrorClass("InvalidAddressBecauseDestinationIsAlsoSource");
-	var LatestMCUInstalledError = createCustomErrorClass("LatestMCUInstalledError");
-	var UnknownMCU = createCustomErrorClass("UnknownMCU");
-	var LedgerAPIError = createCustomErrorClass("LedgerAPIError");
-	var LedgerAPIErrorWithMessage = createCustomErrorClass("LedgerAPIErrorWithMessage");
-	var LedgerAPINotAvailable = createCustomErrorClass("LedgerAPINotAvailable");
-	var ManagerAppAlreadyInstalledError = createCustomErrorClass("ManagerAppAlreadyInstalled");
-	var ManagerAppRelyOnBTCError = createCustomErrorClass("ManagerAppRelyOnBTC");
-	var ManagerAppDepInstallRequired = createCustomErrorClass("ManagerAppDepInstallRequired");
-	var ManagerAppDepUninstallRequired = createCustomErrorClass("ManagerAppDepUninstallRequired");
-	var ManagerDeviceLockedError = createCustomErrorClass("ManagerDeviceLocked");
-	var ManagerFirmwareNotEnoughSpaceError = createCustomErrorClass("ManagerFirmwareNotEnoughSpace");
-	var ManagerNotEnoughSpaceError = createCustomErrorClass("ManagerNotEnoughSpace");
-	var ManagerUninstallBTCDep = createCustomErrorClass("ManagerUninstallBTCDep");
-	var NetworkDown = createCustomErrorClass("NetworkDown");
-	var NoAddressesFound = createCustomErrorClass("NoAddressesFound");
-	var NotEnoughBalance = createCustomErrorClass("NotEnoughBalance");
-	var NotEnoughBalanceToDelegate = createCustomErrorClass("NotEnoughBalanceToDelegate");
-	var NotEnoughBalanceInParentAccount = createCustomErrorClass("NotEnoughBalanceInParentAccount");
-	var NotEnoughSpendableBalance = createCustomErrorClass("NotEnoughSpendableBalance");
-	var NotEnoughBalanceBecauseDestinationNotCreated = createCustomErrorClass("NotEnoughBalanceBecauseDestinationNotCreated");
-	var NoAccessToCamera = createCustomErrorClass("NoAccessToCamera");
-	var NotEnoughGas = createCustomErrorClass("NotEnoughGas");
-	var NotSupportedLegacyAddress = createCustomErrorClass("NotSupportedLegacyAddress");
-	var GasLessThanEstimate = createCustomErrorClass("GasLessThanEstimate");
-	var PasswordsDontMatchError = createCustomErrorClass("PasswordsDontMatch");
-	var PasswordIncorrectError = createCustomErrorClass("PasswordIncorrect");
-	var RecommendSubAccountsToEmpty = createCustomErrorClass("RecommendSubAccountsToEmpty");
-	var RecommendUndelegation = createCustomErrorClass("RecommendUndelegation");
-	var TimeoutTagged = createCustomErrorClass("TimeoutTagged");
-	var UnexpectedBootloader = createCustomErrorClass("UnexpectedBootloader");
-	var MCUNotGenuineToDashboard = createCustomErrorClass("MCUNotGenuineToDashboard");
-	var RecipientRequired = createCustomErrorClass("RecipientRequired");
-	var UnavailableTezosOriginatedAccountReceive = createCustomErrorClass("UnavailableTezosOriginatedAccountReceive");
-	var UnavailableTezosOriginatedAccountSend = createCustomErrorClass("UnavailableTezosOriginatedAccountSend");
-	var UpdateFetchFileFail = createCustomErrorClass("UpdateFetchFileFail");
-	var UpdateIncorrectHash = createCustomErrorClass("UpdateIncorrectHash");
-	var UpdateIncorrectSig = createCustomErrorClass("UpdateIncorrectSig");
-	var UpdateYourApp = createCustomErrorClass("UpdateYourApp");
-	var UserRefusedDeviceNameChange = createCustomErrorClass("UserRefusedDeviceNameChange");
-	var UserRefusedAddress = createCustomErrorClass("UserRefusedAddress");
-	var UserRefusedFirmwareUpdate = createCustomErrorClass("UserRefusedFirmwareUpdate");
-	var UserRefusedAllowManager = createCustomErrorClass("UserRefusedAllowManager");
-	var UserRefusedOnDevice = createCustomErrorClass("UserRefusedOnDevice");
+	createCustomErrorClass("DeviceExtractOnboardingStateError");
+	createCustomErrorClass("DeviceOnboardingStatePollingError");
+	createCustomErrorClass("EnpointConfig");
+	createCustomErrorClass("EthAppPleaseEnableContractData");
+	createCustomErrorClass("FeeEstimationFailed");
+	createCustomErrorClass("FirmwareNotRecognized");
+	createCustomErrorClass("HardResetFail");
+	createCustomErrorClass("InvalidXRPTag");
+	createCustomErrorClass("InvalidAddress");
+	createCustomErrorClass("InvalidAddressBecauseDestinationIsAlsoSource");
+	createCustomErrorClass("LatestMCUInstalledError");
+	createCustomErrorClass("UnknownMCU");
+	createCustomErrorClass("LedgerAPIError");
+	createCustomErrorClass("LedgerAPIErrorWithMessage");
+	createCustomErrorClass("LedgerAPINotAvailable");
+	createCustomErrorClass("ManagerAppAlreadyInstalled");
+	createCustomErrorClass("ManagerAppRelyOnBTC");
+	createCustomErrorClass("ManagerAppDepInstallRequired");
+	createCustomErrorClass("ManagerAppDepUninstallRequired");
+	createCustomErrorClass("ManagerDeviceLocked");
+	createCustomErrorClass("ManagerFirmwareNotEnoughSpace");
+	createCustomErrorClass("ManagerNotEnoughSpace");
+	createCustomErrorClass("ManagerUninstallBTCDep");
+	createCustomErrorClass("NetworkDown");
+	createCustomErrorClass("NoAddressesFound");
+	createCustomErrorClass("NotEnoughBalance");
+	createCustomErrorClass("NotEnoughBalanceToDelegate");
+	createCustomErrorClass("NotEnoughBalanceInParentAccount");
+	createCustomErrorClass("NotEnoughSpendableBalance");
+	createCustomErrorClass("NotEnoughBalanceBecauseDestinationNotCreated");
+	createCustomErrorClass("NoAccessToCamera");
+	createCustomErrorClass("NotEnoughGas");
+	createCustomErrorClass("NotSupportedLegacyAddress");
+	createCustomErrorClass("GasLessThanEstimate");
+	createCustomErrorClass("PasswordsDontMatch");
+	createCustomErrorClass("PasswordIncorrect");
+	createCustomErrorClass("RecommendSubAccountsToEmpty");
+	createCustomErrorClass("RecommendUndelegation");
+	createCustomErrorClass("TimeoutTagged");
+	createCustomErrorClass("UnexpectedBootloader");
+	createCustomErrorClass("MCUNotGenuineToDashboard");
+	createCustomErrorClass("RecipientRequired");
+	createCustomErrorClass("UnavailableTezosOriginatedAccountReceive");
+	createCustomErrorClass("UnavailableTezosOriginatedAccountSend");
+	createCustomErrorClass("UpdateFetchFileFail");
+	createCustomErrorClass("UpdateIncorrectHash");
+	createCustomErrorClass("UpdateIncorrectSig");
+	createCustomErrorClass("UpdateYourApp");
+	createCustomErrorClass("UserRefusedDeviceNameChange");
+	createCustomErrorClass("UserRefusedAddress");
+	createCustomErrorClass("UserRefusedFirmwareUpdate");
+	createCustomErrorClass("UserRefusedAllowManager");
+	createCustomErrorClass("UserRefusedOnDevice");
 	var TransportOpenUserCancelled = createCustomErrorClass("TransportOpenUserCancelled");
 	var TransportInterfaceNotAvailable = createCustomErrorClass("TransportInterfaceNotAvailable");
 	var TransportRaceCondition = createCustomErrorClass("TransportRaceCondition");
 	var TransportWebUSBGestureRequired = createCustomErrorClass("TransportWebUSBGestureRequired");
-	var DeviceShouldStayInApp = createCustomErrorClass("DeviceShouldStayInApp");
-	var WebsocketConnectionError = createCustomErrorClass("WebsocketConnectionError");
-	var WebsocketConnectionFailed = createCustomErrorClass("WebsocketConnectionFailed");
-	var WrongDeviceForAccount = createCustomErrorClass("WrongDeviceForAccount");
-	var WrongAppForCurrency = createCustomErrorClass("WrongAppForCurrency");
-	var ETHAddressNonEIP = createCustomErrorClass("ETHAddressNonEIP");
-	var CantScanQRCode = createCustomErrorClass("CantScanQRCode");
-	var FeeNotLoaded = createCustomErrorClass("FeeNotLoaded");
-	var FeeRequired = createCustomErrorClass("FeeRequired");
-	var FeeTooHigh = createCustomErrorClass("FeeTooHigh");
-	var SyncError = createCustomErrorClass("SyncError");
-	var PairingFailed = createCustomErrorClass("PairingFailed");
-	var GenuineCheckFailed = createCustomErrorClass("GenuineCheckFailed");
-	var LedgerAPI4xx = createCustomErrorClass("LedgerAPI4xx");
-	var LedgerAPI5xx = createCustomErrorClass("LedgerAPI5xx");
-	var FirmwareOrAppUpdateRequired = createCustomErrorClass("FirmwareOrAppUpdateRequired");
-	var NoDBPathGiven = createCustomErrorClass("NoDBPathGiven");
-	var DBWrongPassword = createCustomErrorClass("DBWrongPassword");
-	var DBNotReset = createCustomErrorClass("DBNotReset");
+	createCustomErrorClass("DeviceShouldStayInApp");
+	createCustomErrorClass("WebsocketConnectionError");
+	createCustomErrorClass("WebsocketConnectionFailed");
+	createCustomErrorClass("WrongDeviceForAccount");
+	createCustomErrorClass("WrongAppForCurrency");
+	createCustomErrorClass("ETHAddressNonEIP");
+	createCustomErrorClass("CantScanQRCode");
+	createCustomErrorClass("FeeNotLoaded");
+	createCustomErrorClass("FeeRequired");
+	createCustomErrorClass("FeeTooHigh");
+	createCustomErrorClass("SyncError");
+	createCustomErrorClass("PairingFailed");
+	createCustomErrorClass("GenuineCheckFailed");
+	createCustomErrorClass("LedgerAPI4xx");
+	createCustomErrorClass("LedgerAPI5xx");
+	createCustomErrorClass("FirmwareOrAppUpdateRequired");
+	createCustomErrorClass("NoDBPathGiven");
+	createCustomErrorClass("DBWrongPassword");
+	createCustomErrorClass("DBNotReset");
 	function TransportError(message, id) {
 	    this.name = "TransportError";
 	    this.message = message;
@@ -277,7 +209,6 @@
 	    this.id = id;
 	}
 	TransportError.prototype = new Error();
-	addCustomErrorDeserializer("TransportError", function (e) { return new TransportError(e.message, e.id); });
 	var StatusCodes = {
 	    PIN_REMAINING_ATTEMPTS: 0x63c0,
 	    INCORRECT_LENGTH: 0x6700,
@@ -336,119 +267,12 @@
 	        "UNKNOWN_ERROR";
 	    var smsg = getAltStatusMessage(statusCode) || statusText;
 	    var statusCodeStr = statusCode.toString(16);
-	    this.message = "Ledger device: " + smsg + " (0x" + statusCodeStr + ")";
+	    this.message = "Ledger device: ".concat(smsg, " (0x").concat(statusCodeStr, ")");
 	    this.stack = new Error().stack;
 	    this.statusCode = statusCode;
 	    this.statusText = statusText;
 	}
 	TransportStatusError.prototype = new Error();
-	addCustomErrorDeserializer("TransportStatusError", function (e) { return new TransportStatusError(e.statusCode); });
-
-	const libEs = /*#__PURE__*/Object.freeze({
-		__proto__: null,
-		serializeError: serializeError,
-		deserializeError: deserializeError,
-		createCustomErrorClass: createCustomErrorClass,
-		addCustomErrorDeserializer: addCustomErrorDeserializer,
-		AccountNameRequiredError: AccountNameRequiredError,
-		AccountNotSupported: AccountNotSupported,
-		AmountRequired: AmountRequired,
-		BluetoothRequired: BluetoothRequired,
-		BtcUnmatchedApp: BtcUnmatchedApp,
-		CantOpenDevice: CantOpenDevice,
-		CashAddrNotSupported: CashAddrNotSupported,
-		CurrencyNotSupported: CurrencyNotSupported,
-		DeviceAppVerifyNotSupported: DeviceAppVerifyNotSupported,
-		DeviceGenuineSocketEarlyClose: DeviceGenuineSocketEarlyClose,
-		DeviceNotGenuineError: DeviceNotGenuineError,
-		DeviceOnDashboardExpected: DeviceOnDashboardExpected,
-		DeviceOnDashboardUnexpected: DeviceOnDashboardUnexpected,
-		DeviceInOSUExpected: DeviceInOSUExpected,
-		DeviceHalted: DeviceHalted,
-		DeviceNameInvalid: DeviceNameInvalid,
-		DeviceSocketFail: DeviceSocketFail,
-		DeviceSocketNoBulkStatus: DeviceSocketNoBulkStatus,
-		DisconnectedDevice: DisconnectedDevice,
-		DisconnectedDeviceDuringOperation: DisconnectedDeviceDuringOperation,
-		EnpointConfigError: EnpointConfigError,
-		EthAppPleaseEnableContractData: EthAppPleaseEnableContractData,
-		FeeEstimationFailed: FeeEstimationFailed,
-		FirmwareNotRecognized: FirmwareNotRecognized,
-		HardResetFail: HardResetFail,
-		InvalidXRPTag: InvalidXRPTag,
-		InvalidAddress: InvalidAddress,
-		InvalidAddressBecauseDestinationIsAlsoSource: InvalidAddressBecauseDestinationIsAlsoSource,
-		LatestMCUInstalledError: LatestMCUInstalledError,
-		UnknownMCU: UnknownMCU,
-		LedgerAPIError: LedgerAPIError,
-		LedgerAPIErrorWithMessage: LedgerAPIErrorWithMessage,
-		LedgerAPINotAvailable: LedgerAPINotAvailable,
-		ManagerAppAlreadyInstalledError: ManagerAppAlreadyInstalledError,
-		ManagerAppRelyOnBTCError: ManagerAppRelyOnBTCError,
-		ManagerAppDepInstallRequired: ManagerAppDepInstallRequired,
-		ManagerAppDepUninstallRequired: ManagerAppDepUninstallRequired,
-		ManagerDeviceLockedError: ManagerDeviceLockedError,
-		ManagerFirmwareNotEnoughSpaceError: ManagerFirmwareNotEnoughSpaceError,
-		ManagerNotEnoughSpaceError: ManagerNotEnoughSpaceError,
-		ManagerUninstallBTCDep: ManagerUninstallBTCDep,
-		NetworkDown: NetworkDown,
-		NoAddressesFound: NoAddressesFound,
-		NotEnoughBalance: NotEnoughBalance,
-		NotEnoughBalanceToDelegate: NotEnoughBalanceToDelegate,
-		NotEnoughBalanceInParentAccount: NotEnoughBalanceInParentAccount,
-		NotEnoughSpendableBalance: NotEnoughSpendableBalance,
-		NotEnoughBalanceBecauseDestinationNotCreated: NotEnoughBalanceBecauseDestinationNotCreated,
-		NoAccessToCamera: NoAccessToCamera,
-		NotEnoughGas: NotEnoughGas,
-		NotSupportedLegacyAddress: NotSupportedLegacyAddress,
-		GasLessThanEstimate: GasLessThanEstimate,
-		PasswordsDontMatchError: PasswordsDontMatchError,
-		PasswordIncorrectError: PasswordIncorrectError,
-		RecommendSubAccountsToEmpty: RecommendSubAccountsToEmpty,
-		RecommendUndelegation: RecommendUndelegation,
-		TimeoutTagged: TimeoutTagged,
-		UnexpectedBootloader: UnexpectedBootloader,
-		MCUNotGenuineToDashboard: MCUNotGenuineToDashboard,
-		RecipientRequired: RecipientRequired,
-		UnavailableTezosOriginatedAccountReceive: UnavailableTezosOriginatedAccountReceive,
-		UnavailableTezosOriginatedAccountSend: UnavailableTezosOriginatedAccountSend,
-		UpdateFetchFileFail: UpdateFetchFileFail,
-		UpdateIncorrectHash: UpdateIncorrectHash,
-		UpdateIncorrectSig: UpdateIncorrectSig,
-		UpdateYourApp: UpdateYourApp,
-		UserRefusedDeviceNameChange: UserRefusedDeviceNameChange,
-		UserRefusedAddress: UserRefusedAddress,
-		UserRefusedFirmwareUpdate: UserRefusedFirmwareUpdate,
-		UserRefusedAllowManager: UserRefusedAllowManager,
-		UserRefusedOnDevice: UserRefusedOnDevice,
-		TransportOpenUserCancelled: TransportOpenUserCancelled,
-		TransportInterfaceNotAvailable: TransportInterfaceNotAvailable,
-		TransportRaceCondition: TransportRaceCondition,
-		TransportWebUSBGestureRequired: TransportWebUSBGestureRequired,
-		DeviceShouldStayInApp: DeviceShouldStayInApp,
-		WebsocketConnectionError: WebsocketConnectionError,
-		WebsocketConnectionFailed: WebsocketConnectionFailed,
-		WrongDeviceForAccount: WrongDeviceForAccount,
-		WrongAppForCurrency: WrongAppForCurrency,
-		ETHAddressNonEIP: ETHAddressNonEIP,
-		CantScanQRCode: CantScanQRCode,
-		FeeNotLoaded: FeeNotLoaded,
-		FeeRequired: FeeRequired,
-		FeeTooHigh: FeeTooHigh,
-		SyncError: SyncError,
-		PairingFailed: PairingFailed,
-		GenuineCheckFailed: GenuineCheckFailed,
-		LedgerAPI4xx: LedgerAPI4xx,
-		LedgerAPI5xx: LedgerAPI5xx,
-		FirmwareOrAppUpdateRequired: FirmwareOrAppUpdateRequired,
-		NoDBPathGiven: NoDBPathGiven,
-		DBWrongPassword: DBWrongPassword,
-		DBNotReset: DBNotReset,
-		TransportError: TransportError,
-		StatusCodes: StatusCodes,
-		getAltStatusMessage: getAltStatusMessage,
-		TransportStatusError: TransportStatusError
-	});
 
 	var __awaiter$3 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
 	    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -714,81 +538,71 @@
 	    return Transport;
 	}());
 
-	var hidFraming$1 = {};
-
-	const require$$0 = /*@__PURE__*/getAugmentedNamespace(libEs);
-
-	(function (exports) {
-		exports.__esModule = true;
-		var errors_1 = require$$0;
-		var Tag = 0x05;
-		function asUInt16BE(value) {
-		    var b = Buffer.alloc(2);
-		    b.writeUInt16BE(value, 0);
-		    return b;
-		}
-		var initialAcc = {
-		    data: Buffer.alloc(0),
-		    dataLength: 0,
-		    sequence: 0
-		};
-		var createHIDframing = function (channel, packetSize) {
-		    return {
-		        makeBlocks: function (apdu) {
-		            var data = Buffer.concat([asUInt16BE(apdu.length), apdu]);
-		            var blockSize = packetSize - 5;
-		            var nbBlocks = Math.ceil(data.length / blockSize);
-		            data = Buffer.concat([
-		                data,
-		                Buffer.alloc(nbBlocks * blockSize - data.length + 1).fill(0),
-		            ]);
-		            var blocks = [];
-		            for (var i = 0; i < nbBlocks; i++) {
-		                var head = Buffer.alloc(5);
-		                head.writeUInt16BE(channel, 0);
-		                head.writeUInt8(Tag, 2);
-		                head.writeUInt16BE(i, 3);
-		                var chunk = data.slice(i * blockSize, (i + 1) * blockSize);
-		                blocks.push(Buffer.concat([head, chunk]));
-		            }
-		            return blocks;
-		        },
-		        reduceResponse: function (acc, chunk) {
-		            var _a = acc || initialAcc, data = _a.data, dataLength = _a.dataLength, sequence = _a.sequence;
-		            if (chunk.readUInt16BE(0) !== channel) {
-		                throw new errors_1.TransportError("Invalid channel", "InvalidChannel");
-		            }
-		            if (chunk.readUInt8(2) !== Tag) {
-		                throw new errors_1.TransportError("Invalid tag", "InvalidTag");
-		            }
-		            if (chunk.readUInt16BE(3) !== sequence) {
-		                throw new errors_1.TransportError("Invalid sequence", "InvalidSequence");
-		            }
-		            if (!acc) {
-		                dataLength = chunk.readUInt16BE(5);
-		            }
-		            sequence++;
-		            var chunkData = chunk.slice(acc ? 5 : 7);
-		            data = Buffer.concat([data, chunkData]);
-		            if (data.length > dataLength) {
-		                data = data.slice(0, dataLength);
-		            }
-		            return {
-		                data: data,
-		                dataLength: dataLength,
-		                sequence: sequence
-		            };
-		        },
-		        getReducedResult: function (acc) {
-		            if (acc && acc.dataLength === acc.data.length) {
-		                return acc.data;
-		            }
-		        }
-		    };
-		};
-		exports["default"] = createHIDframing;
-	} (hidFraming$1));
-	const hidFraming = getDefaultExportFromCjs(hidFraming$1);
+	var Tag = 0x05;
+	function asUInt16BE(value) {
+	    var b = Buffer.alloc(2);
+	    b.writeUInt16BE(value, 0);
+	    return b;
+	}
+	var initialAcc = {
+	    data: Buffer.alloc(0),
+	    dataLength: 0,
+	    sequence: 0
+	};
+	var createHIDframing = function (channel, packetSize) {
+	    return {
+	        makeBlocks: function (apdu) {
+	            var data = Buffer.concat([asUInt16BE(apdu.length), apdu]);
+	            var blockSize = packetSize - 5;
+	            var nbBlocks = Math.ceil(data.length / blockSize);
+	            data = Buffer.concat([
+	                data,
+	                Buffer.alloc(nbBlocks * blockSize - data.length + 1).fill(0),
+	            ]);
+	            var blocks = [];
+	            for (var i = 0; i < nbBlocks; i++) {
+	                var head = Buffer.alloc(5);
+	                head.writeUInt16BE(channel, 0);
+	                head.writeUInt8(Tag, 2);
+	                head.writeUInt16BE(i, 3);
+	                var chunk = data.slice(i * blockSize, (i + 1) * blockSize);
+	                blocks.push(Buffer.concat([head, chunk]));
+	            }
+	            return blocks;
+	        },
+	        reduceResponse: function (acc, chunk) {
+	            var _a = acc || initialAcc, data = _a.data, dataLength = _a.dataLength, sequence = _a.sequence;
+	            if (chunk.readUInt16BE(0) !== channel) {
+	                throw new TransportError("Invalid channel", "InvalidChannel");
+	            }
+	            if (chunk.readUInt8(2) !== Tag) {
+	                throw new TransportError("Invalid tag", "InvalidTag");
+	            }
+	            if (chunk.readUInt16BE(3) !== sequence) {
+	                throw new TransportError("Invalid sequence", "InvalidSequence");
+	            }
+	            if (!acc) {
+	                dataLength = chunk.readUInt16BE(5);
+	            }
+	            sequence++;
+	            var chunkData = chunk.slice(acc ? 5 : 7);
+	            data = Buffer.concat([data, chunkData]);
+	            if (data.length > dataLength) {
+	                data = data.slice(0, dataLength);
+	            }
+	            return {
+	                data: data,
+	                dataLength: dataLength,
+	                sequence: sequence
+	            };
+	        },
+	        getReducedResult: function (acc) {
+	            if (acc && acc.dataLength === acc.data.length) {
+	                return acc.data;
+	            }
+	        }
+	    };
+	};
 
 	var re$3 = {exports: {}};
 
@@ -3374,7 +3188,7 @@
 	                                    case 0:
 	                                        _a = this, channel = _a.channel, packetSize = _a.packetSize;
 	                                        log("apdu", "=> " + apdu.toString("hex"));
-	                                        framing = hidFraming(channel, packetSize);
+	                                        framing = createHIDframing(channel, packetSize);
 	                                        blocks = framing.makeBlocks(apdu);
 	                                        i = 0;
 	                                        _b.label = 1;
@@ -3799,7 +3613,7 @@
 	                                    case 0:
 	                                        _a = this, channel = _a.channel, packetSize = _a.packetSize;
 	                                        log("apdu", "=> " + apdu.toString("hex"));
-	                                        framing = hidFraming(channel, packetSize);
+	                                        framing = createHIDframing(channel, packetSize);
 	                                        blocks = framing.makeBlocks(apdu);
 	                                        i = 0;
 	                                        _b.label = 1;
@@ -3915,7 +3729,7 @@
 		  name: '@polkadot/hw-ledger-transports',
 		  path: typeof __dirname === 'string' ? __dirname : 'auto',
 		  type: 'cjs',
-		  version: '10.1.1'
+		  version: '10.1.2'
 		};
 		packageInfo$1.packageInfo = packageInfo;
 		return packageInfo$1;
@@ -5472,7 +5286,7 @@
 	  name: '@polkadot/hw-ledger',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '10.1.1'
+	  version: '10.1.2'
 	};
 
 	class Ledger {
