@@ -22,7 +22,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.1'
+    version: '10.1.2'
   });
 
   function evaluateThis(fn) {
@@ -34,7 +34,7 @@
     name: '@polkadot/x-fetch',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.1'
+    version: '10.1.2'
   });
 
   const fetch = xglobal.fetch;
@@ -545,7 +545,7 @@
     name: '@polkadot/x-ws',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.1'
+    version: '10.1.2'
   });
 
   const WebSocket = xglobal.WebSocket;
@@ -1046,7 +1046,7 @@
     name: '@polkadot/api',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.14.1'
+    version: '9.0.1'
   };
 
   /*! *****************************************************************************
@@ -3543,7 +3543,7 @@
     name: '@polkadot/rpc-core',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.14.1'
+    version: '9.0.1'
   });
 
   const l$4 = util.logger('rpc-core');
@@ -4114,21 +4114,78 @@
     info: info$4
   });
 
+  function getInstance(api, section) {
+    const instances = api.registry.getModuleInstances(api.runtimeVersion.specName, section);
+    const name = instances && instances.length ? instances[0] : section;
+    return api.query[name];
+  }
+  function withSection(section, fn) {
+    return (instanceId, api) => memo(instanceId, fn(getInstance(api, section), api, instanceId));
+  }
+  function callMethod(method, empty) {
+    return section => withSection(section, query => () => util.isFunction(query === null || query === void 0 ? void 0 : query[method]) ? query[method]() : of(empty));
+  }
+
+  const members$5 = callMethod('members', []);
+
+  function prime$4(section) {
+    return withSection(section, query => () => util.isFunction(query === null || query === void 0 ? void 0 : query.prime) ? query.prime().pipe(map(o => o.unwrapOr(null))) : of(null));
+  }
+
+  function parse$4(api, [hashes, proposals, votes]) {
+    return proposals.map((o, index) => ({
+      hash: api.registry.createType('Hash', hashes[index]),
+      proposal: o && o.isSome ? o.unwrap() : null,
+      votes: votes[index].unwrapOr(null)
+    }));
+  }
+  function _proposalsFrom(api, query, hashes) {
+    return (util.isFunction(query === null || query === void 0 ? void 0 : query.proposals) && hashes.length ? combineLatest([of(hashes),
+    query.proposalOf.multi(hashes).pipe(catchError(() => of(hashes.map(() => null)))), query.voting.multi(hashes)]) : of([[], [], []])).pipe(map(r => parse$4(api, r)));
+  }
+  function hasProposals$4(section) {
+    return withSection(section, query => () => of(util.isFunction(query === null || query === void 0 ? void 0 : query.proposals)));
+  }
+  function proposals$6(section) {
+    return withSection(section, (query, api) => () => api.derive[section].proposalHashes().pipe(switchMap(all => _proposalsFrom(api, query, all))));
+  }
+  function proposal$4(section) {
+    return withSection(section, (query, api) => hash => util.isFunction(query === null || query === void 0 ? void 0 : query.proposals) ? firstObservable(_proposalsFrom(api, query, [hash])) : of(null));
+  }
+  const proposalCount$4 = callMethod('proposalCount', null);
+  const proposalHashes$4 = callMethod('proposals', []);
+
+  const members$4 = members$5('allianceMotion');
+  const hasProposals$3 = hasProposals$4('allianceMotion');
+  const proposal$3 = proposal$4('allianceMotion');
+  const proposalCount$3 = proposalCount$4('allianceMotion');
+  const proposalHashes$3 = proposalHashes$4('allianceMotion');
+  const proposals$5 = proposals$6('allianceMotion');
+  const prime$3 = prime$4('allianceMotion');
+
+  const alliance = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    members: members$4,
+    hasProposals: hasProposals$3,
+    proposal: proposal$3,
+    proposalCount: proposalCount$3,
+    proposalHashes: proposalHashes$3,
+    proposals: proposals$5,
+    prime: prime$3
+  });
+
   function orderBags(ids, bags) {
     const sorted = ids.map((id, index) => ({
       bag: bags[index].unwrapOr(null),
       id,
       key: id.toString()
-    })).sort((a, b) => b.id.cmp(a.id)).map((base, index) => ({ ...base,
-      bagLower: util.BN_ZERO,
-      bagUpper: base.id,
+    })).sort((a, b) => b.id.cmp(a.id));
+    const max = sorted.length - 1;
+    return sorted.map((entry, index) => util.objectSpread(entry, {
+      bagLower: index === max ? util.BN_ZERO : sorted[index + 1].id,
+      bagUpper: entry.id,
       index
     }));
-    const max = sorted.length - 1;
-    return sorted.map((entry, index) => index === max ? entry
-    : { ...entry,
-      bagLower: sorted[index + 1].bagUpper
-    });
   }
   function _getIds(instanceId, api) {
     return memo(instanceId, _ids => {
@@ -4148,9 +4205,9 @@
   }
 
   function expand(instanceId, api) {
-    return memo(instanceId, bag => api.derive.bagsList.listNodes(bag.bag).pipe(map(nodes => ({ ...bag,
+    return memo(instanceId, bag => api.derive.bagsList.listNodes(bag.bag).pipe(map(nodes => util.objectSpread({
       nodes
-    }))));
+    }, bag))));
   }
   function getExpanded(instanceId, api) {
     return memo(instanceId, id => api.derive.bagsList.get(id).pipe(switchMap(bag => api.derive.bagsList.expand(bag))));
@@ -4220,12 +4277,12 @@
       lockedBreakdown,
       vestingLocked
     } = calcLocked(api, bestNumber, locks);
-    return { ...data,
+    return util.objectSpread({}, data, {
       availableBalance: api.registry.createType('Balance', allLocked ? 0 : util.bnMax(new util.BN(0), data.freeBalance.sub(lockedBalance))),
       lockedBalance,
       lockedBreakdown,
       vestingLocked
-    };
+    });
   }
   function calcVesting(bestNumber, shared, _vesting) {
     const vesting = _vesting || [];
@@ -4261,13 +4318,12 @@
   }
   function calcBalances$1(api, [data, [vesting, allLocks, namedReserves], bestNumber]) {
     const shared = calcShared(api, bestNumber, data, allLocks[0]);
-    return { ...shared,
-      ...calcVesting(bestNumber, shared, vesting),
+    return util.objectSpread(shared, calcVesting(bestNumber, shared, vesting), {
       accountId: data.accountId,
       accountNonce: data.accountNonce,
-      additional: allLocks.filter((_, index) => index !== 0).map((l, index) => calcShared(api, bestNumber, data.additional[index], l)),
+      additional: allLocks.slice(1).map((l, index) => calcShared(api, bestNumber, data.additional[index], l)),
       namedReserves
-    };
+    });
   }
   function queryOld(api, accountId) {
     return combineLatest([api.query.balances.locks(accountId), api.query.balances.vesting(accountId)]).pipe(map(([locks, optVesting]) => {
@@ -4330,12 +4386,11 @@
     };
   }
   function calcBalances(api, [accountId, [accountNonce, [primary, ...additional]]]) {
-    return {
+    return util.objectSpread({
       accountId,
       accountNonce,
-      additional: additional.map(b => getBalance(api, b)),
-      ...getBalance(api, primary)
-    };
+      additional: additional.map(b => getBalance(api, b))
+    }, getBalance(api, primary));
   }
   function queryBalancesFree(api, accountId) {
     return combineLatest([api.query.balances.freeBalance(accountId), api.query.balances.reservedBalance(accountId), api.query.system.accountNonce(accountId)]).pipe(map(([freeBalance, reservedBalance, accountNonce]) => [accountNonce, [[freeBalance, reservedBalance, zeroBalance(api), zeroBalance(api)]]]));
@@ -4629,47 +4684,6 @@
     fees: fees
   });
 
-  function getInstance(api, section) {
-    const instances = api.registry.getModuleInstances(api.runtimeVersion.specName, section);
-    const name = instances && instances.length ? instances[0] : section;
-    return api.query[name];
-  }
-  function withSection(section, fn) {
-    return (instanceId, api) => memo(instanceId, fn(getInstance(api, section), api, instanceId));
-  }
-  function callMethod(method, empty) {
-    return section => withSection(section, query => () => util.isFunction(query === null || query === void 0 ? void 0 : query[method]) ? query[method]() : of(empty));
-  }
-
-  const members$4 = callMethod('members', []);
-
-  function prime$3(section) {
-    return withSection(section, query => () => util.isFunction(query === null || query === void 0 ? void 0 : query.prime) ? query.prime().pipe(map(o => o.unwrapOr(null))) : of(null));
-  }
-
-  function parse$4(api, [hashes, proposals, votes]) {
-    return proposals.map((o, index) => ({
-      hash: api.registry.createType('Hash', hashes[index]),
-      proposal: o && o.isSome ? o.unwrap() : null,
-      votes: votes[index].unwrapOr(null)
-    }));
-  }
-  function _proposalsFrom(api, query, hashes) {
-    return (util.isFunction(query === null || query === void 0 ? void 0 : query.proposals) && hashes.length ? combineLatest([of(hashes),
-    query.proposalOf.multi(hashes).pipe(catchError(() => of(hashes.map(() => null)))), query.voting.multi(hashes)]) : of([[], [], []])).pipe(map(r => parse$4(api, r)));
-  }
-  function hasProposals$3(section) {
-    return withSection(section, query => () => of(util.isFunction(query === null || query === void 0 ? void 0 : query.proposals)));
-  }
-  function proposals$5(section) {
-    return withSection(section, (query, api) => () => api.derive[section].proposalHashes().pipe(switchMap(all => _proposalsFrom(api, query, all))));
-  }
-  function proposal$3(section) {
-    return withSection(section, (query, api) => hash => util.isFunction(query === null || query === void 0 ? void 0 : query.proposals) ? firstObservable(_proposalsFrom(api, query, [hash])) : of(null));
-  }
-  const proposalCount$3 = callMethod('proposalCount', null);
-  const proposalHashes$3 = callMethod('proposals', []);
-
   function isVoter(value) {
     return !Array.isArray(value);
   }
@@ -4729,13 +4743,13 @@
     }])[1])));
   }
 
-  const members$3 = members$4('council');
-  const hasProposals$2 = hasProposals$3('council');
-  const proposal$2 = proposal$3('council');
-  const proposalCount$2 = proposalCount$3('council');
-  const proposalHashes$2 = proposalHashes$3('council');
-  const proposals$4 = proposals$5('council');
-  const prime$2 = prime$3('council');
+  const members$3 = members$5('council');
+  const hasProposals$2 = hasProposals$4('council');
+  const proposal$2 = proposal$4('council');
+  const proposalCount$2 = proposalCount$4('council');
+  const proposalHashes$2 = proposalHashes$4('council');
+  const proposals$4 = proposals$6('council');
+  const prime$2 = prime$4('council');
 
   const council = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -4868,7 +4882,7 @@
   }
 
   function _getValues(api, childKey, keys) {
-    return combineLatest(keys.map(k => api.rpc.childstate.getStorage(childKey, k))).pipe(map(values => values.map(v => api.registry.createType('Option<StorageData>', v)).map(o => o.isSome ? api.registry.createType('Balance', o.unwrap()) : api.registry.createType('Balance')).reduce((all, b, index) => ({ ...all,
+    return combineLatest(keys.map(k => api.rpc.childstate.getStorage(childKey, k))).pipe(map(values => values.map(v => api.registry.createType('Option<StorageData>', v)).map(o => o.isSome ? api.registry.createType('Balance', o.unwrap()) : api.registry.createType('Balance')).reduce((all, b, index) => util.objectSpread(all, {
       [keys[index]]: b
     }), {})));
   }
@@ -4880,9 +4894,7 @@
     }), startWith({}));
   }
   function _contributions(api, paraId, childKey, keys) {
-    return combineLatest([_getValues(api, childKey, keys), _watchOwnChanges(api, paraId, childKey, keys)]).pipe(map(([all, latest]) => ({ ...all,
-      ...latest
-    })));
+    return combineLatest([_getValues(api, childKey, keys), _watchOwnChanges(api, paraId, childKey, keys)]).pipe(map(([all, latest]) => util.objectSpread({}, all, latest)));
   }
   function ownContributions(instanceId, api) {
     return memo(instanceId, (paraId, keys) => api.derive.crowdloan.childKey(paraId).pipe(switchMap(childKey => childKey && keys.length ? _contributions(api, paraId, childKey, keys) : of({}))));
@@ -4938,9 +4950,9 @@
       return combineLatest([of(result), result.length ? api.derive.democracy.preimages(result.map(({
         imageHash
       }) => imageHash)) : of([])]);
-    }), map(([infos, images]) => infos.map((info, index) => ({ ...info,
+    }), map(([infos, images]) => infos.map((info, index) => util.objectSpread({
       image: images[index]
-    }))));
+    }, info))));
   }
   function dispatchQueue(instanceId, api) {
     return memo(instanceId, () => {
@@ -5079,18 +5091,18 @@
       return !!((_optDepositors$index = optDepositors[index]) !== null && _optDepositors$index !== void 0 && _optDepositors$index.isSome) && !proposer.isEmpty;
     }).map(([index, imageHash, proposer], proposalIndex) => {
       const depositors = optDepositors[proposalIndex].unwrap();
-      return { ...(isNewDepositors(depositors) ? {
-          balance: depositors[1],
-          seconds: depositors[0]
-        } : {
-          balance: depositors[0],
-          seconds: depositors[1]
-        }),
+      return util.objectSpread({
         image: images[proposalIndex],
         imageHash,
         index,
         proposer
-      };
+      }, isNewDepositors(depositors) ? {
+        balance: depositors[1],
+        seconds: depositors[0]
+      } : {
+        balance: depositors[0],
+        seconds: depositors[1]
+      });
     });
   }
   function proposals$3(instanceId, api) {
@@ -5109,9 +5121,7 @@
   }
 
   function referendums(instanceId, api) {
-    return memo(instanceId, () => api.derive.democracy.referendumsActive().pipe(switchMap(referendums => referendums.length ? combineLatest([of(referendums), api.derive.democracy._referendumsVotes(referendums)]) : of([[], []])), map(([referendums, votes]) => referendums.map((referendum, index) => ({ ...referendum,
-      ...votes[index]
-    })))));
+    return memo(instanceId, () => api.derive.democracy.referendumsActive().pipe(switchMap(referendums => referendums.length ? combineLatest([of(referendums), api.derive.democracy._referendumsVotes(referendums)]) : of([[], []])), map(([referendums, votes]) => referendums.map((referendum, index) => util.objectSpread({}, referendum, votes[index])))));
   }
 
   function referendumsActive(instanceId, api) {
@@ -5215,10 +5225,10 @@
   }
   function calcVotes(sqrtElectorate, referendum, votes) {
     const state = isCurrentStatus(referendum.status) ? calcVotesCurrent(referendum.status.tally, votes) : calcVotesPrev(votes);
-    return { ...state,
+    return util.objectSpread({}, state, {
       isPassing: calcPassing(referendum.status.threshold, sqrtElectorate, state),
       votes
-    };
+    });
   }
   function getStatus(info) {
     if (info.isNone) {
@@ -5241,11 +5251,10 @@
     return mapped.filter(([, voting]) => voting.isDirect).map(([accountId, voting]) => [accountId, voting.asDirect.votes.filter(([idx]) => idx.eq(referendumId))]).filter(([, directVotes]) => !!directVotes.length).reduce((result, [accountId, votes]) =>
     votes.reduce((result, [, vote]) => {
       if (vote.isStandard) {
-        result.push({
+        result.push(util.objectSpread({
           accountId,
-          isDelegating: false,
-          ...vote.asStandard
-        });
+          isDelegating: false
+        }, vote.asStandard));
       }
       return result;
     }, result), []);
@@ -5363,7 +5372,7 @@
   function info$3(instanceId, api) {
     return memo(instanceId, () => {
       const [council, elections] = getModules(api);
-      return (elections ? queryAll(api, council, elections) : queryCouncil(api, council)).pipe(map(([councilMembers, candidates, members, runnersUp]) => ({ ...getConstants(api, elections),
+      return (elections ? queryAll(api, council, elections) : queryCouncil(api, council)).pipe(map(([councilMembers, candidates, members, runnersUp]) => util.objectSpread({}, getConstants(api, elections), {
         candidateCount: api.registry.createType('u32', candidates.length),
         candidates: candidates.map(getCandidate),
         members: members.length ? members.map(getAccountTuple).sort(sortAccounts) : councilMembers.map(a => [a, api.registry.createType('Balance')]),
@@ -5408,13 +5417,13 @@
     receivedHeartbeats: receivedHeartbeats
   });
 
-  const members$2 = members$4('membership');
-  const hasProposals$1 = hasProposals$3('membership');
-  const proposal$1 = proposal$3('membership');
-  const proposalCount$1 = proposalCount$3('membership');
-  const proposalHashes$1 = proposalHashes$3('membership');
-  const proposals$2 = proposals$5('membership');
-  const prime$1 = prime$3('membership');
+  const members$2 = members$5('membership');
+  const hasProposals$1 = hasProposals$4('membership');
+  const proposal$1 = proposal$4('membership');
+  const proposalCount$1 = proposalCount$4('membership');
+  const proposalHashes$1 = proposalHashes$4('membership');
+  const proposals$2 = proposals$6('membership');
+  const prime$1 = prime$4('membership');
 
   const membership = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -5435,16 +5444,15 @@
     const found = active.find(([paraId]) => paraId === id);
     if (found && found[1].isSome) {
       const [collatorId, retriable] = found[1].unwrap();
-      return {
-        collatorId,
-        ...(retriable.isWithRetries ? {
-          isRetriable: true,
-          retries: retriable.asWithRetries.toNumber()
-        } : {
-          isRetriable: false,
-          retries: 0
-        })
-      };
+      return util.objectSpread({
+        collatorId
+      }, retriable.isWithRetries ? {
+        isRetriable: true,
+        retries: retriable.asWithRetries.toNumber()
+      } : {
+        isRetriable: false,
+        retries: 0
+      });
     }
     return null;
   }
@@ -5463,10 +5471,9 @@
       didUpdate: didUpdateToBool(didUpdate, id),
       heads,
       id,
-      info: {
-        id,
-        ...info.unwrap()
-      },
+      info: util.objectSpread({
+        id
+      }, info.unwrap()),
       pendingSwapId: pendingSwap.unwrapOr(null),
       relayDispatchQueue,
       retryCollators: parseCollators(id, retryQueue),
@@ -5481,10 +5488,9 @@
     return ids.map((id, index) => ({
       didUpdate: didUpdateToBool(didUpdate, id),
       id,
-      info: {
-        id,
-        ...infos[index].unwrapOr(null)
-      },
+      info: util.objectSpread({
+        id
+      }, infos[index].unwrapOr(null)),
       pendingSwapId: pendingSwaps[index].unwrapOr(null),
       relayDispatchQueueSize: relayDispatchQueueSizes[index][0].toNumber()
     }));
@@ -5535,12 +5541,12 @@
       var _api$consts, _api$consts$babe, _api$consts2, _api$consts2$staking;
       const sessionLength = ((_api$consts = api.consts) === null || _api$consts === void 0 ? void 0 : (_api$consts$babe = _api$consts.babe) === null || _api$consts$babe === void 0 ? void 0 : _api$consts$babe.epochDuration) || api.registry.createType('u64', 1);
       const sessionsPerEra = ((_api$consts2 = api.consts) === null || _api$consts2 === void 0 ? void 0 : (_api$consts2$staking = _api$consts2.staking) === null || _api$consts2$staking === void 0 ? void 0 : _api$consts2$staking.sessionsPerEra) || api.registry.createType('SessionIndex', 1);
-      return { ...indexes,
+      return util.objectSpread({
         eraLength: api.registry.createType('BlockNumber', sessionsPerEra.mul(sessionLength)),
         isEpoch: !!api.query.babe,
         sessionLength,
         sessionsPerEra
-      };
+      }, indexes);
     })));
   }
 
@@ -5551,16 +5557,16 @@
     const epochStartSlot = epochIndex.mul(info.sessionLength).iadd(epochOrGenesisStartSlot);
     const sessionProgress = currentSlot.sub(epochStartSlot);
     const eraProgress = info.currentIndex.sub(activeEraStartSessionIndex).imul(info.sessionLength).iadd(sessionProgress);
-    return { ...info,
+    return util.objectSpread({
       eraProgress: api.registry.createType('BlockNumber', eraProgress),
       sessionProgress: api.registry.createType('BlockNumber', sessionProgress)
-    };
+    }, info);
   }
   function queryAura(api) {
-    return api.derive.session.info().pipe(map(info => ({ ...info,
+    return api.derive.session.info().pipe(map(info => util.objectSpread({
       eraProgress: api.registry.createType('BlockNumber'),
       sessionProgress: api.registry.createType('BlockNumber')
-    })));
+    }, info)));
   }
   function queryBabe(api) {
     return api.derive.session.info().pipe(switchMap(info => {
@@ -5675,11 +5681,10 @@
     }, new util.BN(0)));
   }
   function parseResult$1(api, sessionInfo, keys, query) {
-    return { ...keys,
-      ...query,
+    return util.objectSpread({}, keys, query, {
       redeemable: redeemableSum(api, query.stakingLedger, sessionInfo),
       unlocking: calculateUnlocking(api, query.stakingLedger, sessionInfo)
-    };
+    });
   }
   function accounts(instanceId, api) {
     return memo(instanceId, (accountIds, opts = QUERY_OPTS) => api.derive.session.info().pipe(switchMap(sessionInfo => combineLatest([api.derive.staking.keysMulti(accountIds), api.derive.staking.queryMulti(accountIds, opts)]).pipe(map(([keys, queries]) => queries.map((q, index) => parseResult$1(api, sessionInfo, keys[index], q)))))));
@@ -5936,7 +5941,7 @@
     return memo(instanceId, () => combineLatest([api.derive.session.indexes(), api.derive.staking.validators()]).pipe(map(([indexes, {
       nextElected,
       validators
-    }]) => ({ ...indexes,
+    }]) => util.objectSpread({}, indexes, {
       nextElected,
       validators
     }))));
@@ -6181,7 +6186,7 @@
       return true;
     }).filter(({
       validators
-    }) => Object.keys(validators).length !== 0).map(reward => ({ ...reward,
+    }) => Object.keys(validators).length !== 0).map(reward => util.objectSpread({}, reward, {
       nominators: reward.nominating.filter(n => reward.validators[n.validatorId])
     }));
   }
@@ -6344,13 +6349,13 @@
     waitingInfo: waitingInfo
   });
 
-  const members = members$4('technicalCommittee');
-  const hasProposals = hasProposals$3('technicalCommittee');
-  const proposal = proposal$3('technicalCommittee');
-  const proposalCount = proposalCount$3('technicalCommittee');
-  const proposalHashes = proposalHashes$3('technicalCommittee');
-  const proposals$1 = proposals$5('technicalCommittee');
-  const prime = prime$3('technicalCommittee');
+  const members = members$5('technicalCommittee');
+  const hasProposals = hasProposals$4('technicalCommittee');
+  const proposal = proposal$4('technicalCommittee');
+  const proposalCount = proposalCount$4('technicalCommittee');
+  const proposalHashes = proposalHashes$4('technicalCommittee');
+  const proposals$1 = proposals$6('technicalCommittee');
+  const prime = prime$4('technicalCommittee');
 
   const technicalCommittee = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -6477,6 +6482,7 @@
 
   const derive = {
     accounts: accounts$1,
+    alliance,
     bagsList,
     balances,
     bounties,
@@ -6498,6 +6504,10 @@
   };
 
   const checks = {
+    allianceMotion: {
+      instances: ['allianceMotion'],
+      methods: []
+    },
     bagsList: {
       instances: ['voterList', 'bagsList'],
       methods: [],
@@ -6791,10 +6801,6 @@
       send(statusCb) {
         const isSubscription = api.hasSubscriptions && (this.#ignoreStatusCb || !!statusCb);
         return decorateMethod(isSubscription ? this.#observeSubscribe : this.#observeSend)(statusCb);
-      }
-      sign(account, partialOptions) {
-        super.sign(account, makeSignOptions(api, optionsOrNonce(partialOptions), {}));
-        return this;
       }
       signAsync(account, partialOptions) {
         return decorateMethod(() => this.#observeSign(account, partialOptions).pipe(mapTo(this)))();
@@ -7391,11 +7397,11 @@
     westmint: versioned$1
   };
 
-  const upgrades$3 = [[0, 1020], [26669, 1021], [38245, 1022], [54248, 1023], [59659, 1024], [67651, 1025], [82191, 1027], [83238, 1028], [101503, 1029], [203466, 1030], [295787, 1031], [461692, 1032], [504329, 1033], [569327, 1038], [587687, 1039], [653183, 1040], [693488, 1042], [901442, 1045], [1375086, 1050], [1445458, 1051], [1472960, 1052], [1475648, 1053], [1491596, 1054], [1574408, 1055], [2064961, 1058], [2201991, 1062], [2671528, 2005], [2704202, 2007], [2728002, 2008], [2832534, 2011], [2962294, 2012], [3240000, 2013], [3274408, 2015], [3323565, 2019], [3534175, 2022], [3860281, 2023], [4143129, 2024], [4401242, 2025], [4841367, 2026], [5961600, 2027], [6137912, 2028], [6561855, 2029], [7100891, 2030], [7468792, 9010], [7668600, 9030], [7812476, 9040], [8010981, 9050], [8073833, 9070], [8555825, 9080], [8945245, 9090], [9611377, 9100], [9625129, 9111], [9866422, 9122], [10403784, 9130], [10960765, 9150], [11006614, 9151], [11404482, 9160], [11601803, 9170], [12008022, 9180], [12405451, 9190], [12665416, 9200], [12909508, 9220], [13109752, 9230], [13555777, 9250]];
+  const upgrades$3 = [[0, 1020], [26669, 1021], [38245, 1022], [54248, 1023], [59659, 1024], [67651, 1025], [82191, 1027], [83238, 1028], [101503, 1029], [203466, 1030], [295787, 1031], [461692, 1032], [504329, 1033], [569327, 1038], [587687, 1039], [653183, 1040], [693488, 1042], [901442, 1045], [1375086, 1050], [1445458, 1051], [1472960, 1052], [1475648, 1053], [1491596, 1054], [1574408, 1055], [2064961, 1058], [2201991, 1062], [2671528, 2005], [2704202, 2007], [2728002, 2008], [2832534, 2011], [2962294, 2012], [3240000, 2013], [3274408, 2015], [3323565, 2019], [3534175, 2022], [3860281, 2023], [4143129, 2024], [4401242, 2025], [4841367, 2026], [5961600, 2027], [6137912, 2028], [6561855, 2029], [7100891, 2030], [7468792, 9010], [7668600, 9030], [7812476, 9040], [8010981, 9050], [8073833, 9070], [8555825, 9080], [8945245, 9090], [9611377, 9100], [9625129, 9111], [9866422, 9122], [10403784, 9130], [10960765, 9150], [11006614, 9151], [11404482, 9160], [11601803, 9170], [12008022, 9180], [12405451, 9190], [12665416, 9200], [12909508, 9220], [13109752, 9230], [13555777, 9250], [13727747, 9260]];
 
-  const upgrades$2 = [[0, 0], [29231, 1], [188836, 5], [199405, 6], [214264, 7], [244358, 8], [303079, 9], [314201, 10], [342400, 11], [443963, 12], [528470, 13], [687751, 14], [746085, 15], [787923, 16], [799302, 17], [1205128, 18], [1603423, 23], [1733218, 24], [2005673, 25], [2436698, 26], [3613564, 27], [3899547, 28], [4345767, 29], [4876134, 30], [5661442, 9050], [6321619, 9080], [6713249, 9090], [7217907, 9100], [7229126, 9110], [7560558, 9122], [8115869, 9140], [8638103, 9151], [9280179, 9170], [9738717, 9180], [10156856, 9190], [10458576, 9200], [10655116, 9220]];
+  const upgrades$2 = [[0, 0], [29231, 1], [188836, 5], [199405, 6], [214264, 7], [244358, 8], [303079, 9], [314201, 10], [342400, 11], [443963, 12], [528470, 13], [687751, 14], [746085, 15], [787923, 16], [799302, 17], [1205128, 18], [1603423, 23], [1733218, 24], [2005673, 25], [2436698, 26], [3613564, 27], [3899547, 28], [4345767, 29], [4876134, 30], [5661442, 9050], [6321619, 9080], [6713249, 9090], [7217907, 9100], [7229126, 9110], [7560558, 9122], [8115869, 9140], [8638103, 9151], [9280179, 9170], [9738717, 9180], [10156856, 9190], [10458576, 9200], [10655116, 9220], [10879371, 9230], [11328884, 9250]];
 
-  const upgrades$1 = [[214356, 4], [392764, 7], [409740, 8], [809976, 20], [877581, 24], [879238, 25], [889472, 26], [902937, 27], [932751, 28], [991142, 29], [1030162, 31], [1119657, 32], [1199282, 33], [1342534, 34], [1392263, 35], [1431703, 36], [1433369, 37], [1490972, 41], [2087397, 43], [2316688, 44], [2549864, 45], [3925782, 46], [3925843, 47], [4207800, 48], [4627944, 49], [5124076, 50], [5478664, 900], [5482450, 9000], [5584305, 9010], [5784566, 9030], [5879822, 9031], [5896856, 9032], [5897316, 9033], [6117927, 9050], [6210274, 9070], [6379314, 9080], [6979141, 9090], [7568453, 9100], [7766394, 9111], [7911691, 9120], [7968866, 9121], [7982889, 9122], [8514322, 9130], [9091726, 9140], [9091774, 9150], [9406726, 9160], [9921066, 9170], [10007115, 9180], [10480973, 9190], [10578091, 9200], [10678509, 9210], [10811001, 9220], [11096116, 9230], [11409279, 9250]];
+  const upgrades$1 = [[214356, 4], [392764, 7], [409740, 8], [809976, 20], [877581, 24], [879238, 25], [889472, 26], [902937, 27], [932751, 28], [991142, 29], [1030162, 31], [1119657, 32], [1199282, 33], [1342534, 34], [1392263, 35], [1431703, 36], [1433369, 37], [1490972, 41], [2087397, 43], [2316688, 44], [2549864, 45], [3925782, 46], [3925843, 47], [4207800, 48], [4627944, 49], [5124076, 50], [5478664, 900], [5482450, 9000], [5584305, 9010], [5784566, 9030], [5879822, 9031], [5896856, 9032], [5897316, 9033], [6117927, 9050], [6210274, 9070], [6379314, 9080], [6979141, 9090], [7568453, 9100], [7766394, 9111], [7911691, 9120], [7968866, 9121], [7982889, 9122], [8514322, 9130], [9091726, 9140], [9091774, 9150], [9406726, 9160], [9921066, 9170], [10007115, 9180], [10480973, 9190], [10578091, 9200], [10678509, 9210], [10811001, 9220], [11096116, 9230], [11409279, 9250], [11584820, 9251], [11716837, 9260], [11876919, 9261]];
 
   const allKnown = {
     kusama: upgrades$3,
@@ -7534,22 +7540,17 @@
       const section = dstSections[s];
       const srcMethods = Object.keys(src[section]);
       const dstMethods = Object.keys(dst[section]);
-      excludes.push(...dstMethods.filter(m => !srcMethods.includes(m)).map(m => `${section}.${m}`));
+      for (let d = 0; d < dstMethods.length; d++) {
+        const method = dstMethods[d];
+        if (!srcMethods.includes(method)) {
+          excludes.push(`${section}.${method}`);
+        }
+      }
     }
     return excludes;
   }
   function extractMethods(src, dst) {
     return [findMethodExcludes(dst, src), findMethodExcludes(src, dst)];
-  }
-  function lazySection(src, dst) {
-    const creator = m => src[m];
-    const methods = Object.keys(src);
-    for (let i = 0; i < methods.length; i++) {
-      const method = methods[i];
-      if (!Object.prototype.hasOwnProperty.call(dst, method)) {
-        util.lazyMethod(dst, method, creator);
-      }
-    }
   }
   function augmentObject(prefix, src, dst, fromEmpty = false) {
     fromEmpty && util.objectClear(dst);
@@ -7560,10 +7561,11 @@
     const sections = Object.keys(src);
     for (let i = 0; i < sections.length; i++) {
       const section = sections[i];
+      const methods = src[section];
       if (!dst[section]) {
         dst[section] = {};
       }
-      lazySection(src[section], dst[section]);
+      util.lazyMethods(dst[section], Object.keys(methods), m => methods[m]);
     }
     return dst;
   }
@@ -7640,6 +7642,7 @@
     _query = {};
     _runtimeMap = {};
     _rx = {
+      call: {},
       consts: {},
       query: {},
       tx: {}
@@ -7683,6 +7686,7 @@
         query: {},
         registry,
         rx: {
+          call: {},
           query: {}
         },
         tx: createSubmittable(this._type, this._rx, this._decorateMethod, registry, blockHash)
@@ -7696,6 +7700,7 @@
         registry.decoratedMeta = types.expandMetadata(registry.registry, registry.metadata);
       }
       const runtime = this._decorateCalls(registry, this._decorateMethod, blockHash);
+      const runtimeRx = this._decorateCalls(registry, this._rxDecorateMethod, blockHash);
       const storage = this._decorateStorage(registry.decoratedMeta, this._decorateMethod, blockHash);
       const storageRx = this._decorateStorage(registry.decoratedMeta, this._rxDecorateMethod, blockHash);
       augmentObject('consts', registry.decoratedMeta.consts, decoratedApi.consts, fromEmpty);
@@ -7704,6 +7709,7 @@
       augmentObject('query', storage, decoratedApi.query, fromEmpty);
       augmentObject('query', storageRx, decoratedApi.rx.query, fromEmpty);
       augmentObject('call', runtime, decoratedApi.call, fromEmpty);
+      augmentObject('call', runtimeRx, decoratedApi.rx.call, fromEmpty);
       decoratedApi.findCall = callIndex => findCall(registry.registry, callIndex);
       decoratedApi.findError = errorIndex => findError(registry.registry, errorIndex);
       decoratedApi.queryMulti = blockHash ? this._decorateMultiAt(decoratedApi, this._decorateMethod, blockHash) : this._decorateMulti(this._decorateMethod);
@@ -7726,6 +7732,7 @@
       this._errors = decoratedApi.errors;
       this._events = decoratedApi.events;
       this._query = decoratedApi.query;
+      this._rx.call = decoratedApi.rx.call;
       this._rx.query = decoratedApi.rx.query;
       const tx = this._decorateExtrinsics(decoratedMeta, this._decorateMethod);
       const rxtx = this._decorateExtrinsics(decoratedMeta, this._rxDecorateMethod);
@@ -8008,7 +8015,6 @@
       decorated.is = key => key.section === creator.section && key.method === creator.method;
       decorated.key = (...args) => util.u8aToHex(util.compactStripLength(creator(...args))[1]);
       decorated.keyPrefix = (...args) => util.u8aToHex(creator.keyPrefix(...args));
-      decorated.range = decorateMethod((range, ...args) => this._decorateStorageRange(decorated, args, range));
       decorated.size = decorateMethod((...args) => this._rpcCore.state.getStorageSize(getArgs(args)));
       decorated.sizeAt = decorateMethod((blockHash, ...args) => getQueryAt(blockHash).pipe(switchMap(q => this._rpcCore.state.getStorageSize(getArgs(args, q.creator.meta.registry), blockHash))));
       if (creator.iterKey && creator.meta.type.isMap) {
@@ -8076,10 +8082,6 @@
         methodName: creator.method,
         overrideNoSub: (...args) => this._queueStorage(extractStorageArgs(this.#registry, creator, args), this.#storageGetQ)
       });
-    }
-    _decorateStorageRange(decorated, args, range) {
-      const outputType = types.unwrapStorageType(this.#registry, decorated.creator.meta.type, decorated.creator.meta.modifier.isOptional);
-      return this._rpcCore.state.queryStorage([decorated.key(...args)], ...range).pipe(map(result => result.map(([blockHash, [value]]) => [blockHash, this.createType(outputType, value.isSome ? value.unwrap().toHex() : undefined)])));
     }
     _retrieveMulti(keys, blockHash) {
       if (!keys.length) {

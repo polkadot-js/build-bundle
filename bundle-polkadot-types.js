@@ -5939,31 +5939,33 @@
       }
     }
     static with(Types) {
-      const keys = Array.isArray(Types) ? Types : Object.keys(Types);
-      const asKeys = new Array(keys.length);
-      const isKeys = new Array(keys.length);
-      for (let i = 0; i < keys.length; i++) {
-        const name = util.stringPascalCase(keys[i]);
-        asKeys[i] = `as${name}`;
-        isKeys[i] = `is${name}`;
-      }
+      var _class;
       let definition;
       const setDefinition = d => definition = d;
-      return class extends Enum {
+      return _class = class extends Enum {
         constructor(registry, value, index) {
           super(registry, Types, value, index, {
             definition,
             setDefinition
           });
-          util.objectProperties(this, isKeys, (_, i) => this.type === keys[i]);
-          util.objectProperties(this, asKeys, (k, i) => {
-            if (!this[isKeys[i]]) {
-              throw new Error(`Cannot convert '${this.type}' via ${k}`);
-            }
-            return this.value;
-          });
         }
-      };
+      }, (() => {
+        const keys = Array.isArray(Types) ? Types : Object.keys(Types);
+        const asKeys = new Array(keys.length);
+        const isKeys = new Array(keys.length);
+        for (let i = 0; i < keys.length; i++) {
+          const name = util.stringPascalCase(keys[i]);
+          asKeys[i] = `as${name}`;
+          isKeys[i] = `is${name}`;
+        }
+        util.objectProperties(_class.prototype, isKeys, (_, i, self) => self.type === keys[i]);
+        util.objectProperties(_class.prototype, asKeys, (k, i, self) => {
+          if (self.type !== keys[i]) {
+            throw new Error(`Cannot convert '${self.type}' via ${k}`);
+          }
+          return self.value;
+        });
+      })(), _class;
     }
     get encodedLength() {
       return 1 + this.#raw.encodedLength;
@@ -5985,9 +5987,6 @@
     }
     get isNone() {
       return this.#raw instanceof Null;
-    }
-    get isNull() {
-      return this.isNone;
     }
     get defIndexes() {
       return this.#indexes;
@@ -6257,9 +6256,6 @@
       }
       return this.value;
     }
-    get asError() {
-      return this.asErr;
-    }
     get asOk() {
       if (!this.isOk) {
         throw new Error('Cannot extract Ok value from Err result, check isOk first');
@@ -6271,9 +6267,6 @@
     }
     get isErr() {
       return !this.isOk;
-    }
-    get isError() {
-      return this.isErr;
     }
     get isOk() {
       return this.index === 0;
@@ -6670,24 +6663,23 @@
       this.#Types = typeMap;
     }
     static with(Types, jsonMap) {
-      const keys = Object.keys(Types);
+      var _class;
       let definition;
       const setDefinition = d => definition = d;
-      return class extends Struct {
+      return _class = class extends Struct {
         constructor(registry, value) {
           super(registry, Types, value, jsonMap, {
             definition,
             setDefinition
           });
-          util.objectProperties(this, keys, k => this.get(k));
         }
-      };
+      }, (() => {
+        const keys = Object.keys(Types);
+        util.objectProperties(_class.prototype, keys, (k, _, self) => self.get(k));
+      })(), _class;
     }
     get defKeys() {
       return this.#Types[1];
-    }
-    getT(key) {
-      return this.get(key);
     }
     get isEmpty() {
       for (const v of this.values()) {
@@ -6696,14 +6688,6 @@
         }
       }
       return true;
-    }
-    get Type() {
-      const result = {};
-      const [Types, keys] = this.#Types;
-      for (let i = 0; i < keys.length; i++) {
-        result[keys[i]] = new Types[i](this.registry).toRawType();
-      }
-      return result;
     }
     get encodedLength() {
       let total = 0;
@@ -6715,14 +6699,25 @@
     get hash() {
       return this.registry.hash(this.toU8a());
     }
+    get Type() {
+      const result = {};
+      const [Types, keys] = this.#Types;
+      for (let i = 0; i < keys.length; i++) {
+        result[keys[i]] = new Types[i](this.registry).toRawType();
+      }
+      return result;
+    }
     eq(other) {
       return compareMap(this, other);
     }
-    get(name) {
-      return super.get(name);
+    get(key) {
+      return super.get(key);
     }
     getAtIndex(index) {
       return this.toArray()[index];
+    }
+    getT(key) {
+      return super.get(key);
     }
     inspect(isBare) {
       const inner = new Array();
@@ -7618,17 +7613,19 @@
       this.#byteLength = bitLength / 8;
     }
     static with(values, bitLength) {
-      const keys = Object.keys(values);
-      const isKeys = new Array(keys.length);
-      for (let i = 0; i < keys.length; i++) {
-        isKeys[i] = `is${util.stringPascalCase(keys[i])}`;
-      }
-      return class extends CodecSet {
+      var _class;
+      return _class = class extends CodecSet {
         constructor(registry, value) {
           super(registry, values, value, bitLength);
-          util.objectProperties(this, isKeys, (_, i) => this.strings.includes(keys[i]));
         }
-      };
+      }, (() => {
+        const keys = Object.keys(values);
+        const isKeys = new Array(keys.length);
+        for (let i = 0; i < keys.length; i++) {
+          isKeys[i] = `is${util.stringPascalCase(keys[i])}`;
+        }
+        util.objectProperties(_class.prototype, isKeys, (_, i, self) => self.strings.includes(keys[i]));
+      })(), _class;
     }
     get encodedLength() {
       return this.#byteLength;
@@ -11372,7 +11369,7 @@
     const result = {};
     const variants = lookup.getSiType(type).def.asVariant.variants;
     for (let i = 0; i < variants.length; i++) {
-      util.lazyMethod(result, variants[i], creator, getName);
+      util.lazyMethod(result, variants[i], creator, getName, i);
     }
     return result;
   }
@@ -15808,7 +15805,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '8.14.1'
+    version: '9.0.1'
   };
 
   exports.BTreeMap = BTreeMap;
