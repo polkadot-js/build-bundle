@@ -10,7 +10,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.2'
+    version: '10.1.3'
   };
 
   function evaluateThis(fn) {
@@ -38,7 +38,7 @@
     name: '@polkadot/x-bigint',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.2'
+    version: '10.1.3'
   });
 
   const BigInt$1 = typeof xglobal.BigInt === 'function' && typeof xglobal.BigInt.asIntN === 'function' ? xglobal.BigInt : () => Number.NaN;
@@ -1048,7 +1048,7 @@
     name: '@polkadot/x-randomvalues',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.1.2'
+    version: '10.1.3'
   };
   packageInfo$4.packageInfo = packageInfo$3;
 
@@ -1699,7 +1699,9 @@
   const cryptoIsReady = isReady;
   function cryptoWaitReady() {
     return waitReady().then(() => {
-      util.assert(isReady(), 'Unable to initialize @polkadot/util-crypto');
+      if (!isReady()) {
+        throw new Error('Unable to initialize @polkadot/util-crypto');
+      }
       return true;
     }).catch(() => false);
   }
@@ -2293,7 +2295,7 @@
     name: '@polkadot/util-crypto',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.2'
+    version: '10.1.3'
   };
 
   /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
@@ -2707,12 +2709,16 @@
     type
   }) {
     return (value, ipfsCompat) => {
-      util.assert(value && typeof value === 'string', () => `Expected non-null, non-empty ${type} string input`);
-      if (ipfs && ipfsCompat) {
-        util.assert(value[0] === ipfs, () => `Expected ipfs-compatible ${type} to start with '${ipfs}'`);
+      if (!value || typeof value !== 'string') {
+        throw new Error(`Expected non-null, non-empty ${type} string input`);
+      }
+      if (ipfs && ipfsCompat && value[0] !== ipfs) {
+        throw new Error(`Expected ipfs-compatible ${type} to start with '${ipfs}'`);
       }
       for (let i = ipfsCompat ? 1 : 0; i < value.length; i++) {
-        util.assert(chars.includes(value[i]) || value[i] === '=' && (i === value.length - 1 || !chars.includes(value[i + 1])), () => `Invalid ${type} character "${value[i]}" (0x${value.charCodeAt(i).toString(16)}) at index ${i}`);
+        if (!(chars.includes(value[i]) || value[i] === '=' && (i === value.length - 1 || !chars.includes(value[i + 1])))) {
+          throw new Error(`Invalid ${type} character "${value[i]}" (0x${value.charCodeAt(i).toString(16)}) at index ${i}`);
+        }
       }
       return true;
     };
@@ -4500,7 +4506,7 @@
     name: '@polkadot/networks',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.2'
+    version: '10.1.3'
   });
 
   const defaults = {
@@ -4513,16 +4519,23 @@
   };
 
   function decodeAddress(encoded, ignoreChecksum, ss58Format = -1) {
-    util.assert(encoded, 'Invalid empty address passed');
+    if (!encoded) {
+      throw new Error('Invalid empty address passed');
+    }
     if (util.isU8a(encoded) || util.isHex(encoded)) {
       return util.u8aToU8a(encoded);
     }
     try {
       const decoded = base58Decode(encoded);
-      util.assert(defaults.allowedEncodedLengths.includes(decoded.length), 'Invalid decoded address length');
+      if (!defaults.allowedEncodedLengths.includes(decoded.length)) {
+        throw new Error('Invalid decoded address length');
+      }
       const [isValid, endPos, ss58Length, ss58Decoded] = checkAddressChecksum(decoded);
-      util.assert(ignoreChecksum || isValid, 'Invalid decoded address checksum');
-      util.assert([-1, ss58Decoded].includes(ss58Format), () => `Expected ss58Format ${ss58Format}, received ${ss58Decoded}`);
+      if (!isValid && !ignoreChecksum) {
+        throw new Error('Invalid decoded address checksum');
+      } else if (ss58Format !== -1 && ss58Format !== ss58Decoded) {
+        throw new Error(`Expected ss58Format ${ss58Format}, received ${ss58Decoded}`);
+      }
       return decoded.slice(ss58Length, endPos);
     } catch (error) {
       throw new Error(`Decoding ${encoded}: ${error.message}`);
@@ -4652,7 +4665,9 @@
         path.push(DeriveJunction.from(p.substring(1)));
       }
     }
-    util.assert(constructed === derivePath, () => `Re-constructed path "${constructed}" does not match input`);
+    if (constructed !== derivePath) {
+      throw new Error(`Re-constructed path "${constructed}" does not match input`);
+    }
     return {
       parts,
       path
@@ -4711,7 +4726,9 @@
       chainCode,
       isHard
     }) => {
-      util.assert(isHard, 'A soft key was found in the path and is not supported');
+      if (!isHard) {
+        throw new Error('A soft key was found in the path and is not supported');
+      }
       return fromSeed(derive(keypair.secretKey.subarray(0, 32), chainCode));
     };
   }
@@ -6997,7 +7014,9 @@
 
   const HDKD = util.compactAddLength(util.stringToU8a('Ed25519HDKD'));
   function ed25519DeriveHard(seed, chainCode) {
-    util.assert(util.isU8a(chainCode) && chainCode.length === 32, 'Invalid chainCode passed to derive');
+    if (!util.isU8a(chainCode) || chainCode.length !== 32) {
+      throw new Error('Invalid chainCode passed to derive');
+    }
     return blake2AsU8a(util.u8aConcat(HDKD, seed, chainCode));
   }
 
@@ -7038,7 +7057,9 @@
     publicKey,
     secretKey
   }, onlyJs) {
-    util.assert(secretKey, 'Expected a valid secretKey');
+    if (!secretKey) {
+      throw new Error('Expected a valid secretKey');
+    }
     const messageU8a = util.u8aToU8a(message);
     return !onlyJs && isReady() ? ed25519Sign$1(publicKey, secretKey.subarray(0, 32), messageU8a) : nacl.sign.detached(messageU8a, secretKey);
   }
@@ -7047,8 +7068,11 @@
     const messageU8a = util.u8aToU8a(message);
     const publicKeyU8a = util.u8aToU8a(publicKey);
     const signatureU8a = util.u8aToU8a(signature);
-    util.assert(publicKeyU8a.length === 32, () => `Invalid publicKey, received ${publicKeyU8a.length}, expected 32`);
-    util.assert(signatureU8a.length === 64, () => `Invalid signature, received ${signatureU8a.length} bytes, expected 64`);
+    if (publicKeyU8a.length !== 32) {
+      throw new Error(`Invalid publicKey, received ${publicKeyU8a.length}, expected 32`);
+    } else if (signatureU8a.length !== 64) {
+      throw new Error(`Invalid signature, received ${signatureU8a.length} bytes, expected 64`);
+    }
     return !onlyJs && isReady() ? ed25519Verify$1(signatureU8a, messageU8a, publicKeyU8a) : nacl.sign.detached.verify(messageU8a, signatureU8a, publicKeyU8a);
   }
 
@@ -7186,8 +7210,11 @@
 
   function encodeAddress(key, ss58Format = defaults.prefix) {
     const u8a = decodeAddress(key);
-    util.assert(ss58Format >= 0 && ss58Format <= 16383 && ![46, 47].includes(ss58Format), 'Out of range ss58Format specified');
-    util.assert(defaults.allowedDecodedLengths.includes(u8a.length), () => `Expected a valid key to convert, with length ${defaults.allowedDecodedLengths.join(', ')}`);
+    if (ss58Format < 0 || ss58Format > 16383 || [46, 47].includes(ss58Format)) {
+      throw new Error('Out of range ss58Format specified');
+    } else if (!defaults.allowedDecodedLengths.includes(u8a.length)) {
+      throw new Error(`Expected a valid key to convert, with length ${defaults.allowedDecodedLengths.join(', ')}`);
+    }
     const input = util.u8aConcat(ss58Format < 64 ? [ss58Format] : [(ss58Format & 0b0000000011111100) >> 2 | 0b01000000, ss58Format >> 8 | (ss58Format & 0b0000000000000011) << 6], u8a);
     return base58Encode(util.u8aConcat(input, sshash(input).subarray(0, [32, 33].includes(u8a.length) ? 2 : 1)));
   }
@@ -7201,7 +7228,9 @@
     const {
       path
     } = keyExtractPath(suri);
-    util.assert(path.length && !path.every(filterHard), 'Expected suri to contain a combination of non-hard paths');
+    if (!path.length || path.every(filterHard)) {
+      throw new Error('Expected suri to contain a combination of non-hard paths');
+    }
     let publicKey = decodeAddress(who);
     for (const {
       chainCode
@@ -7414,7 +7443,9 @@
 
   function evmToAddress(evmAddress, ss58Format, hashType = 'blake2') {
     const message = util.u8aConcat('evm:', evmAddress);
-    util.assert(message.length === 24, () => `Converting ${evmAddress}: Invalid evm address length`);
+    if (message.length !== 24) {
+      throw new Error(`Converting ${evmAddress}: Invalid evm address length`);
+    }
     return encodeAddress(hasher(hashType, message), ss58Format);
   }
 
@@ -7602,7 +7633,9 @@
       return '0x';
     }
     const u8aAddress = util.u8aToU8a(addressOrPublic);
-    util.assert([20, 32, 33, 65].includes(u8aAddress.length), 'Invalid address or publicKey passed');
+    if (![20, 32, 33, 65].includes(u8aAddress.length)) {
+      throw new Error('Invalid address or publicKey passed');
+    }
     const address = util.u8aToHex(getH160(u8aAddress), -1, false);
     const hash = util.u8aToHex(keccakAsU8a(address), -1, false);
     let result = '';
@@ -7674,7 +7707,9 @@
     if (!path || path === 'm' || path === 'M' || path === "m'" || path === "M'") {
       return hd;
     }
-    util.assert(hdValidatePath(path), 'Invalid derivation path');
+    if (!hdValidatePath(path)) {
+      throw new Error('Invalid derivation path');
+    }
     const parts = path.split('/').slice(1);
     for (const p of parts) {
       hd = deriveChild(hd, parseInt(p, 10) + (p.length > 1 && p.endsWith("'") ? HARDENED : 0));
@@ -7770,29 +7805,41 @@
     return pbkdf2Encode(util.stringToU8a(normalize(mnemonic)), util.stringToU8a(`mnemonic${normalize(password)}`)).password;
   }
   function mnemonicToEntropy$1(mnemonic) {
-    var _entropyBits$match;
     const words = normalize(mnemonic).split(' ');
-    util.assert(words.length % 3 === 0, INVALID_MNEMONIC);
+    if (words.length % 3 !== 0) {
+      throw new Error(INVALID_MNEMONIC);
+    }
     const bits = words.map(word => {
       const index = DEFAULT_WORDLIST.indexOf(word);
-      util.assert(index !== -1, INVALID_MNEMONIC);
+      if (index === -1) {
+        throw new Error(INVALID_MNEMONIC);
+      }
       return index.toString(2).padStart(11, '0');
     }).join('');
     const dividerIndex = Math.floor(bits.length / 33) * 32;
     const entropyBits = bits.slice(0, dividerIndex);
     const checksumBits = bits.slice(dividerIndex);
-    const entropyBytes = (_entropyBits$match = entropyBits.match(/(.{1,8})/g)) === null || _entropyBits$match === void 0 ? void 0 : _entropyBits$match.map(binaryToByte);
-    util.assert(entropyBytes && entropyBytes.length % 4 === 0 && entropyBytes.length >= 16 && entropyBytes.length <= 32, INVALID_ENTROPY);
+    const matched = entropyBits.match(/(.{1,8})/g);
+    const entropyBytes = matched && matched.map(binaryToByte);
+    if (!entropyBytes || entropyBytes.length % 4 !== 0 || entropyBytes.length < 16 || entropyBytes.length > 32) {
+      throw new Error(INVALID_ENTROPY);
+    }
     const entropy = util.u8aToU8a(entropyBytes);
-    const newChecksum = deriveChecksumBits(entropy);
-    util.assert(newChecksum === checksumBits, INVALID_CHECKSUM);
+    if (deriveChecksumBits(entropy) !== checksumBits) {
+      throw new Error(INVALID_CHECKSUM);
+    }
     return entropy;
   }
   function entropyToMnemonic(entropy) {
-    util.assert(entropy.length % 4 === 0 && entropy.length >= 16 && entropy.length <= 32, INVALID_ENTROPY);
-    const entropyBits = bytesToBinary(Array.from(entropy));
-    const checksumBits = deriveChecksumBits(entropy);
-    return (entropyBits + checksumBits).match(/(.{1,11})/g).map(binary => DEFAULT_WORDLIST[binaryToByte(binary)]).join(' ');
+    if (entropy.length % 4 !== 0 || entropy.length < 16 || entropy.length > 32) {
+      throw new Error(INVALID_ENTROPY);
+    }
+    const matched = `${bytesToBinary(Array.from(entropy))}${deriveChecksumBits(entropy)}`.match(/(.{1,11})/g);
+    const mapped = matched && matched.map(binary => DEFAULT_WORDLIST[binaryToByte(binary)]);
+    if (!mapped || mapped.length < 12) {
+      throw new Error('Unable to map entropy to mnemonic');
+    }
+    return mapped.join(' ');
   }
   function generateMnemonic(numWords) {
     return entropyToMnemonic(randomAsU8a(numWords / 3 * 4));
@@ -7865,10 +7912,15 @@
 
   function hdLedger(_mnemonic, path) {
     const words = _mnemonic.split(' ').map(s => s.trim()).filter(s => s);
-    util.assert([12, 24, 25].includes(words.length), 'Expected a mnemonic with 24 words (or 25 including a password)');
+    if (![12, 24, 25].includes(words.length)) {
+      throw new Error('Expected a mnemonic with 24 words (or 25 including a password)');
+    }
     const [mnemonic, password] = words.length === 25 ? [words.slice(0, 24).join(' '), words[24]] : [words.join(' '), ''];
-    util.assert(mnemonicValidate(mnemonic), 'Invalid mnemonic passed to ledger derivation');
-    util.assert(hdValidatePath(path), 'Invalid derivation path');
+    if (!mnemonicValidate(mnemonic)) {
+      throw new Error('Invalid mnemonic passed to ledger derivation');
+    } else if (!hdValidatePath(path)) {
+      throw new Error('Invalid derivation path');
+    }
     const parts = path.split('/').slice(1);
     let seed = ledgerMaster(mnemonic, password);
     for (const p of parts) {
@@ -8105,8 +8157,11 @@
   const SCRYPT_LENGTH = 32 + 3 * 4;
 
   function jsonDecryptData(encrypted, passphrase, encType = ENCODING) {
-    util.assert(encrypted, 'No encrypted data available to decode');
-    util.assert(passphrase || !encType.includes('xsalsa20-poly1305'), 'Password required to decode encrypted data');
+    if (!encrypted) {
+      throw new Error('No encrypted data available to decode');
+    } else if (encType.includes('xsalsa20-poly1305') && !passphrase) {
+      throw new Error('Password required to decode encrypted data');
+    }
     let encoded = encrypted;
     if (passphrase) {
       let password;
@@ -8122,7 +8177,9 @@
       }
       encoded = naclDecrypt(encrypted.subarray(NONCE_LENGTH), encrypted.subarray(0, NONCE_LENGTH), util.u8aFixLength(password, 256, true));
     }
-    util.assert(encoded, 'Unable to decode using the supplied passphrase');
+    if (!encoded) {
+      throw new Error('Unable to decode using the supplied passphrase');
+    }
     return encoded;
   }
 
@@ -8130,7 +8187,9 @@
     encoded,
     encoding
   }, passphrase) {
-    util.assert(encoded, 'No encrypted data available to decode');
+    if (!encoded) {
+      throw new Error('No encrypted data available to decode');
+    }
     return jsonDecryptData(util.isHex(encoded) ? util.hexToU8a(encoded) : base64Decode(encoded), passphrase, Array.isArray(encoding.type) ? encoding.type : [encoding.type]);
   }
 
