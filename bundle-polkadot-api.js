@@ -22,7 +22,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.2'
+    version: '10.1.3'
   });
 
   function evaluateThis(fn) {
@@ -34,7 +34,7 @@
     name: '@polkadot/x-fetch',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.2'
+    version: '10.1.3'
   });
 
   const fetch = xglobal.fetch;
@@ -545,7 +545,7 @@
     name: '@polkadot/x-ws',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.2'
+    version: '10.1.3'
   });
 
   const WebSocket = xglobal.WebSocket;
@@ -1046,7 +1046,7 @@
     name: '@polkadot/api',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.0.1'
+    version: '9.1.1'
   };
 
   /*! *****************************************************************************
@@ -3543,7 +3543,7 @@
     name: '@polkadot/rpc-core',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.0.1'
+    version: '9.1.1'
   });
 
   const l$4 = util.logger('rpc-core');
@@ -7401,7 +7401,7 @@
 
   const upgrades$2 = [[0, 0], [29231, 1], [188836, 5], [199405, 6], [214264, 7], [244358, 8], [303079, 9], [314201, 10], [342400, 11], [443963, 12], [528470, 13], [687751, 14], [746085, 15], [787923, 16], [799302, 17], [1205128, 18], [1603423, 23], [1733218, 24], [2005673, 25], [2436698, 26], [3613564, 27], [3899547, 28], [4345767, 29], [4876134, 30], [5661442, 9050], [6321619, 9080], [6713249, 9090], [7217907, 9100], [7229126, 9110], [7560558, 9122], [8115869, 9140], [8638103, 9151], [9280179, 9170], [9738717, 9180], [10156856, 9190], [10458576, 9200], [10655116, 9220], [10879371, 9230], [11328884, 9250]];
 
-  const upgrades$1 = [[214356, 4], [392764, 7], [409740, 8], [809976, 20], [877581, 24], [879238, 25], [889472, 26], [902937, 27], [932751, 28], [991142, 29], [1030162, 31], [1119657, 32], [1199282, 33], [1342534, 34], [1392263, 35], [1431703, 36], [1433369, 37], [1490972, 41], [2087397, 43], [2316688, 44], [2549864, 45], [3925782, 46], [3925843, 47], [4207800, 48], [4627944, 49], [5124076, 50], [5478664, 900], [5482450, 9000], [5584305, 9010], [5784566, 9030], [5879822, 9031], [5896856, 9032], [5897316, 9033], [6117927, 9050], [6210274, 9070], [6379314, 9080], [6979141, 9090], [7568453, 9100], [7766394, 9111], [7911691, 9120], [7968866, 9121], [7982889, 9122], [8514322, 9130], [9091726, 9140], [9091774, 9150], [9406726, 9160], [9921066, 9170], [10007115, 9180], [10480973, 9190], [10578091, 9200], [10678509, 9210], [10811001, 9220], [11096116, 9230], [11409279, 9250], [11584820, 9251], [11716837, 9260], [11876919, 9261]];
+  const upgrades$1 = [[214356, 4], [392764, 7], [409740, 8], [809976, 20], [877581, 24], [879238, 25], [889472, 26], [902937, 27], [932751, 28], [991142, 29], [1030162, 31], [1119657, 32], [1199282, 33], [1342534, 34], [1392263, 35], [1431703, 36], [1433369, 37], [1490972, 41], [2087397, 43], [2316688, 44], [2549864, 45], [3925782, 46], [3925843, 47], [4207800, 48], [4627944, 49], [5124076, 50], [5478664, 900], [5482450, 9000], [5584305, 9010], [5784566, 9030], [5879822, 9031], [5896856, 9032], [5897316, 9033], [6117927, 9050], [6210274, 9070], [6379314, 9080], [6979141, 9090], [7568453, 9100], [7766394, 9111], [7911691, 9120], [7968866, 9121], [7982889, 9122], [8514322, 9130], [9091726, 9140], [9091774, 9150], [9406726, 9160], [9921066, 9170], [10007115, 9180], [10480973, 9190], [10578091, 9200], [10678509, 9210], [10811001, 9220], [11096116, 9230], [11409279, 9250], [11584820, 9251], [11716837, 9260], [11876919, 9261], [11987927, 9270]];
 
   const allKnown = {
     kusama: upgrades$3,
@@ -7630,6 +7630,7 @@
   class Decorate extends Events {
     #instanceId;
     #registry;
+    #runtimeLog = {};
     #storageGetQ = [];
     #storageSubQ = [];
     __phantom = new util.BN(0);
@@ -7715,6 +7716,7 @@
       decoratedApi.queryMulti = blockHash ? this._decorateMultiAt(decoratedApi, this._decorateMethod, blockHash) : this._decorateMulti(this._decorateMethod);
       decoratedApi.runtimeVersion = registry.runtimeVersion;
       return {
+        createdAt: blockHash,
         decoratedApi,
         decoratedMeta: registry.decoratedMeta
       };
@@ -7748,6 +7750,7 @@
     }
     injectMetadata(metadata, fromEmpty, registry) {
       this._injectMetadata({
+        counter: 0,
         metadata,
         registry: registry || this.#registry,
         runtimeVersion: this.#registry.createType('RuntimeVersionPartial')
@@ -7809,7 +7812,7 @@
       }
       const filterKey = k => !allKeys.includes(k);
       const unknown = exposed.filter(filterKey);
-      if (unknown.length) {
+      if (unknown.length && !this._options.noInitWarn) {
         l$1.warn(`RPC methods not decorated: ${unknown.join(', ')}`);
       }
       for (let i = 0; i < allKnown.length; i++) {
@@ -7894,7 +7897,8 @@
       registry,
       runtimeVersion: {
         apis,
-        specName
+        specName,
+        specVersion
       }
     }, decorateMethod, blockHash) {
       const result = {};
@@ -7902,6 +7906,9 @@
       const hashes = {};
       const sections = this._getRuntimeDefs(registry, specName, this._runtimeChain);
       const older = [];
+      const implName = `${specName.toString()}/${specVersion.toString()}`;
+      const hasLogged = this.#runtimeLog[implName] || false;
+      this.#runtimeLog[implName] = true;
       for (let i = 0; i < sections.length; i++) {
         const [_section, secs] = sections[i];
         const sectionHash = utilCrypto.blake2AsHex(_section, 64);
@@ -7938,11 +7945,13 @@
         }
       }
       const notFound = apis.map(([a, v]) => [a.toHex(), v.toString()]).filter(([a]) => !hashes[a]).map(([a, v]) => `${this._runtimeMap[a] || a}/${v}`);
-      if (older.length) {
-        l$1.warn(`Not decorating runtime apis without matching versions: ${older.join(', ')}`);
-      }
-      if (notFound.length) {
-        l$1.warn(`Not decorating unknown runtime apis: ${notFound.join(', ')}`);
+      if (!this._options.noInitWarn && !hasLogged) {
+        if (older.length) {
+          l$1.warn(`${implName}: Not decorating runtime apis without matching versions: ${older.join(', ')}`);
+        }
+        if (notFound.length) {
+          l$1.warn(`${implName}: Not decorating unknown runtime apis: ${notFound.join(', ')}`);
+        }
       }
       const stateCall = blockHash ? (name, bytes) => this._rpcCore.state.call(name, bytes, blockHash) : (name, bytes) => this._rpcCore.state.call(name, bytes);
       const lazySection = section => util.lazyMethods({}, Object.keys(named[section]), method => this._decorateCall(registry, named[section][method], stateCall, decorateMethod));
@@ -8151,6 +8160,7 @@
   function textToString(t) {
     return t.toString();
   }
+  var _atLast = _classPrivateFieldKey("atLast");
   var _healthTimer = _classPrivateFieldKey("healthTimer");
   var _registries = _classPrivateFieldKey("registries");
   var _updateSub = _classPrivateFieldKey("updateSub");
@@ -8169,6 +8179,10 @@
       });
       Object.defineProperty(this, _onProviderConnect, {
         value: _onProviderConnect2
+      });
+      Object.defineProperty(this, _atLast, {
+        writable: true,
+        value: null
       });
       Object.defineProperty(this, _healthTimer, {
         writable: true,
@@ -8205,7 +8219,7 @@
         this._rpcCore.provider.on('disconnected', () => _classPrivateFieldBase(this, _onProviderDisconnect)[_onProviderDisconnect]());
         this._rpcCore.provider.on('error', e => _classPrivateFieldBase(this, _onProviderError)[_onProviderError](e));
         this._rpcCore.provider.on('connected', () => _classPrivateFieldBase(this, _onProviderConnect)[_onProviderConnect]());
-      } else {
+      } else if (!this._options.noInitWarn) {
         l.warn('Api will be available in a limited mode since the provider does not support subscriptions');
       }
       if (this._rpcCore.provider.isConnected) {
@@ -8230,14 +8244,19 @@
     }
     async at(blockHash, knownVersion) {
       const u8aHash = util.u8aToU8a(blockHash);
+      const u8aHex = util.u8aToHex(u8aHash);
       const registry = await this.getBlockRegistry(u8aHash, knownVersion);
-      return this._createDecorated(registry, true, null, u8aHash).decoratedApi;
+      if (!_classPrivateFieldBase(this, _atLast)[_atLast] || _classPrivateFieldBase(this, _atLast)[_atLast][0] !== u8aHex) {
+        _classPrivateFieldBase(this, _atLast)[_atLast] = [u8aHex, this._createDecorated(registry, true, null, u8aHash).decoratedApi];
+      }
+      return _classPrivateFieldBase(this, _atLast)[_atLast][1];
     }
     async _createBlockRegistry(blockHash, header, version) {
       const registry = new types.TypeRegistry(blockHash);
       const metadata = new types.Metadata(registry, await firstValueFrom(this._rpcCore.state.getMetadata.raw(header.parentHash)));
       this._initRegistry(registry, this._runtimeChain, version, metadata);
       const result = {
+        counter: 0,
         lastBlockHash: blockHash,
         metadata,
         registry,
@@ -8270,6 +8289,7 @@
           }
         }) => specName.eq(version.specName) && specVersion.eq(version.specVersion));
         if (existingViaVersion) {
+          existingViaVersion.counter++;
           existingViaVersion.lastBlockHash = blockHash;
           return existingViaVersion;
         }
@@ -8365,6 +8385,7 @@
       this._subscribeUpdates();
       if (!_classPrivateFieldBase(this, _registries)[_registries].length) {
         _classPrivateFieldBase(this, _registries)[_registries].push({
+          counter: 0,
           isDefault: true,
           metadata,
           registry: this.registry,
