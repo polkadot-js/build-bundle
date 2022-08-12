@@ -4,7 +4,7 @@
 	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.polkadotHwLedger = {}, global.polkadotUtil));
 })(this, (function (exports, util) { 'use strict';
 
-	const global = window;
+	const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
 	function getDefaultExportFromCjs (x) {
 		return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
@@ -52,7 +52,7 @@
 		'default': EventEmitter
 	});
 
-	var __extends$2 = (undefined && undefined.__extends) || (function () {
+	var __extends$2 = (global && global.__extends) || (function () {
 	    var extendStatics = function (d, b) {
 	        extendStatics = Object.setPrototypeOf ||
 	            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -67,7 +67,7 @@
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	    };
 	})();
-	(undefined && undefined.__values) || function(o) {
+	(global && global.__values) || function(o) {
 	    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
 	    if (m) return m.call(o);
 	    if (o && typeof o.length === "number") return {
@@ -274,7 +274,7 @@
 	}
 	TransportStatusError.prototype = new Error();
 
-	var __awaiter$3 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+	var __awaiter$3 = (global && global.__awaiter) || function (thisArg, _arguments, P, generator) {
 	    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
 	    return new (P || (P = Promise))(function (resolve, reject) {
 	        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -283,7 +283,7 @@
 	        step((generator = generator.apply(thisArg, _arguments || [])).next());
 	    });
 	};
-	var __generator$3 = (undefined && undefined.__generator) || function (thisArg, body) {
+	var __generator$3 = (global && global.__generator) || function (thisArg, body) {
 	    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
 	    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
 	    function verb(n) { return function (v) { return step([n, v]); }; }
@@ -310,7 +310,7 @@
 	        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
 	    }
 	};
-	var __read$1 = (undefined && undefined.__read) || function (o, n) {
+	var __read$1 = (global && global.__read) || function (o, n) {
 	    var m = typeof Symbol === "function" && o[Symbol.iterator];
 	    if (!m) return o;
 	    var i = m.call(o), r, ar = [], e;
@@ -326,7 +326,7 @@
 	    }
 	    return ar;
 	};
-	var __spreadArray = (undefined && undefined.__spreadArray) || function (to, from, pack) {
+	var __spreadArray = (global && global.__spreadArray) || function (to, from, pack) {
 	    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
 	        if (ar || !(i in from)) {
 	            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
@@ -335,7 +335,7 @@
 	    }
 	    return to.concat(ar || Array.prototype.slice.call(from));
 	};
-	var __values = (undefined && undefined.__values) || function(o) {
+	var __values = (global && global.__values) || function(o) {
 	    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
 	    if (m) return m.call(o);
 	    if (o && typeof o.length === "number") return {
@@ -2853,7 +2853,7 @@
 	  subset: subset_1,
 	};
 
-	var __assign = (undefined && undefined.__assign) || function () {
+	var __assign = (global && global.__assign) || function () {
 	    __assign = Object.assign || function(t) {
 	        for (var s, i = 1, n = arguments.length; i < n; i++) {
 	            s = arguments[i];
@@ -3015,7 +3015,7 @@
 	    window.__ledgerLogsListen = listen;
 	}
 
-	var __extends$1 = (undefined && undefined.__extends) || (function () {
+	var __extends$1 = (global && global.__extends) || (function () {
 	    var extendStatics = function (d, b) {
 	        extendStatics = Object.setPrototypeOf ||
 	            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -3030,7 +3030,7 @@
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	    };
 	})();
-	var __awaiter$2 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+	var __awaiter$2 = (global && global.__awaiter) || function (thisArg, _arguments, P, generator) {
 	    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
 	    return new (P || (P = Promise))(function (resolve, reject) {
 	        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -3039,7 +3039,7 @@
 	        step((generator = generator.apply(thisArg, _arguments || [])).next());
 	    });
 	};
-	var __generator$2 = (undefined && undefined.__generator) || function (thisArg, body) {
+	var __generator$2 = (global && global.__generator) || function (thisArg, body) {
 	    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
 	    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
 	    function verb(n) { return function (v) { return step([n, v]); }; }
@@ -3066,7 +3066,7 @@
 	        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
 	    }
 	};
-	var __read = (undefined && undefined.__read) || function (o, n) {
+	var __read = (global && global.__read) || function (o, n) {
 	    var m = typeof Symbol === "function" && o[Symbol.iterator];
 	    if (!m) return o;
 	    var i = m.call(o), r, ar = [], e;
@@ -3339,7 +3339,7 @@
 
 	const require$$1 = /*@__PURE__*/getAugmentedNamespace(TransportWebHID$1);
 
-	var __awaiter$1 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+	var __awaiter$1 = (global && global.__awaiter) || function (thisArg, _arguments, P, generator) {
 	    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
 	    return new (P || (P = Promise))(function (resolve, reject) {
 	        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -3348,7 +3348,7 @@
 	        step((generator = generator.apply(thisArg, _arguments || [])).next());
 	    });
 	};
-	var __generator$1 = (undefined && undefined.__generator) || function (thisArg, body) {
+	var __generator$1 = (global && global.__generator) || function (thisArg, body) {
 	    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
 	    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
 	    function verb(n) { return function (v) { return step([n, v]); }; }
@@ -3429,7 +3429,7 @@
 	        typeof navigator.usb.getDevices === "function");
 	};
 
-	var __extends = (undefined && undefined.__extends) || (function () {
+	var __extends = (global && global.__extends) || (function () {
 	    var extendStatics = function (d, b) {
 	        extendStatics = Object.setPrototypeOf ||
 	            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -3444,7 +3444,7 @@
 	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	    };
 	})();
-	var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+	var __awaiter = (global && global.__awaiter) || function (thisArg, _arguments, P, generator) {
 	    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
 	    return new (P || (P = Promise))(function (resolve, reject) {
 	        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -3453,7 +3453,7 @@
 	        step((generator = generator.apply(thisArg, _arguments || [])).next());
 	    });
 	};
-	var __generator = (undefined && undefined.__generator) || function (thisArg, body) {
+	var __generator = (global && global.__generator) || function (thisArg, body) {
 	    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
 	    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
 	    function verb(n) { return function (v) { return step([n, v]); }; }
@@ -3729,7 +3729,7 @@
 		  name: '@polkadot/hw-ledger-transports',
 		  path: typeof __dirname === 'string' ? __dirname : 'auto',
 		  type: 'cjs',
-		  version: '10.1.3'
+		  version: '10.1.4'
 		};
 		packageInfo$1.packageInfo = packageInfo;
 		return packageInfo$1;
@@ -4479,7 +4479,8 @@
 		  COMPOSABLE: 0xa8,
 		  ASTAR: 0xa9,
 		  STAFI: 0xac,
-		  UNIQUE: 0xad
+		  UNIQUE: 0xad,
+		  BIFROSTKUSAMA: 0xae
 		};
 		var SLIP0044 = {
 		  POLKADOT: 0x80000162,
@@ -4506,7 +4507,8 @@
 		  STAFI: 0x8000038b,
 		  ALEPHZERO: 0x80000283,
 		  INTERLAY: 0x80000162,
-		  UNIQUE: 0x80000162
+		  UNIQUE: 0x80000162,
+		  BIFROSTKUSAMA: 0x80000314
 		};
 		var SS58_ADDR_TYPE = {
 		  POLKADOT: 0,
@@ -4533,7 +4535,8 @@
 		  STAFI: 20,
 		  ALEPHZERO: 42,
 		  INTERLAY: 2032,
-		  UNIQUE: 7391
+		  UNIQUE: 7391,
+		  BIFROSTKUSAMA: 6
 		};
 		config = {
 		  CLA: CLA,
@@ -5152,6 +5155,9 @@
 	function newUniqueApp(transport) {
 	  return new SubstrateApp(transport, _config.CLA.UNIQUE, _config.SLIP0044.UNIQUE);
 	}
+	function newBifrostKusamaApp(transport) {
+	  return new SubstrateApp(transport, _config.CLA.BIFROSTKUSAMA, _config.SLIP0044.BIFROSTKUSAMA);
+	}
 	function sha512(data) {
 	  var digest = hash.sha512().update(data).digest();
 	  return Buffer.from(digest);
@@ -5252,7 +5258,8 @@
 	  newStafiApp: newStafiApp,
 	  newAlephZeroApp: newAlephZeroApp,
 	  newInterlayApp: newInterlayApp,
-	  newUniqueApp: newUniqueApp
+	  newUniqueApp: newUniqueApp,
+	  newBifrostKusamaApp: newBifrostKusamaApp
 	};
 
 	const ledgerApps = {
@@ -5260,6 +5267,7 @@
 	  'aleph-node': dist.newAlephZeroApp,
 	  astar: dist.newAstarApp,
 	  bifrost: dist.newBifrostApp,
+	  'bifrost-kusama': dist.newBifrostKusamaApp,
 	  centrifuge: dist.newCentrifugeApp,
 	  composable: dist.newComposableApp,
 	  'dock-mainnet': dist.newDockApp,
@@ -5286,7 +5294,7 @@
 	  name: '@polkadot/hw-ledger',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '10.1.3'
+	  version: '10.1.4'
 	};
 
 	class Ledger {
