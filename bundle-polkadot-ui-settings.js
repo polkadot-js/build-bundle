@@ -4,7 +4,7 @@
 	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.polkadotUiSettings = {}, global.polkadotUtil, global.polkadotUtilCrypto));
 })(this, (function (exports, util$7, utilCrypto) { 'use strict';
 
-	const global = window;
+	const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
 	var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -1232,7 +1232,7 @@
 	  name: '@polkadot/ui-settings',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '2.9.4'
+	  version: '2.9.5'
 	};
 
 	exports.ENDPOINT_DEFAULT = ENDPOINT_DEFAULT;
