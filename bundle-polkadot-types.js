@@ -4,7 +4,7 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.polkadotTypes = {}, global.polkadotUtil, global.polkadotUtilCrypto));
 })(this, (function (exports, util, utilCrypto) { 'use strict';
 
-  const global = window;
+  const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
   const AllHashers = {
     Blake2_128: null,
@@ -1293,6 +1293,12 @@
     rpc: {},
     runtime: runtime$j,
     types: {
+      BenchmarkBatch: {
+        pallet: 'Text',
+        instance: 'Text',
+        benchmark: 'Text',
+        results: 'Vec<BenchmarkResult>'
+      },
       BenchmarkConfig: {
         pallet: 'Bytes',
         benchmark: 'Bytes',
@@ -1311,6 +1317,17 @@
       },
       BenchmarkParameter: {
         _enum: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+      },
+      BenchmarkResult: {
+        components: 'Vec<(BenchmarkParameter, u32)>',
+        extrinsicTime: 'u128',
+        storageRootTime: 'u128',
+        reads: 'u32',
+        repeatReads: 'u32',
+        writes: 'u32',
+        repeatWrites: 'u32',
+        proofSize: 'u32',
+        benchKeys: 'Vec<(Vec<u8>, u32, u32, bool)>'
       }
     }
   };
@@ -9323,13 +9340,13 @@
       aliasSection: 'net',
       description: 'Returns number of peers connected to node.',
       params: [],
-      type: 'String'
+      type: 'Text'
     },
     version: {
       aliasSection: 'net',
       description: 'Returns protocol version.',
       params: [],
-      type: 'String'
+      type: 'Text'
     }
   };
   const web3Rpc = {
@@ -9337,7 +9354,7 @@
       aliasSection: 'web3',
       description: 'Returns current client version.',
       params: [],
-      type: 'String'
+      type: 'Text'
     },
     sha3: {
       aliasSection: 'web3',
@@ -9873,7 +9890,7 @@
         current_all: {
           description: 'Return all the current data for a block in a single runtime call.',
           params: [],
-          type: '(Option<BlockV2>, Option<Vec<ReceiptV0>>, Option<Vec<TransactionStatus>>)'
+          type: '(Option<BlockV2>, Option<Vec<EthReceiptV3>>, Option<Vec<EthTransactionStatus>>)'
         },
         current_block: {
           description: 'Return the current block.',
@@ -14254,8 +14271,8 @@
       section
     } = itemFn;
     storageFn.iterKey = extendHeadMeta(registry, itemFn, storageFn, (...args) => {
-      if (args.length && (type.isPlain || args.length > type.asMap.hashers.length)) {
-        throw new Error(`Iteration ${util.stringCamelCase(section || 'unknown')}.${util.stringCamelCase(method || 'unknown')} needs arguments to be at least one less than the full arguments, found [${args.join(', ')}]`);
+      if (args.length && (type.isPlain || args.length >= type.asMap.hashers.length)) {
+        throw new Error(`Iteration of ${util.stringCamelCase(section || 'unknown')}.${util.stringCamelCase(method || 'unknown')} needs arguments to be at least one less than the full arguments, found [${args.join(', ')}]`);
       }
       if (args.length) {
         if (type.isMap) {
@@ -15035,32 +15052,46 @@
   }, {
     fields
   }) {
-    const pathFirst = path[0].toString();
-    const pathLast = path[path.length - 1].toString();
-    if (path.length === 1 && pathFirst === 'BTreeMap') {
-      return withTypeString(this.registry, {
-        info: exports.TypeDefInfo.BTreeMap,
-        sub: params.map(({
-          type
-        }) => _classPrivateFieldBase(this, _createSiDef)[_createSiDef](type.unwrap()))
-      });
-    } else if (path.length === 1 && pathFirst === 'BTreeSet') {
-      return withTypeString(this.registry, {
-        info: exports.TypeDefInfo.BTreeSet,
-        sub: _classPrivateFieldBase(this, _createSiDef)[_createSiDef](params[0].type.unwrap())
-      });
-    } else if (['Range', 'RangeInclusive'].includes(pathFirst)) {
-      return withTypeString(this.registry, {
-        info: pathFirst === 'Range' ? exports.TypeDefInfo.Range : exports.TypeDefInfo.RangeInclusive,
-        sub: _classPrivateFieldBase(this, _createSiDef)[_createSiDef](params[0].type.unwrap()),
-        type: pathFirst
-      });
-    } else if (['WrapperKeepOpaque', 'WrapperOpaque'].includes(pathLast)) {
-      return withTypeString(this.registry, {
-        info: pathLast === 'WrapperKeepOpaque' ? exports.TypeDefInfo.WrapperKeepOpaque : exports.TypeDefInfo.WrapperOpaque,
-        sub: _classPrivateFieldBase(this, _createSiDef)[_createSiDef](params[0].type.unwrap()),
-        type: pathLast
-      });
+    if (path.length) {
+      const pathFirst = path[0].toString();
+      const pathLast = path[path.length - 1].toString();
+      if (path.length === 1 && pathFirst === 'BTreeMap') {
+        if (params.length !== 2) {
+          throw new Error(`BTreeMap requires 2 parameters, found ${params.length}`);
+        }
+        return withTypeString(this.registry, {
+          info: exports.TypeDefInfo.BTreeMap,
+          sub: params.map(({
+            type
+          }) => _classPrivateFieldBase(this, _createSiDef)[_createSiDef](type.unwrap()))
+        });
+      } else if (path.length === 1 && pathFirst === 'BTreeSet') {
+        if (params.length !== 1) {
+          throw new Error(`BTreeSet requires 1 parameter, found ${params.length}`);
+        }
+        return withTypeString(this.registry, {
+          info: exports.TypeDefInfo.BTreeSet,
+          sub: _classPrivateFieldBase(this, _createSiDef)[_createSiDef](params[0].type.unwrap())
+        });
+      } else if (['Range', 'RangeInclusive'].includes(pathFirst)) {
+        if (params.length !== 1) {
+          throw new Error(`Range requires 1 parameter, found ${params.length}`);
+        }
+        return withTypeString(this.registry, {
+          info: pathFirst === 'Range' ? exports.TypeDefInfo.Range : exports.TypeDefInfo.RangeInclusive,
+          sub: _classPrivateFieldBase(this, _createSiDef)[_createSiDef](params[0].type.unwrap()),
+          type: pathFirst
+        });
+      } else if (['WrapperKeepOpaque', 'WrapperOpaque'].includes(pathLast)) {
+        if (params.length !== 1) {
+          throw new Error(`WrapperOpaque requires 1 parameter, found ${params.length}`);
+        }
+        return withTypeString(this.registry, {
+          info: pathLast === 'WrapperKeepOpaque' ? exports.TypeDefInfo.WrapperKeepOpaque : exports.TypeDefInfo.WrapperOpaque,
+          sub: _classPrivateFieldBase(this, _createSiDef)[_createSiDef](params[0].type.unwrap()),
+          type: pathLast
+        });
+      }
     }
     return PATHS_SET.some(p => matchParts(p, path)) ? _classPrivateFieldBase(this, _extractCompositeSet)[_extractCompositeSet](lookupIndex, params, fields) : _classPrivateFieldBase(this, _extractFields)[_extractFields](lookupIndex, fields);
   }
@@ -15209,23 +15240,31 @@
   }, {
     variants
   }) {
-    const specialVariant = path[0].toString();
-    if (specialVariant === 'Option') {
-      const sub = _classPrivateFieldBase(this, _createSiDef)[_createSiDef](params[0].type.unwrap());
-      return withTypeString(this.registry, {
-        info: exports.TypeDefInfo.Option,
-        sub
-      });
-    } else if (specialVariant === 'Result') {
-      return withTypeString(this.registry, {
-        info: exports.TypeDefInfo.Result,
-        sub: params.map(({
-          type
-        }, index) => util.objectSpread({
-          name: ['Ok', 'Error'][index]
-        }, _classPrivateFieldBase(this, _createSiDef)[_createSiDef](type.unwrap())))
-      });
-    } else if (variants.length === 0) {
+    if (path.length) {
+      const specialVariant = path[0].toString();
+      if (specialVariant === 'Option') {
+        if (params.length !== 1) {
+          throw new Error(`Option requires 1 parameter, found ${params.length}`);
+        }
+        return withTypeString(this.registry, {
+          info: exports.TypeDefInfo.Option,
+          sub: _classPrivateFieldBase(this, _createSiDef)[_createSiDef](params[0].type.unwrap())
+        });
+      } else if (specialVariant === 'Result') {
+        if (params.length !== 2) {
+          throw new Error(`Result requires 2 parameters, found ${params.length}`);
+        }
+        return withTypeString(this.registry, {
+          info: exports.TypeDefInfo.Result,
+          sub: params.map(({
+            type
+          }, index) => util.objectSpread({
+            name: ['Ok', 'Error'][index]
+          }, _classPrivateFieldBase(this, _createSiDef)[_createSiDef](type.unwrap())))
+        });
+      }
+    }
+    if (variants.length === 0) {
       return {
         info: exports.TypeDefInfo.Null,
         type: 'Null'
@@ -15805,7 +15844,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.1.1'
+    version: '9.2.1'
   };
 
   exports.BTreeMap = BTreeMap;
