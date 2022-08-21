@@ -562,24 +562,6 @@
         }
       }, CORE_V1_TO_V2, CORE_V1_TO_V4),
       version: 1
-    }],
-    TryRuntime: [{
-      methods: {
-        execute_block_no_check: {
-          description: "Execute the given block, but don't check that its state root matches that of yours.",
-          params: [{
-            name: 'block',
-            type: 'Block'
-          }],
-          type: 'Weight'
-        },
-        on_runtime_upgrade: {
-          description: 'dry-run runtime upgrades, returning the total weight consumed.',
-          params: [],
-          type: '(Weight, Weight)'
-        }
-      },
-      version: 1
     }]
   };
 
@@ -3315,6 +3297,7 @@
         unlocking: 'Vec<UnlockChunk>'
       },
       StakingLedgerTo240: {
+        _fallback: 'StakingLedgerTo223',
         stash: 'AccountId',
         total: 'Compact<Balance>',
         active: 'Compact<Balance>',
@@ -11589,13 +11572,6 @@
     }
   }
 
-  const BIT_SIGNED = 0b10000000;
-  const BIT_UNSIGNED = 0;
-  const EMPTY_U8A = new Uint8Array();
-  const DEFAULT_VERSION = 4;
-  const IMMORTAL_ERA = new Uint8Array([0]);
-  const UNMASK_VERSION = 0b01111111;
-
   const EXTRINSIC_VERSION = 4;
   class GenericExtrinsicV4 extends Struct {
     constructor(registry, value, {
@@ -11650,6 +11626,13 @@
       return this;
     }
   }
+
+  const BIT_SIGNED = 0b10000000;
+  const BIT_UNSIGNED = 0;
+  const EMPTY_U8A = new Uint8Array();
+  const DEFAULT_VERSION = 4;
+  const IMMORTAL_ERA = new Uint8Array([0]);
+  const UNMASK_VERSION = 0b01111111;
 
   const VERSIONS$1 = ['ExtrinsicUnknown',
   'ExtrinsicUnknown', 'ExtrinsicUnknown', 'ExtrinsicUnknown', 'ExtrinsicV4'];
@@ -11755,6 +11738,7 @@
   }
   class GenericExtrinsic extends ExtrinsicBase {
     #hashCache;
+    static LATEST_EXTRINSIC_VERSION = EXTRINSIC_VERSION;
     constructor(registry, value, {
       version
     } = {}) {
@@ -15844,7 +15828,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.2.2'
+    version: '9.2.3'
   };
 
   exports.BTreeMap = BTreeMap;
