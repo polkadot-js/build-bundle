@@ -10,7 +10,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.5'
+    version: '10.1.6'
   };
 
   function evaluateThis(fn) {
@@ -38,7 +38,7 @@
     name: '@polkadot/x-bigint',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.5'
+    version: '10.1.6'
   });
 
   const BigInt$1 = typeof xglobal.BigInt === 'function' && typeof xglobal.BigInt.asIntN === 'function' ? xglobal.BigInt : () => Number.NaN;
@@ -1048,7 +1048,7 @@
     name: '@polkadot/x-randomvalues',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.1.5'
+    version: '10.1.6'
   };
   packageInfo$4.packageInfo = packageInfo$3;
 
@@ -2295,7 +2295,7 @@
     name: '@polkadot/util-crypto',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.5'
+    version: '10.1.6'
   };
 
   /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
@@ -3264,6 +3264,19 @@
   		"website": "https://darwinia.network/"
   	},
   	{
+  		"prefix": 19,
+  		"network": "watr",
+  		"displayName": "Watr Protocol",
+  		"symbols": [
+  			"WATR"
+  		],
+  		"decimals": [
+  			18
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://www.watr.org"
+  	},
+  	{
   		"prefix": 20,
   		"network": "stafi",
   		"displayName": "Stafi",
@@ -3630,9 +3643,11 @@
   		"network": "oak",
   		"displayName": "OAK Network",
   		"symbols": [
-  			"OAK"
+  			"OAK",
+  			"TUR"
   		],
   		"decimals": [
+  			10,
   			10
   		],
   		"standardAccount": "*25519",
@@ -3799,6 +3814,32 @@
   		"website": "https://sora.org"
   	},
   	{
+  		"prefix": 71,
+  		"network": "p3d",
+  		"displayName": "3DP network",
+  		"symbols": [
+  			"P3D"
+  		],
+  		"decimals": [
+  			12
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://3dpass.org"
+  	},
+  	{
+  		"prefix": 72,
+  		"network": "p3dt",
+  		"displayName": "3DP test network",
+  		"symbols": [
+  			"P3Dt"
+  		],
+  		"decimals": [
+  			12
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://3dpass.org"
+  	},
+  	{
   		"prefix": 73,
   		"network": "zeitgeist",
   		"displayName": "Zeitgeist",
@@ -3864,6 +3905,19 @@
   		"website": "https://polkadex.trade"
   	},
   	{
+  		"prefix": 92,
+  		"network": "anmol",
+  		"displayName": "Anmol Network",
+  		"symbols": [
+  			"ANML"
+  		],
+  		"decimals": [
+  			18
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://anmol.network/"
+  	},
+  	{
   		"prefix": 93,
   		"network": "fragnova",
   		"displayName": "Fragnova Network",
@@ -3901,6 +3955,19 @@
   		],
   		"standardAccount": "*25519",
   		"website": "https://polkafoundry.com"
+  	},
+  	{
+  		"prefix": 100,
+  		"network": "ibtida",
+  		"displayName": "Anmol Network Ibtida Canary network",
+  		"symbols": [
+  			"IANML"
+  		],
+  		"decimals": [
+  			18
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://anmol.network/"
   	},
   	{
   		"prefix": 101,
@@ -3990,6 +4057,19 @@
   		"website": "https://clover.finance"
   	},
   	{
+  		"prefix": 129,
+  		"network": "dorafactory-polkadot",
+  		"displayName": "Dorafactory Polkadot Network",
+  		"symbols": [
+  			"DORA"
+  		],
+  		"decimals": [
+  			12
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://dorafactory.org"
+  	},
+  	{
   		"prefix": 131,
   		"network": "litmus",
   		"displayName": "Litmus Network",
@@ -4049,7 +4129,7 @@
   			"QTZ"
   		],
   		"decimals": [
-  			15
+  			18
   		],
   		"standardAccount": "*25519",
   		"website": "https://unique.network"
@@ -4103,7 +4183,7 @@
   		"decimals": [
   			18
   		],
-  		"standardAccount": "Sr25519",
+  		"standardAccount": "*25519",
   		"website": "https://efinity.io/"
   	},
   	{
@@ -4185,6 +4265,19 @@
   		"website": "https://ajuna.io"
   	},
   	{
+  		"prefix": 1985,
+  		"network": "seals",
+  		"displayName": "Seals Network",
+  		"symbols": [
+  			"SEAL"
+  		],
+  		"decimals": [
+  			9
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://seals.app"
+  	},
+  	{
   		"prefix": 2007,
   		"network": "kapex",
   		"displayName": "Kapex",
@@ -4222,6 +4315,32 @@
   		],
   		"standardAccount": "*25519",
   		"website": "https://interlay.io/"
+  	},
+  	{
+  		"prefix": 2112,
+  		"network": "chainflip",
+  		"displayName": "Chainflip",
+  		"symbols": [
+  			"FLIP"
+  		],
+  		"decimals": [
+  			18
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://chainflip.io/"
+  	},
+  	{
+  		"prefix": 2114,
+  		"network": "Turing",
+  		"displayName": "Turing Network",
+  		"symbols": [
+  			"TUR"
+  		],
+  		"decimals": [
+  			10
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://oak.tech/turing/home/"
   	},
   	{
   		"prefix": 2207,
@@ -4263,6 +4382,45 @@
   		"website": "https://subspace.network"
   	},
   	{
+  		"prefix": 3000,
+  		"network": "hashed",
+  		"displayName": "Hashed Network",
+  		"symbols": [
+  			"HASH"
+  		],
+  		"decimals": [
+  			18
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://hashed.network"
+  	},
+  	{
+  		"prefix": 4000,
+  		"network": "luhn",
+  		"displayName": "Luhn Network",
+  		"symbols": [
+  			"LUHN"
+  		],
+  		"decimals": [
+  			18
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://luhn.network"
+  	},
+  	{
+  		"prefix": 4006,
+  		"network": "tangle",
+  		"displayName": "Tangle Network",
+  		"symbols": [
+  			"TNT"
+  		],
+  		"decimals": [
+  			18
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://www.webb.tools/"
+  	},
+  	{
   		"prefix": 6094,
   		"network": "subspace",
   		"displayName": "Subspace",
@@ -4289,11 +4447,41 @@
   		"website": "https://tidefi.com"
   	},
   	{
+  		"prefix": 7013,
+  		"network": "gm",
+  		"displayName": "GM",
+  		"symbols": [
+  			"FREN",
+  			"GM",
+  			"GN"
+  		],
+  		"decimals": [
+  			12,
+  			0,
+  			0
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://gmordie.com"
+  	},
+  	{
   		"prefix": 7391,
   		"network": "unique_mainnet",
   		"displayName": "Unique Network",
   		"symbols": [
   			"UNQ"
+  		],
+  		"decimals": [
+  			18
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://unique.network"
+  	},
+  	{
+  		"prefix": 8883,
+  		"network": "sapphire_mainnet",
+  		"displayName": "Sapphire by Unique",
+  		"symbols": [
+  			"QTZ"
   		],
   		"decimals": [
   			18
@@ -4468,6 +4656,7 @@
     'dock-testnet': true,
     jupiter: true,
     'mathchain-testnet': true,
+    p3dt: true,
     subspace_testnet: true,
     'zero-alphaville': true
   };
@@ -4508,7 +4697,7 @@
     name: '@polkadot/networks',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.5'
+    version: '10.1.6'
   });
 
   const defaults = {
