@@ -2,6 +2,7 @@
 
 ## master
 
+- react-{identicon, qr}, ui-{keyring, settings}, vue-identicon 2.9.7
 - hw-ledger, keyring, util, util-crypto 10.1.6
 - extension-dapp 0.44.6
 - api, api-contract, types 9.2.3
