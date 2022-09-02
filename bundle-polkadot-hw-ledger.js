@@ -4582,7 +4582,7 @@
 		  name: '@polkadot/hw-ledger-transports',
 		  path: typeof __dirname === 'string' ? __dirname : 'auto',
 		  type: 'cjs',
-		  version: '10.1.6'
+		  version: '10.1.7'
 		};
 		packageInfo$1.packageInfo = packageInfo;
 		return packageInfo$1;
@@ -4651,9 +4651,16 @@
 	  name: '@polkadot/hw-ledger',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '10.1.6'
+	  version: '10.1.7'
 	};
 
+	async function wrapError(promise) {
+	  const result = await promise;
+	  if (result.return_code !== LEDGER_SUCCESS_CODE) {
+	    throw new Error(result.error_message);
+	  }
+	  return result;
+	}
 	class Ledger {
 	  #app = null;
 	  #chain;
@@ -4676,7 +4683,7 @@
 	      const {
 	        address,
 	        pubKey
-	      } = await this.#wrapError(app.getAddress(account + accountOffset, change, addressIndex + addressOffset, confirm));
+	      } = await wrapError(app.getAddress(account + accountOffset, change, addressIndex + addressOffset, confirm));
 	      return {
 	        address,
 	        publicKey: `0x${pubKey}`
@@ -4691,7 +4698,7 @@
 	        minor,
 	        patch,
 	        test_mode: isTestMode
-	      } = await this.#wrapError(app.getVersion());
+	      } = await wrapError(app.getVersion());
 	      return {
 	        isLocked,
 	        isTestMode,
@@ -4708,7 +4715,7 @@
 	      const buffer = util.u8aToBuffer(message);
 	      const {
 	        signature
-	      } = await this.#wrapError(app.sign(account + accountOffset, change, addressIndex + addressOffset, buffer));
+	      } = await wrapError(app.sign(account + accountOffset, change, addressIndex + addressOffset, buffer));
 	      return {
 	        signature: `0x${signature.toString('hex')}`
 	      };
@@ -4735,13 +4742,6 @@
 	      this.#app = null;
 	      throw error;
 	    }
-	  };
-	  #wrapError = async promise => {
-	    const result = await promise;
-	    if (result.return_code !== LEDGER_SUCCESS_CODE) {
-	      throw new Error(result.error_message);
-	    }
-	    return result;
 	  };
 	}
 
