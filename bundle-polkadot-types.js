@@ -595,7 +595,8 @@
     types: util.objectSpread({}, numberTypes, {
       AccountId: 'AccountId32',
       AccountId20: 'GenericEthereumAccountId',
-      AccountId32: 'GenericAccountId',
+      AccountId32: 'GenericAccountId32',
+      AccountId33: 'GenericAccountId33',
       AccountIdOf: 'AccountId',
       AccountIndex: 'GenericAccountIndex',
       Address: 'MultiAddress',
@@ -2850,7 +2851,7 @@
             name: 'member',
             type: 'AccountId'
           }],
-          type: 'Result<Balance, NpApiError>'
+          type: 'Balance'
         }
       },
       version: 1
@@ -9170,6 +9171,7 @@
       events: 'Vec<ContractEventSpecV2>',
       docs: 'Vec<Text>'
     },
+    ContractContractSpecV4: 'ContractContractSpecV3',
     ContractDisplayName: 'SiPath',
     ContractEventParamSpecV0: {
       name: 'Text',
@@ -9240,6 +9242,7 @@
     }
   };
   const ContractMetadataV0 = {
+    metadataVersion: 'Text',
     types: 'Vec<Si0Type>',
     spec: 'ContractContractSpecV0'
   };
@@ -9255,6 +9258,7 @@
     types: 'Vec<PortableType>',
     spec: 'ContractContractSpecV3'
   };
+  const ContractMetadataV4 = ContractMetadataV3;
   const ContractProjectInfo = {
     source: 'ContractProjectSource',
     contract: 'ContractProjectContract'
@@ -9265,7 +9269,7 @@
     ContractEventParamSpecLatest: 'ContractEventParamSpecV2',
     ContractMessageParamSpecLatest: 'ContractMessageParamSpecV2',
     ContractMessageSpecLatest: 'ContractMessageSpecV2',
-    ContractMetadataLatest: 'ContractMetadataV3'
+    ContractMetadataLatest: 'ContractMetadataV4'
   };
   const definitions$c = {
     rpc: {},
@@ -9275,12 +9279,14 @@
       ContractMetadataV1,
       ContractMetadataV2,
       ContractMetadataV3,
+      ContractMetadataV4,
       ContractMetadata: {
         _enum: {
           V0: 'ContractMetadataV0',
           V1: 'ContractMetadataV1',
           V2: 'ContractMetadataV2',
-          V3: 'ContractMetadataV3'
+          V3: 'ContractMetadataV3',
+          V4: 'ContractMetadataV4'
         }
       },
       ContractProjectV0: util.objectSpread({
@@ -12450,11 +12456,12 @@
     }
     throw new Error(`Unknown type passed to AccountId constructor, found typeof ${typeof value}`);
   }
-  class GenericAccountId extends U8aFixed {
-    constructor(registry, value) {
+  class BaseAccountId extends U8aFixed {
+    constructor(registry, allowedBits = 256 | 264, value) {
       const decoded = decodeAccountId(value);
-      if (decoded.length < 32 && decoded.some(b => b)) {
-        throw new Error(`Invalid AccountId provided, expected 32 bytes, found ${decoded.length}`);
+      const decodedBits = decoded.length * 8;
+      if (decodedBits < allowedBits && decoded.some(b => b)) {
+        throw new Error(`Invalid AccountId provided, expected ${allowedBits >> 3} bytes, found ${decoded.length}`);
       }
       super(registry, decoded, 256);
     }
@@ -12475,6 +12482,16 @@
     }
     toRawType() {
       return 'AccountId';
+    }
+  }
+  class GenericAccountId extends BaseAccountId {
+    constructor(registry, value) {
+      super(registry, 256, value);
+    }
+  }
+  class GenericAccountId33 extends BaseAccountId {
+    constructor(registry, value) {
+      super(registry, 264, value);
     }
   }
 
@@ -13302,6 +13319,8 @@
     GenericExtrinsicPayloadV4: GenericExtrinsicPayloadV4,
     GenericExtrinsicSignatureV4: GenericExtrinsicSignatureV4,
     GenericAccountId: GenericAccountId,
+    GenericAccountId32: GenericAccountId,
+    GenericAccountId33: GenericAccountId33,
     GenericAccountIndex: GenericAccountIndex,
     GenericBlock: GenericBlock,
     GenericCall: GenericCall,
@@ -15828,7 +15847,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.2.4'
+    version: '9.3.1'
   };
 
   exports.BTreeMap = BTreeMap;
@@ -15845,6 +15864,8 @@
   exports.F32 = f32;
   exports.F64 = f64;
   exports.GenericAccountId = GenericAccountId;
+  exports.GenericAccountId32 = GenericAccountId;
+  exports.GenericAccountId33 = GenericAccountId33;
   exports.GenericAccountIndex = GenericAccountIndex;
   exports.GenericAddress = GenericMultiAddress;
   exports.GenericBlock = GenericBlock;
