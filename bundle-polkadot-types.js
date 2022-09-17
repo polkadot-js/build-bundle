@@ -5172,6 +5172,16 @@
       return value;
     } else if (util.isBn(value)) {
       return value.toString();
+    } else if (util.isObject(value) && !util.isFunction(value.toBn)) {
+      const keys = Object.keys(value);
+      if (keys.length !== 1) {
+        throw new Error('Unable to construct number from multi-key object');
+      }
+      const inner = value[keys[0]];
+      if (!util.isString(inner) && !util.isNumber(inner)) {
+        throw new Error('Unable to construct from object with non-string/non-number value');
+      }
+      return decodeAbstractInt(inner, isNegative);
     }
     return util.bnToBn(value).toString();
   }
@@ -11360,6 +11370,7 @@
       section
     });
   }));
+  const jsonrpc$1 = jsonrpc;
 
   function createClass(registry, type) {
     return createClassUnsafe(registry, type);
@@ -14479,7 +14490,7 @@
   };
   const PATHS_ALIAS = splitNamespace([
   'sp_core::crypto::AccountId32', 'sp_runtime::generic::era::Era', 'sp_runtime::multiaddress::MultiAddress',
-  'frame_support::weights::weight_v2::Weight',
+  'frame_support::weights::weight_v2::Weight', 'sp_weights::weight_v2::Weight',
   'account::AccountId20', 'polkadot_runtime_common::claims::EthereumAddress',
   '*_democracy::vote::Vote', '*_conviction_voting::vote::Vote', '*_identity::types::Data',
   'sp_core::OpaqueMetadata', 'sp_core::OpaquePeerId', 'sp_core::offchain::OpaqueMultiaddr',
@@ -15848,7 +15859,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.3.3'
+    version: '9.4.1'
   };
 
   exports.BTreeMap = BTreeMap;
@@ -15958,7 +15969,7 @@
   exports.mapXcmTypes = mapXcmTypes;
   exports.packageInfo = packageInfo;
   exports.paramsNotation = paramsNotation;
-  exports.rpcDefinitions = jsonrpc;
+  exports.rpcDefinitions = jsonrpc$1;
   exports.typeDefinitions = definitions;
   exports.typeSplit = typeSplit;
   exports.u128 = u128;
