@@ -751,6 +751,30 @@
 		        slip0044: 0x80000314,
 		        ss58_addr_type: 6
 		    },
+		    {
+		        name: 'Phala',
+		        cla: 0xaf,
+		        slip0044: 0x80000162,
+		        ss58_addr_type: 30
+		    },
+		    {
+		        name: 'Khala',
+		        cla: 0xb1,
+		        slip0044: 0x800001b2,
+		        ss58_addr_type: 30
+		    },
+		    {
+		        name: 'Darwinia',
+		        cla: 0xb2,
+		        slip0044: 0x80000162,
+		        ss58_addr_type: 18
+		    },
+		    {
+		        name: 'HydraDX',
+		        cla: 0xab,
+		        slip0044: 0x80000162,
+		        ss58_addr_type: 63
+		    },
 		];
 	} (supported_apps));
 	getDefaultExportFromCjs(supported_apps);
@@ -905,7 +929,7 @@
 
 	const EventEmitter = {};
 
-	var __extends$2 = (global && global.__extends) || (function () {
+	var __extends$3 = (global && global.__extends) || (function () {
 	    var extendStatics = function (d, b) {
 	        extendStatics = Object.setPrototypeOf ||
 	            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -933,14 +957,16 @@
 	};
 	var createCustomErrorClass = function (name) {
 	    var CustomErrorClass =  (function (_super) {
-	        __extends$2(CustomErrorClass, _super);
+	        __extends$3(CustomErrorClass, _super);
 	        function CustomErrorClass(message, fields, options) {
 	            var _this =
 	            _super.call(this, message || name, options) || this;
 	            Object.setPrototypeOf(_this, CustomErrorClass.prototype);
 	            _this.name = name;
-	            for (var k in fields) {
-	                _this[k] = fields[k];
+	            if (fields) {
+	                for (var k in fields) {
+	                    _this[k] = fields[k];
+	                }
 	            }
 	            if (isObject(options) && "cause" in options && !("cause" in _this)) {
 	                var cause = options.cause;
@@ -959,6 +985,21 @@
 	    return value !== null && typeof value === "object";
 	}
 
+	var __extends$2 = (global && global.__extends) || (function () {
+	    var extendStatics = function (d, b) {
+	        extendStatics = Object.setPrototypeOf ||
+	            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+	        return extendStatics(d, b);
+	    };
+	    return function (d, b) {
+	        if (typeof b !== "function" && b !== null)
+	            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
 	createCustomErrorClass("AccountNameRequired");
 	createCustomErrorClass("AccountNotSupported");
 	createCustomErrorClass("AmountRequired");
@@ -1052,16 +1093,24 @@
 	createCustomErrorClass("LedgerAPI4xx");
 	createCustomErrorClass("LedgerAPI5xx");
 	createCustomErrorClass("FirmwareOrAppUpdateRequired");
+	createCustomErrorClass("LanguageNotFound");
 	createCustomErrorClass("NoDBPathGiven");
 	createCustomErrorClass("DBWrongPassword");
 	createCustomErrorClass("DBNotReset");
-	function TransportError(message, id) {
-	    this.name = "TransportError";
-	    this.message = message;
-	    this.stack = new Error().stack;
-	    this.id = id;
-	}
-	TransportError.prototype = new Error();
+	var TransportError =  (function (_super) {
+	    __extends$2(TransportError, _super);
+	    function TransportError(message, id) {
+	        var _this = this;
+	        var name = "TransportError";
+	        _this = _super.call(this, message || name) || this;
+	        _this.name = name;
+	        _this.message = message;
+	        _this.stack = new Error().stack;
+	        _this.id = id;
+	        return _this;
+	    }
+	    return TransportError;
+	}(Error));
 	var StatusCodes = {
 	    PIN_REMAINING_ATTEMPTS: 0x63c0,
 	    INCORRECT_LENGTH: 0x6700,
@@ -4582,7 +4631,7 @@
 		  name: '@polkadot/hw-ledger-transports',
 		  path: typeof __dirname === 'string' ? __dirname : 'auto',
 		  type: 'cjs',
-		  version: '10.1.7'
+		  version: '10.1.8'
 		};
 		packageInfo$1.packageInfo = packageInfo;
 		return packageInfo$1;
@@ -4627,15 +4676,19 @@
 	  'bifrost-kusama': 'BifrostKusama',
 	  centrifuge: 'Centrifuge',
 	  composable: 'Composable',
+	  darwinia: 'Darwinia',
 	  'dock-mainnet': 'Dock',
 	  edgeware: 'Edgeware',
 	  equilibrium: 'Equilibrium',
 	  genshiro: 'Genshiro',
+	  hydradx: 'HydraDX',
 	  'interlay-parachain': 'Interlay',
 	  karura: 'Karura',
+	  khala: 'Khala',
 	  kusama: 'Kusama',
 	  'nodle-para': 'Nodle',
 	  parallel: 'Parallel',
+	  phala: 'Phala',
 	  polkadex: 'Polkadex',
 	  polkadot: 'Polkadot',
 	  polymesh: 'Polymesh',
@@ -4651,7 +4704,7 @@
 	  name: '@polkadot/hw-ledger',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '10.1.7'
+	  version: '10.1.8'
 	};
 
 	async function wrapError(promise) {

@@ -6,11 +6,11 @@
 
   const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
-  const packageInfo$6 = {
+  const packageInfo$3 = {
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.7'
+    version: '10.1.8'
   };
 
   function evaluateThis(fn) {
@@ -31,14 +31,7 @@
     xglobal: xglobal,
     extractGlobal: extractGlobal,
     exposeGlobal: exposeGlobal,
-    packageInfo: packageInfo$6
-  });
-
-  ({
-    name: '@polkadot/x-bigint',
-    path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
-    type: 'esm',
-    version: '10.1.7'
+    packageInfo: packageInfo$3
   });
 
   const BigInt$1 = typeof xglobal.BigInt === 'function' && typeof xglobal.BigInt.asIntN === 'function' ? xglobal.BigInt : () => Number.NaN;
@@ -58,17 +51,16 @@
   const _2n$1 = BigInt(2);
   const _3n = BigInt(3);
   const _8n = BigInt(8);
-  const POW_2_256 = _2n$1 ** BigInt(256);
-  const CURVE = {
+  const CURVE = Object.freeze({
       a: _0n$1,
       b: BigInt(7),
-      P: POW_2_256 - _2n$1 ** BigInt(32) - BigInt(977),
-      n: POW_2_256 - BigInt('432420386565659656852420866394968145599'),
+      P: BigInt('0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f'),
+      n: BigInt('0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141'),
       h: _1n$1,
       Gx: BigInt('55066263022277343669578718895168534326250603453777594175500187360389116729240'),
       Gy: BigInt('32670510020758816978083085130507043184471273380659243275938904335757337482424'),
       beta: BigInt('0x7ae96a2b657c07106e64479eac3434e99cf0497512f58995c1396c28719501ee'),
-  };
+  });
   function weistrass(x) {
       const { a, b } = CURVE;
       const x2 = mod(x * x);
@@ -76,6 +68,11 @@
       return mod(x3 + a * x + b);
   }
   const USE_ENDOMORPHISM = CURVE.a === _0n$1;
+  class ShaError extends Error {
+      constructor(message) {
+          super(message);
+      }
+  }
   class JacobianPoint {
       constructor(x, y, z) {
           this.x = x;
@@ -100,8 +97,8 @@
               throw new TypeError('JacobianPoint expected');
           const { x: X1, y: Y1, z: Z1 } = this;
           const { x: X2, y: Y2, z: Z2 } = other;
-          const Z1Z1 = mod(Z1 ** _2n$1);
-          const Z2Z2 = mod(Z2 ** _2n$1);
+          const Z1Z1 = mod(Z1 * Z1);
+          const Z2Z2 = mod(Z2 * Z2);
           const U1 = mod(X1 * Z2Z2);
           const U2 = mod(X2 * Z1Z1);
           const S1 = mod(mod(Y1 * Z2) * Z2Z2);
@@ -113,12 +110,13 @@
       }
       double() {
           const { x: X1, y: Y1, z: Z1 } = this;
-          const A = mod(X1 ** _2n$1);
-          const B = mod(Y1 ** _2n$1);
-          const C = mod(B ** _2n$1);
-          const D = mod(_2n$1 * (mod((X1 + B) ** _2n$1) - A - C));
+          const A = mod(X1 * X1);
+          const B = mod(Y1 * Y1);
+          const C = mod(B * B);
+          const x1b = X1 + B;
+          const D = mod(_2n$1 * (mod(x1b * x1b) - A - C));
           const E = mod(_3n * A);
-          const F = mod(E ** _2n$1);
+          const F = mod(E * E);
           const X3 = mod(F - _2n$1 * D);
           const Y3 = mod(E * (D - X3) - _8n * C);
           const Z3 = mod(_2n$1 * Y1 * Z1);
@@ -133,8 +131,8 @@
               return this;
           if (X1 === _0n$1 || Y1 === _0n$1)
               return other;
-          const Z1Z1 = mod(Z1 ** _2n$1);
-          const Z2Z2 = mod(Z2 ** _2n$1);
+          const Z1Z1 = mod(Z1 * Z1);
+          const Z2Z2 = mod(Z2 * Z2);
           const U1 = mod(X1 * Z2Z2);
           const U2 = mod(X2 * Z1Z1);
           const S1 = mod(mod(Y1 * Z2) * Z2Z2);
@@ -149,10 +147,10 @@
                   return JacobianPoint.ZERO;
               }
           }
-          const HH = mod(H ** _2n$1);
+          const HH = mod(H * H);
           const HHH = mod(H * HH);
           const V = mod(U1 * HH);
-          const X3 = mod(r ** _2n$1 - HHH - _2n$1 * V);
+          const X3 = mod(r * r - HHH - _2n$1 * V);
           const Y3 = mod(r * (V - X3) - S1 * HHH);
           const Z3 = mod(Z1 * Z2 * H);
           return new JacobianPoint(X3, Y3, Z3);
@@ -307,6 +305,9 @@
           this._WINDOW_SIZE = windowSize;
           pointPrecomputes.delete(this);
       }
+      hasEvenY() {
+          return this.y % _2n$1 === _0n$1;
+      }
       static fromCompressedHex(bytes) {
           const isShort = bytes.length === 32;
           const x = bytesToNumber(isShort ? bytes : bytes.subarray(1));
@@ -374,7 +375,7 @@
       toHex(isCompressed = false) {
           const x = numTo32bStr(this.x);
           if (isCompressed) {
-              const prefix = this.y & _1n$1 ? '03' : '02';
+              const prefix = this.hasEvenY() ? '02' : '03';
               return `${prefix}${x}`;
           }
           else {
@@ -463,7 +464,7 @@
           this.assertValidity();
       }
       static fromCompact(hex) {
-          const arr = isUint8a(hex);
+          const arr = hex instanceof Uint8Array;
           const name = 'Signature.fromCompact';
           if (typeof hex !== 'string' && !arr)
               throw new TypeError(`${name}: Expected string or Uint8Array`);
@@ -473,7 +474,7 @@
           return new Signature(hexToNumber(str.slice(0, 64)), hexToNumber(str.slice(64, 128)));
       }
       static fromDER(hex) {
-          const arr = isUint8a(hex);
+          const arr = hex instanceof Uint8Array;
           if (typeof hex !== 'string' && !arr)
               throw new TypeError(`Signature.fromDER: Expected string or Uint8Array`);
           const { r, s } = parseDERSignature(arr ? hex : hexToBytes(hex));
@@ -523,7 +524,7 @@
       }
   }
   function concatBytes(...arrays) {
-      if (!arrays.every(isUint8a))
+      if (!arrays.every((b) => b instanceof Uint8Array))
           throw new Error('Uint8Array list expected');
       if (arrays.length === 1)
           return arrays[0];
@@ -536,9 +537,6 @@
       }
       return result;
   }
-  function isUint8a(bytes) {
-      return bytes instanceof Uint8Array;
-  }
   const hexes = Array.from({ length: 256 }, (v, i) => i.toString(16).padStart(2, '0'));
   function bytesToHex(uint8a) {
       if (!(uint8a instanceof Uint8Array))
@@ -549,13 +547,19 @@
       }
       return hex;
   }
+  const POW_2_256 = BigInt('0x10000000000000000000000000000000000000000000000000000000000000000');
   function numTo32bStr(num) {
-      if (num > POW_2_256)
+      if (typeof num !== 'bigint')
+          throw new Error('Expected bigint');
+      if (!(_0n$1 <= num && num < POW_2_256))
           throw new Error('Expected number < 2^256');
       return num.toString(16).padStart(64, '0');
   }
   function numTo32b(num) {
-      return hexToBytes(numTo32bStr(num));
+      const b = hexToBytes(numTo32bStr(num));
+      if (b.length !== 32)
+          throw new Error('Error: expected 32 bytes');
+      return b;
   }
   function numberToHexUnpadded(num) {
       const hex = num.toString(16);
@@ -669,13 +673,16 @@
       return scratch;
   }
   const divNearest = (a, b) => (a + b / _2n$1) / b;
-  const POW_2_128 = _2n$1 ** BigInt(128);
+  const ENDO = {
+      a1: BigInt('0x3086d221a7d46bcde86c90e49284eb15'),
+      b1: -_1n$1 * BigInt('0xe4437ed6010e88286f547fa90abfe4c3'),
+      a2: BigInt('0x114ca50f7a8e2f3f657c1108d9d44cfd8'),
+      b2: BigInt('0x3086d221a7d46bcde86c90e49284eb15'),
+      POW_2_128: BigInt('0x100000000000000000000000000000000'),
+  };
   function splitScalarEndo(k) {
       const { n } = CURVE;
-      const a1 = BigInt('0x3086d221a7d46bcde86c90e49284eb15');
-      const b1 = -_1n$1 * BigInt('0xe4437ed6010e88286f547fa90abfe4c3');
-      const a2 = BigInt('0x114ca50f7a8e2f3f657c1108d9d44cfd8');
-      const b2 = a1;
+      const { a1, b1, a2, b2, POW_2_128 } = ENDO;
       const c1 = divNearest(b2 * k, n);
       const c2 = divNearest(-b1 * k, n);
       let k1 = mod(k - c1 * a1 - c2 * a2, n);
@@ -702,6 +709,8 @@
           h -= n;
       return h;
   }
+  let _sha256Sync;
+  let _hmacSha256Sync;
   class HmacDrbg {
       constructor() {
           this.v = new Uint8Array(32).fill(1);
@@ -712,17 +721,15 @@
           return utils$1.hmacSha256(this.k, ...values);
       }
       hmacSync(...values) {
-          if (typeof utils$1.hmacSha256Sync !== 'function')
-              throw new Error('utils.hmacSha256Sync is undefined, you need to set it');
-          const res = utils$1.hmacSha256Sync(this.k, ...values);
-          if (res instanceof Promise)
-              throw new Error('To use sync sign(), ensure utils.hmacSha256 is sync');
-          return res;
+          return _hmacSha256Sync(this.k, ...values);
+      }
+      checkSync() {
+          if (typeof _hmacSha256Sync !== 'function')
+              throw new ShaError('hmacSha256Sync needs to be set');
       }
       incr() {
-          if (this.counter >= 1000) {
+          if (this.counter >= 1000)
               throw new Error('Tried 1,000 k values for sign(), all were invalid');
-          }
           this.counter += 1;
       }
       async reseed(seed = new Uint8Array()) {
@@ -734,6 +741,7 @@
           this.v = await this.hmac(this.v);
       }
       reseedSync(seed = new Uint8Array()) {
+          this.checkSync();
           this.k = this.hmacSync(this.v, Uint8Array.from([0x00]), seed);
           this.v = this.hmacSync(this.v);
           if (seed.length === 0)
@@ -747,6 +755,7 @@
           return this.v;
       }
       generateSync() {
+          this.checkSync();
           this.incr();
           this.v = this.hmacSync(this.v);
           return this.v;
@@ -787,7 +796,7 @@
               throw new Error('Expected 32 bytes of private key');
           num = hexToNumber(key);
       }
-      else if (isUint8a(key)) {
+      else if (key instanceof Uint8Array) {
           if (key.length !== 32)
               throw new Error('Expected 32 bytes of private key');
           num = bytesToNumber(key);
@@ -827,10 +836,7 @@
       return int2octets(z2 < _0n$1 ? z1 : z2);
   }
   function int2octets(num) {
-      if (typeof num !== 'bigint')
-          throw new Error('Expected bigint');
-      const hex = numTo32bStr(num);
-      return hexToBytes(hex);
+      return numTo32b(num);
   }
   function initSigArgs(msgHash, privateKey, extraEntropy) {
       if (msgHash == null)
@@ -876,6 +882,11 @@
   };
   const TAGGED_HASH_PREFIXES = {};
   const utils$1 = {
+      bytesToHex,
+      hexToBytes,
+      concatBytes,
+      mod,
+      invert,
       isValidPrivateKey(privateKey) {
           try {
               normalizePrivateKey(privateKey);
@@ -885,28 +896,8 @@
               return false;
           }
       },
-      privateAdd: (privateKey, tweak) => {
-          const p = normalizePrivateKey(privateKey);
-          const t = normalizePrivateKey(tweak);
-          return numTo32b(mod(p + t, CURVE.n));
-      },
-      privateNegate: (privateKey) => {
-          const p = normalizePrivateKey(privateKey);
-          return numTo32b(CURVE.n - p);
-      },
-      pointAddScalar: (p, tweak, isCompressed) => {
-          const P = Point.fromHex(p);
-          const t = normalizePrivateKey(tweak);
-          const Q = Point.BASE.multiplyAndAddUnsafe(P, t, _1n$1);
-          if (!Q)
-              throw new Error('Tweaked point at infinity');
-          return Q.toRawBytes(isCompressed);
-      },
-      pointMultiply: (p, tweak, isCompressed) => {
-          const P = Point.fromHex(p);
-          const t = bytesToNumber(ensureBytes(tweak));
-          return P.multiply(t).toRawBytes(isCompressed);
-      },
+      _bigintTo32Bytes: numTo32b,
+      _normalizePrivateKey: normalizePrivateKey,
       hashToPrivateKey: (hash) => {
           hash = ensureBytes(hash);
           if (hash.length < 40 || hash.length > 1024)
@@ -929,11 +920,6 @@
       randomPrivateKey: () => {
           return utils$1.hashToPrivateKey(utils$1.randomBytes(40));
       },
-      bytesToHex,
-      hexToBytes,
-      concatBytes,
-      mod,
-      invert,
       sha256: async (...messages) => {
           if (crypto.web) {
               const buffer = await crypto.web.subtle.digest('SHA-256', concatBytes(...messages));
@@ -978,15 +964,15 @@
           return utils$1.sha256(tagP, ...messages);
       },
       taggedHashSync: (tag, ...messages) => {
-          if (typeof utils$1.sha256Sync !== 'function')
-              throw new Error('utils.sha256Sync is undefined, you need to set it');
+          if (typeof _sha256Sync !== 'function')
+              throw new ShaError('sha256Sync is undefined, you need to set it');
           let tagP = TAGGED_HASH_PREFIXES[tag];
           if (tagP === undefined) {
-              const tagH = utils$1.sha256Sync(Uint8Array.from(tag, (c) => c.charCodeAt(0)));
+              const tagH = _sha256Sync(Uint8Array.from(tag, (c) => c.charCodeAt(0)));
               tagP = concatBytes(tagH, tagH);
               TAGGED_HASH_PREFIXES[tag] = tagP;
           }
-          return utils$1.sha256Sync(tagP, ...messages);
+          return _sha256Sync(tagP, ...messages);
       },
       precompute(windowSize = 8, point = Point.BASE) {
           const cached = point === Point.BASE ? point : new Point(point.x, point.y);
@@ -995,17 +981,28 @@
           return cached;
       },
   };
-
-  const others$2 = [];
-
-  const packageInfo$5 = {
-    name: '@polkadot/wasm-bridge',
-    path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
-    type: 'esm',
-    version: '6.3.1'
-  };
-
-  util.detectPackage(packageInfo$5, null, others$2);
+  Object.defineProperties(utils$1, {
+      sha256Sync: {
+          configurable: false,
+          get() {
+              return _sha256Sync;
+          },
+          set(val) {
+              if (!_sha256Sync)
+                  _sha256Sync = val;
+          },
+      },
+      hmacSha256Sync: {
+          configurable: false,
+          get() {
+              return _hmacSha256Sync;
+          },
+          set(val) {
+              if (!_hmacSha256Sync)
+                  _hmacSha256Sync = val;
+          },
+      },
+  });
 
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -1038,19 +1035,19 @@
 
   const require$$0$1 = /*@__PURE__*/getAugmentedNamespace(build);
 
-  var packageInfo$4 = {};
+  var packageInfo$2 = {};
 
-  Object.defineProperty(packageInfo$4, "__esModule", {
+  Object.defineProperty(packageInfo$2, "__esModule", {
     value: true
   });
-  packageInfo$4.packageInfo = void 0;
-  const packageInfo$3 = {
+  packageInfo$2.packageInfo = void 0;
+  const packageInfo$1 = {
     name: '@polkadot/x-randomvalues',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.1.7'
+    version: '10.1.8'
   };
-  packageInfo$4.packageInfo = packageInfo$3;
+  packageInfo$2.packageInfo = packageInfo$1;
 
   (function (exports) {
   	Object.defineProperty(exports, "__esModule", {
@@ -1064,7 +1061,7 @@
   	  }
   	});
   	var _xGlobal = require$$0$1;
-  	var _packageInfo = packageInfo$4;
+  	var _packageInfo = packageInfo$2;
   	function getRandomValues(arr) {
   	  return _xGlobal.xglobal.crypto.getRandomValues(arr);
   	}
@@ -1253,28 +1250,6 @@
       return result;
     };
   }
-
-  const others$1 = [];
-
-  const packageInfo$2 = {
-    name: '@polkadot/wasm-crypto-wasm',
-    path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
-    type: 'esm',
-    version: '6.3.1'
-  };
-
-  util.detectPackage(packageInfo$2, null, others$1);
-
-  const packageInfo$1 = {
-    name: '@polkadot/wasm-util',
-    path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
-    type: 'esm',
-    version: '6.3.1'
-  };
-
-  const others = [packageInfo$1];
-
-  util.detectPackage(packageInfo$1, null, others);
 
   const chr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
   const map = new Array(256);
@@ -1527,26 +1502,12 @@
 
   const wasmBytes = unzlibSync(base64Decode$1(bytes_1.bytes, new Uint8Array(bytes_1.lenIn)), new Uint8Array(bytes_1.lenOut));
 
-  ({
-    name: '@polkadot/wasm-crypto-init',
-    path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
-    type: 'esm',
-    version: '6.3.1'
-  });
-
   const createWasm = createWasmFn('crypto', wasmBytes, null);
 
   const bridge = new Bridge(createWasm);
   async function initBridge(createWasm) {
     return bridge.init(createWasm);
   }
-
-  ({
-    name: '@polkadot/wasm-crypto',
-    path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
-    type: 'esm',
-    version: '6.3.1'
-  });
 
   function withWasm(fn) {
     return (...params) => {
@@ -2295,7 +2256,7 @@
     name: '@polkadot/util-crypto',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.7'
+    version: '10.1.8'
   };
 
   /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
@@ -4421,6 +4382,32 @@
   		"website": "https://www.webb.tools/"
   	},
   	{
+  		"prefix": 4450,
+  		"network": "g1",
+  		"displayName": "Ğ1",
+  		"symbols": [
+  			"G1"
+  		],
+  		"decimals": [
+  			2
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://duniter.org"
+  	},
+  	{
+  		"prefix": 5234,
+  		"network": "humanode",
+  		"displayName": "Humanode Network",
+  		"symbols": [
+  			"HMND"
+  		],
+  		"decimals": [
+  			18
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://humanode.io"
+  	},
+  	{
   		"prefix": 6094,
   		"network": "subspace",
   		"displayName": "Subspace",
@@ -4578,6 +4565,7 @@
     'bifrost-kusama': ['0x9f28c6a68e0fc9646eff64935684f6eeeece527e37bbe1f213d22caa1d9d6bed'],
     centrifuge: ['0xb3db41421702df9a7fcac62b53ffeac85f7853cc4e689e0b93aeb3db18c09d82', '0x67dddf2673b69e5f875f6f25277495834398eafd67f492e09f3f3345e003d1b5'],
     composable: ['0xdaab8df776eb52ec604a5df5d388bb62a050a0aaec4556a64265b9d42755552d'],
+    darwinia: ['0xe71578b37a7c799b0ab4ee87ffa6f059a6b98f71f06fb8c84a8d88013a548ad6'],
     'dock-mainnet': ['0x6bfe24dca2a3be10f22212678ac13a6446ec764103c0f3471c71609eac384aae', '0xf73467c6544aa68df2ee546b135f955c46b90fa627e9b5d7935f41061bb8a5a9'],
     edgeware: ['0x742a2ca70c2fda6cee4f8df98d64c4c670a052d9568058982dad9d5a7a135c5b'],
     equilibrium: ['0x6f1a800de3daff7f5e037ddf66ab22ce03ab91874debeddb1086f5f7dbd48925'],
@@ -4590,6 +4578,7 @@
     ],
     'interlay-parachain': ['0xbf88efe70e9e0e916416e8bed61f2b45717f517d7f3523e33c7b001e5ffcbc72'],
     karura: ['0xbaf5aabe40646d11f0ee8abbdc64f4a4b7674925cba08e4a05ff9ebed6e2126b'],
+    khala: ['0xd43540ba6d3eb4897c28a77d48cb5b729fea37603cbbfc7a86a73b72adb3be8d'],
     kulupu: ['0xf7a99d3cb92853d00d5275c971c132c074636256583fee53b3bbe60d7b8769ba'],
     kusama: ['0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe',
     '0xe3777fa922cafbff200cadeaea1a76bd7898ad5b89f7848999058b50e715f636',
@@ -4597,6 +4586,7 @@
     ],
     'nodle-para': ['0x97da7ede98d7bad4e36b4d734b6055425a3be036da2a332ea5a7037656427a21'],
     parallel: ['0xe61a41c53f5dcd0beb09df93b34402aada44cb05117b71059cce40a2723a4e97'],
+    phala: ['0x1bb969d85965e4bb5a651abbedf21a54b6b31a21f66b5401cc3f1e286268d736'],
     picasso: ['0xe8e7f0f4c4f5a00720b4821dbfddefea7490bcf0b19009961cc46957984e2c1c'],
     polkadex: ['0x3920bcb4960a1eef5580cd5367ff3f430eef052774f78468852f7b9cb39f8a3c'],
     polkadot: ['0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3'],
@@ -4630,15 +4620,19 @@
     'bifrost-kusama': 0x00000314,
     centrifuge: 0x000002eb,
     composable: 0x00000162,
+    darwinia: 0x00000162,
     'dock-mainnet': 0x00000252,
     edgeware: 0x0000020b,
     equilibrium: 0x05f5e0fd,
     genshiro: 0x05f5e0fc,
+    hydradx: 0x00000162,
     'interlay-parachain': 0x00000162,
     karura: 0x000002ae,
+    khala: 0x000001b2,
     kusama: 0x000001b2,
     'nodle-para': 0x000003eb,
     parallel: 0x00000162,
+    phala: 0x00000162,
     polkadex: 0x0000031f,
     polkadot: 0x00000162,
     polymesh: 0x00000253,
@@ -4692,13 +4686,6 @@
   const allNetworks = knownSubstrate.map(toExpanded);
   const availableNetworks = allNetworks.filter(filterAvailable).sort(sortNetworks);
   const selectableNetworks = availableNetworks.filter(filterSelectable);
-
-  ({
-    name: '@polkadot/networks',
-    path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
-    type: 'esm',
-    version: '10.1.7'
-  });
 
   const defaults = {
     allowedDecodedLengths: [1, 2, 4, 8, 32, 33],

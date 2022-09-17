@@ -2,6 +2,7 @@
 
 ## master
 
+- hw-ledger, keyring, util, util-crypto 10.1.8
 - api, api-contract, types 9.3.3
 - api, api-contract, types 9.3.2
 - api, api-contract, types 9.3.1
