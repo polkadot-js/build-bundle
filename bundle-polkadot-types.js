@@ -1450,6 +1450,7 @@
 
   const rpc$e = {
     call: {
+      deprecated: 'Use the runtime interface `api.call.contractsApi.call` instead',
       description: 'Executes a call to a contract',
       params: [{
         name: 'callRequest',
@@ -1463,6 +1464,7 @@
       type: 'ContractExecResult'
     },
     getStorage: {
+      deprecated: 'Use the runtime interface `api.call.contractsApi.getStorage` instead',
       description: 'Returns the value under a specified storage key in a contract',
       params: [{
         name: 'address',
@@ -1479,6 +1481,7 @@
       type: 'Option<Bytes>'
     },
     instantiate: {
+      deprecated: 'Use the runtime interface `api.call.contractsApi.instantiate` instead',
       description: 'Instantiate a new contract',
       params: [{
         name: 'request',
@@ -1492,6 +1495,7 @@
       type: 'ContractInstantiateResult'
     },
     rentProjection: {
+      deprecated: 'Not available in newer versions of the contracts interfaces',
       description: 'Returns the projected time a given contract will be able to sustain paying its rent',
       params: [{
         name: 'address',
@@ -1505,6 +1509,7 @@
       type: 'Option<BlockNumber>'
     },
     uploadCode: {
+      deprecated: 'Use the runtime interface `api.call.contractsApi.uploadCode` instead',
       description: 'Upload new code without instantiating a contract from it',
       endpoint: 'contracts_upload_code',
       params: [{
@@ -1573,7 +1578,7 @@
             type: 'Option<Balance>'
           }, {
             name: 'code',
-            type: 'Bytes'
+            type: 'CodeSource'
           }, {
             name: 'data',
             type: 'Bytes'
@@ -11003,6 +11008,7 @@
       type: 'u64'
     },
     getKeys: {
+      deprecated: 'Use `api.rpc.state.getKeysPaged` to retrieve keys',
       description: 'Retrieves the keys with a certain prefix',
       params: [{
         name: 'key',
@@ -11047,6 +11053,7 @@
       type: 'Metadata'
     },
     getPairs: {
+      deprecated: 'Use `api.rpc.state.getKeysPaged` to retrieve keys',
       description: 'Returns the keys with prefix, leave empty to get all the keys (deprecated: Use getKeysPaged)',
       params: [{
         name: 'prefix',
@@ -14495,7 +14502,7 @@
   '*_democracy::vote::Vote', '*_conviction_voting::vote::Vote', '*_identity::types::Data',
   'sp_core::OpaqueMetadata', 'sp_core::OpaquePeerId', 'sp_core::offchain::OpaqueMultiaddr',
   'primitive_types::*', 'sp_arithmetic::per_things::*',
-  'ink_env::types::*']);
+  'ink_env::types::*', 'ink_primitives::types::*']);
   const PATHS_SET = splitNamespace(['pallet_identity::types::BitFlags']);
   const BITVEC_NS_LSB = ['bitvec::order::Lsb0', 'BitOrderLsb0'];
   const BITVEC_NS_MSB = ['bitvec::order::Msb0', 'BitOrderMsb0'];
@@ -15859,7 +15866,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.4.2'
+    version: '9.4.3'
   };
 
   exports.BTreeMap = BTreeMap;
