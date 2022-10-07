@@ -2,6 +2,7 @@
 
 ## master
 
+- phishing 0.18.10
 - hw-ledger, keyring, util, util-crypto 10.1.10
 - api, api-contract, types 9.4.3
 - api, api-contract, types 9.4.2
