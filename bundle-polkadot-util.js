@@ -10,7 +10,7 @@
     name: '@polkadot/util',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.9'
+    version: '10.1.10'
   };
 
   function arrayChunk(array, chunkSize) {
@@ -114,7 +114,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.9'
+    version: '10.1.10'
   };
 
   function evaluateThis(fn) {
@@ -3043,7 +3043,7 @@
     name: '@polkadot/x-textencoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.1.9'
+    version: '10.1.10'
   };
   packageInfo$3.packageInfo = packageInfo$2;
 
@@ -3368,7 +3368,7 @@
     name: '@polkadot/x-textdecoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.1.9'
+    version: '10.1.10'
   };
   packageInfo$1.packageInfo = packageInfo;
 
@@ -3438,7 +3438,7 @@
   } = {}) {
     const valueBi = nToBigInt(value);
     if (valueBi === _0n) {
-      return bitLength === -1 ? new Uint8Array() : new Uint8Array(Math.ceil((bitLength || 0) / 8));
+      return bitLength === -1 ? new Uint8Array(1) : new Uint8Array(Math.ceil((bitLength || 0) / 8));
     }
     const u8a = toU8a(valueBi, isLe, isNegative);
     if (bitLength === -1) {
@@ -3453,13 +3453,12 @@
     return output;
   }
 
-  const ZERO_STR$1 = '0x00';
   function nToHex(value, {
     bitLength,
     isLe = false,
     isNegative = false
   } = {}) {
-    return !value ? ZERO_STR$1 : u8aToHex(nToU8a(value, {
+    return u8aToHex(nToU8a(value || 0, {
       bitLength,
       isLe,
       isNegative
@@ -3550,7 +3549,7 @@
     const valueBn = bnToBn(value);
     const byteLength = bitLength === -1 ? Math.ceil(valueBn.bitLength() / 8) : Math.ceil((bitLength || 0) / 8);
     if (!value) {
-      return bitLength === -1 ? new Uint8Array() : new Uint8Array(byteLength);
+      return bitLength === -1 ? new Uint8Array(1) : new Uint8Array(byteLength);
     }
     const output = new Uint8Array(byteLength);
     const bn = isNegative ? valueBn.toTwos(byteLength * 8) : valueBn;
@@ -3558,13 +3557,12 @@
     return output;
   }
 
-  const ZERO_STR = '0x00';
   function bnToHex(value, {
     bitLength = -1,
     isLe = false,
     isNegative = false
   } = {}) {
-    return !value ? ZERO_STR : u8aToHex(bnToU8a(value, {
+    return u8aToHex(bnToU8a(value, {
       bitLength,
       isLe,
       isNegative
@@ -4359,15 +4357,12 @@
   }
 
   function numberToHex(value, bitLength = -1) {
-    if (value === undefined || value === null || isNaN(value)) {
-      return '0x';
-    }
-    const hex = value.toString(16);
+    const hex = (!value || Number.isNaN(value) ? 0 : value).toString(16);
     return hexFixLength(hex.length % 2 ? `0${hex}` : hex, bitLength, true);
   }
 
   function numberToU8a(value, bitLength = -1) {
-    return value === undefined || value === null || isNaN(value) ? new Uint8Array() : hexToU8a(numberToHex(value, bitLength));
+    return hexToU8a(numberToHex(value, bitLength));
   }
 
   function objectClear(value) {

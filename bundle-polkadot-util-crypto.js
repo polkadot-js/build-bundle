@@ -10,7 +10,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.9'
+    version: '10.1.10'
   };
 
   function evaluateThis(fn) {
@@ -1045,7 +1045,7 @@
     name: '@polkadot/x-randomvalues',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.1.9'
+    version: '10.1.10'
   };
   packageInfo$2.packageInfo = packageInfo$1;
 
@@ -1767,12 +1767,13 @@
           assert.hash(hash);
           const key = toBytes(_key);
           this.iHash = hash.create();
-          if (!(this.iHash instanceof Hash))
+          if (typeof this.iHash.update !== 'function')
               throw new TypeError('Expected instance of class which extends utils.Hash');
-          const blockLen = (this.blockLen = this.iHash.blockLen);
+          this.blockLen = this.iHash.blockLen;
           this.outputLen = this.iHash.outputLen;
+          const blockLen = this.blockLen;
           const pad = new Uint8Array(blockLen);
-          pad.set(key.length > this.iHash.blockLen ? hash.create().update(key).digest() : key);
+          pad.set(key.length > blockLen ? hash.create().update(key).digest() : key);
           for (let i = 0; i < pad.length; i++)
               pad[i] ^= 0x36;
           this.iHash.update(pad);
@@ -2256,7 +2257,7 @@
     name: '@polkadot/util-crypto',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.9'
+    version: '10.1.10'
   };
 
   /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
@@ -4252,6 +4253,19 @@
   		"website": "https://totemaccounting.com"
   	},
   	{
+  		"prefix": 2009,
+  		"network": "cloudwalk_mainnet",
+  		"displayName": "CloudWalk Network Mainnet",
+  		"symbols": [
+  			"CWN"
+  		],
+  		"decimals": [
+  			18
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://explorer.mainnet.cloudwalk.io"
+  	},
+  	{
   		"prefix": 2032,
   		"network": "interlay",
   		"displayName": "Interlay",
@@ -4276,6 +4290,19 @@
   		],
   		"standardAccount": "*25519",
   		"website": "https://interlay.io/"
+  	},
+  	{
+  		"prefix": 2106,
+  		"network": "bitgreen",
+  		"displayName": "Bitgreen",
+  		"symbols": [
+  			"BBB"
+  		],
+  		"decimals": [
+  			18
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://bitgreen.org/"
   	},
   	{
   		"prefix": 2112,

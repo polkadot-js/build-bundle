@@ -1093,6 +1093,7 @@
 	createCustomErrorClass("FeeNotLoaded");
 	createCustomErrorClass("FeeRequired");
 	createCustomErrorClass("FeeTooHigh");
+	createCustomErrorClass("PendingOperation");
 	createCustomErrorClass("SyncError");
 	createCustomErrorClass("PairingFailed");
 	createCustomErrorClass("GenuineCheckFailed");
@@ -3841,9 +3842,9 @@
 	        productIdMM: 0x60,
 	        legacyUsbProductId: 0x0006,
 	        usbOnly: false,
-	        memorySize: 2 * 1024 * 1024,
+	        memorySize: 1536 * 1024,
 	        masks: [0x33200000],
-	        getBlockSize: function (_firwareVersion) { return 4 * 1024; },
+	        getBlockSize: function (_firmwareVersion) { return 32; },
 	        bluetoothSpec: [
 	            {
 	                serviceUuid: "13d63400-2c97-6004-0000-4c6564676572",
@@ -4637,7 +4638,7 @@
 		  name: '@polkadot/hw-ledger-transports',
 		  path: typeof __dirname === 'string' ? __dirname : 'auto',
 		  type: 'cjs',
-		  version: '10.1.9'
+		  version: '10.1.10'
 		};
 		packageInfo$1.packageInfo = packageInfo;
 		return packageInfo$1;
@@ -4711,7 +4712,7 @@
 	  name: '@polkadot/hw-ledger',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '10.1.9'
+	  version: '10.1.10'
 	};
 
 	async function wrapError(promise) {
