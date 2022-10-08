@@ -752,7 +752,12 @@
       },
       ValidatorId: 'AccountId',
       ValidatorIdOf: 'ValidatorId',
-      Weight: 'u64',
+      WeightV1: 'u64',
+      WeightV2: {
+        refTime: 'Compact<u64>',
+        proofSize: 'Compact<u64>'
+      },
+      Weight: 'WeightV1',
       WeightMultiplier: 'Fixed64',
       PreRuntime: '(ConsensusEngineId, Bytes)',
       SealV0: '(u64, Signature)',
@@ -14548,7 +14553,13 @@
       return false;
     });
   }
-  function getAliasPath(path) {
+  function getAliasPath({
+    def,
+    path
+  }) {
+    if (path.join('::') === 'sp_weights::weight_v2::Weight' && def.isComposite && def.asComposite.fields.length !== 1) {
+      return null;
+    }
     return path.length && PATHS_ALIAS.some(a => matchParts(a, path)) ? path[path.length - 1].toString() : null;
   }
   function extractNameFlat(portable, lookupIndex, params, path, isInternal = false) {
@@ -14722,6 +14733,18 @@
         Address: isMultiAddress ? 'MultiAddress' : 'AccountId',
         ExtrinsicSignature: ['sp_runtime::MultiSignature'].includes(nsSignature) ? 'MultiSignature' : names[sigParam.type.unwrap().toNumber()] || 'MultiSignature'
       });
+    }
+    if (params.SpWeightsWeightV2Weight) {
+      const weight = Object.entries(names).find(([, n]) => n === 'SpWeightsWeightV2Weight');
+      if (!weight) {
+        throw new Error('Unable to extract weight type from SpWeightsWeightV2Weight');
+      }
+      const weightDef = lookup.getTypeDef(`Lookup${weight[0]}`);
+      if (Array.isArray(weightDef.sub) && weightDef.sub.length !== 1) {
+        lookup.registry.register({
+          Weight: 'SpWeightsWeightV2Weight'
+        });
+      }
     }
   }
   function extractAliases(params, isContract) {
@@ -14984,7 +15007,7 @@
   function _extract2(type, lookupIndex) {
     const namespace = type.path.join('::');
     let typeDef;
-    const aliasType = _classPrivateFieldBase(this, _alias)[_alias][lookupIndex] || getAliasPath(type.path);
+    const aliasType = _classPrivateFieldBase(this, _alias)[_alias][lookupIndex] || getAliasPath(type);
     try {
       if (aliasType) {
         typeDef = _classPrivateFieldBase(this, _extractAliasPath)[_extractAliasPath](lookupIndex, aliasType);
@@ -15866,7 +15889,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.4.3'
+    version: '9.5.1'
   };
 
   exports.BTreeMap = BTreeMap;
