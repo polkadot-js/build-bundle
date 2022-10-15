@@ -4243,7 +4243,7 @@
 
 	const TransportWebHID$1 = /*#__PURE__*/Object.freeze({
 		__proto__: null,
-		'default': TransportWebHID
+		default: TransportWebHID
 	});
 
 	const require$$1 = /*@__PURE__*/getAugmentedNamespace(TransportWebHID$1);
@@ -4619,7 +4619,7 @@
 
 	const TransportWebUSB$1 = /*#__PURE__*/Object.freeze({
 		__proto__: null,
-		'default': TransportWebUSB
+		default: TransportWebUSB
 	});
 
 	const require$$2 = /*@__PURE__*/getAugmentedNamespace(TransportWebUSB$1);
@@ -4638,7 +4638,7 @@
 		  name: '@polkadot/hw-ledger-transports',
 		  path: typeof __dirname === 'string' ? __dirname : 'auto',
 		  type: 'cjs',
-		  version: '10.1.10'
+		  version: '10.1.11'
 		};
 		packageInfo$1.packageInfo = packageInfo;
 		return packageInfo$1;
@@ -4712,7 +4712,7 @@
 	  name: '@polkadot/hw-ledger',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '10.1.10'
+	  version: '10.1.11'
 	};
 
 	async function wrapError(promise) {
@@ -4808,7 +4808,5 @@
 
 	exports.Ledger = Ledger;
 	exports.packageInfo = packageInfo;
-
-	Object.defineProperty(exports, '__esModule', { value: true });
 
 }));
