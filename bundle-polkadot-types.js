@@ -4375,45 +4375,55 @@
       type: 'Vec<ValidatorId>'
     }
   };
+  const PH_V2_TO_V3 = {
+    pvfs_require_precheck: {
+      description: 'Returns code hashes of PVFs that require pre-checking by validators in the active set.',
+      params: [],
+      type: 'Vec<ValidationCodeHash>'
+    },
+    session_info: {
+      description: 'Get the session info for the given session, if stored.',
+      params: [{
+        name: 'index',
+        type: 'SessionIndex'
+      }],
+      type: 'Option<SessionInfo>'
+    },
+    submit_pvf_check_statement: {
+      description: 'Submits a PVF pre-checking statement into the transaction pool.',
+      params: [{
+        name: 'stmt',
+        type: 'PvfCheckStatement'
+      }, {
+        name: 'signature',
+        type: 'ValidatorSignature'
+      }],
+      type: 'Null'
+    },
+    validation_code_hash: {
+      description: 'Fetch the hash of the validation code used by a para, making the given `OccupiedCoreAssumption`.',
+      params: [{
+        name: 'paraId',
+        type: 'ParaId'
+      }, {
+        name: 'assumption',
+        type: 'OccupiedCoreAssumption'
+      }],
+      type: 'Option<ValidationCodeHash>'
+    }
+  };
   const runtime$6 = {
     ParachainHost: [{
       methods: util.objectSpread({
-        pvfs_require_precheck: {
-          description: 'Returns code hashes of PVFs that require pre-checking by validators in the active set.',
+        disputes: {
+          description: 'Returns all onchain disputes.',
           params: [],
-          type: 'Vec<ValidationCodeHash>'
-        },
-        session_info: {
-          description: 'Get the session info for the given session, if stored.',
-          params: [{
-            name: 'index',
-            type: 'SessionIndex'
-          }],
-          type: 'Option<SessionInfo>'
-        },
-        submit_pvf_check_statement: {
-          description: 'Submits a PVF pre-checking statement into the transaction pool.',
-          params: [{
-            name: 'stmt',
-            type: 'PvfCheckStatement'
-          }, {
-            name: 'signature',
-            type: 'ValidatorSignature'
-          }],
-          type: 'Null'
-        },
-        validation_code_hash: {
-          description: 'Fetch the hash of the validation code used by a para, making the given `OccupiedCoreAssumption`.',
-          params: [{
-            name: 'paraId',
-            type: 'ParaId'
-          }, {
-            name: 'assumption',
-            type: 'OccupiedCoreAssumption'
-          }],
-          type: 'Option<ValidationCodeHash>'
+          type: 'Vec<(SessionIndex, CandidateHash, DisputeState)>'
         }
-      }, PH_V1_TO_V2),
+      }, PH_V1_TO_V2, PH_V2_TO_V3),
+      version: 3
+    }, {
+      methods: util.objectSpread({}, PH_V1_TO_V2, PH_V2_TO_V3),
       version: 2
     }, {
       methods: util.objectSpread({
@@ -11370,7 +11380,7 @@
   });
 
   const jsonrpc = {};
-  Object.keys(definitions).forEach(s => Object.entries(definitions[s].rpc || {}).forEach(([method, def]) => {
+  Object.keys(definitions).forEach(s => Object.entries(definitions[s].rpc ).forEach(([method, def]) => {
     const section = def.aliasSection || s;
     if (!jsonrpc[section]) {
       jsonrpc[section] = {};
@@ -15889,7 +15899,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.5.1'
+    version: '9.5.2'
   };
 
   exports.BTreeMap = BTreeMap;
@@ -16011,7 +16021,5 @@
   exports.unwrapStorageType = unwrapStorageType;
   exports.usize = usize;
   exports.withTypeString = withTypeString;
-
-  Object.defineProperty(exports, '__esModule', { value: true });
 
 }));
