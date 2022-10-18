@@ -6,10 +6,6 @@
 
   const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
-  function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-  const Vue__default = /*#__PURE__*/_interopDefaultLegacy(Vue);
-
   const COLORS = [
   '#ffe119', '#4363d8', '#f58231', '#fabebe', '#e6beff', '#800000', '#000075', '#a9a9a9', '#ffffff', '#000000'];
   const SHAPE_COUNT = 5;
@@ -1926,7 +1922,7 @@
     })));
   }
 
-  const Beachball = Vue__default["default"].extend({
+  const Beachball = Vue.extend({
     props: ['address', 'size', 'isAlternative'],
     render(h) {
       const {
@@ -1938,13 +1934,13 @@
         isAlternative,
         size
       });
-      return h(Vue__default["default"].component('VCBeachball', {
+      return h(Vue.component('VCBeachball', {
         template: bb.outerHTML
       }));
     }
   });
 
-  const Empty = Vue__default["default"].extend({
+  const Empty = Vue.extend({
     props: ['size'],
     template: `
     <svg :height="size" :width="size" viewBox="0 0 64 64">
@@ -2459,21 +2455,21 @@
   (
       typeof document !== "undefined" && document.querySelectorAll.bind(document));
 
-  const Jdenticon = Vue__default["default"].extend({
+  const Jdenticon = Vue.extend({
     props: ['publicKey', 'size'],
     render(h) {
       const {
         publicKey,
         size
       } = this.$props;
-      const cmp = Vue__default["default"].component('CJdenticon', {
+      const cmp = Vue.component('CJdenticon', {
         template: toSvg(publicKey.substring(2), size)
       });
       return h(cmp);
     }
   });
 
-  const Polkadot = Vue__default["default"].extend({
+  const Polkadot = Vue.extend({
     props: ['address', 'isAlternative', 'size'],
     render(h) {
       const {
@@ -2524,7 +2520,7 @@
       };
     }
   }
-  const Identicon = Vue__default["default"].extend({
+  const Identicon = Vue.extend({
     components: {
       Beachball,
       Empty,
@@ -2606,12 +2602,10 @@
     name: '@polkadot/vue-identicon',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '2.9.11'
+    version: '2.9.12'
   };
 
   exports.Identicon = Identicon;
   exports.packageInfo = packageInfo;
-
-  Object.defineProperty(exports, '__esModule', { value: true });
 
 }));
