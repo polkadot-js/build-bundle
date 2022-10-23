@@ -3591,7 +3591,10 @@
           TooManyConsumers: 'Null',
           Token: 'TokenError',
           Arithmetic: 'ArithmeticError',
-          Transactional: 'TransactionalError'
+          Transactional: 'TransactionalError',
+          Exhausted: 'Null',
+          Corruption: 'Null',
+          Unavailable: 'Null'
         }
       },
       DispatchErrorPre6: {
@@ -6318,7 +6321,7 @@
     const Types = Classes[0];
     for (let i = 0; i < Types.length; i++) {
       try {
-        const entry = value === null || value === void 0 ? void 0 : value[i];
+        const entry = value == null ? void 0 : value[i];
         result[i] = entry instanceof Types[i] ? entry : new Types[i](registry, entry);
       } catch (error) {
         throw new Error(`Tuple: failed on ${i}:: ${error.message}`);
@@ -6753,7 +6756,8 @@
     inspect(isBare) {
       const inner = new Array();
       for (const [k, v] of this.entries()) {
-        inner.push({ ...v.inspect(!isBare || util.isBoolean(isBare) ? isBare : isBare[k]),
+        inner.push({
+          ...v.inspect(!isBare || util.isBoolean(isBare) ? isBare : isBare[k]),
           name: util.stringCamelCase(k)
         });
       }
@@ -11380,7 +11384,7 @@
   });
 
   const jsonrpc = {};
-  Object.keys(definitions).forEach(s => Object.entries(definitions[s].rpc ).forEach(([method, def]) => {
+  Object.keys(definitions).forEach(s => Object.entries(definitions[s].rpc || {}).forEach(([method, def]) => {
     const section = def.aliasSection || s;
     if (!jsonrpc[section]) {
       jsonrpc[section] = {};
@@ -11528,7 +11532,7 @@
     #section;
     #typeDef;
     constructor(registry, value, meta, section = '<unknown>', method = '<unknown>') {
-      const fields = (meta === null || meta === void 0 ? void 0 : meta.fields) || [];
+      const fields = (meta == null ? void 0 : meta.fields) || [];
       super(registry, fields.map(({
         type
       }) => registry.createLookupType(type)), value);
@@ -12656,8 +12660,8 @@
         args: this.argsEntries.reduce((args, [n, a]) => util.objectSpread(args, {
           [n]: a.toHuman(isExpanded)
         }), {}),
-        method: (_call = call) === null || _call === void 0 ? void 0 : _call.method,
-        section: (_call2 = call) === null || _call2 === void 0 ? void 0 : _call2.section
+        method: (_call = call) == null ? void 0 : _call.method,
+        section: (_call2 = call) == null ? void 0 : _call2.section
       }, isExpanded && call ? {
         docs: call.meta.docs.map(d => d.toString())
       } : null);
@@ -12735,7 +12739,7 @@
       return this.eq(CID_POW);
     }
     extractAuthor(bytes, sessionValidators) {
-      if (sessionValidators !== null && sessionValidators !== void 0 && sessionValidators.length) {
+      if (sessionValidators != null && sessionValidators.length) {
         if (this.isAura) {
           return getAuraAuthor(this.registry, bytes, sessionValidators);
         } else if (this.isBabe) {
@@ -13579,7 +13583,7 @@
     knownTypes
   }, section) {
     var _knownTypes$typesAlia;
-    return util.objectSpread({}, typesAlias[section], (_knownTypes$typesAlia = knownTypes.typesAlias) === null || _knownTypes$typesAlia === void 0 ? void 0 : _knownTypes$typesAlia[section]);
+    return util.objectSpread({}, typesAlias[section], (_knownTypes$typesAlia = knownTypes.typesAlias) == null ? void 0 : _knownTypes$typesAlia[section]);
   }
 
   const BOXES = [['<', '>'], ['<', ','], [',', '>'], ['(', ')'], ['(', ','], [',', ','], [',', ')']];
@@ -14136,6 +14140,9 @@
     hashers: [],
     keys: []
   };
+  function filterDefined(a) {
+    return !util.isUndefined(a);
+  }
   function assertArgs({
     method,
     section
@@ -14185,9 +14192,6 @@
   function createKeyRaw(registry, itemFn, args) {
     const [prefix, extra] = createKeyRawParts(registry, itemFn, args);
     return util.u8aConcat(...prefix, ...extra);
-  }
-  function filterDefined(a) {
-    return !util.isUndefined(a);
   }
   function createKey(registry, itemFn, args) {
     assertArgs(itemFn, args);
@@ -14376,7 +14380,7 @@
           name: registry.createTypeUnsafe('Text', [method]),
           toJSON: () => key,
           type: registry.createTypeUnsafe('StorageEntryTypeLatest', [{
-            Plain: ((_findSiType = findSiType(registry, type)) === null || _findSiType === void 0 ? void 0 : _findSiType.id) || 0
+            Plain: ((_findSiType = findSiType(registry, type)) == null ? void 0 : _findSiType.id) || 0
           }])
         }]),
         method,
@@ -14750,11 +14754,11 @@
         throw new Error('Unable to extract weight type from SpWeightsWeightV2Weight');
       }
       const weightDef = lookup.getTypeDef(`Lookup${weight[0]}`);
-      if (Array.isArray(weightDef.sub) && weightDef.sub.length !== 1) {
-        lookup.registry.register({
-          Weight: 'SpWeightsWeightV2Weight'
-        });
-      }
+      lookup.registry.register({
+        Weight: Array.isArray(weightDef.sub) && weightDef.sub.length !== 1
+        ? 'SpWeightsWeightV2Weight'
+        : 'WeightV1'
+      });
     }
   }
   function extractAliases(params, isContract) {
@@ -15664,7 +15668,7 @@
     }
     get chainDecimals() {
       var _this$chainProperties;
-      if ((_this$chainProperties = this.#chainProperties) !== null && _this$chainProperties !== void 0 && _this$chainProperties.tokenDecimals.isSome) {
+      if ((_this$chainProperties = this.#chainProperties) != null && _this$chainProperties.tokenDecimals.isSome) {
         const allDecimals = this.#chainProperties.tokenDecimals.unwrap();
         if (allDecimals.length) {
           return allDecimals.map(b => b.toNumber());
@@ -15674,11 +15678,11 @@
     }
     get chainSS58() {
       var _this$chainProperties2;
-      return (_this$chainProperties2 = this.#chainProperties) !== null && _this$chainProperties2 !== void 0 && _this$chainProperties2.ss58Format.isSome ? this.#chainProperties.ss58Format.unwrap().toNumber() : undefined;
+      return (_this$chainProperties2 = this.#chainProperties) != null && _this$chainProperties2.ss58Format.isSome ? this.#chainProperties.ss58Format.unwrap().toNumber() : undefined;
     }
     get chainTokens() {
       var _this$chainProperties3;
-      if ((_this$chainProperties3 = this.#chainProperties) !== null && _this$chainProperties3 !== void 0 && _this$chainProperties3.tokenSymbol.isSome) {
+      if ((_this$chainProperties3 = this.#chainProperties) != null && _this$chainProperties3.tokenSymbol.isSome) {
         const allTokens = this.#chainProperties.tokenSymbol.unwrap();
         if (allTokens.length) {
           return allTokens.map(valueToString);
@@ -15787,7 +15791,7 @@
     }
     getModuleInstances(specName, moduleName) {
       var _this$knownTypes, _this$knownTypes$type, _this$knownTypes$type2, _this$knownTypes$type3, _this$knownTypes$type4;
-      return ((_this$knownTypes = this.#knownTypes) === null || _this$knownTypes === void 0 ? void 0 : (_this$knownTypes$type = _this$knownTypes.typesBundle) === null || _this$knownTypes$type === void 0 ? void 0 : (_this$knownTypes$type2 = _this$knownTypes$type.spec) === null || _this$knownTypes$type2 === void 0 ? void 0 : (_this$knownTypes$type3 = _this$knownTypes$type2[specName.toString()]) === null || _this$knownTypes$type3 === void 0 ? void 0 : (_this$knownTypes$type4 = _this$knownTypes$type3.instances) === null || _this$knownTypes$type4 === void 0 ? void 0 : _this$knownTypes$type4[moduleName]) || this.#moduleMap[moduleName];
+      return ((_this$knownTypes = this.#knownTypes) == null ? void 0 : (_this$knownTypes$type = _this$knownTypes.typesBundle) == null ? void 0 : (_this$knownTypes$type2 = _this$knownTypes$type.spec) == null ? void 0 : (_this$knownTypes$type3 = _this$knownTypes$type2[specName.toString()]) == null ? void 0 : (_this$knownTypes$type4 = _this$knownTypes$type3.instances) == null ? void 0 : _this$knownTypes$type4[moduleName]) || this.#moduleMap[moduleName];
     }
     getOrThrow(name, msg) {
       const Clazz = this.get(name);
@@ -15899,7 +15903,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.5.2'
+    version: '9.6.1'
   };
 
   exports.BTreeMap = BTreeMap;
