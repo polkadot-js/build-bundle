@@ -5335,7 +5335,7 @@
     return false;
   }
 
-  function formatFailure(registry, result, {
+  function formatFailure(registry, fn, result, {
     message
   }, u8a, i, count, Type, key) {
     let type = '';
@@ -5343,7 +5343,7 @@
       type = `: ${new Type(registry).toRawType()}`;
     } catch {
     }
-    return `decodeU8a: failed at ${util.u8aToHex(u8a.subarray(0, 16))}…${key ? ` on ${key}` : ''} (index ${i + 1}/${count})${type}:: ${message}`;
+    return `${fn}: failed at ${util.u8aToHex(u8a.subarray(0, 16))}…${key ? ` on ${key}` : ''} (index ${i + 1}/${count})${type}:: ${message}`;
   }
   function decodeU8a$6(registry, result, u8a, [Types, keys]) {
     const count = result.length;
@@ -5357,7 +5357,7 @@
         i++;
       }
     } catch (error) {
-      throw new Error(formatFailure(registry, result, error, u8a.subarray(offset), i, count, Types[i], keys[i]));
+      throw new Error(formatFailure(registry, 'decodeU8a', result, error, u8a.subarray(offset), i, count, Types[i], keys[i]));
     }
     return [result, offset];
   }
@@ -5373,7 +5373,7 @@
         i++;
       }
     } catch (error) {
-      throw new Error(formatFailure(registry, result, error, u8a.subarray(offset), i, count, Types[i], keys[i]));
+      throw new Error(formatFailure(registry, 'decodeU8aStruct', result, error, u8a.subarray(offset), i, count, Types[i], keys[i]));
     }
     return [result, offset];
   }
@@ -5389,7 +5389,7 @@
         i++;
       }
     } catch (error) {
-      throw new Error(formatFailure(registry, result, error, u8a.subarray(offset), i, count, Type));
+      throw new Error(formatFailure(registry, 'decodeU8aVec', result, error, u8a.subarray(offset), i, count, Type));
     }
     return [offset, offset - startAt];
   }
@@ -15903,7 +15903,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.6.2'
+    version: '9.7.1'
   };
 
   exports.BTreeMap = BTreeMap;
