@@ -294,7 +294,7 @@
     name: '@polkadot/api-contract',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.7.1'
+    version: '9.8.1'
   };
 
   function applyOnEvent(result, types, fn) {
@@ -319,7 +319,7 @@
       this.abi = abi instanceof Abi ? abi : new Abi(abi, api.registry.getChainProperties());
       this.api = api;
       this._decorateMethod = decorateMethod;
-      this._isOldWeight = util.isFunction(api.registry.createType('Weight').toBn);
+      this._isWeightV1 = !api.registry.createType('Weight').proofSize;
     }
     get registry() {
       return this.api.registry;
@@ -878,14 +878,18 @@
   function encodeSalt(salt = utilCrypto.randomAsU8a()) {
     return salt instanceof types.Bytes ? salt : salt && salt.length ? util.compactAddLength(util.u8aToU8a(salt)) : EMPTY_SALT;
   }
-  function convertWeight(orig) {
-    const refTime = orig.proofSize ? orig.refTime.toBn() : util.bnToBn(orig);
+  function convertWeight(weight) {
+    const [refTime, proofSize] = isWeightV2(weight) ? [weight.refTime.toBn(), weight.proofSize.toBn()] : [util.bnToBn(weight), undefined];
     return {
       v1Weight: refTime,
       v2Weight: {
+        proofSize,
         refTime
       }
     };
+  }
+  function isWeightV2(weight) {
+    return !!weight.proofSize;
   }
 
   const MAX_CALL_GAS = new util.BN(5000000000000).isub(util.BN_ONE);
@@ -935,8 +939,8 @@
       storageDepositLimit = null,
       value = util.BN_ZERO
     }, params) => {
-      return this.api.tx.contracts.call(this.address, value, this._isOldWeight
-      ? convertWeight(gasLimit).v1Weight : convertWeight(gasLimit).v2Weight, storageDepositLimit, this.abi.findMessage(messageOrId).toU8a(params)).withResultTransform(result =>
+      return this.api.tx.contracts.call(this.address, value,
+      this._isWeightV1 ? convertWeight(gasLimit).v1Weight : convertWeight(gasLimit).v2Weight, storageDepositLimit, this.abi.findMessage(messageOrId).toU8a(params)).withResultTransform(result =>
       new ContractSubmittableResult(result, applyOnEvent(result, ['ContractEmitted', 'ContractExecution'], records => records.map(({
         event: {
           data: [, data]
@@ -958,7 +962,7 @@
       const message = this.abi.findMessage(messageOrId);
       return {
         send: this._decorateMethod(origin => this.api.rx.call.contractsApi.call(origin, this.address, value,
-        this.#getGas(gasLimit, true).v1Weight, storageDepositLimit, message.toU8a(params)).pipe(map(({
+        this._isWeightV1 ? this.#getGas(gasLimit, true).v1Weight : this.#getGas(gasLimit, true).v2Weight, storageDepositLimit, message.toU8a(params)).pipe(map(({
           debugMessage,
           gasConsumed,
           gasRequired,
@@ -967,7 +971,7 @@
         }) => ({
           debugMessage,
           gasConsumed,
-          gasRequired: gasRequired && !gasRequired.isZero() ? gasRequired : gasConsumed,
+          gasRequired: gasRequired && !convertWeight(gasRequired).v1Weight.isZero() ? gasRequired : gasConsumed,
           output: result.isOk && message.returnType ? this.abi.registry.createTypeUnsafe(message.returnType.lookupName || message.returnType.type, [result.asOk.data.toU8a(true)], {
             isPedantic: true
           }) : null,
@@ -1004,8 +1008,8 @@
       storageDepositLimit = null,
       value = util.BN_ZERO
     }, params) => {
-      return this.api.tx.contracts.instantiate(value, this._isOldWeight
-      ? convertWeight(gasLimit).v1Weight : convertWeight(gasLimit).v2Weight, storageDepositLimit, this.codeHash, this.abi.findConstructor(constructorOrId).toU8a(params), encodeSalt(salt)).withResultTransform(result => new BlueprintSubmittableResult(result, applyOnEvent(result, ['Instantiated'], ([record]) => new Contract(this.api, this.abi, record.event.data[1], this._decorateMethod))));
+      return this.api.tx.contracts.instantiate(value,
+      this._isWeightV1 ? convertWeight(gasLimit).v1Weight : convertWeight(gasLimit).v2Weight, storageDepositLimit, this.codeHash, this.abi.findConstructor(constructorOrId).toU8a(params), encodeSalt(salt)).withResultTransform(result => new BlueprintSubmittableResult(result, applyOnEvent(result, ['Instantiated'], ([record]) => new Contract(this.api, this.abi, record.event.data[1], this._decorateMethod))));
     };
   }
 
@@ -1039,8 +1043,8 @@
       storageDepositLimit = null,
       value = util.BN_ZERO
     }, params) => {
-      return this.api.tx.contracts.instantiateWithCode(value, this._isOldWeight
-      ? convertWeight(gasLimit).v1Weight : convertWeight(gasLimit).v2Weight, storageDepositLimit, util.compactAddLength(this.code), this.abi.findConstructor(constructorOrId).toU8a(params), encodeSalt(salt)).withResultTransform(result => new CodeSubmittableResult(result, ...(applyOnEvent(result, ['CodeStored', 'Instantiated'], records => records.reduce(([blueprint, contract], {
+      return this.api.tx.contracts.instantiateWithCode(value,
+      this._isWeightV1 ? convertWeight(gasLimit).v1Weight : convertWeight(gasLimit).v2Weight, storageDepositLimit, util.compactAddLength(this.code), this.abi.findConstructor(constructorOrId).toU8a(params), encodeSalt(salt)).withResultTransform(result => new CodeSubmittableResult(result, ...(applyOnEvent(result, ['CodeStored', 'Instantiated'], records => records.reduce(([blueprint, contract], {
         event
       }) => this.api.events.contracts.Instantiated.is(event) ? [blueprint, new Contract(this.api, this.abi, event.data[1], this._decorateMethod)] : this.api.events.contracts.CodeStored.is(event) ? [new Blueprint(this.api, this.abi, event.data[0], this._decorateMethod), contract] : [blueprint, contract], [])) || [])));
     };

@@ -1490,7 +1490,7 @@
       description: 'Instantiate a new contract',
       params: [{
         name: 'request',
-        type: 'InstantiateRequest'
+        type: 'InstantiateRequestV1'
       }, {
         isHistoric: true,
         isOptional: true,
@@ -1530,9 +1530,89 @@
     }
   };
 
+  const SHARED_V1_V2 = {
+    get_storage: {
+      description: 'Query a given storage key in a given contract.',
+      params: [{
+        name: 'address',
+        type: 'AccountId'
+      }, {
+        name: 'key',
+        type: 'Bytes'
+      }],
+      type: 'Option<Bytes>'
+    },
+    upload_code: {
+      description: 'Upload new code without instantiating a contract from it.',
+      params: [{
+        name: 'origin',
+        type: 'AccountId'
+      }, {
+        name: 'code',
+        type: 'Bytes'
+      }, {
+        name: 'storageDepositLimit',
+        type: 'Option<Balance>'
+      }],
+      type: 'CodeUploadResult'
+    }
+  };
   const runtime$h = {
     ContractsApi: [{
-      methods: {
+      methods: util.objectSpread({
+        call: {
+          description: 'Perform a call from a specified account to a given contract.',
+          params: [{
+            name: 'origin',
+            type: 'AccountId'
+          }, {
+            name: 'dest',
+            type: 'AccountId'
+          }, {
+            name: 'value',
+            type: 'Balance'
+          }, {
+            name: 'gasLimit',
+            type: 'Option<WeightV2>'
+          }, {
+            name: 'storageDepositLimit',
+            type: 'Option<Balance>'
+          }, {
+            name: 'inputData',
+            type: 'Vec<u8>'
+          }],
+          type: 'ContractExecResult'
+        },
+        instantiate: {
+          description: 'Instantiate a new contract.',
+          params: [{
+            name: 'origin',
+            type: 'AccountId'
+          }, {
+            name: 'value',
+            type: 'Balance'
+          }, {
+            name: 'gasLimit',
+            type: 'Option<WeightV2>'
+          }, {
+            name: 'storageDepositLimit',
+            type: 'Option<Balance>'
+          }, {
+            name: 'code',
+            type: 'CodeSource'
+          }, {
+            name: 'data',
+            type: 'Bytes'
+          }, {
+            name: 'salt',
+            type: 'Bytes'
+          }],
+          type: 'ContractInstantiateResult'
+        }
+      }, SHARED_V1_V2),
+      version: 2
+    }, {
+      methods: util.objectSpread({
         call: {
           description: 'Perform a call from a specified account to a given contract.',
           params: [{
@@ -1554,18 +1634,7 @@
             name: 'inputData',
             type: 'Vec<u8>'
           }],
-          type: 'ContractExecResult'
-        },
-        get_storage: {
-          description: 'Query a given storage key in a given contract.',
-          params: [{
-            name: 'address',
-            type: 'AccountId'
-          }, {
-            name: 'key',
-            type: 'Bytes'
-          }],
-          type: 'Option<Bytes>'
+          type: 'ContractExecResultU64'
         },
         instantiate: {
           description: 'Instantiate a new contract.',
@@ -1591,23 +1660,9 @@
             name: 'salt',
             type: 'Bytes'
           }],
-          type: 'ContractInstantiateResult'
-        },
-        upload_code: {
-          description: 'Upload new code without instantiating a contract from it.',
-          params: [{
-            name: 'origin',
-            type: 'AccountId'
-          }, {
-            name: 'code',
-            type: 'Bytes'
-          }, {
-            name: 'storageDepositLimit',
-            type: 'Option<Balance>'
-          }],
-          type: 'CodeUploadResult'
+          type: 'ContractInstantiateResultU64'
         }
-      },
+      }, SHARED_V1_V2),
       version: 1
     }]
   };
@@ -1684,6 +1739,13 @@
         result: 'ContractExecResultResult'
       },
       ContractExecResult: {
+        gasConsumed: 'Weight',
+        gasRequired: 'Weight',
+        storageDeposit: 'StorageDeposit',
+        debugMessage: 'Text',
+        result: 'ContractExecResultResult'
+      },
+      ContractExecResultU64: {
         gasConsumed: 'u64',
         gasRequired: 'u64',
         storageDeposit: 'StorageDeposit',
@@ -1853,6 +1915,13 @@
       ContractInstantiateResultTo267: 'Result<InstantiateReturnValueTo267, Null>',
       ContractInstantiateResultTo299: 'Result<InstantiateReturnValueOk, Null>',
       ContractInstantiateResult: {
+        gasConsumed: 'WeightV2',
+        gasRequired: 'WeightV2',
+        storageDeposit: 'StorageDeposit',
+        debugMessage: 'Text',
+        result: 'InstantiateReturnValue'
+      },
+      ContractInstantiateResultU64: {
         _fallback: 'ContractInstantiateResultTo299',
         gasConsumed: 'u64',
         gasRequired: 'u64',
@@ -10827,59 +10896,67 @@
     }
   };
 
+  const V1_V2_SHARED_PAY = {
+    query_fee_details: {
+      description: 'The transaction fee details',
+      params: [{
+        name: 'uxt',
+        type: 'Extrinsic'
+      }, {
+        name: 'len',
+        type: 'u32'
+      }],
+      type: 'FeeDetails'
+    },
+    query_info: {
+      description: 'The transaction info',
+      params: [{
+        name: 'uxt',
+        type: 'Extrinsic'
+      }, {
+        name: 'len',
+        type: 'u32'
+      }],
+      type: 'RuntimeDispatchInfo'
+    }
+  };
+  const V1_V2_SHARED_CALL = {
+    query_call_fee_details: {
+      description: 'The call fee details',
+      params: [{
+        name: 'call',
+        type: 'Call'
+      }, {
+        name: 'len',
+        type: 'u32'
+      }],
+      type: 'FeeDetails'
+    },
+    query_call_info: {
+      description: 'The call info',
+      params: [{
+        name: 'call',
+        type: 'Call'
+      }, {
+        name: 'len',
+        type: 'u32'
+      }],
+      type: 'RuntimeDispatchInfo'
+    }
+  };
   const runtime = {
     TransactionPaymentApi: [{
-      methods: {
-        query_fee_details: {
-          description: 'The transaction fee details',
-          params: [{
-            name: 'uxt',
-            type: 'Extrinsic'
-          }, {
-            name: 'len',
-            type: 'u32'
-          }],
-          type: 'FeeDetails'
-        },
-        query_info: {
-          description: 'The transaction info',
-          params: [{
-            name: 'uxt',
-            type: 'Extrinsic'
-          }, {
-            name: 'len',
-            type: 'u32'
-          }],
-          type: 'RuntimeDispatchInfo'
-        }
-      },
+      methods: util.objectSpread({}, V1_V2_SHARED_PAY),
+      version: 2
+    }, {
+      methods: util.objectSpread({}, V1_V2_SHARED_PAY),
       version: 1
     }],
     TransactionPaymentCallApi: [{
-      methods: {
-        query_call_fee_details: {
-          description: 'The call fee details',
-          params: [{
-            name: 'call',
-            type: 'Call'
-          }, {
-            name: 'len',
-            type: 'u32'
-          }],
-          type: 'FeeDetails'
-        },
-        query_call_info: {
-          description: 'The call info',
-          params: [{
-            name: 'call',
-            type: 'Call'
-          }, {
-            name: 'len',
-            type: 'u32'
-          }],
-          type: 'RuntimeDispatchInfo'
-        }
-      },
+      methods: util.objectSpread({}, V1_V2_SHARED_CALL),
+      version: 2
+    }, {
+      methods: util.objectSpread({}, V1_V2_SHARED_CALL),
       version: 1
     }]
   };
@@ -15903,7 +15980,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.7.1'
+    version: '9.8.1'
   };
 
   exports.BTreeMap = BTreeMap;
