@@ -1520,7 +1520,7 @@
 	const MAX_SAFE_INTEGER$1 = Number.MAX_SAFE_INTEGER ||
 	 9007199254740991;
 	const MAX_SAFE_COMPONENT_LENGTH = 16;
-	var constants = {
+	var constants$1 = {
 	  SEMVER_SPEC_VERSION,
 	  MAX_LENGTH: MAX_LENGTH$2,
 	  MAX_SAFE_INTEGER: MAX_SAFE_INTEGER$1,
@@ -1537,7 +1537,7 @@
 	var debug_1 = debug$1;
 
 	(function (module, exports) {
-		const { MAX_SAFE_COMPONENT_LENGTH } = constants;
+		const { MAX_SAFE_COMPONENT_LENGTH } = constants$1;
 		const debug = debug_1;
 		exports = module.exports = {};
 		const re = exports.re = [];
@@ -1655,20 +1655,20 @@
 	    : 1
 	};
 	const rcompareIdentifiers = (a, b) => compareIdentifiers$1(b, a);
-	var identifiers = {
+	var identifiers$1 = {
 	  compareIdentifiers: compareIdentifiers$1,
 	  rcompareIdentifiers,
 	};
 
 	const debug = debug_1;
-	const { MAX_LENGTH: MAX_LENGTH$1, MAX_SAFE_INTEGER } = constants;
+	const { MAX_LENGTH: MAX_LENGTH$1, MAX_SAFE_INTEGER } = constants$1;
 	const { re: re$2, t: t$2 } = re$3.exports;
 	const parseOptions$1 = parseOptions_1;
-	const { compareIdentifiers } = identifiers;
-	class SemVer$c {
+	const { compareIdentifiers } = identifiers$1;
+	let SemVer$d = class SemVer {
 	  constructor (version, options) {
 	    options = parseOptions$1(options);
-	    if (version instanceof SemVer$c) {
+	    if (version instanceof SemVer$d) {
 	      if (version.loose === !!options.loose &&
 	          version.includePrerelease === !!options.includePrerelease) {
 	        return version
@@ -1732,11 +1732,11 @@
 	  }
 	  compare (other) {
 	    debug('SemVer.compare', this.version, this.options, other);
-	    if (!(other instanceof SemVer$c)) {
+	    if (!(other instanceof SemVer$d)) {
 	      if (typeof other === 'string' && other === this.version) {
 	        return 0
 	      }
-	      other = new SemVer$c(other, this.options);
+	      other = new SemVer$d(other, this.options);
 	    }
 	    if (other.version === this.version) {
 	      return 0
@@ -1744,8 +1744,8 @@
 	    return this.compareMain(other) || this.comparePre(other)
 	  }
 	  compareMain (other) {
-	    if (!(other instanceof SemVer$c)) {
-	      other = new SemVer$c(other, this.options);
+	    if (!(other instanceof SemVer$d)) {
+	      other = new SemVer$d(other, this.options);
 	    }
 	    return (
 	      compareIdentifiers(this.major, other.major) ||
@@ -1754,8 +1754,8 @@
 	    )
 	  }
 	  comparePre (other) {
-	    if (!(other instanceof SemVer$c)) {
-	      other = new SemVer$c(other, this.options);
+	    if (!(other instanceof SemVer$d)) {
+	      other = new SemVer$d(other, this.options);
 	    }
 	    if (this.prerelease.length && !other.prerelease.length) {
 	      return -1
@@ -1783,8 +1783,8 @@
 	    } while (++i)
 	  }
 	  compareBuild (other) {
-	    if (!(other instanceof SemVer$c)) {
-	      other = new SemVer$c(other, this.options);
+	    if (!(other instanceof SemVer$d)) {
+	      other = new SemVer$d(other, this.options);
 	    }
 	    let i = 0;
 	    do {
@@ -1887,16 +1887,16 @@
 	    this.raw = this.version;
 	    return this
 	  }
-	}
-	var semver$1 = SemVer$c;
+	};
+	var semver$1 = SemVer$d;
 
-	const { MAX_LENGTH } = constants;
+	const { MAX_LENGTH } = constants$1;
 	const { re: re$1, t: t$1 } = re$3.exports;
-	const SemVer$b = semver$1;
+	const SemVer$c = semver$1;
 	const parseOptions = parseOptions_1;
-	const parse$5 = (version, options) => {
+	const parse$6 = (version, options) => {
 	  options = parseOptions(options);
-	  if (version instanceof SemVer$b) {
+	  if (version instanceof SemVer$c) {
 	    return version
 	  }
 	  if (typeof version !== 'string') {
@@ -1910,61 +1910,61 @@
 	    return null
 	  }
 	  try {
-	    return new SemVer$b(version, options)
+	    return new SemVer$c(version, options)
 	  } catch (er) {
 	    return null
 	  }
 	};
-	var parse_1 = parse$5;
+	var parse_1 = parse$6;
 
-	const parse$4 = parse_1;
-	const valid$1 = (version, options) => {
-	  const v = parse$4(version, options);
+	const parse$5 = parse_1;
+	const valid$2 = (version, options) => {
+	  const v = parse$5(version, options);
 	  return v ? v.version : null
 	};
-	var valid_1 = valid$1;
+	var valid_1 = valid$2;
 
-	const parse$3 = parse_1;
-	const clean = (version, options) => {
-	  const s = parse$3(version.trim().replace(/^[=v]+/, ''), options);
+	const parse$4 = parse_1;
+	const clean$1 = (version, options) => {
+	  const s = parse$4(version.trim().replace(/^[=v]+/, ''), options);
 	  return s ? s.version : null
 	};
-	var clean_1 = clean;
+	var clean_1 = clean$1;
 
-	const SemVer$a = semver$1;
-	const inc = (version, release, options, identifier) => {
+	const SemVer$b = semver$1;
+	const inc$1 = (version, release, options, identifier) => {
 	  if (typeof (options) === 'string') {
 	    identifier = options;
 	    options = undefined;
 	  }
 	  try {
-	    return new SemVer$a(
-	      version instanceof SemVer$a ? version.version : version,
+	    return new SemVer$b(
+	      version instanceof SemVer$b ? version.version : version,
 	      options
 	    ).inc(release, identifier).version
 	  } catch (er) {
 	    return null
 	  }
 	};
-	var inc_1 = inc;
+	var inc_1 = inc$1;
 
-	const SemVer$9 = semver$1;
-	const compare$a = (a, b, loose) =>
-	  new SemVer$9(a, loose).compare(new SemVer$9(b, loose));
-	var compare_1 = compare$a;
+	const SemVer$a = semver$1;
+	const compare$b = (a, b, loose) =>
+	  new SemVer$a(a, loose).compare(new SemVer$a(b, loose));
+	var compare_1 = compare$b;
 
-	const compare$9 = compare_1;
-	const eq$2 = (a, b, loose) => compare$9(a, b, loose) === 0;
-	var eq_1 = eq$2;
+	const compare$a = compare_1;
+	const eq$3 = (a, b, loose) => compare$a(a, b, loose) === 0;
+	var eq_1 = eq$3;
 
-	const parse$2 = parse_1;
-	const eq$1 = eq_1;
-	const diff = (version1, version2) => {
-	  if (eq$1(version1, version2)) {
+	const parse$3 = parse_1;
+	const eq$2 = eq_1;
+	const diff$1 = (version1, version2) => {
+	  if (eq$2(version1, version2)) {
 	    return null
 	  } else {
-	    const v1 = parse$2(version1);
-	    const v2 = parse$2(version2);
+	    const v1 = parse$3(version1);
+	    const v2 = parse$3(version2);
 	    const hasPre = v1.prerelease.length || v2.prerelease.length;
 	    const prefix = hasPre ? 'pre' : '';
 	    const defaultResult = hasPre ? 'prerelease' : '';
@@ -1978,78 +1978,78 @@
 	    return defaultResult
 	  }
 	};
-	var diff_1 = diff;
+	var diff_1 = diff$1;
+
+	const SemVer$9 = semver$1;
+	const major$1 = (a, loose) => new SemVer$9(a, loose).major;
+	var major_1 = major$1;
 
 	const SemVer$8 = semver$1;
-	const major = (a, loose) => new SemVer$8(a, loose).major;
-	var major_1 = major;
+	const minor$1 = (a, loose) => new SemVer$8(a, loose).minor;
+	var minor_1 = minor$1;
 
 	const SemVer$7 = semver$1;
-	const minor = (a, loose) => new SemVer$7(a, loose).minor;
-	var minor_1 = minor;
+	const patch$1 = (a, loose) => new SemVer$7(a, loose).patch;
+	var patch_1 = patch$1;
 
-	const SemVer$6 = semver$1;
-	const patch = (a, loose) => new SemVer$6(a, loose).patch;
-	var patch_1 = patch;
-
-	const parse$1 = parse_1;
-	const prerelease = (version, options) => {
-	  const parsed = parse$1(version, options);
+	const parse$2 = parse_1;
+	const prerelease$1 = (version, options) => {
+	  const parsed = parse$2(version, options);
 	  return (parsed && parsed.prerelease.length) ? parsed.prerelease : null
 	};
-	var prerelease_1 = prerelease;
+	var prerelease_1 = prerelease$1;
+
+	const compare$9 = compare_1;
+	const rcompare$1 = (a, b, loose) => compare$9(b, a, loose);
+	var rcompare_1 = rcompare$1;
 
 	const compare$8 = compare_1;
-	const rcompare = (a, b, loose) => compare$8(b, a, loose);
-	var rcompare_1 = rcompare;
+	const compareLoose$1 = (a, b) => compare$8(a, b, true);
+	var compareLoose_1 = compareLoose$1;
 
-	const compare$7 = compare_1;
-	const compareLoose = (a, b) => compare$7(a, b, true);
-	var compareLoose_1 = compareLoose;
-
-	const SemVer$5 = semver$1;
-	const compareBuild$2 = (a, b, loose) => {
-	  const versionA = new SemVer$5(a, loose);
-	  const versionB = new SemVer$5(b, loose);
+	const SemVer$6 = semver$1;
+	const compareBuild$3 = (a, b, loose) => {
+	  const versionA = new SemVer$6(a, loose);
+	  const versionB = new SemVer$6(b, loose);
 	  return versionA.compare(versionB) || versionA.compareBuild(versionB)
 	};
-	var compareBuild_1 = compareBuild$2;
+	var compareBuild_1 = compareBuild$3;
+
+	const compareBuild$2 = compareBuild_1;
+	const sort$1 = (list, loose) => list.sort((a, b) => compareBuild$2(a, b, loose));
+	var sort_1 = sort$1;
 
 	const compareBuild$1 = compareBuild_1;
-	const sort = (list, loose) => list.sort((a, b) => compareBuild$1(a, b, loose));
-	var sort_1 = sort;
+	const rsort$1 = (list, loose) => list.sort((a, b) => compareBuild$1(b, a, loose));
+	var rsort_1 = rsort$1;
 
-	const compareBuild = compareBuild_1;
-	const rsort = (list, loose) => list.sort((a, b) => compareBuild(b, a, loose));
-	var rsort_1 = rsort;
+	const compare$7 = compare_1;
+	const gt$4 = (a, b, loose) => compare$7(a, b, loose) > 0;
+	var gt_1 = gt$4;
 
 	const compare$6 = compare_1;
-	const gt$3 = (a, b, loose) => compare$6(a, b, loose) > 0;
-	var gt_1 = gt$3;
+	const lt$3 = (a, b, loose) => compare$6(a, b, loose) < 0;
+	var lt_1 = lt$3;
 
 	const compare$5 = compare_1;
-	const lt$2 = (a, b, loose) => compare$5(a, b, loose) < 0;
-	var lt_1 = lt$2;
+	const neq$2 = (a, b, loose) => compare$5(a, b, loose) !== 0;
+	var neq_1 = neq$2;
 
 	const compare$4 = compare_1;
-	const neq$1 = (a, b, loose) => compare$4(a, b, loose) !== 0;
-	var neq_1 = neq$1;
+	const gte$3 = (a, b, loose) => compare$4(a, b, loose) >= 0;
+	var gte_1 = gte$3;
 
 	const compare$3 = compare_1;
-	const gte$2 = (a, b, loose) => compare$3(a, b, loose) >= 0;
-	var gte_1 = gte$2;
+	const lte$3 = (a, b, loose) => compare$3(a, b, loose) <= 0;
+	var lte_1 = lte$3;
 
-	const compare$2 = compare_1;
-	const lte$2 = (a, b, loose) => compare$2(a, b, loose) <= 0;
-	var lte_1 = lte$2;
-
-	const eq = eq_1;
-	const neq = neq_1;
-	const gt$2 = gt_1;
-	const gte$1 = gte_1;
-	const lt$1 = lt_1;
-	const lte$1 = lte_1;
-	const cmp = (a, op, b, loose) => {
+	const eq$1 = eq_1;
+	const neq$1 = neq_1;
+	const gt$3 = gt_1;
+	const gte$2 = gte_1;
+	const lt$2 = lt_1;
+	const lte$2 = lte_1;
+	const cmp$1 = (a, op, b, loose) => {
 	  switch (op) {
 	    case '===':
 	      if (typeof a === 'object') {
@@ -2070,28 +2070,28 @@
 	    case '':
 	    case '=':
 	    case '==':
-	      return eq(a, b, loose)
+	      return eq$1(a, b, loose)
 	    case '!=':
-	      return neq(a, b, loose)
+	      return neq$1(a, b, loose)
 	    case '>':
-	      return gt$2(a, b, loose)
+	      return gt$3(a, b, loose)
 	    case '>=':
-	      return gte$1(a, b, loose)
+	      return gte$2(a, b, loose)
 	    case '<':
-	      return lt$1(a, b, loose)
+	      return lt$2(a, b, loose)
 	    case '<=':
-	      return lte$1(a, b, loose)
+	      return lte$2(a, b, loose)
 	    default:
 	      throw new TypeError(`Invalid operator: ${op}`)
 	  }
 	};
-	var cmp_1 = cmp;
+	var cmp_1 = cmp$1;
 
-	const SemVer$4 = semver$1;
-	const parse = parse_1;
+	const SemVer$5 = semver$1;
+	const parse$1 = parse_1;
 	const { re, t } = re$3.exports;
-	const coerce = (version, options) => {
-	  if (version instanceof SemVer$4) {
+	const coerce$1 = (version, options) => {
+	  if (version instanceof SemVer$5) {
 	    return version
 	  }
 	  if (typeof version === 'number') {
@@ -2120,9 +2120,9 @@
 	  if (match === null) {
 	    return null
 	  }
-	  return parse(`${match[2]}.${match[3] || '0'}.${match[4] || '0'}`, options)
+	  return parse$1(`${match[2]}.${match[3] || '0'}.${match[4] || '0'}`, options)
 	};
-	var coerce_1 = coerce;
+	var coerce_1 = coerce$1;
 
 	var iterator;
 	var hasRequiredIterator;
@@ -3295,28 +3295,51 @@
 		return comparator;
 	}
 
-	const Range$8 = requireRange();
-	const satisfies$3 = (version, range, options) => {
+	const Range$9 = requireRange();
+	const satisfies$4 = (version, range, options) => {
 	  try {
-	    range = new Range$8(range, options);
+	    range = new Range$9(range, options);
 	  } catch (er) {
 	    return false
 	  }
 	  return range.test(version)
 	};
-	var satisfies_1 = satisfies$3;
+	var satisfies_1 = satisfies$4;
 
-	const Range$7 = requireRange();
-	const toComparators = (range, options) =>
-	  new Range$7(range, options).set
+	const Range$8 = requireRange();
+	const toComparators$1 = (range, options) =>
+	  new Range$8(range, options).set
 	    .map(comp => comp.map(c => c.value).join(' ').trim().split(' '));
-	var toComparators_1 = toComparators;
+	var toComparators_1 = toComparators$1;
+
+	const SemVer$4 = semver$1;
+	const Range$7 = requireRange();
+	const maxSatisfying$1 = (versions, range, options) => {
+	  let max = null;
+	  let maxSV = null;
+	  let rangeObj = null;
+	  try {
+	    rangeObj = new Range$7(range, options);
+	  } catch (er) {
+	    return null
+	  }
+	  versions.forEach((v) => {
+	    if (rangeObj.test(v)) {
+	      if (!max || maxSV.compare(v) === -1) {
+	        max = v;
+	        maxSV = new SemVer$4(max, options);
+	      }
+	    }
+	  });
+	  return max
+	};
+	var maxSatisfying_1 = maxSatisfying$1;
 
 	const SemVer$3 = semver$1;
 	const Range$6 = requireRange();
-	const maxSatisfying = (versions, range, options) => {
-	  let max = null;
-	  let maxSV = null;
+	const minSatisfying$1 = (versions, range, options) => {
+	  let min = null;
+	  let minSV = null;
 	  let rangeObj = null;
 	  try {
 	    rangeObj = new Range$6(range, options);
@@ -3325,49 +3348,26 @@
 	  }
 	  versions.forEach((v) => {
 	    if (rangeObj.test(v)) {
-	      if (!max || maxSV.compare(v) === -1) {
-	        max = v;
-	        maxSV = new SemVer$3(max, options);
-	      }
-	    }
-	  });
-	  return max
-	};
-	var maxSatisfying_1 = maxSatisfying;
-
-	const SemVer$2 = semver$1;
-	const Range$5 = requireRange();
-	const minSatisfying = (versions, range, options) => {
-	  let min = null;
-	  let minSV = null;
-	  let rangeObj = null;
-	  try {
-	    rangeObj = new Range$5(range, options);
-	  } catch (er) {
-	    return null
-	  }
-	  versions.forEach((v) => {
-	    if (rangeObj.test(v)) {
 	      if (!min || minSV.compare(v) === 1) {
 	        min = v;
-	        minSV = new SemVer$2(min, options);
+	        minSV = new SemVer$3(min, options);
 	      }
 	    }
 	  });
 	  return min
 	};
-	var minSatisfying_1 = minSatisfying;
+	var minSatisfying_1 = minSatisfying$1;
 
-	const SemVer$1 = semver$1;
-	const Range$4 = requireRange();
-	const gt$1 = gt_1;
-	const minVersion = (range, loose) => {
-	  range = new Range$4(range, loose);
-	  let minver = new SemVer$1('0.0.0');
+	const SemVer$2 = semver$1;
+	const Range$5 = requireRange();
+	const gt$2 = gt_1;
+	const minVersion$1 = (range, loose) => {
+	  range = new Range$5(range, loose);
+	  let minver = new SemVer$2('0.0.0');
 	  if (range.test(minver)) {
 	    return minver
 	  }
-	  minver = new SemVer$1('0.0.0-0');
+	  minver = new SemVer$2('0.0.0-0');
 	  if (range.test(minver)) {
 	    return minver
 	  }
@@ -3376,7 +3376,7 @@
 	    const comparators = range.set[i];
 	    let setMin = null;
 	    comparators.forEach((comparator) => {
-	      const compver = new SemVer$1(comparator.semver.version);
+	      const compver = new SemVer$2(comparator.semver.version);
 	      switch (comparator.operator) {
 	        case '>':
 	          if (compver.prerelease.length === 0) {
@@ -3387,7 +3387,7 @@
 	          compver.raw = compver.format();
 	        case '':
 	        case '>=':
-	          if (!setMin || gt$1(compver, setMin)) {
+	          if (!setMin || gt$2(compver, setMin)) {
 	            setMin = compver;
 	          }
 	          break
@@ -3398,7 +3398,7 @@
 	          throw new Error(`Unexpected operation: ${comparator.operator}`)
 	      }
 	    });
-	    if (setMin && (!minver || gt$1(minver, setMin))) {
+	    if (setMin && (!minver || gt$2(minver, setMin))) {
 	      minver = setMin;
 	    }
 	  }
@@ -3407,50 +3407,50 @@
 	  }
 	  return null
 	};
-	var minVersion_1 = minVersion;
+	var minVersion_1 = minVersion$1;
 
-	const Range$3 = requireRange();
-	const validRange = (range, options) => {
+	const Range$4 = requireRange();
+	const validRange$1 = (range, options) => {
 	  try {
-	    return new Range$3(range, options).range || '*'
+	    return new Range$4(range, options).range || '*'
 	  } catch (er) {
 	    return null
 	  }
 	};
-	var valid = validRange;
+	var valid$1 = validRange$1;
 
-	const SemVer = semver$1;
-	const Comparator$1 = requireComparator();
-	const { ANY: ANY$1 } = Comparator$1;
-	const Range$2 = requireRange();
-	const satisfies$2 = satisfies_1;
-	const gt = gt_1;
-	const lt = lt_1;
-	const lte = lte_1;
-	const gte = gte_1;
-	const outside$2 = (version, range, hilo, options) => {
-	  version = new SemVer(version, options);
-	  range = new Range$2(range, options);
+	const SemVer$1 = semver$1;
+	const Comparator$2 = requireComparator();
+	const { ANY: ANY$1 } = Comparator$2;
+	const Range$3 = requireRange();
+	const satisfies$3 = satisfies_1;
+	const gt$1 = gt_1;
+	const lt$1 = lt_1;
+	const lte$1 = lte_1;
+	const gte$1 = gte_1;
+	const outside$3 = (version, range, hilo, options) => {
+	  version = new SemVer$1(version, options);
+	  range = new Range$3(range, options);
 	  let gtfn, ltefn, ltfn, comp, ecomp;
 	  switch (hilo) {
 	    case '>':
-	      gtfn = gt;
-	      ltefn = lte;
-	      ltfn = lt;
+	      gtfn = gt$1;
+	      ltefn = lte$1;
+	      ltfn = lt$1;
 	      comp = '>';
 	      ecomp = '>=';
 	      break
 	    case '<':
-	      gtfn = lt;
-	      ltefn = gte;
-	      ltfn = gt;
+	      gtfn = lt$1;
+	      ltefn = gte$1;
+	      ltfn = gt$1;
 	      comp = '<';
 	      ecomp = '<=';
 	      break
 	    default:
 	      throw new TypeError('Must provide a hilo val of "<" or ">"')
 	  }
-	  if (satisfies$2(version, range, options)) {
+	  if (satisfies$3(version, range, options)) {
 	    return false
 	  }
 	  for (let i = 0; i < range.set.length; ++i) {
@@ -3459,7 +3459,7 @@
 	    let low = null;
 	    comparators.forEach((comparator) => {
 	      if (comparator.semver === ANY$1) {
-	        comparator = new Comparator$1('>=0.0.0');
+	        comparator = new Comparator$2('>=0.0.0');
 	      }
 	      high = high || comparator;
 	      low = low || comparator;
@@ -3481,33 +3481,33 @@
 	  }
 	  return true
 	};
-	var outside_1 = outside$2;
+	var outside_1 = outside$3;
+
+	const outside$2 = outside_1;
+	const gtr$1 = (version, range, options) => outside$2(version, range, '>', options);
+	var gtr_1 = gtr$1;
 
 	const outside$1 = outside_1;
-	const gtr = (version, range, options) => outside$1(version, range, '>', options);
-	var gtr_1 = gtr;
+	const ltr$1 = (version, range, options) => outside$1(version, range, '<', options);
+	var ltr_1 = ltr$1;
 
-	const outside = outside_1;
-	const ltr = (version, range, options) => outside(version, range, '<', options);
-	var ltr_1 = ltr;
-
-	const Range$1 = requireRange();
-	const intersects = (r1, r2, options) => {
-	  r1 = new Range$1(r1, options);
-	  r2 = new Range$1(r2, options);
+	const Range$2 = requireRange();
+	const intersects$1 = (r1, r2, options) => {
+	  r1 = new Range$2(r1, options);
+	  r2 = new Range$2(r2, options);
 	  return r1.intersects(r2)
 	};
-	var intersects_1 = intersects;
+	var intersects_1 = intersects$1;
 
-	const satisfies$1 = satisfies_1;
-	const compare$1 = compare_1;
+	const satisfies$2 = satisfies_1;
+	const compare$2 = compare_1;
 	var simplify = (versions, range, options) => {
 	  const set = [];
 	  let first = null;
 	  let prev = null;
-	  const v = versions.sort((a, b) => compare$1(a, b, options));
+	  const v = versions.sort((a, b) => compare$2(a, b, options));
 	  for (const version of v) {
-	    const included = satisfies$1(version, range, options);
+	    const included = satisfies$2(version, range, options);
 	    if (included) {
 	      prev = version;
 	      if (!first) {
@@ -3543,17 +3543,17 @@
 	  return simplified.length < original.length ? simplified : range
 	};
 
-	const Range = requireRange();
-	const Comparator = requireComparator();
-	const { ANY } = Comparator;
-	const satisfies = satisfies_1;
-	const compare = compare_1;
-	const subset = (sub, dom, options = {}) => {
+	const Range$1 = requireRange();
+	const Comparator$1 = requireComparator();
+	const { ANY } = Comparator$1;
+	const satisfies$1 = satisfies_1;
+	const compare$1 = compare_1;
+	const subset$1 = (sub, dom, options = {}) => {
 	  if (sub === dom) {
 	    return true
 	  }
-	  sub = new Range(sub, options);
-	  dom = new Range(dom, options);
+	  sub = new Range$1(sub, options);
+	  dom = new Range$1(dom, options);
 	  let sawNonNull = false;
 	  OUTER: for (const simpleSub of sub.set) {
 	    for (const simpleDom of dom.set) {
@@ -3577,16 +3577,16 @@
 	    if (dom.length === 1 && dom[0].semver === ANY) {
 	      return true
 	    } else if (options.includePrerelease) {
-	      sub = [new Comparator('>=0.0.0-0')];
+	      sub = [new Comparator$1('>=0.0.0-0')];
 	    } else {
-	      sub = [new Comparator('>=0.0.0')];
+	      sub = [new Comparator$1('>=0.0.0')];
 	    }
 	  }
 	  if (dom.length === 1 && dom[0].semver === ANY) {
 	    if (options.includePrerelease) {
 	      return true
 	    } else {
-	      dom = [new Comparator('>=0.0.0')];
+	      dom = [new Comparator$1('>=0.0.0')];
 	    }
 	  }
 	  const eqSet = new Set();
@@ -3605,7 +3605,7 @@
 	  }
 	  let gtltComp;
 	  if (gt && lt) {
-	    gtltComp = compare(gt.semver, lt.semver, options);
+	    gtltComp = compare$1(gt.semver, lt.semver, options);
 	    if (gtltComp > 0) {
 	      return null
 	    } else if (gtltComp === 0 && (gt.operator !== '>=' || lt.operator !== '<=')) {
@@ -3613,14 +3613,14 @@
 	    }
 	  }
 	  for (const eq of eqSet) {
-	    if (gt && !satisfies(eq, String(gt), options)) {
+	    if (gt && !satisfies$1(eq, String(gt), options)) {
 	      return null
 	    }
-	    if (lt && !satisfies(eq, String(lt), options)) {
+	    if (lt && !satisfies$1(eq, String(lt), options)) {
 	      return null
 	    }
 	    for (const c of dom) {
-	      if (!satisfies(eq, String(c), options)) {
+	      if (!satisfies$1(eq, String(c), options)) {
 	        return false
 	      }
 	    }
@@ -3655,7 +3655,7 @@
 	        if (higher === c && higher !== gt) {
 	          return false
 	        }
-	      } else if (gt.operator === '>=' && !satisfies(gt.semver, String(c), options)) {
+	      } else if (gt.operator === '>=' && !satisfies$1(gt.semver, String(c), options)) {
 	        return false
 	      }
 	    }
@@ -3673,7 +3673,7 @@
 	        if (lower === c && lower !== lt) {
 	          return false
 	        }
-	      } else if (lt.operator === '<=' && !satisfies(lt.semver, String(c), options)) {
+	      } else if (lt.operator === '<=' && !satisfies$1(lt.semver, String(c), options)) {
 	        return false
 	      }
 	    }
@@ -3696,7 +3696,7 @@
 	  if (!a) {
 	    return b
 	  }
-	  const comp = compare(a.semver, b.semver, options);
+	  const comp = compare$1(a.semver, b.semver, options);
 	  return comp > 0 ? a
 	    : comp < 0 ? b
 	    : b.operator === '>' && a.operator === '>=' ? b
@@ -3706,60 +3706,100 @@
 	  if (!a) {
 	    return b
 	  }
-	  const comp = compare(a.semver, b.semver, options);
+	  const comp = compare$1(a.semver, b.semver, options);
 	  return comp < 0 ? a
 	    : comp > 0 ? b
 	    : b.operator === '<' && a.operator === '<=' ? b
 	    : a
 	};
-	var subset_1 = subset;
+	var subset_1 = subset$1;
 
 	const internalRe = re$3.exports;
+	const constants = constants$1;
+	const SemVer = semver$1;
+	const identifiers = identifiers$1;
+	const parse = parse_1;
+	const valid = valid_1;
+	const clean = clean_1;
+	const inc = inc_1;
+	const diff = diff_1;
+	const major = major_1;
+	const minor = minor_1;
+	const patch = patch_1;
+	const prerelease = prerelease_1;
+	const compare = compare_1;
+	const rcompare = rcompare_1;
+	const compareLoose = compareLoose_1;
+	const compareBuild = compareBuild_1;
+	const sort = sort_1;
+	const rsort = rsort_1;
+	const gt = gt_1;
+	const lt = lt_1;
+	const eq = eq_1;
+	const neq = neq_1;
+	const gte = gte_1;
+	const lte = lte_1;
+	const cmp = cmp_1;
+	const coerce = coerce_1;
+	const Comparator = requireComparator();
+	const Range = requireRange();
+	const satisfies = satisfies_1;
+	const toComparators = toComparators_1;
+	const maxSatisfying = maxSatisfying_1;
+	const minSatisfying = minSatisfying_1;
+	const minVersion = minVersion_1;
+	const validRange = valid$1;
+	const outside = outside_1;
+	const gtr = gtr_1;
+	const ltr = ltr_1;
+	const intersects = intersects_1;
+	const simplifyRange = simplify;
+	const subset = subset_1;
 	var semver = {
+	  parse,
+	  valid,
+	  clean,
+	  inc,
+	  diff,
+	  major,
+	  minor,
+	  patch,
+	  prerelease,
+	  compare,
+	  rcompare,
+	  compareLoose,
+	  compareBuild,
+	  sort,
+	  rsort,
+	  gt,
+	  lt,
+	  eq,
+	  neq,
+	  gte,
+	  lte,
+	  cmp,
+	  coerce,
+	  Comparator,
+	  Range,
+	  satisfies,
+	  toComparators,
+	  maxSatisfying,
+	  minSatisfying,
+	  minVersion,
+	  validRange,
+	  outside,
+	  gtr,
+	  ltr,
+	  intersects,
+	  simplifyRange,
+	  subset,
+	  SemVer,
 	  re: internalRe.re,
 	  src: internalRe.src,
 	  tokens: internalRe.t,
 	  SEMVER_SPEC_VERSION: constants.SEMVER_SPEC_VERSION,
-	  SemVer: semver$1,
 	  compareIdentifiers: identifiers.compareIdentifiers,
 	  rcompareIdentifiers: identifiers.rcompareIdentifiers,
-	  parse: parse_1,
-	  valid: valid_1,
-	  clean: clean_1,
-	  inc: inc_1,
-	  diff: diff_1,
-	  major: major_1,
-	  minor: minor_1,
-	  patch: patch_1,
-	  prerelease: prerelease_1,
-	  compare: compare_1,
-	  rcompare: rcompare_1,
-	  compareLoose: compareLoose_1,
-	  compareBuild: compareBuild_1,
-	  sort: sort_1,
-	  rsort: rsort_1,
-	  gt: gt_1,
-	  lt: lt_1,
-	  eq: eq_1,
-	  neq: neq_1,
-	  gte: gte_1,
-	  lte: lte_1,
-	  cmp: cmp_1,
-	  coerce: coerce_1,
-	  Comparator: requireComparator(),
-	  Range: requireRange(),
-	  satisfies: satisfies_1,
-	  toComparators: toComparators_1,
-	  maxSatisfying: maxSatisfying_1,
-	  minSatisfying: minSatisfying_1,
-	  minVersion: minVersion_1,
-	  validRange: valid,
-	  outside: outside_1,
-	  gtr: gtr_1,
-	  ltr: ltr_1,
-	  intersects: intersects_1,
-	  simplifyRange: simplify,
-	  subset: subset_1,
 	};
 
 	var __assign = (global && global.__assign) || function () {
@@ -4638,7 +4678,7 @@
 		  name: '@polkadot/hw-ledger-transports',
 		  path: typeof __dirname === 'string' ? __dirname : 'auto',
 		  type: 'cjs',
-		  version: '10.1.11'
+		  version: '10.1.12'
 		};
 		packageInfo$1.packageInfo = packageInfo;
 		return packageInfo$1;
@@ -4712,7 +4752,7 @@
 	  name: '@polkadot/hw-ledger',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '10.1.11'
+	  version: '10.1.12'
 	};
 
 	async function wrapError(promise) {

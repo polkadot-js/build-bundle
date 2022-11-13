@@ -10,7 +10,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.11'
+    version: '10.1.12'
   };
 
   function evaluateThis(fn) {
@@ -909,9 +909,12 @@
           if (crypto.web) {
               return crypto.web.getRandomValues(new Uint8Array(bytesLength));
           }
-          else {
+          else if (crypto.node) {
               const { randomBytes } = crypto.node;
               return Uint8Array.from(randomBytes(bytesLength));
+          }
+          else {
+              throw new Error("The environment doesn't have randomBytes function");
           }
       },
       randomPrivateKey: () => {
@@ -922,11 +925,14 @@
               const buffer = await crypto.web.subtle.digest('SHA-256', concatBytes(...messages));
               return new Uint8Array(buffer);
           }
-          else {
+          else if (crypto.node) {
               const { createHash } = crypto.node;
               const hash = createHash('sha256');
               messages.forEach((m) => hash.update(m));
               return Uint8Array.from(hash.digest());
+          }
+          else {
+              throw new Error("The environment doesn't have sha256 function");
           }
       },
       hmacSha256: async (key, ...messages) => {
@@ -936,11 +942,14 @@
               const buffer = await crypto.web.subtle.sign('HMAC', ckey, message);
               return new Uint8Array(buffer);
           }
-          else {
+          else if (crypto.node) {
               const { createHmac } = crypto.node;
               const hash = createHmac('sha256', key);
               messages.forEach((m) => hash.update(m));
               return Uint8Array.from(hash.digest());
+          }
+          else {
+              throw new Error("The environment doesn't have hmac-sha256 function");
           }
       },
       sha256Sync: undefined,
@@ -1036,7 +1045,7 @@
     name: '@polkadot/x-randomvalues',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.1.11'
+    version: '10.1.12'
   };
   packageInfo$2.packageInfo = packageInfo$1;
 
@@ -2248,7 +2257,7 @@
     name: '@polkadot/util-crypto',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.11'
+    version: '10.1.12'
   };
 
   /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
@@ -3856,6 +3865,19 @@
   		],
   		"standardAccount": "*25519",
   		"website": "https://polkadex.trade"
+  	},
+  	{
+  		"prefix": 90,
+  		"network": "frequency",
+  		"displayName": "Frequency",
+  		"symbols": [
+  			"FRQCY"
+  		],
+  		"decimals": [
+  			8
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://www.frequency.xyz"
   	},
   	{
   		"prefix": 92,
@@ -7391,9 +7413,9 @@
     publicKey,
     secretKey
   }) {
-    if ((publicKey === null || publicKey === void 0 ? void 0 : publicKey.length) !== 32) {
+    if ((publicKey == null ? void 0 : publicKey.length) !== 32) {
       throw new Error('Expected a valid publicKey, 32-bytes');
-    } else if ((secretKey === null || secretKey === void 0 ? void 0 : secretKey.length) !== 64) {
+    } else if ((secretKey == null ? void 0 : secretKey.length) !== 64) {
       throw new Error('Expected a valid secretKey, 64-bytes');
     }
     return sr25519Sign$1(publicKey, secretKey, util.u8aToU8a(message));
@@ -7414,7 +7436,7 @@
   function sr25519VrfSign(message, {
     secretKey
   }, context = EMPTY_U8A$1, extra = EMPTY_U8A$1) {
-    if ((secretKey === null || secretKey === void 0 ? void 0 : secretKey.length) !== 64) {
+    if ((secretKey == null ? void 0 : secretKey.length) !== 64) {
       throw new Error('Invalid secretKey, expected 64-bytes');
     }
     return vrfSign(secretKey, util.u8aToU8a(context), util.u8aToU8a(message), util.u8aToU8a(extra));
@@ -7777,7 +7799,7 @@
   function secp256k1Sign(message, {
     secretKey
   }, hashType = 'blake2', onlyJs) {
-    if ((secretKey === null || secretKey === void 0 ? void 0 : secretKey.length) !== 32) {
+    if ((secretKey == null ? void 0 : secretKey.length) !== 32) {
       throw new Error('Expected valid secp256k1 secretKey, 32-bytes');
     }
     const data = hasher(hashType, message, onlyJs);

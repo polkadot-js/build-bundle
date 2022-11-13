@@ -10,7 +10,7 @@
     name: '@polkadot/util',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.11'
+    version: '10.1.12'
   };
 
   function arrayChunk(array, chunkSize) {
@@ -114,7 +114,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.11'
+    version: '10.1.12'
   };
 
   function evaluateThis(fn) {
@@ -3043,7 +3043,7 @@
     name: '@polkadot/x-textencoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.1.11'
+    version: '10.1.12'
   };
   packageInfo$3.packageInfo = packageInfo$2;
 
@@ -3368,7 +3368,7 @@
     name: '@polkadot/x-textdecoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.1.11'
+    version: '10.1.12'
   };
   packageInfo$1.packageInfo = packageInfo;
 
@@ -4076,13 +4076,10 @@
     const len = u8a.length;
     let i = 0;
     while (i < len) {
-      if (u8a[i] <= 0x7F)
-        {
+      if (u8a[i] <= 0x7F) {
           i += 1;
-        } else if (u8a[i] >= 0xC2 && u8a[i] <= 0xDF)
-        {
-          if (i + 1 < len)
-            {
+        } else if (u8a[i] >= 0xC2 && u8a[i] <= 0xDF) {
+          if (i + 1 < len) {
               if (u8a[i + 1] < 0x80 || u8a[i + 1] > 0xBF) {
                 return false;
               }
@@ -4090,10 +4087,8 @@
             return false;
           }
           i += 2;
-        } else if (u8a[i] === 0xE0)
-        {
-          if (i + 2 < len)
-            {
+        } else if (u8a[i] === 0xE0) {
+          if (i + 2 < len) {
               if (u8a[i + 1] < 0xA0 || u8a[i + 1] > 0xBF) {
                 return false;
               }
@@ -4104,10 +4099,8 @@
             return false;
           }
           i += 3;
-        } else if (u8a[i] >= 0xE1 && u8a[i] <= 0xEC)
-        {
-          if (i + 2 < len)
-            {
+        } else if (u8a[i] >= 0xE1 && u8a[i] <= 0xEC) {
+          if (i + 2 < len) {
               if (u8a[i + 1] < 0x80 || u8a[i + 1] > 0xBF) {
                 return false;
               }
@@ -4118,10 +4111,8 @@
             return false;
           }
           i += 3;
-        } else if (u8a[i] === 0xED)
-        {
-          if (i + 2 < len)
-            {
+        } else if (u8a[i] === 0xED) {
+          if (i + 2 < len) {
               if (u8a[i + 1] < 0x80 || u8a[i + 1] > 0x9F) {
                 return false;
               }
@@ -4132,10 +4123,8 @@
             return false;
           }
           i += 3;
-        } else if (u8a[i] >= 0xEE && u8a[i] <= 0xEF)
-        {
-          if (i + 2 < len)
-            {
+        } else if (u8a[i] >= 0xEE && u8a[i] <= 0xEF) {
+          if (i + 2 < len) {
               if (u8a[i + 1] < 0x80 || u8a[i + 1] > 0xBF) {
                 return false;
               }
@@ -4146,10 +4135,8 @@
             return false;
           }
           i += 3;
-        } else if (u8a[i] === 0xF0)
-        {
-          if (i + 3 < len)
-            {
+        } else if (u8a[i] === 0xF0) {
+          if (i + 3 < len) {
               if (u8a[i + 1] < 0x90 || u8a[i + 1] > 0xBF) {
                 return false;
               }
@@ -4163,10 +4150,8 @@
             return false;
           }
           i += 4;
-        } else if (u8a[i] >= 0xF1 && u8a[i] <= 0xF3)
-        {
-          if (i + 3 < len)
-            {
+        } else if (u8a[i] >= 0xF1 && u8a[i] <= 0xF3) {
+          if (i + 3 < len) {
               if (u8a[i + 1] < 0x80 || u8a[i + 1] > 0xBF) {
                 return false;
               }
@@ -4180,10 +4165,8 @@
             return false;
           }
           i += 4;
-        } else if (u8a[i] === 0xF4)
-        {
-          if (i + 3 < len)
-            {
+        } else if (u8a[i] === 0xF4) {
+          if (i + 3 < len) {
               if (u8a[i + 1] < 0x80 || u8a[i + 1] > 0x8F) {
                 return false;
               }
