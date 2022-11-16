@@ -10869,6 +10869,7 @@
 
   const rpc$1 = {
     queryFeeDetails: {
+      deprecated: 'Use `api.call.transactionPaymentApi.queryFeeDetails` instead',
       description: 'Query the detailed fee of a given encoded extrinsic',
       params: [{
         name: 'extrinsic',
@@ -10882,6 +10883,7 @@
       type: 'FeeDetails'
     },
     queryInfo: {
+      deprecated: 'Use `api.call.transactionPaymentApi.queryInfo` instead',
       description: 'Retrieves the fee information for an encoded extrinsic',
       params: [{
         name: 'extrinsic',
@@ -10892,7 +10894,7 @@
         name: 'at',
         type: 'BlockHash'
       }],
-      type: 'RuntimeDispatchInfo'
+      type: 'RuntimeDispatchInfoV1'
     }
   };
 
@@ -10907,17 +10909,6 @@
         type: 'u32'
       }],
       type: 'FeeDetails'
-    },
-    query_info: {
-      description: 'The transaction info',
-      params: [{
-        name: 'uxt',
-        type: 'Extrinsic'
-      }, {
-        name: 'len',
-        type: 'u32'
-      }],
-      type: 'RuntimeDispatchInfo'
     }
   };
   const V1_V2_SHARED_CALL = {
@@ -10931,32 +10922,69 @@
         type: 'u32'
       }],
       type: 'FeeDetails'
-    },
-    query_call_info: {
-      description: 'The call info',
-      params: [{
-        name: 'call',
-        type: 'Call'
-      }, {
-        name: 'len',
-        type: 'u32'
-      }],
-      type: 'RuntimeDispatchInfo'
     }
   };
   const runtime = {
     TransactionPaymentApi: [{
-      methods: util.objectSpread({}, V1_V2_SHARED_PAY),
+      methods: util.objectSpread({
+        query_info: {
+          description: 'The transaction info',
+          params: [{
+            name: 'uxt',
+            type: 'Extrinsic'
+          }, {
+            name: 'len',
+            type: 'u32'
+          }],
+          type: 'RuntimeDispatchInfo'
+        }
+      }, V1_V2_SHARED_PAY),
       version: 2
     }, {
-      methods: util.objectSpread({}, V1_V2_SHARED_PAY),
+      methods: util.objectSpread({
+        query_info: {
+          description: 'The transaction info',
+          params: [{
+            name: 'uxt',
+            type: 'Extrinsic'
+          }, {
+            name: 'len',
+            type: 'u32'
+          }],
+          type: 'RuntimeDispatchInfo'
+        }
+      }, V1_V2_SHARED_PAY),
       version: 1
     }],
     TransactionPaymentCallApi: [{
-      methods: util.objectSpread({}, V1_V2_SHARED_CALL),
+      methods: util.objectSpread({
+        query_call_info: {
+          description: 'The call info',
+          params: [{
+            name: 'call',
+            type: 'Call'
+          }, {
+            name: 'len',
+            type: 'u32'
+          }],
+          type: 'RuntimeDispatchInfo'
+        }
+      }, V1_V2_SHARED_CALL),
       version: 2
     }, {
-      methods: util.objectSpread({}, V1_V2_SHARED_CALL),
+      methods: util.objectSpread({
+        query_call_info: {
+          description: 'The call info',
+          params: [{
+            name: 'call',
+            type: 'Call'
+          }, {
+            name: 'len',
+            type: 'u32'
+          }],
+          type: 'RuntimeDispatchInfo'
+        }
+      }, V1_V2_SHARED_CALL),
       version: 1
     }]
   };
@@ -10975,6 +11003,16 @@
       },
       RuntimeDispatchInfo: {
         weight: 'Weight',
+        class: 'DispatchClass',
+        partialFee: 'Balance'
+      },
+      RuntimeDispatchInfoV1: {
+        weight: 'WeightV1',
+        class: 'DispatchClass',
+        partialFee: 'Balance'
+      },
+      RuntimeDispatchInfoV2: {
+        weight: 'WeightV2',
         class: 'DispatchClass',
         partialFee: 'Balance'
       }
@@ -15980,7 +16018,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.8.1'
+    version: '9.8.2'
   };
 
   exports.BTreeMap = BTreeMap;
