@@ -59,7 +59,7 @@
 		    function verb(n) { return function (v) { return step([n, v]); }; }
 		    function step(op) {
 		        if (f) throw new TypeError("Generator is already executing.");
-		        while (_) try {
+		        while (g && (g = 0, op[0] && (_ = 0)), _) try {
 		            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
 		            if (y = 0, t) op = [op[0] & 2, t.value];
 		            switch (op[0]) {
@@ -216,7 +216,7 @@
 	    function verb(n) { return function (v) { return step([n, v]); }; }
 	    function step(op) {
 	        if (f) throw new TypeError("Generator is already executing.");
-	        while (_) try {
+	        while (g && (g = 0, op[0] && (_ = 0)), _) try {
 	            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
 	            if (y = 0, t) op = [op[0] & 2, t.value];
 	            switch (op[0]) {
@@ -668,6 +668,18 @@
 		        ss58_addr_type: 10
 		    },
 		    {
+		        name: 'VTB',
+		        cla: 0x9c,
+		        slip0044: 0x800002b6,
+		        ss58_addr_type: 42
+		    },
+		    {
+		        name: 'Peer',
+		        cla: 0x9d,
+		        slip0044: 0x800002ce,
+		        ss58_addr_type: 42
+		    },
+		    {
 		        name: 'Genshiro',
 		        cla: 0x9e,
 		        slip0044: 0x85f5e0fc,
@@ -722,6 +734,12 @@
 		        ss58_addr_type: 172
 		    },
 		    {
+		        name: 'Picasso',
+		        cla: 0xa7,
+		        slip0044: 0x800001b2,
+		        ss58_addr_type: 49
+		    },
+		    {
 		        name: 'Composable',
 		        cla: 0xa8,
 		        slip0044: 0x80000162,
@@ -732,6 +750,18 @@
 		        cla: 0xa9,
 		        slip0044: 0x8000032a,
 		        ss58_addr_type: 5
+		    },
+		    {
+		        name: 'OriginTrail',
+		        cla: 0xaa,
+		        slip0044: 0x80000162,
+		        ss58_addr_type: 101
+		    },
+		    {
+		        name: 'HydraDX',
+		        cla: 0xab,
+		        slip0044: 0x80000162,
+		        ss58_addr_type: 63
 		    },
 		    {
 		        name: 'Stafi',
@@ -768,18 +798,6 @@
 		        cla: 0xb2,
 		        slip0044: 0x80000162,
 		        ss58_addr_type: 18
-		    },
-		    {
-		        name: 'HydraDX',
-		        cla: 0xab,
-		        slip0044: 0x80000162,
-		        ss58_addr_type: 63
-		    },
-		    {
-		        name: 'VTB',
-		        cla: 0x9c,
-		        slip0044: 0x800002b6,
-		        ss58_addr_type: 42
 		    },
 		];
 	} (supported_apps));
@@ -974,7 +992,10 @@
 	                    _this[k] = fields[k];
 	                }
 	            }
-	            if (isObject(options) && "cause" in options && !("cause" in _this)) {
+	            if (options &&
+	                isObject(options) &&
+	                "cause" in options &&
+	                !("cause" in _this)) {
 	                var cause = options.cause;
 	                _this.cause = cause;
 	                if ("stack" in cause) {
@@ -988,7 +1009,7 @@
 	    return CustomErrorClass;
 	};
 	function isObject(value) {
-	    return value !== null && typeof value === "object";
+	    return typeof value === "object";
 	}
 
 	var __extends$2 = (global && global.__extends) || (function () {
@@ -1060,6 +1081,10 @@
 	createCustomErrorClass("NotEnoughGas");
 	createCustomErrorClass("NotSupportedLegacyAddress");
 	createCustomErrorClass("GasLessThanEstimate");
+	createCustomErrorClass("PriorityFeeTooLow");
+	createCustomErrorClass("PriorityFeeTooHigh");
+	createCustomErrorClass("PriorityFeeHigherThanMaxFee");
+	createCustomErrorClass("MaxFeeTooLow");
 	createCustomErrorClass("PasswordsDontMatch");
 	createCustomErrorClass("PasswordIncorrect");
 	createCustomErrorClass("RecommendSubAccountsToEmpty");
@@ -1093,6 +1118,7 @@
 	createCustomErrorClass("FeeNotLoaded");
 	createCustomErrorClass("FeeRequired");
 	createCustomErrorClass("FeeTooHigh");
+	createCustomErrorClass("DustLimit");
 	createCustomErrorClass("PendingOperation");
 	createCustomErrorClass("SyncError");
 	createCustomErrorClass("PairingFailed");
@@ -1149,7 +1175,8 @@
 	    MAX_VALUE_REACHED: 0x9850,
 	    GP_AUTH_FAILED: 0x6300,
 	    LICENSING: 0x6f42,
-	    HALTED: 0x6faa
+	    HALTED: 0x6faa,
+	    LOCKED_DEVICE: 0x5515
 	};
 	function getAltStatusMessage(code) {
 	    switch (code) {
@@ -1165,6 +1192,8 @@
 	            return "Invalid data received";
 	        case 0x6b00:
 	            return "Invalid parameter received";
+	        case 0x5515:
+	            return "Locked device";
 	    }
 	    if (0x6f00 <= code && code <= 0x6fff) {
 	        return "Internal error, please report";
@@ -4678,7 +4707,7 @@
 		  name: '@polkadot/hw-ledger-transports',
 		  path: typeof __dirname === 'string' ? __dirname : 'auto',
 		  type: 'cjs',
-		  version: '10.1.12'
+		  version: '10.1.13'
 		};
 		packageInfo$1.packageInfo = packageInfo;
 		return packageInfo$1;
@@ -4734,6 +4763,7 @@
 	  khala: 'Khala',
 	  kusama: 'Kusama',
 	  'nodle-para': 'Nodle',
+	  origintrail: 'OriginTrail',
 	  parallel: 'Parallel',
 	  phala: 'Phala',
 	  polkadex: 'Polkadex',
@@ -4752,7 +4782,7 @@
 	  name: '@polkadot/hw-ledger',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '10.1.12'
+	  version: '10.1.13'
 	};
 
 	async function wrapError(promise) {
@@ -4787,7 +4817,7 @@
 	      } = await wrapError(app.getAddress(account + accountOffset, change, addressIndex + addressOffset, confirm));
 	      return {
 	        address,
-	        publicKey: `0x${pubKey}`
+	        publicKey: util.hexAddPrefix(pubKey)
 	      };
 	    });
 	  }
@@ -4818,7 +4848,7 @@
 	        signature
 	      } = await wrapError(app.sign(account + accountOffset, change, addressIndex + addressOffset, buffer));
 	      return {
-	        signature: `0x${signature.toString('hex')}`
+	        signature: util.hexAddPrefix(signature.toString('hex'))
 	      };
 	    });
 	  }
