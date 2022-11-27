@@ -10,7 +10,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.13'
+    version: '10.1.14'
   };
 
   function evaluateThis(fn) {
@@ -1045,7 +1045,7 @@
     name: '@polkadot/x-randomvalues',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.1.13'
+    version: '10.1.14'
   };
   packageInfo$2.packageInfo = packageInfo$1;
 
@@ -2257,7 +2257,7 @@
     name: '@polkadot/util-crypto',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.13'
+    version: '10.1.14'
   };
 
   /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
@@ -4396,32 +4396,6 @@
   		"website": "https://subspace.network"
   	},
   	{
-  		"prefix": 3000,
-  		"network": "hashed",
-  		"displayName": "Hashed Network",
-  		"symbols": [
-  			"HASH"
-  		],
-  		"decimals": [
-  			18
-  		],
-  		"standardAccount": "*25519",
-  		"website": "https://hashed.network"
-  	},
-  	{
-  		"prefix": 4000,
-  		"network": "luhn",
-  		"displayName": "Luhn Network",
-  		"symbols": [
-  			"LUHN"
-  		],
-  		"decimals": [
-  			18
-  		],
-  		"standardAccount": "*25519",
-  		"website": "https://luhn.network"
-  	},
-  	{
   		"prefix": 4006,
   		"network": "tangle",
   		"displayName": "Tangle Network",
@@ -4530,6 +4504,19 @@
   		"website": "https://unique.network"
   	},
   	{
+  		"prefix": 9072,
+  		"network": "hashed",
+  		"displayName": "Hashed Network",
+  		"symbols": [
+  			"HASH"
+  		],
+  		"decimals": [
+  			18
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://hashed.network"
+  	},
+  	{
   		"prefix": 9807,
   		"network": "dentnet",
   		"displayName": "DENTNet",
@@ -4593,6 +4580,19 @@
   		],
   		"standardAccount": "*25519",
   		"website": "https://cess.cloud"
+  	},
+  	{
+  		"prefix": 11486,
+  		"network": "luhn",
+  		"displayName": "Luhn Network",
+  		"symbols": [
+  			"LUHN"
+  		],
+  		"decimals": [
+  			18
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://luhn.network"
   	},
   	{
   		"prefix": 11820,
