@@ -2,6 +2,7 @@
 
 ## master
 
+- wasm-crypto 6.4.1
 - api, api-contract, types 9.9.4
 - api, api-contract, types 9.9.3
 - api, api-contract, types 9.9.2
