@@ -10,7 +10,7 @@
     name: '@polkadot/util',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.14'
+    version: '10.2.1'
   };
 
   function arrayChunk(array, chunkSize) {
@@ -114,7 +114,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.1.14'
+    version: '10.2.1'
   };
 
   function evaluateThis(fn) {
@@ -227,7 +227,13 @@
   function getAugmentedNamespace(n) {
     var f = n.default;
   	if (typeof f == "function") {
-  		var a = function () {
+  		var a = function a () {
+  			if (this instanceof a) {
+  				var args = [null];
+  				args.push.apply(args, arguments);
+  				var Ctor = Function.bind.apply(f, args);
+  				return new Ctor();
+  			}
   			return f.apply(this, arguments);
   		};
   		a.prototype = f.prototype;
@@ -2997,12 +3003,12 @@
   const nMin = createCmp((a, b) => a < b);
 
   const hasBigInt = typeof BigInt === 'function' && typeof BigInt.asIntN === 'function';
-  const hasBuffer = typeof Buffer !== 'undefined';
   const hasCjs = typeof require === 'function' && typeof module !== 'undefined';
   const hasDirname = typeof __dirname !== 'undefined';
   const hasEsm = !hasCjs;
-  const hasProcess = typeof process === 'object';
   const hasWasm = typeof WebAssembly !== 'undefined';
+  const hasBuffer = typeof xglobal.Buffer !== 'undefined';
+  const hasProcess = typeof xglobal.process === 'object';
 
   function isBuffer(value) {
     return hasBuffer && isFunction(value && value.readDoubleLE) && Buffer.isBuffer(value);
@@ -3043,7 +3049,7 @@
     name: '@polkadot/x-textencoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.1.14'
+    version: '10.2.1'
   };
   packageInfo$3.packageInfo = packageInfo$2;
 
@@ -3368,7 +3374,7 @@
     name: '@polkadot/x-textdecoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.1.14'
+    version: '10.2.1'
   };
   packageInfo$1.packageInfo = packageInfo;
 
@@ -4281,7 +4287,7 @@
     return flag;
   }
   function parseEnv(type) {
-    const env = (hasProcess ? process : {}).env || {};
+    const env = (hasProcess ? xglobal.process : {}).env || {};
     const maxSize = parseInt(env.DEBUG_MAX || '-1', 10);
     return [getDebugFlag((env.DEBUG || '').toLowerCase().split(','), type), isNaN(maxSize) ? -1 : maxSize];
   }

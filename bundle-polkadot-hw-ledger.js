@@ -15,7 +15,13 @@
 	function getAugmentedNamespace(n) {
 	  var f = n.default;
 		if (typeof f == "function") {
-			var a = function () {
+			var a = function a () {
+				if (this instanceof a) {
+					var args = [null];
+					args.push.apply(args, arguments);
+					var Ctor = Function.bind.apply(f, args);
+					return new Ctor();
+				}
 				return f.apply(this, arguments);
 			};
 			a.prototype = f.prototype;
@@ -799,6 +805,12 @@
 		        slip0044: 0x80000162,
 		        ss58_addr_type: 18
 		    },
+		    {
+		        name: 'Ajuna',
+		        cla: 0xb3,
+		        slip0044: 0x80000162,
+		        ss58_addr_type: 1328
+		    },
 		];
 	} (supported_apps));
 	getDefaultExportFromCjs(supported_apps);
@@ -1045,6 +1057,7 @@
 	createCustomErrorClass("DeviceNameInvalid");
 	createCustomErrorClass("DeviceSocketFail");
 	createCustomErrorClass("DeviceSocketNoBulkStatus");
+	var LockedDeviceError = createCustomErrorClass("LockedDeviceError");
 	var DisconnectedDevice = createCustomErrorClass("DisconnectedDevice");
 	var DisconnectedDeviceDuringOperation = createCustomErrorClass("DisconnectedDeviceDuringOperation");
 	createCustomErrorClass("DeviceExtractOnboardingStateError");
@@ -1176,7 +1189,9 @@
 	    GP_AUTH_FAILED: 0x6300,
 	    LICENSING: 0x6f42,
 	    HALTED: 0x6faa,
-	    LOCKED_DEVICE: 0x5515
+	    LOCKED_DEVICE: 0x5515,
+	    CUSTOM_IMAGE_EMPTY: 0x662e,
+	    CUSTOM_IMAGE_BOOTLOADER: 0x662f
 	};
 	function getAltStatusMessage(code) {
 	    switch (code) {
@@ -1200,12 +1215,16 @@
 	    }
 	}
 	function TransportStatusError(statusCode) {
-	    this.name = "TransportStatusError";
 	    var statusText = Object.keys(StatusCodes).find(function (k) { return StatusCodes[k] === statusCode; }) ||
 	        "UNKNOWN_ERROR";
 	    var smsg = getAltStatusMessage(statusCode) || statusText;
 	    var statusCodeStr = statusCode.toString(16);
-	    this.message = "Ledger device: ".concat(smsg, " (0x").concat(statusCodeStr, ")");
+	    var message = "Ledger device: ".concat(smsg, " (0x").concat(statusCodeStr, ")");
+	    if (statusCode === StatusCodes.LOCKED_DEVICE) {
+	        throw new LockedDeviceError(message);
+	    }
+	    this.name = "TransportStatusError";
+	    this.message = message;
 	    this.stack = new Error().stack;
 	    this.statusCode = statusCode;
 	    this.statusText = statusText;
@@ -4707,7 +4726,7 @@
 		  name: '@polkadot/hw-ledger-transports',
 		  path: typeof __dirname === 'string' ? __dirname : 'auto',
 		  type: 'cjs',
-		  version: '10.1.14'
+		  version: '10.2.1'
 		};
 		packageInfo$1.packageInfo = packageInfo;
 		return packageInfo$1;
@@ -4746,6 +4765,7 @@
 
 	const ledgerApps = {
 	  acala: 'Acala',
+	  ajuna: 'Ajuna',
 	  'aleph-node': 'AlephZero',
 	  astar: 'Astar',
 	  bifrost: 'Bifrost',
@@ -4782,7 +4802,7 @@
 	  name: '@polkadot/hw-ledger',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '10.1.14'
+	  version: '10.2.1'
 	};
 
 	async function wrapError(promise) {
