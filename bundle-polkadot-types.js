@@ -14642,7 +14642,9 @@
   const BITVEC_NS_MSB = ['bitvec::order::Msb0', 'BitOrderMsb0'];
   const BITVEC_NS = [...BITVEC_NS_LSB, ...BITVEC_NS_MSB];
   const WRAPPERS = ['BoundedBTreeMap', 'BoundedBTreeSet', 'BoundedVec', 'Box', 'BTreeMap', 'BTreeSet', 'Cow', 'Option', 'Range', 'RangeInclusive', 'Result', 'WeakBoundedVec', 'WrapperKeepOpaque', 'WrapperOpaque'];
-  const RESERVED = ['entries', 'hash', 'keys', 'new', 'size'];
+  const RESERVED = [
+  'entries', 'keys', 'new', 'size',
+  'hash', 'registry'];
   const PATH_RM_INDEX_1 = ['generic', 'misc', 'pallet', 'traits', 'types'];
   function sanitizeDocs(docs) {
     const result = new Array(docs.length);
@@ -16018,7 +16020,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.10.2'
+    version: '9.10.3'
   };
 
   exports.BTreeMap = BTreeMap;
