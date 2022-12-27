@@ -20,7 +20,7 @@
     name: '@polkadot/extension-dapp',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-extension-dapp.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-extension-dapp.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-extension-dapp.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-extension-dapp.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '0.44.6'
+    version: '0.44.7'
   };
 
   const unwrapBytes = util.u8aUnwrapBytes;
@@ -29,7 +29,10 @@
   const win = window;
   win.injectedWeb3 = win.injectedWeb3 || {};
   function web3IsInjected() {
-    return Object.keys(win.injectedWeb3).length !== 0;
+    return Object.values(win.injectedWeb3).filter(({
+      connect,
+      enable
+    }) => !!(connect || enable)).length !== 0;
   }
   function throwError(method) {
     throw new Error(`${method}: web3Enable(originName) needs to be called before ${method}`);
@@ -50,42 +53,48 @@
       type
     }));
   }
+  function filterAccounts(list, genesisHash, type) {
+    return list.filter(a => (!a.type || !type || type.includes(a.type)) && (!a.genesisHash || !genesisHash || a.genesisHash === genesisHash));
+  }
   exports.isWeb3Injected = web3IsInjected();
   exports.web3EnablePromise = null;
   function getWindowExtensions(originName) {
-    return Promise.all(Object.entries(win.injectedWeb3).map(([name, {
+    return Promise.all(Object.entries(win.injectedWeb3).map(([nameOrHash, {
+      connect,
       enable,
       version
-    }]) => Promise.all([Promise.resolve({
-      name,
-      version
-    }), enable(originName).catch(error => {
-      console.error(`Error initializing ${name}: ${error.message}`);
-    })])));
+    }]) => Promise.resolve().then(() => connect
+    ? connect(originName) : enable
+    ? enable(originName).then(e => util.objectSpread({
+      name: nameOrHash,
+      version: version || 'unknown'
+    }, e)) : Promise.reject(new Error('No connect(..) or enable(...) hook found'))).catch(({
+      message
+    }) => {
+      console.error(`Error initializing ${nameOrHash}: ${message}`);
+    }))).then(exts => exts.filter(e => !!e));
   }
   function web3Enable(originName, compatInits = []) {
     if (!originName) {
       throw new Error('You must pass a name for your app to the web3Enable function');
     }
     const initCompat = compatInits.length ? Promise.all(compatInits.map(c => c().catch(() => false))) : Promise.resolve([true]);
-    exports.web3EnablePromise = documentReadyPromise(() => initCompat.then(() => getWindowExtensions(originName).then(values => values.filter(value => !!value[1]).map(([info, ext]) => {
-      if (!ext.accounts.subscribe) {
-        ext.accounts.subscribe = cb => {
-          ext.accounts.get().then(cb).catch(console.error);
+    exports.web3EnablePromise = documentReadyPromise(() => initCompat.then(() => getWindowExtensions(originName).then(values => values.map(e => {
+      if (!e.accounts.subscribe) {
+        e.accounts.subscribe = cb => {
+          e.accounts.get().then(cb).catch(console.error);
           return () => {
           };
         };
       }
-      return { ...info,
-        ...ext
-      };
+      return e;
     })).catch(() => []).then(values => {
       const names = values.map(({
         name,
         version
       }) => `${name}/${version}`);
       exports.isWeb3Injected = web3IsInjected();
-      console.log(`web3Enable: Enabled ${values.length} extension${values.length !== 1 ? 's' : ''}: ${names.join(', ')}`);
+      console.info(`web3Enable: Enabled ${values.length} extension${values.length !== 1 ? 's' : ''}: ${names.join(', ')}`);
       return values;
     })));
     return exports.web3EnablePromise;
@@ -93,14 +102,15 @@
   async function web3Accounts({
     accountType,
     extensions,
+    genesisHash,
     ss58Format
   } = {}) {
     if (!exports.web3EnablePromise) {
       return throwError('web3Accounts');
     }
     const accounts = [];
-    const injected = await exports.web3EnablePromise;
-    const retrieved = await Promise.all(injected.filter(({
+    const sources = await exports.web3EnablePromise;
+    const retrieved = await Promise.all(sources.filter(({
       name: source
     }) => !extensions || extensions.includes(source)).map(async ({
       accounts,
@@ -108,9 +118,7 @@
     }) => {
       try {
         const list = await accounts.get();
-        return mapAccounts(source, list.filter(({
-          type
-        }) => type && accountType ? accountType.includes(type) : true), ss58Format);
+        return mapAccounts(source, filterAccounts(list, genesisHash, accountType), ss58Format);
       } catch (error) {
         return [];
       }
@@ -118,14 +126,13 @@
     retrieved.forEach(result => {
       accounts.push(...result);
     });
-    const addresses = accounts.map(({
-      address
-    }) => address);
-    console.log(`web3Accounts: Found ${accounts.length} address${accounts.length !== 1 ? 'es' : ''}: ${addresses.join(', ')}`);
+    console.info(`web3Accounts: Found ${accounts.length} address${accounts.length !== 1 ? 'es' : ''}`);
     return accounts;
   }
   async function web3AccountsSubscribe(cb, {
+    accountType,
     extensions,
+    genesisHash,
     ss58Format
   } = {}) {
     if (!exports.web3EnablePromise) {
@@ -133,10 +140,11 @@
     }
     const accounts = {};
     const triggerUpdate = () => cb(Object.entries(accounts).reduce((result, [source, list]) => {
-      result.push(...mapAccounts(source, list, ss58Format));
+      result.push(...mapAccounts(source, filterAccounts(list, genesisHash, accountType), ss58Format));
       return result;
     }, []));
-    const unsubs = (await exports.web3EnablePromise).filter(({
+    const sources = await exports.web3EnablePromise;
+    const unsubs = sources.filter(({
       name: source
     }) => !extensions || extensions.includes(source)).map(({
       accounts: {
@@ -146,8 +154,10 @@
     }) => subscribe(result => {
       accounts[source] = result;
       try {
-        var _triggerUpdate;
-        (_triggerUpdate = triggerUpdate()) === null || _triggerUpdate === void 0 ? void 0 : _triggerUpdate.catch(console.error);
+        const result = triggerUpdate();
+        if (result && util.isPromise(result)) {
+          result.catch(console.error);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -220,7 +230,5 @@
   exports.web3ListRpcProviders = web3ListRpcProviders;
   exports.web3UseRpcProvider = web3UseRpcProvider;
   exports.wrapBytes = wrapBytes;
-
-  Object.defineProperty(exports, '__esModule', { value: true });
 
 }));
