@@ -2,6 +2,7 @@
 
 ## master
 
+- api, api-contract, types 9.10.5
 - extension-dapp 0.44.7
 - api, api-contract, types 9.10.4
 - api, api-contract, types 9.10.3

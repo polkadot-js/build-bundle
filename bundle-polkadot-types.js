@@ -10951,7 +10951,7 @@
             name: 'len',
             type: 'u32'
           }],
-          type: 'RuntimeDispatchInfoV1'
+          type: 'RuntimeDispatchInfo'
         }
       }, V1_V2_SHARED_PAY),
       version: 1
@@ -10982,7 +10982,7 @@
             name: 'len',
             type: 'u32'
           }],
-          type: 'RuntimeDispatchInfoV1'
+          type: 'RuntimeDispatchInfo'
         }
       }, V1_V2_SHARED_CALL),
       version: 1
@@ -11007,7 +11007,6 @@
         partialFee: 'Balance'
       },
       RuntimeDispatchInfoV1: {
-        __fallback: 'RuntimeDispatchInfoV2',
         weight: 'WeightV1',
         class: 'DispatchClass',
         partialFee: 'Balance'
@@ -16021,7 +16020,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.10.4'
+    version: '9.10.5'
   };
 
   exports.BTreeMap = BTreeMap;
