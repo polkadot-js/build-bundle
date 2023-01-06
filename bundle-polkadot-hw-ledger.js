@@ -13,6 +13,7 @@
 	}
 
 	function getAugmentedNamespace(n) {
+	  if (n.__esModule) return n;
 	  var f = n.default;
 		if (typeof f == "function") {
 			var a = function a () {
@@ -811,6 +812,12 @@
 		        slip0044: 0x80000162,
 		        ss58_addr_type: 1328
 		    },
+		    {
+		        name: 'Bittensor',
+		        cla: 0xb4,
+		        slip0044: 0x800003ed,
+		        ss58_addr_type: 13116
+		    },
 		];
 	} (supported_apps));
 	getDefaultExportFromCjs(supported_apps);
@@ -951,7 +958,11 @@
 
 	var browser = {};
 
-	var interopRequireDefault = {exports: {}};
+	var interopRequireDefaultExports = {};
+	var interopRequireDefault = {
+	  get exports(){ return interopRequireDefaultExports; },
+	  set exports(v){ interopRequireDefaultExports = v; },
+	};
 
 	(function (module) {
 		function _interopRequireDefault(obj) {
@@ -961,7 +972,7 @@
 		}
 		module.exports = _interopRequireDefault, module.exports.__esModule = true, module.exports["default"] = module.exports;
 	} (interopRequireDefault));
-	getDefaultExportFromCjs(interopRequireDefault.exports);
+	getDefaultExportFromCjs(interopRequireDefaultExports);
 
 	const EventEmitter = {};
 
@@ -1143,6 +1154,24 @@
 	createCustomErrorClass("NoDBPathGiven");
 	createCustomErrorClass("DBWrongPassword");
 	createCustomErrorClass("DBNotReset");
+	var HwTransportErrorType;
+	(function (HwTransportErrorType) {
+	    HwTransportErrorType[HwTransportErrorType["Unknown"] = 0] = "Unknown";
+	    HwTransportErrorType[HwTransportErrorType["BleLocationServicesDisabled"] = 1] = "BleLocationServicesDisabled";
+	    HwTransportErrorType[HwTransportErrorType["BleBluetoothUnauthorized"] = 2] = "BleBluetoothUnauthorized";
+	    HwTransportErrorType[HwTransportErrorType["BleScanStartFailed"] = 3] = "BleScanStartFailed";
+	})(HwTransportErrorType || (HwTransportErrorType = {}));
+	((function (_super) {
+	    __extends$2(HwTransportError, _super);
+	    function HwTransportError(type, message) {
+	        var _this = _super.call(this, message) || this;
+	        _this.name = "HwTransportError";
+	        _this.type = type;
+	        Object.setPrototypeOf(_this, HwTransportError.prototype);
+	        return _this;
+	    }
+	    return HwTransportError;
+	})(Error));
 	var TransportError =  (function (_super) {
 	    __extends$2(TransportError, _super);
 	    function TransportError(message, id) {
@@ -1561,7 +1590,11 @@
 	    };
 	};
 
-	var re$3 = {exports: {}};
+	var reExports = {};
+	var re$3 = {
+	  get exports(){ return reExports; },
+	  set exports(v){ reExports = v; },
+	};
 
 	const SEMVER_SPEC_VERSION = '2.0.0';
 	const MAX_LENGTH$2 = 256;
@@ -1676,7 +1709,7 @@
 		createToken('STAR', '(<|>)?=?\\s*\\*');
 		createToken('GTE0', '^\\s*>=\\s*0\\.0\\.0\\s*$');
 		createToken('GTE0PRE', '^\\s*>=\\s*0\\.0\\.0-0\\s*$');
-	} (re$3, re$3.exports));
+	} (re$3, reExports));
 
 	const opts = ['includePrerelease', 'loose', 'rtl'];
 	const parseOptions$2 = options =>
@@ -1710,7 +1743,7 @@
 
 	const debug = debug_1;
 	const { MAX_LENGTH: MAX_LENGTH$1, MAX_SAFE_INTEGER } = constants$1;
-	const { re: re$2, t: t$2 } = re$3.exports;
+	const { re: re$2, t: t$2 } = reExports;
 	const parseOptions$1 = parseOptions_1;
 	const { compareIdentifiers } = identifiers$1;
 	let SemVer$d = class SemVer {
@@ -1939,7 +1972,7 @@
 	var semver$1 = SemVer$d;
 
 	const { MAX_LENGTH } = constants$1;
-	const { re: re$1, t: t$1 } = re$3.exports;
+	const { re: re$1, t: t$1 } = reExports;
 	const SemVer$c = semver$1;
 	const parseOptions = parseOptions_1;
 	const parse$6 = (version, options) => {
@@ -2137,7 +2170,7 @@
 
 	const SemVer$5 = semver$1;
 	const parse$1 = parse_1;
-	const { re, t } = re$3.exports;
+	const { re, t } = reExports;
 	const coerce$1 = (version, options) => {
 	  if (version instanceof SemVer$5) {
 	    return version
@@ -2985,7 +3018,7 @@
 		  comparatorTrimReplace,
 		  tildeTrimReplace,
 		  caretTrimReplace,
-		} = re$3.exports;
+		} = reExports;
 		const isNullSet = c => c.value === '<0.0.0-0';
 		const isAny = c => c.value === '';
 		const isSatisfiable = (comparators, options) => {
@@ -3335,7 +3368,7 @@
 		}
 		comparator = Comparator;
 		const parseOptions = parseOptions_1;
-		const { re, t } = re$3.exports;
+		const { re, t } = reExports;
 		const cmp = cmp_1;
 		const debug = debug_1;
 		const SemVer = semver$1;
@@ -3762,7 +3795,7 @@
 	};
 	var subset_1 = subset$1;
 
-	const internalRe = re$3.exports;
+	const internalRe = reExports;
 	const constants = constants$1;
 	const SemVer = semver$1;
 	const identifiers = identifiers$1;
@@ -4726,14 +4759,14 @@
 		  name: '@polkadot/hw-ledger-transports',
 		  path: typeof __dirname === 'string' ? __dirname : 'auto',
 		  type: 'cjs',
-		  version: '10.2.1'
+		  version: '10.2.2'
 		};
 		packageInfo$1.packageInfo = packageInfo;
 		return packageInfo$1;
 	}
 
 	(function (exports) {
-		var _interopRequireDefault = interopRequireDefault.exports;
+		var _interopRequireDefault = interopRequireDefaultExports;
 		Object.defineProperty(exports, "__esModule", {
 		  value: true
 		});
@@ -4782,7 +4815,7 @@
 	  karura: 'Karura',
 	  khala: 'Khala',
 	  kusama: 'Kusama',
-	  'nodle-para': 'Nodle',
+	  nodle: 'Nodle',
 	  origintrail: 'OriginTrail',
 	  parallel: 'Parallel',
 	  phala: 'Phala',
@@ -4802,7 +4835,7 @@
 	  name: '@polkadot/hw-ledger',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '10.2.1'
+	  version: '10.2.2'
 	};
 
 	async function wrapError(promise) {

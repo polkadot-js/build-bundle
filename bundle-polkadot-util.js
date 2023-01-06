@@ -10,7 +10,7 @@
     name: '@polkadot/util',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.2.1'
+    version: '10.2.2'
   };
 
   function arrayChunk(array, chunkSize) {
@@ -114,7 +114,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.2.1'
+    version: '10.2.2'
   };
 
   function evaluateThis(fn) {
@@ -132,10 +132,10 @@
 
   const build = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    xglobal: xglobal,
-    extractGlobal: extractGlobal,
     exposeGlobal: exposeGlobal,
-    packageInfo: packageInfo$4
+    extractGlobal: extractGlobal,
+    packageInfo: packageInfo$4,
+    xglobal: xglobal
   });
 
   const BigInt = typeof xglobal.BigInt === 'function' && typeof xglobal.BigInt.asIntN === 'function' ? xglobal.BigInt : () => Number.NaN;
@@ -225,6 +225,7 @@
   }
 
   function getAugmentedNamespace(n) {
+    if (n.__esModule) return n;
     var f = n.default;
   	if (typeof f == "function") {
   		var a = function a () {
@@ -251,7 +252,11 @@
   	return a;
   }
 
-  var bn = {exports: {}};
+  var bnExports = {};
+  var bn = {
+    get exports(){ return bnExports; },
+    set exports(v){ bnExports = v; },
+  };
 
   const _nodeResolve_empty = {};
 
@@ -2934,7 +2939,7 @@
   	  };
   	})(module, commonjsGlobal);
   } (bn));
-  const BN = bn.exports;
+  const BN = bnExports;
 
   function isBn(value) {
     return BN.isBN(value);
@@ -3049,7 +3054,7 @@
     name: '@polkadot/x-textencoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.2.1'
+    version: '10.2.2'
   };
   packageInfo$3.packageInfo = packageInfo$2;
 
@@ -3374,7 +3379,7 @@
     name: '@polkadot/x-textdecoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.2.1'
+    version: '10.2.2'
   };
   packageInfo$1.packageInfo = packageInfo;
 

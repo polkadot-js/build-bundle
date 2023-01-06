@@ -10,7 +10,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.2.1'
+    version: '10.2.2'
   };
 
   function evaluateThis(fn) {
@@ -28,10 +28,10 @@
 
   const build = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    xglobal: xglobal,
-    extractGlobal: extractGlobal,
     exposeGlobal: exposeGlobal,
-    packageInfo: packageInfo$3
+    extractGlobal: extractGlobal,
+    packageInfo: packageInfo$3,
+    xglobal: xglobal
   });
 
   const BigInt$1 = typeof xglobal.BigInt === 'function' && typeof xglobal.BigInt.asIntN === 'function' ? xglobal.BigInt : () => Number.NaN;
@@ -1011,6 +1011,7 @@
   }
 
   function getAugmentedNamespace(n) {
+    if (n.__esModule) return n;
     var f = n.default;
   	if (typeof f == "function") {
   		var a = function a () {
@@ -1051,7 +1052,7 @@
     name: '@polkadot/x-randomvalues',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.2.1'
+    version: '10.2.2'
   };
   packageInfo$2.packageInfo = packageInfo$1;
 
@@ -1895,7 +1896,15 @@
           setBigUint64(view, blockLen - 8, BigInt(this.length * 8), isLE);
           this.process(view, 0);
           const oview = createView(out);
-          this.get().forEach((v, i) => oview.setUint32(4 * i, v, isLE));
+          const len = this.outputLen;
+          if (len % 4)
+              throw new Error('_sha2: outputLen should be aligned to 32bit');
+          const outLen = len / 4;
+          const state = this.get();
+          if (outLen > state.length)
+              throw new Error('_sha2: outputLen bigger than state');
+          for (let i = 0; i < outLen; i++)
+              oview.setUint32(4 * i, state[i], isLE);
       }
       digest() {
           const { buffer, outputLen } = this;
@@ -2003,7 +2012,22 @@
           this.buffer.fill(0);
       }
   }
+  class SHA224 extends SHA256 {
+      constructor() {
+          super();
+          this.A = 0xc1059ed8 | 0;
+          this.B = 0x367cd507 | 0;
+          this.C = 0x3070dd17 | 0;
+          this.D = 0xf70e5939 | 0;
+          this.E = 0xffc00b31 | 0;
+          this.F = 0x68581511 | 0;
+          this.G = 0x64f98fa7 | 0;
+          this.H = 0xbefa4fa4 | 0;
+          this.outputLen = 28;
+      }
+  }
   const sha256 = wrapConstructor(() => new SHA256());
+  wrapConstructor(() => new SHA224());
 
   const U32_MASK64 = BigInt(2 ** 32 - 1);
   const _32n$1 = BigInt(32);
@@ -2187,6 +2211,28 @@
           this.set(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
   }
+  class SHA512_224 extends SHA512 {
+      constructor() {
+          super();
+          this.Ah = 0x8c3d37c8 | 0;
+          this.Al = 0x19544da2 | 0;
+          this.Bh = 0x73e19966 | 0;
+          this.Bl = 0x89dcd4d6 | 0;
+          this.Ch = 0x1dfab7ae | 0;
+          this.Cl = 0x32ff9c82 | 0;
+          this.Dh = 0x679dd514 | 0;
+          this.Dl = 0x582f9fcf | 0;
+          this.Eh = 0x0f6d2b69 | 0;
+          this.El = 0x7bd44da8 | 0;
+          this.Fh = 0x77e36f73 | 0;
+          this.Fl = 0x04c48942 | 0;
+          this.Gh = 0x3f9d85a8 | 0;
+          this.Gl = 0x6a1d36c8 | 0;
+          this.Hh = 0x1112e6ad | 0;
+          this.Hl = 0x91d692a1 | 0;
+          this.outputLen = 28;
+      }
+  }
   class SHA512_256 extends SHA512 {
       constructor() {
           super();
@@ -2232,6 +2278,7 @@
       }
   }
   const sha512 = wrapConstructor(() => new SHA512());
+  wrapConstructor(() => new SHA512_224());
   wrapConstructor(() => new SHA512_256());
   wrapConstructor(() => new SHA384());
 
@@ -2261,7 +2308,7 @@
     name: '@polkadot/util-crypto',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.2.1'
+    version: '10.2.2'
   };
 
   /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
@@ -3845,6 +3892,19 @@
   		"website": "https://manta.network"
   	},
   	{
+  		"prefix": 81,
+  		"network": "sora_dot_para",
+  		"displayName": "SORA Polkadot Parachain",
+  		"symbols": [
+  			"XOR"
+  		],
+  		"decimals": [
+  			18
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://sora.org"
+  	},
+  	{
   		"prefix": 88,
   		"network": "polkadex",
   		"displayName": "Polkadex Mainnet",
@@ -4193,10 +4253,10 @@
   	},
   	{
   		"prefix": 1222,
-  		"network": "apex",
-  		"displayName": "Apex Network",
+  		"network": "krest",
+  		"displayName": "Krest Network",
   		"symbols": [
-  			"APEX"
+  			"KREST"
   		],
   		"decimals": [
   			18
@@ -4655,7 +4715,7 @@
     '0xe3777fa922cafbff200cadeaea1a76bd7898ad5b89f7848999058b50e715f636',
     '0x3fd7b9eb6a00376e5be61f01abb429ffb0b104be05eaff4d458da48fcd425baf'
     ],
-    'nodle-para': ['0x97da7ede98d7bad4e36b4d734b6055425a3be036da2a332ea5a7037656427a21'],
+    nodle: ['0x97da7ede98d7bad4e36b4d734b6055425a3be036da2a332ea5a7037656427a21'],
     origintrail: ['0xe7e0962324a3b86c83404dbea483f25fb5dab4c224791c81b756cfc948006174'],
     parallel: ['0xe61a41c53f5dcd0beb09df93b34402aada44cb05117b71059cce40a2723a4e97'],
     phala: ['0x1bb969d85965e4bb5a651abbedf21a54b6b31a21f66b5401cc3f1e286268d736'],
@@ -4704,7 +4764,7 @@
     karura: 0x000002ae,
     khala: 0x000001b2,
     kusama: 0x000001b2,
-    'nodle-para': 0x000003eb,
+    nodle: 0x000003eb,
     origintrail: 0x00000162,
     parallel: 0x00000162,
     phala: 0x00000162,
@@ -4989,13 +5049,21 @@
 
   const keyHdkdEcdsa = createSeedDeriveFn(secp256k1PairFromSeed, secp256k1DeriveHard);
 
-  var ed2curve$1 = {exports: {}};
+  var ed2curveExports = {};
+  var ed2curve$1 = {
+    get exports(){ return ed2curveExports; },
+    set exports(v){ ed2curveExports = v; },
+  };
 
   function commonjsRequire(path) {
   	throw new Error('Could not dynamically require "' + path + '". Please configure the dynamicRequireTargets or/and ignoreDynamicRequires option of @rollup/plugin-commonjs appropriately for this require call to work.');
   }
 
-  var naclFast = {exports: {}};
+  var naclFastExports = {};
+  var naclFast = {
+    get exports(){ return naclFastExports; },
+    set exports(v){ naclFastExports = v; },
+  };
 
   const require$$0 = /*@__PURE__*/getAugmentedNamespace(crypto$2);
 
@@ -7057,11 +7125,11 @@
   	})();
   	})(module.exports ? module.exports : (self.nacl = self.nacl || {}));
   } (naclFast));
-  const nacl = naclFast.exports;
+  const nacl = naclFastExports;
 
   (function (module) {
   	(function(root, f) {
-  	  if (module.exports) module.exports = f(naclFast.exports);
+  	  if (module.exports) module.exports = f(naclFastExports);
   	  else root.ed2curve = f(root.nacl);
   	}(commonjsGlobal, function(nacl) {
   	  if (!nacl) throw new Error('tweetnacl not loaded');
@@ -7257,7 +7325,7 @@
   	  };
   	}));
   } (ed2curve$1));
-  const ed2curve = ed2curve$1.exports;
+  const ed2curve = ed2curveExports;
 
   function convertSecretKeyToCurve25519(secretKey) {
     return ed2curve.convertSecretKey(secretKey);
@@ -7719,15 +7787,15 @@
     }
   }
 
+  function sortAddresses(addresses, ss58Format) {
+    const u8aToAddress = u8a => encodeAddress(u8a, ss58Format);
+    return util.u8aSorted(addresses.map(addressToU8a)).map(u8aToAddress);
+  }
+
   const l = util.logger('setSS58Format');
   function setSS58Format(prefix) {
     l.warn('Global setting of the ss58Format is deprecated and not recommended. Set format on the keyring (if used) or as part of the address encode function');
     defaults.prefix = prefix;
-  }
-
-  function sortAddresses(addresses, ss58Format) {
-    const u8aToAddress = u8a => encodeAddress(u8a, ss58Format);
-    return util.u8aSorted(addresses.map(addressToU8a)).map(u8aToAddress);
   }
 
   const chars = 'abcdefghijklmnopqrstuvwxyz234567';
