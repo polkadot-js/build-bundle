@@ -44,7 +44,11 @@
     return elem;
   }
 
-  var colorString$1 = {exports: {}};
+  var colorStringExports = {};
+  var colorString$1 = {
+    get exports(){ return colorStringExports; },
+    set exports(v){ colorStringExports = v; },
+  };
 
   var colorName$1 = {
   	"aliceblue": [240, 248, 255],
@@ -197,7 +201,11 @@
   	"yellowgreen": [154, 205, 50]
   };
 
-  var simpleSwizzle = {exports: {}};
+  var simpleSwizzleExports = {};
+  var simpleSwizzle = {
+    get exports(){ return simpleSwizzleExports; },
+    set exports(v){ simpleSwizzleExports = v; },
+  };
 
   var isArrayish$1 = function isArrayish(obj) {
   	if (!obj || typeof obj === 'string') {
@@ -230,7 +238,7 @@
   };
 
   var colorNames = colorName$1;
-  var swizzle = simpleSwizzle.exports;
+  var swizzle = simpleSwizzleExports;
   var reverseNames = {};
   for (var name in colorNames) {
   	if (colorNames.hasOwnProperty(name)) {
@@ -413,7 +421,11 @@
   	return (str.length < 2) ? '0' + str : str;
   }
 
-  var conversions$2 = {exports: {}};
+  var conversionsExports = {};
+  var conversions$2 = {
+    get exports(){ return conversionsExports; },
+    set exports(v){ conversionsExports = v; },
+  };
 
   var colorName = {
   	"aliceblue": [240, 248, 255],
@@ -1250,7 +1262,7 @@
   	return [val / 255 * 100];
   };
 
-  var conversions$1 = conversions$2.exports;
+  var conversions$1 = conversionsExports;
   function buildGraph() {
   	var graph = {};
   	var models = Object.keys(conversions$1);
@@ -1313,7 +1325,7 @@
   	return conversion;
   };
 
-  var conversions = conversions$2.exports;
+  var conversions = conversionsExports;
   var route = route$1;
   var convert$1 = {};
   var models = Object.keys(conversions);
@@ -1367,7 +1379,7 @@
   });
   var colorConvert = convert$1;
 
-  var colorString = colorString$1.exports;
+  var colorString = colorStringExports;
   var convert = colorConvert;
   var _slice = [].slice;
   var skippedModels = [
@@ -2602,7 +2614,7 @@
     name: '@polkadot/vue-identicon',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '2.9.14'
+    version: '2.9.15'
   };
 
   exports.Identicon = Identicon;

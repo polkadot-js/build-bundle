@@ -8,7 +8,11 @@
 
 	var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
-	var eventemitter3 = {exports: {}};
+	var eventemitter3Exports = {};
+	var eventemitter3 = {
+	  get exports(){ return eventemitter3Exports; },
+	  set exports(v){ eventemitter3Exports = v; },
+	};
 
 	(function (module) {
 		var has = Object.prototype.hasOwnProperty
@@ -169,7 +173,6 @@
 		  module.exports = EventEmitter;
 		}
 	} (eventemitter3));
-	const EventEmitter = eventemitter3.exports;
 
 	var assign = make_assign();
 	var create$1 = make_create();
@@ -1102,7 +1105,7 @@
 	  #notification;
 	  constructor() {
 	    const settings = store_legacy.get('settings') || {};
-	    this.#emitter = new EventEmitter();
+	    this.#emitter = new eventemitter3Exports();
 	    this.#apiUrl = typeof settings.apiUrl === 'string' && settings.apiUrl || util$7.hasProcess && process.env && process.env.WS_URL || ENDPOINT_DEFAULT.value;
 	    this.#apiType = {
 	      param: this.#apiUrl,
@@ -1232,7 +1235,7 @@
 	  name: '@polkadot/ui-settings',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '2.9.14'
+	  version: '2.9.15'
 	};
 
 	exports.ENDPOINT_DEFAULT = ENDPOINT_DEFAULT;
