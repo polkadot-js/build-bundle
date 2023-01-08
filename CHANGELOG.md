@@ -2,6 +2,7 @@
 
 ## master
 
+- api, api-contract, types 9.11.1
 - hw-ledger, keyring, util, util-crypto 10.2.3
 - hw-ledger, keyring, util, util-crypto 10.2.2
 - api, api-contract, types 9.10.5
