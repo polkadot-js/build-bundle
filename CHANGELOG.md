@@ -2,6 +2,7 @@
 
 ## master
 
+- hw-ledger, keyring, util, util-crypto 10.2.5
 - api, api-contract, types 9.11.2
 - hw-ledger, keyring, util, util-crypto 10.2.4
 - extension-dapp 0.44.8
