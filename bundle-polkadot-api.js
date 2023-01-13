@@ -1458,7 +1458,7 @@
     name: '@polkadot/api',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.11.1'
+    version: '9.11.2'
   };
 
   var extendStatics = function(d, b) {
@@ -5315,14 +5315,18 @@
       proposer
     };
   }
-  function getDemocracyImages(api, hashes) {
+  function getDemocracyImages(api, bounded) {
+    const hashes = bounded.map(b => getImageHashBounded(b));
     return api.query.democracy.preimages.multi(hashes).pipe(map(images => images.map(imageOpt => parseDemocracy(api, imageOpt))));
   }
   function getImages(api, bounded) {
     const hashes = bounded.map(b => getImageHashBounded(b));
+    const bytesType = api.registry.lookup.getTypeDef(api.query.preimage.preimageFor.creator.meta.type.asMap.key).type;
     return api.query.preimage.statusFor.multi(hashes).pipe(switchMap(optStatus => {
       const statuses = optStatus.map(o => o.unwrapOr(null));
-      const keys = statuses.map((s, i) => s ? s.isRequested ? [hashes[i], s.asRequested.len.unwrapOr(0)] : [hashes[i], s.asUnrequested.len] : null).filter(p => !!p);
+      const keys = statuses.map((s, i) => s ? bytesType === 'H256'
+      ? hashes[i]
+      : s.isRequested ? [hashes[i], s.asRequested.len.unwrapOr(0)] : [hashes[i], s.asUnrequested.len] : null).filter(p => !!p);
       return api.query.preimage.preimageFor.multi(keys).pipe(map(optBytes => {
         let ptr = -1;
         return statuses.map((s, i) => s ? [hashes[i], s, optBytes[++ptr].unwrapOr(null)] : [hashes[i], null, null]).map(v => parseImage(api, v));
@@ -5359,8 +5363,8 @@
   }
   function proposals$3(instanceId, api) {
     return memo(instanceId, () => {
-      var _api$query$democracy, _api$query$democracy2;
-      return util.isFunction((_api$query$democracy = api.query.democracy) == null ? void 0 : _api$query$democracy.publicProps) && util.isFunction((_api$query$democracy2 = api.query.democracy) == null ? void 0 : _api$query$democracy2.preimages) ? api.query.democracy.publicProps().pipe(switchMap(proposals => proposals.length ? combineLatest([of(proposals), api.derive.democracy.preimages(proposals.map(([, hash]) => hash)), api.query.democracy.depositOf.multi(proposals.map(([index]) => index))]) : of([[], [], []])), map(parse$3)) : of([]);
+      var _api$query$democracy;
+      return util.isFunction((_api$query$democracy = api.query.democracy) == null ? void 0 : _api$query$democracy.publicProps) ? api.query.democracy.publicProps().pipe(switchMap(proposals => proposals.length ? combineLatest([of(proposals), api.derive.democracy.preimages(proposals.map(([, hash]) => hash)), api.query.democracy.depositOf.multi(proposals.map(([index]) => index))]) : of([[], [], []])), map(parse$3)) : of([]);
     });
   }
 
