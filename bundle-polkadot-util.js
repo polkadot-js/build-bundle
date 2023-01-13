@@ -10,7 +10,7 @@
     name: '@polkadot/util',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.2.3'
+    version: '10.2.4'
   };
 
   function arrayChunk(array, chunkSize) {
@@ -114,7 +114,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.2.3'
+    version: '10.2.4'
   };
 
   function evaluateThis(fn) {
@@ -3054,7 +3054,7 @@
     name: '@polkadot/x-textencoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.2.3'
+    version: '10.2.4'
   };
   packageInfo$3.packageInfo = packageInfo$2;
 
@@ -3379,7 +3379,7 @@
     name: '@polkadot/x-textdecoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.2.3'
+    version: '10.2.4'
   };
   packageInfo$1.packageInfo = packageInfo;
 
@@ -3847,24 +3847,14 @@
   const DEFAULT_UNIT = SI[SI_MID].text;
   let defaultDecimals = DEFAULT_DECIMALS;
   let defaultUnit = DEFAULT_UNIT;
-  function getUnits(si, withSi, withSiFull, withUnit) {
-    const unit = isBoolean(withUnit) ? SI[SI_MID].text : withUnit;
-    return withSi || withSiFull ? si.value === '-' ? withUnit ? ` ${unit}` : '' : ` ${withSiFull ? `${si.text}${withUnit ? ' ' : ''}` : si.value}${withUnit ? unit : ''}` : '';
-  }
-  function getPrePost(text, decimals, forceUnit) {
-    const si = calcSi(text, decimals, forceUnit);
-    const mid = text.length - (decimals + si.power);
-    const prefix = text.substring(0, mid);
-    const padding = mid < 0 ? 0 - mid : 0;
-    const postfix = `${`${new Array(padding + 1).join('0')}${text}`.substring(mid < 0 ? 0 : mid)}0000`.substring(0, 4);
-    return [si, prefix || '0', postfix];
-  }
   function _formatBalance(input, {
     decimals = defaultDecimals,
     forceUnit,
+    withAll = false,
     withSi = true,
     withSiFull = false,
-    withUnit = true
+    withUnit = true,
+    withZero = true
   } = {}) {
     let text = bnToBn(input).toString();
     if (text.length === 0 || text === '0') {
@@ -3875,9 +3865,22 @@
       sign = '-';
       text = text.substring(1);
     }
-    const [si, prefix, postfix] = getPrePost(text, decimals, forceUnit);
-    const units = getUnits(si, withSi, withSiFull, withUnit);
-    return `${sign}${formatDecimal(prefix)}.${postfix}${units}`;
+    const si = calcSi(text, decimals, forceUnit);
+    const mid = text.length - (decimals + si.power);
+    const pre = mid <= 0 ? '0' : text.substring(0, mid);
+    let post = text.padStart((mid < 0 ? 0 - mid : 0) + 1, '0').substring(mid < 0 ? 0 : mid).padEnd(withAll ? Math.max(decimals, 4) : 4, '0').substring(0, withAll ? Math.max(4, decimals + si.power) : 4);
+    if (!withZero) {
+      let end = post.length - 1;
+      do {
+        if (post[end] === '0') {
+          end--;
+        }
+      } while (post[end] === '0');
+      post = post.substring(0, end + 1);
+    }
+    const unit = isBoolean(withUnit) ? SI[SI_MID].text : withUnit;
+    const units = withSi || withSiFull ? si.value === '-' ? withUnit ? ` ${unit}` : '' : ` ${withSiFull ? `${si.text}${withUnit ? ' ' : ''}` : si.value}${withUnit ? unit : ''}` : '';
+    return `${sign}${formatDecimal(pre)}${post && `.${post}`}${units}`;
   }
   const formatBalance = _formatBalance;
   formatBalance.calcSi = (text, decimals = defaultDecimals) => calcSi(text, decimals);

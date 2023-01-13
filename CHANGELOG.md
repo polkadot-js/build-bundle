@@ -2,6 +2,7 @@
 
 ## master
 
+- hw-ledger, keyring, util, util-crypto 10.2.4
 - extension-dapp 0.44.8
 - react-{identicon, qr}, ui-{keyring, settings}, vue-identicon 2.9.15
 - phishing 0.18.13

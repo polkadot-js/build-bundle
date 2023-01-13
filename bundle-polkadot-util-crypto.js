@@ -10,7 +10,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.2.3'
+    version: '10.2.4'
   };
 
   function evaluateThis(fn) {
@@ -61,7 +61,38 @@
       Gy: BigInt('32670510020758816978083085130507043184471273380659243275938904335757337482424'),
       beta: BigInt('0x7ae96a2b657c07106e64479eac3434e99cf0497512f58995c1396c28719501ee'),
   });
-  function weistrass(x) {
+  const divNearest = (a, b) => (a + b / _2n$1) / b;
+  const endo = {
+      beta: BigInt('0x7ae96a2b657c07106e64479eac3434e99cf0497512f58995c1396c28719501ee'),
+      splitScalar(k) {
+          const { n } = CURVE;
+          const a1 = BigInt('0x3086d221a7d46bcde86c90e49284eb15');
+          const b1 = -_1n$1 * BigInt('0xe4437ed6010e88286f547fa90abfe4c3');
+          const a2 = BigInt('0x114ca50f7a8e2f3f657c1108d9d44cfd8');
+          const b2 = a1;
+          const POW_2_128 = BigInt('0x100000000000000000000000000000000');
+          const c1 = divNearest(b2 * k, n);
+          const c2 = divNearest(-b1 * k, n);
+          let k1 = mod(k - c1 * a1 - c2 * a2, n);
+          let k2 = mod(-c1 * b1 - c2 * b2, n);
+          const k1neg = k1 > POW_2_128;
+          const k2neg = k2 > POW_2_128;
+          if (k1neg)
+              k1 = n - k1;
+          if (k2neg)
+              k2 = n - k2;
+          if (k1 > POW_2_128 || k2 > POW_2_128) {
+              throw new Error('splitScalarEndo: Endomorphism failed, k=' + k);
+          }
+          return { k1neg, k1, k2neg, k2 };
+      },
+  };
+  const fieldLen = 32;
+  const groupLen = 32;
+  const hashLen = 32;
+  const compressedLen = fieldLen + 1;
+  const uncompressedLen = 2 * fieldLen + 1;
+  function weierstrass(x) {
       const { a, b } = CURVE;
       const x2 = mod(x * x);
       const x3 = mod(x2 * x);
@@ -73,6 +104,10 @@
           super(message);
       }
   }
+  function assertJacPoint(other) {
+      if (!(other instanceof JacobianPoint))
+          throw new TypeError('JacobianPoint expected');
+  }
   class JacobianPoint {
       constructor(x, y, z) {
           this.x = x;
@@ -83,6 +118,8 @@
           if (!(p instanceof Point)) {
               throw new TypeError('JacobianPoint#fromAffine: expected Point');
           }
+          if (p.equals(Point.ZERO))
+              return JacobianPoint.ZERO;
           return new JacobianPoint(p.x, p.y, _1n$1);
       }
       static toAffineBatch(points) {
@@ -93,8 +130,7 @@
           return JacobianPoint.toAffineBatch(points).map(JacobianPoint.fromAffine);
       }
       equals(other) {
-          if (!(other instanceof JacobianPoint))
-              throw new TypeError('JacobianPoint expected');
+          assertJacPoint(other);
           const { x: X1, y: Y1, z: Z1 } = this;
           const { x: X2, y: Y2, z: Z2 } = other;
           const Z1Z1 = mod(Z1 * Z1);
@@ -123,8 +159,7 @@
           return new JacobianPoint(X3, Y3, Z3);
       }
       add(other) {
-          if (!(other instanceof JacobianPoint))
-              throw new TypeError('JacobianPoint expected');
+          assertJacPoint(other);
           const { x: X1, y: Y1, z: Z1 } = this;
           const { x: X2, y: Y2, z: Z2 } = other;
           if (X2 === _0n$1 || Y2 === _0n$1)
@@ -176,7 +211,7 @@
               }
               return p;
           }
-          let { k1neg, k1, k2neg, k2 } = splitScalarEndo(n);
+          let { k1neg, k1, k2neg, k2 } = endo.splitScalar(n);
           let k1p = P0;
           let k2p = P0;
           let d = this;
@@ -193,7 +228,7 @@
               k1p = k1p.negate();
           if (k2neg)
               k2p = k2p.negate();
-          k2p = new JacobianPoint(mod(k2p.x * CURVE.beta), k2p.y, k2p.z);
+          k2p = new JacobianPoint(mod(k2p.x * endo.beta), k2p.y, k2p.z);
           return k1p.add(k2p);
       }
       precomputeWindow(W) {
@@ -228,7 +263,7 @@
               }
           }
           let p = JacobianPoint.ZERO;
-          let f = JacobianPoint.ZERO;
+          let f = JacobianPoint.BASE;
           const windows = 1 + (USE_ENDOMORPHISM ? 128 / W : 256 / W);
           const windowSize = 2 ** (W - 1);
           const mask = BigInt(2 ** W - 1);
@@ -242,17 +277,15 @@
                   wbits -= maxNumber;
                   n += _1n$1;
               }
+              const offset1 = offset;
+              const offset2 = offset + Math.abs(wbits) - 1;
+              const cond1 = window % 2 !== 0;
+              const cond2 = wbits < 0;
               if (wbits === 0) {
-                  let pr = precomputes[offset];
-                  if (window % 2)
-                      pr = pr.negate();
-                  f = f.add(pr);
+                  f = f.add(constTimeNegate(cond1, precomputes[offset1]));
               }
               else {
-                  let cached = precomputes[offset + Math.abs(wbits) - 1];
-                  if (wbits < 0)
-                      cached = cached.negate();
-                  p = p.add(cached);
+                  p = p.add(constTimeNegate(cond2, precomputes[offset2]));
               }
           }
           return { p, f };
@@ -262,14 +295,12 @@
           let point;
           let fake;
           if (USE_ENDOMORPHISM) {
-              const { k1neg, k1, k2neg, k2 } = splitScalarEndo(n);
+              const { k1neg, k1, k2neg, k2 } = endo.splitScalar(n);
               let { p: k1p, f: f1p } = this.wNAF(k1, affinePoint);
               let { p: k2p, f: f2p } = this.wNAF(k2, affinePoint);
-              if (k1neg)
-                  k1p = k1p.negate();
-              if (k2neg)
-                  k2p = k2p.negate();
-              k2p = new JacobianPoint(mod(k2p.x * CURVE.beta), k2p.y, k2p.z);
+              k1p = constTimeNegate(k1neg, k1p);
+              k2p = constTimeNegate(k2neg, k2p);
+              k2p = new JacobianPoint(mod(k2p.x * endo.beta), k2p.y, k2p.z);
               point = k1p.add(k2p);
               fake = f1p.add(f2p);
           }
@@ -280,14 +311,19 @@
           }
           return JacobianPoint.normalizeZ([point, fake])[0];
       }
-      toAffine(invZ = invert(this.z)) {
+      toAffine(invZ) {
           const { x, y, z } = this;
+          const is0 = this.equals(JacobianPoint.ZERO);
+          if (invZ == null)
+              invZ = is0 ? _8n : invert(z);
           const iz1 = invZ;
           const iz2 = mod(iz1 * iz1);
           const iz3 = mod(iz2 * iz1);
           const ax = mod(x * iz2);
           const ay = mod(y * iz3);
           const zz = mod(z * iz1);
+          if (is0)
+              return Point.ZERO;
           if (zz !== _1n$1)
               throw new Error('invZ was invalid');
           return new Point(ax, ay);
@@ -295,6 +331,10 @@
   }
   JacobianPoint.BASE = new JacobianPoint(CURVE.Gx, CURVE.Gy, _1n$1);
   JacobianPoint.ZERO = new JacobianPoint(_0n$1, _1n$1, _0n$1);
+  function constTimeNegate(condition, item) {
+      const neg = item.negate();
+      return condition ? neg : item;
+  }
   const pointPrecomputes = new WeakMap();
   class Point {
       constructor(x, y) {
@@ -313,7 +353,7 @@
           const x = bytesToNumber(isShort ? bytes : bytes.subarray(1));
           if (!isValidFieldElement(x))
               throw new Error('Point is not on curve');
-          const y2 = weistrass(x);
+          const y2 = weierstrass(x);
           let y = sqrtMod(y2);
           const isYOdd = (y & _1n$1) === _1n$1;
           if (isShort) {
@@ -330,8 +370,8 @@
           return point;
       }
       static fromUncompressedHex(bytes) {
-          const x = bytesToNumber(bytes.subarray(1, 33));
-          const y = bytesToNumber(bytes.subarray(33, 65));
+          const x = bytesToNumber(bytes.subarray(1, fieldLen + 1));
+          const y = bytesToNumber(bytes.subarray(fieldLen + 1, fieldLen * 2 + 1));
           const point = new Point(x, y);
           point.assertValidity();
           return point;
@@ -340,29 +380,30 @@
           const bytes = ensureBytes(hex);
           const len = bytes.length;
           const header = bytes[0];
-          if (len === 32 || (len === 33 && (header === 0x02 || header === 0x03))) {
+          if (len === fieldLen)
+              return this.fromCompressedHex(bytes);
+          if (len === compressedLen && (header === 0x02 || header === 0x03)) {
               return this.fromCompressedHex(bytes);
           }
-          if (len === 65 && header === 0x04)
+          if (len === uncompressedLen && header === 0x04)
               return this.fromUncompressedHex(bytes);
-          throw new Error(`Point.fromHex: received invalid point. Expected 32-33 compressed bytes or 65 uncompressed bytes, not ${len}`);
+          throw new Error(`Point.fromHex: received invalid point. Expected 32-${compressedLen} compressed bytes or ${uncompressedLen} uncompressed bytes, not ${len}`);
       }
       static fromPrivateKey(privateKey) {
           return Point.BASE.multiply(normalizePrivateKey(privateKey));
       }
       static fromSignature(msgHash, signature, recovery) {
-          msgHash = ensureBytes(msgHash);
-          const h = truncateHash(msgHash);
           const { r, s } = normalizeSignature(signature);
-          if (recovery !== 0 && recovery !== 1) {
-              throw new Error('Cannot recover signature: invalid recovery bit');
-          }
-          const prefix = recovery & 1 ? '03' : '02';
-          const R = Point.fromHex(prefix + numTo32bStr(r));
+          if (![0, 1, 2, 3].includes(recovery))
+              throw new Error('Cannot recover: invalid recovery bit');
+          const h = truncateHash(ensureBytes(msgHash));
           const { n } = CURVE;
-          const rinv = invert(r, n);
+          const radj = recovery === 2 || recovery === 3 ? r + n : r;
+          const rinv = invert(radj, n);
           const u1 = mod(-h * rinv, n);
           const u2 = mod(s * rinv, n);
+          const prefix = recovery & 1 ? '03' : '02';
+          const R = Point.fromHex(prefix + numTo32bStr(radj));
           const Q = Point.BASE.multiplyAndAddUnsafe(R, u1, u2);
           if (!Q)
               throw new Error('Cannot recover signature: point at infinify');
@@ -394,7 +435,7 @@
           if (!isValidFieldElement(x) || !isValidFieldElement(y))
               throw new Error(msg);
           const left = mod(y * y);
-          const right = weistrass(x);
+          const right = weierstrass(x);
           if (mod(left - right) !== _0n$1)
               throw new Error(msg);
       }
@@ -495,19 +536,19 @@
           return this.s > HALF;
       }
       normalizeS() {
-          return this.hasHighS() ? new Signature(this.r, CURVE.n - this.s) : this;
+          return this.hasHighS() ? new Signature(this.r, mod(-this.s, CURVE.n)) : this;
       }
-      toDERRawBytes(isCompressed = false) {
-          return hexToBytes(this.toDERHex(isCompressed));
+      toDERRawBytes() {
+          return hexToBytes(this.toDERHex());
       }
-      toDERHex(isCompressed = false) {
+      toDERHex() {
           const sHex = sliceDER(numberToHexUnpadded(this.s));
-          if (isCompressed)
-              return sHex;
           const rHex = sliceDER(numberToHexUnpadded(this.r));
-          const rLen = numberToHexUnpadded(rHex.length / 2);
-          const sLen = numberToHexUnpadded(sHex.length / 2);
-          const length = numberToHexUnpadded(rHex.length / 2 + sHex.length / 2 + 4);
+          const sHexL = sHex.length / 2;
+          const rHexL = rHex.length / 2;
+          const sLen = numberToHexUnpadded(sHexL);
+          const rLen = numberToHexUnpadded(rHexL);
+          const length = numberToHexUnpadded(rHexL + sHexL + 4);
           return `30${length}02${rLen}${rHex}02${sLen}${sHex}`;
       }
       toRawBytes() {
@@ -552,7 +593,7 @@
       if (typeof num !== 'bigint')
           throw new Error('Expected bigint');
       if (!(_0n$1 <= num && num < POW_2_256))
-          throw new Error('Expected number < 2^256');
+          throw new Error('Expected number 0 <= n < 2^256');
       return num.toString(16).padStart(64, '0');
   }
   function numTo32b(num) {
@@ -635,7 +676,11 @@
       const b223 = (pow2(b220, _3n) * b3) % P;
       const t1 = (pow2(b223, _23n) * b22) % P;
       const t2 = (pow2(t1, _6n) * b2) % P;
-      return pow2(t2, _2n$1);
+      const rt = pow2(t2, _2n$1);
+      const xc = (rt * rt) % P;
+      if (xc !== x)
+          throw new Error('Cannot find square root');
+      return rt;
   }
   function invert(number, modulo = CURVE.P) {
       if (number === _0n$1 || modulo <= _0n$1) {
@@ -672,49 +717,30 @@
       }, inverted);
       return scratch;
   }
-  const divNearest = (a, b) => (a + b / _2n$1) / b;
-  const ENDO = {
-      a1: BigInt('0x3086d221a7d46bcde86c90e49284eb15'),
-      b1: -_1n$1 * BigInt('0xe4437ed6010e88286f547fa90abfe4c3'),
-      a2: BigInt('0x114ca50f7a8e2f3f657c1108d9d44cfd8'),
-      b2: BigInt('0x3086d221a7d46bcde86c90e49284eb15'),
-      POW_2_128: BigInt('0x100000000000000000000000000000000'),
-  };
-  function splitScalarEndo(k) {
-      const { n } = CURVE;
-      const { a1, b1, a2, b2, POW_2_128 } = ENDO;
-      const c1 = divNearest(b2 * k, n);
-      const c2 = divNearest(-b1 * k, n);
-      let k1 = mod(k - c1 * a1 - c2 * a2, n);
-      let k2 = mod(-c1 * b1 - c2 * b2, n);
-      const k1neg = k1 > POW_2_128;
-      const k2neg = k2 > POW_2_128;
-      if (k1neg)
-          k1 = n - k1;
-      if (k2neg)
-          k2 = n - k2;
-      if (k1 > POW_2_128 || k2 > POW_2_128) {
-          throw new Error('splitScalarEndo: Endomorphism failed, k=' + k);
-      }
-      return { k1neg, k1, k2neg, k2 };
+  function bits2int_2(bytes) {
+      const delta = bytes.length * 8 - groupLen * 8;
+      const num = bytesToNumber(bytes);
+      return delta > 0 ? num >> BigInt(delta) : num;
   }
-  function truncateHash(hash) {
+  function truncateHash(hash, truncateOnly = false) {
+      const h = bits2int_2(hash);
+      if (truncateOnly)
+          return h;
       const { n } = CURVE;
-      const byteLength = hash.length;
-      const delta = byteLength * 8 - 256;
-      let h = bytesToNumber(hash);
-      if (delta > 0)
-          h = h >> BigInt(delta);
-      if (h >= n)
-          h -= n;
-      return h;
+      return h >= n ? h - n : h;
   }
   let _sha256Sync;
   let _hmacSha256Sync;
   class HmacDrbg {
-      constructor() {
-          this.v = new Uint8Array(32).fill(1);
-          this.k = new Uint8Array(32).fill(0);
+      constructor(hashLen, qByteLen) {
+          this.hashLen = hashLen;
+          this.qByteLen = qByteLen;
+          if (typeof hashLen !== 'number' || hashLen < 2)
+              throw new Error('hashLen must be a number');
+          if (typeof qByteLen !== 'number' || qByteLen < 2)
+              throw new Error('qByteLen must be a number');
+          this.v = new Uint8Array(hashLen).fill(1);
+          this.k = new Uint8Array(hashLen).fill(0);
           this.counter = 0;
       }
       hmac(...values) {
@@ -751,14 +777,28 @@
       }
       async generate() {
           this.incr();
-          this.v = await this.hmac(this.v);
-          return this.v;
+          let len = 0;
+          const out = [];
+          while (len < this.qByteLen) {
+              this.v = await this.hmac(this.v);
+              const sl = this.v.slice();
+              out.push(sl);
+              len += this.v.length;
+          }
+          return concatBytes(...out);
       }
       generateSync() {
           this.checkSync();
           this.incr();
-          this.v = this.hmacSync(this.v);
-          return this.v;
+          let len = 0;
+          const out = [];
+          while (len < this.qByteLen) {
+              this.v = this.hmacSync(this.v);
+              const sl = this.v.slice();
+              out.push(sl);
+              len += this.v.length;
+          }
+          return concatBytes(...out);
       }
   }
   function isWithinCurveOrder(num) {
@@ -767,20 +807,25 @@
   function isValidFieldElement(num) {
       return _0n$1 < num && num < CURVE.P;
   }
-  function kmdToSig(kBytes, m, d) {
-      const k = bytesToNumber(kBytes);
+  function kmdToSig(kBytes, m, d, lowS = true) {
+      const { n } = CURVE;
+      const k = truncateHash(kBytes, true);
       if (!isWithinCurveOrder(k))
           return;
-      const { n } = CURVE;
+      const kinv = invert(k, n);
       const q = Point.BASE.multiply(k);
       const r = mod(q.x, n);
       if (r === _0n$1)
           return;
-      const s = mod(invert(k, n) * mod(m + d * r, n), n);
+      const s = mod(kinv * mod(m + d * r, n), n);
       if (s === _0n$1)
           return;
-      const sig = new Signature(r, s);
-      const recovery = (q.x === sig.r ? 0 : 2) | Number(q.y & _1n$1);
+      let sig = new Signature(r, s);
+      let recovery = (q.x === sig.r ? 0 : 2) | Number(q.y & _1n$1);
+      if (lowS && sig.hasHighS()) {
+          sig = sig.normalizeS();
+          recovery ^= 1;
+      }
       return { sig, recovery };
   }
   function normalizePrivateKey(key) {
@@ -792,12 +837,12 @@
           num = BigInt(key);
       }
       else if (typeof key === 'string') {
-          if (key.length !== 64)
+          if (key.length !== 2 * groupLen)
               throw new Error('Expected 32 bytes of private key');
           num = hexToNumber(key);
       }
       else if (key instanceof Uint8Array) {
-          if (key.length !== 32)
+          if (key.length !== groupLen)
               throw new Error('Expected 32 bytes of private key');
           num = bytesToNumber(key);
       }
@@ -827,7 +872,7 @@
       return Point.fromSignature(msgHash, signature, recovery).toRawBytes(isCompressed);
   }
   function bits2int(bytes) {
-      const slice = bytes.length > 32 ? bytes.slice(0, 32) : bytes;
+      const slice = bytes.length > fieldLen ? bytes.slice(0, fieldLen) : bytes;
       return bytesToNumber(slice);
   }
   function bits2octets(bytes) {
@@ -846,10 +891,10 @@
       const seedArgs = [int2octets(d), bits2octets(h1)];
       if (extraEntropy != null) {
           if (extraEntropy === true)
-              extraEntropy = utils$1.randomBytes(32);
+              extraEntropy = utils$1.randomBytes(fieldLen);
           const e = ensureBytes(extraEntropy);
-          if (e.length !== 32)
-              throw new Error('sign: Expected 32 bytes of extra data');
+          if (e.length !== fieldLen)
+              throw new Error(`sign: Expected ${fieldLen} bytes of extra data`);
           seedArgs.push(e);
       }
       const seed = concatBytes(...seedArgs);
@@ -857,21 +902,17 @@
       return { seed, m, d };
   }
   function finalizeSig(recSig, opts) {
-      let { sig, recovery } = recSig;
-      const { canonical, der, recovered } = Object.assign({ canonical: true, der: true }, opts);
-      if (canonical && sig.hasHighS()) {
-          sig = sig.normalizeS();
-          recovery ^= 1;
-      }
+      const { sig, recovery } = recSig;
+      const { der, recovered } = Object.assign({ canonical: true, der: true }, opts);
       const hashed = der ? sig.toDERRawBytes() : sig.toCompactRawBytes();
       return recovered ? [hashed, recovery] : hashed;
   }
   function signSync(msgHash, privKey, opts = {}) {
       const { seed, m, d } = initSigArgs(msgHash, privKey, opts.extraEntropy);
-      let sig;
-      const drbg = new HmacDrbg();
+      const drbg = new HmacDrbg(hashLen, groupLen);
       drbg.reseedSync(seed);
-      while (!(sig = kmdToSig(drbg.generateSync(), m, d)))
+      let sig;
+      while (!(sig = kmdToSig(drbg.generateSync(), m, d, opts.canonical)))
           drbg.reseedSync();
       return finalizeSig(sig, opts);
   }
@@ -900,8 +941,10 @@
       _normalizePrivateKey: normalizePrivateKey,
       hashToPrivateKey: (hash) => {
           hash = ensureBytes(hash);
-          if (hash.length < 40 || hash.length > 1024)
-              throw new Error('Expected 40-1024 bytes of private key as per FIPS 186');
+          const minLen = groupLen + 8;
+          if (hash.length < minLen || hash.length > 1024) {
+              throw new Error(`Expected valid bytes of private key as per FIPS 186`);
+          }
           const num = mod(bytesToNumber(hash), CURVE.n - _1n$1) + _1n$1;
           return numTo32b(num);
       },
@@ -917,8 +960,12 @@
               throw new Error("The environment doesn't have randomBytes function");
           }
       },
-      randomPrivateKey: () => {
-          return utils$1.hashToPrivateKey(utils$1.randomBytes(40));
+      randomPrivateKey: () => utils$1.hashToPrivateKey(utils$1.randomBytes(groupLen + 8)),
+      precompute(windowSize = 8, point = Point.BASE) {
+          const cached = point === Point.BASE ? point : new Point(point.x, point.y);
+          cached._setWindowSize(windowSize);
+          cached.multiply(_3n);
+          return cached;
       },
       sha256: async (...messages) => {
           if (crypto.web) {
@@ -974,12 +1021,7 @@
           }
           return _sha256Sync(tagP, ...messages);
       },
-      precompute(windowSize = 8, point = Point.BASE) {
-          const cached = point === Point.BASE ? point : new Point(point.x, point.y);
-          cached._setWindowSize(windowSize);
-          cached.multiply(_3n);
-          return cached;
-      },
+      _JacobianPoint: JacobianPoint,
   };
   Object.defineProperties(utils$1, {
       sha256Sync: {
@@ -1052,7 +1094,7 @@
     name: '@polkadot/x-randomvalues',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.2.3'
+    version: '10.2.4'
   };
   packageInfo$2.packageInfo = packageInfo$1;
 
@@ -2308,7 +2350,7 @@
     name: '@polkadot/util-crypto',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.2.3'
+    version: '10.2.4'
   };
 
   /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
