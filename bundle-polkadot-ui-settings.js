@@ -1083,6 +1083,16 @@
 	  text: 'On each transaction',
 	  value: 'tx'
 	}];
+	const STORAGE_DEFAULT = 'off';
+	const STORAGE = [{
+	  info: 'on',
+	  text: 'Allow local in-browser account storage',
+	  value: 'on'
+	}, {
+	  info: 'off',
+	  text: 'Do not allow local in-browser account storage',
+	  value: 'off'
+	}];
 
 	function withDefault(options, option, fallback) {
 	  const _option = option || fallback;
@@ -1100,6 +1110,7 @@
 	  #ledgerConn;
 	  #locking;
 	  #prefix;
+	  #storage;
 	  #uiMode;
 	  #uiTheme;
 	  #notification;
@@ -1116,10 +1127,11 @@
 	    this.#i18nLang = settings.i18nLang || LANGUAGE_DEFAULT;
 	    this.#icon = settings.icon || ICON_DEFAULT;
 	    this.#locking = settings.locking || LOCKING_DEFAULT;
+	    this.#notification = settings.notification || NOTIFICATION_DEFAULT;
 	    this.#prefix = util$7.isUndefined(settings.prefix) ? PREFIX_DEFAULT : settings.prefix;
+	    this.#storage = withDefault(STORAGE, settings.storage, STORAGE_DEFAULT);
 	    this.#uiMode = settings.uiMode || UIMODE_DEFAULT;
 	    this.#uiTheme = settings.uiTheme || UITHEME_DEFAULT;
-	    this.#notification = settings.notification || NOTIFICATION_DEFAULT;
 	  }
 	  get camera() {
 	    return this.#camera;
@@ -1147,6 +1159,9 @@
 	  }
 	  get prefix() {
 	    return this.#prefix;
+	  }
+	  get storage() {
+	    return this.#storage;
 	  }
 	  get uiMode() {
 	    return this.#uiMode;
@@ -1181,6 +1196,9 @@
 	  get availablePrefixes() {
 	    return PREFIXES;
 	  }
+	  get availableStorage() {
+	    return STORAGE;
+	  }
 	  get availableUIModes() {
 	    return UIMODES;
 	  }
@@ -1198,6 +1216,7 @@
 	      locking: this.#locking,
 	      notification: this.#notification,
 	      prefix: this.#prefix,
+	      storage: this.#storage,
 	      uiMode: this.#uiMode,
 	      uiTheme: this.#uiTheme
 	    };
@@ -1212,6 +1231,7 @@
 	    this.#locking = settings.locking || this.#locking;
 	    this.#notification = settings.notification || this.#notification;
 	    this.#prefix = util$7.isUndefined(settings.prefix) ? this.#prefix : settings.prefix;
+	    this.#storage = settings.storage || this.#storage;
 	    this.#uiMode = settings.uiMode || this.#uiMode;
 	    this.#uiTheme = settings.uiTheme || this.#uiTheme;
 	    const newValues = this.get();
@@ -1235,7 +1255,7 @@
 	  name: '@polkadot/ui-settings',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '2.9.15'
+	  version: '2.10.1'
 	};
 
 	exports.ENDPOINT_DEFAULT = ENDPOINT_DEFAULT;
