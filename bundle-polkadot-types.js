@@ -5190,8 +5190,8 @@
   class AbstractBase {
     #raw;
     constructor(registry, value, initialU8aLength) {
-      this.#raw = value;
       this.initialU8aLength = initialU8aLength;
+      this.#raw = value;
       this.registry = registry;
     }
     get encodedLength() {
@@ -5290,6 +5290,7 @@
       this.registry = registry;
       this.#bitLength = bitLength;
       this.encodedLength = this.#bitLength / 8;
+      this.initialU8aLength = this.#bitLength / 8;
       this.isUnsigned = !isSigned;
       const isNegative = this.isNeg();
       const maxBits = bitLength - (isSigned && !isNegative ? 1 : 0);
@@ -6237,7 +6238,7 @@
       this.registry = registry;
       this.#Type = Type;
       this.#raw = decoded;
-      if (decoded && decoded.initialU8aLength) {
+      if (decoded != null && decoded.initialU8aLength) {
         this.initialU8aLength = 1 + decoded.initialU8aLength;
       }
     }
@@ -6384,19 +6385,27 @@
     return d;
   }
   function decodeTuple(registry, result, value, Classes) {
-    if (util.isU8a(value) || util.isHex(value)) {
-      return decodeU8a$6(registry, result, util.u8aToU8a(value), Classes);
-    }
-    const Types = Classes[0];
-    for (let i = 0; i < Types.length; i++) {
-      try {
-        const entry = value == null ? void 0 : value[i];
-        result[i] = entry instanceof Types[i] ? entry : new Types[i](registry, entry);
-      } catch (error) {
-        throw new Error(`Tuple: failed on ${i}:: ${error.message}`);
+    if (Array.isArray(value)) {
+      const Types = Classes[0];
+      for (let i = 0; i < Types.length; i++) {
+        try {
+          const entry = value == null ? void 0 : value[i];
+          result[i] = entry instanceof Types[i] ? entry : new Types[i](registry, entry);
+        } catch (error) {
+          throw new Error(`Tuple: failed on ${i}:: ${error.message}`);
+        }
       }
+      return [result, 0];
+    } else if (util.isHex(value)) {
+      return decodeU8a$6(registry, result, util.u8aToU8a(value), Classes);
+    } else if (!value || !result.length) {
+      const Types = Classes[0];
+      for (let i = 0; i < Types.length; i++) {
+        result[i] = new Types[i](registry);
+      }
+      return [result, 0];
     }
-    return [result, 0];
+    throw new Error(`Expected array input to Tuple decoding, found ${typeof value}: ${util.stringify(value)}`);
   }
   class Tuple extends AbstractArray {
     #Types;
@@ -6469,13 +6478,17 @@
   function decodeVecLength(value) {
     if (Array.isArray(value)) {
       return [value, value.length, 0];
+    } else if (util.isU8a(value) || util.isHex(value)) {
+      const u8a = util.u8aToU8a(value);
+      const [startAt, length] = util.compactFromU8aLim(u8a);
+      if (length > MAX_LENGTH$2) {
+        throw new Error(`Vec length ${length.toString()} exceeds ${MAX_LENGTH$2}`);
+      }
+      return [u8a, length, startAt];
+    } else if (!value) {
+      return [null, 0, 0];
     }
-    const u8a = util.u8aToU8a(value);
-    const [startAt, length] = util.compactFromU8aLim(u8a);
-    if (length > MAX_LENGTH$2) {
-      throw new Error(`Vec length ${length.toString()} exceeds ${MAX_LENGTH$2}`);
-    }
-    return [u8a, length, startAt];
+    throw new Error(`Expected array/hex input to Vec<*> decoding, found ${typeof value}: ${util.stringify(value)}`);
   }
   function decodeVec(registry, result, value, startAt, Type) {
     if (Array.isArray(value)) {
@@ -6490,6 +6503,8 @@
         }
       }
       return [0, 0];
+    } else if (!value) {
+      return [0, 0];
     }
     return decodeU8aVec(registry, result, util.u8aToU8a(value), startAt, Type);
   }
@@ -6502,7 +6517,12 @@
       const [decodeFrom, length, startAt] = decodeVecLength(value);
       super(registry, length);
       this.#Type = definition || setDefinition(typeToConstructor(registry, Type));
-      this.initialU8aLength = (util.isU8a(decodeFrom) ? decodeU8aVec(registry, this, decodeFrom, startAt, this.#Type) : decodeVec(registry, this, decodeFrom, startAt, this.#Type))[0];
+      try {
+        this.initialU8aLength = (util.isU8a(decodeFrom) ? decodeU8aVec(registry, this, decodeFrom, startAt, this.#Type) : decodeVec(registry, this, decodeFrom, startAt, this.#Type))[0];
+      } catch (e) {
+        console.error(decodeFrom, length, startAt);
+        throw e;
+      }
     }
     static with(Type) {
       let definition;
@@ -6843,23 +6863,21 @@
     toHuman(isExtended) {
       const json = {};
       for (const [k, v] of this.entries()) {
-        json[k] = v && v.toHuman(isExtended);
+        json[k] = v.toHuman(isExtended);
       }
       return json;
     }
     toJSON() {
       const json = {};
       for (const [k, v] of this.entries()) {
-        const jsonKey = this.#jsonMap.get(k) || k;
-        json[jsonKey] = v && v.toJSON();
+        json[this.#jsonMap.get(k) || k] = v.toJSON();
       }
       return json;
     }
     toPrimitive() {
       const json = {};
       for (const [k, v] of this.entries()) {
-        const jsonKey = this.#jsonMap.get(k) || k;
-        json[jsonKey] = v && v.toPrimitive();
+        json[k] = v.toPrimitive();
       }
       return json;
     }
@@ -6872,9 +6890,7 @@
     toU8a(isBare) {
       const encoded = [];
       for (const [k, v] of this.entries()) {
-        if (v && util.isFunction(v.toU8a)) {
-          encoded.push(v.toU8a(!isBare || util.isBoolean(isBare) ? isBare : isBare[k]));
-        }
+        encoded.push(v.toU8a(!isBare || util.isBoolean(isBare) ? isBare : isBare[k]));
       }
       return util.u8aConcatStrict(encoded);
     }
@@ -7210,6 +7226,7 @@
   }
 
   class bool extends Boolean {
+    initialU8aLength = 1;
     constructor(registry, value = false) {
       super(util.isU8a(value) ? value[0] === 1 : value instanceof Boolean ? value.valueOf() : !!value);
       this.registry = registry;
@@ -8250,13 +8267,17 @@
   }
   function initType(registry, Type, params = [], {
     blockHash,
+    isFallback,
     isOptional,
     isPedantic
   } = {}) {
     const created = new (isOptional ? Option.with(Type) : Type)(registry, ...params);
     isPedantic && checkPedantic(created, params);
     if (blockHash) {
-      created.createdAtHash = createTypeUnsafe(registry, 'Hash', [blockHash]);
+      created.createdAtHash = createTypeUnsafe(registry, 'BlockHash', [blockHash]);
+    }
+    if (isFallback) {
+      created.isStorageFallback = true;
     }
     return created;
   }
@@ -15749,24 +15770,24 @@
     }]);
   }
   class TypeRegistry {
+    #chainProperties;
     #classes = new Map();
     #definitions = new Map();
     #firstCallIndex = null;
+    #hasher = utilCrypto.blake2AsU8a;
+    #knownTypes = {};
     #lookup;
     #metadata;
     #metadataVersion = 0;
+    #signedExtensions = fallbackExtensions;
+    #unknownTypes = new Map();
+    #userExtensions;
+    #knownDefaults;
+    #knownDefinitions;
     #metadataCalls = {};
     #metadataErrors = {};
     #metadataEvents = {};
     #moduleMap = {};
-    #unknownTypes = new Map();
-    #chainProperties;
-    #hasher = utilCrypto.blake2AsU8a;
-    #knownDefaults;
-    #knownDefinitions;
-    #knownTypes = {};
-    #signedExtensions = fallbackExtensions;
-    #userExtensions;
     constructor(createdAtHash) {
       this.#knownDefaults = util.objectSpread({
         Json,
@@ -15780,7 +15801,7 @@
         this.register(allKnown[i].types);
       }
       if (createdAtHash) {
-        this.createdAtHash = this.createType('Hash', createdAtHash);
+        this.createdAtHash = this.createType('BlockHash', createdAtHash);
       }
     }
     get chainDecimals() {
@@ -16020,7 +16041,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.11.3'
+    version: '9.12.1'
   };
 
   exports.BTreeMap = BTreeMap;

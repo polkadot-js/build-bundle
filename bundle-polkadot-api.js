@@ -1458,7 +1458,7 @@
     name: '@polkadot/api',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.11.3'
+    version: '9.12.1'
   };
 
   var extendStatics = function(d, b) {
@@ -3927,6 +3927,7 @@
           isPedantic: true
         }) : input], {
           blockHash,
+          isFallback: isEmpty && !!meta.fallback,
           isOptional: meta.modifier.isOptional,
           isPedantic: !meta.modifier.isOptional
         });
@@ -7833,8 +7834,8 @@
   }
   class Decorate extends Events {
     #instanceId;
-    #registry;
     #runtimeLog = {};
+    #registry;
     #storageGetQ = [];
     #storageSubQ = [];
     __phantom = new util.BN(0);
@@ -8184,10 +8185,10 @@
       return decorated;
     }
     _decorateMulti(decorateMethod) {
-      return decorateMethod(keys => (this.hasSubscriptions ? this._rpcCore.state.subscribeStorage : this._rpcCore.state.queryStorageAt)(keys.map(args => Array.isArray(args) ? args[0].creator.meta.type.isPlain ? [args[0].creator] : args[0].creator.meta.type.asMap.hashers.length === 1 ? [args[0].creator, args.slice(1)] : [args[0].creator, ...args.slice(1)] : [args.creator])));
+      return decorateMethod(keys => keys.length ? (this.hasSubscriptions ? this._rpcCore.state.subscribeStorage : this._rpcCore.state.queryStorageAt)(keys.map(args => Array.isArray(args) ? args[0].creator.meta.type.isPlain ? [args[0].creator] : args[0].creator.meta.type.asMap.hashers.length === 1 ? [args[0].creator, args.slice(1)] : [args[0].creator, ...args.slice(1)] : [args.creator])) : of([]));
     }
     _decorateMultiAt(atApi, decorateMethod, blockHash) {
-      return decorateMethod(calls => this._rpcCore.state.queryStorageAt(calls.map(args => {
+      return decorateMethod(calls => calls.length ? this._rpcCore.state.queryStorageAt(calls.map(args => {
         if (Array.isArray(args)) {
           const {
             creator
@@ -8195,7 +8196,7 @@
           return creator.meta.type.isPlain ? [creator] : creator.meta.type.asMap.hashers.length === 1 ? [creator, args.slice(1)] : [creator, ...args.slice(1)];
         }
         return [getAtQueryFn(atApi, args.creator).creator];
-      }), blockHash));
+      }), blockHash) : of([]));
     }
     _decorateExtrinsics({
       tx
@@ -8295,13 +8296,14 @@
       map(values => values[valueIdx]));
     }
     _decorateStorageCall(creator, decorateMethod) {
-      return decorateMethod((...args) => {
+      const memoed = memo(this.#instanceId, (...args) => {
         const call = extractStorageArgs(this.#registry, creator, args);
         if (!this.hasSubscriptions) {
           return this._rpcCore.state.getStorage(call);
         }
         return this._queueStorage(call, this.#storageSubQ);
-      }, {
+      });
+      return decorateMethod(memoed, {
         methodName: creator.method,
         overrideNoSub: (...args) => this._queueStorage(extractStorageArgs(this.#registry, creator, args), this.#storageGetQ)
       });
