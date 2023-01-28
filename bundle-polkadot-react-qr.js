@@ -3722,7 +3722,7 @@
 	  if (!image) {
 	    return null;
 	  }
-	  return jsxRuntimeExports.jsx("div", {
+	  return jsxRuntimeExports.jsx(StyledDiv$1, {
 	    className: className,
 	    style: containerStyle,
 	    children: jsxRuntimeExports.jsx("div", {
@@ -3734,10 +3734,11 @@
 	    })
 	  });
 	}
-	const QrDisplay = r.memo(styled(Display).withConfig({
-	  displayName: "Display__QrDisplay",
+	const StyledDiv$1 = styled.div.withConfig({
+	  displayName: "Display__StyledDiv",
 	  componentId: "sc-f0xthb-0"
-	})([".ui--qr-Display{height:100%;width:100%;img,svg{background:white;height:auto !important;max-height:100%;max-width:100%;width:auto !important;}}"]));
+	})([".ui--qr-Display{height:100%;width:100%;img,svg{background:white;height:auto !important;max-height:100%;max-width:100%;width:auto !important;}}"]);
+	const QrDisplay = r.memo(Display);
 
 	function DisplayAddress({
 	  address,
@@ -9577,7 +9578,7 @@
 	  const containerStyle = r.useMemo(() => createImgSize(size), [size]);
 	  const _onError = r.useCallback(error => onError(error), [onError]);
 	  const _onScan = r.useCallback(data => data && onScan(data), [onScan]);
-	  return jsxRuntimeExports.jsx("div", {
+	  return jsxRuntimeExports.jsx(StyledDiv, {
 	    className: className,
 	    style: containerStyle,
 	    children: jsxRuntimeExports.jsx(lib, {
@@ -9589,10 +9590,11 @@
 	    })
 	  });
 	}
-	const QrScan = r.memo(styled(Scan).withConfig({
-	  displayName: "Scan__QrScan",
+	const StyledDiv = styled.div.withConfig({
+	  displayName: "Scan__StyledDiv",
 	  componentId: "sc-zwjyub-0"
-	})([".ui--qr-Scan{display:inline-block;height:100%;transform:matrix(-1,0,0,1,0,0);width:100%;video{margin:0;}}"]));
+	})([".ui--qr-Scan{display:inline-block;height:100%;transform:matrix(-1,0,0,1,0,0);width:100%;video{margin:0;}}"]);
+	const QrScan = r.memo(Scan);
 
 	function ScanAddress({
 	  className,
@@ -9687,7 +9689,7 @@
 	  name: '@polkadot/react-qr',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-qr.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-qr.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-qr.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-qr.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '2.10.1'
+	  version: '2.11.1'
 	};
 
 	exports.QrDisplayAddress = QrDisplayAddress;

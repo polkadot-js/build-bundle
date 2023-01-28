@@ -4256,17 +4256,19 @@
   function Identicon$3({
     address,
     className = '',
+    size,
     style
   }) {
     const imgSrc = r.useMemo(() => makeBlockie(address), [address]);
-    return jsxRuntimeExports.jsx("img", {
+    return jsxRuntimeExports.jsx(StyledImg, {
       className: className,
+      size: size,
       src: imgSrc,
       style: style
     });
   }
-  const Ethereum = r.memo(styled(Identicon$3).withConfig({
-    displayName: "Ethereum",
+  const StyledImg = styled.img.withConfig({
+    displayName: "Ethereum__StyledImg",
     componentId: "sc-osop9v-0"
   })(({
     size
@@ -4274,7 +4276,8 @@
   display: block;
   height: ${size}px;
   width: ${size}px;
-`));
+`);
+  const Ethereum = r.memo(Identicon$3);
 
   function parseHex(hash, startPosition, octets) {
       return parseInt(hash.substr(startPosition, octets), 16);
@@ -5055,10 +5058,6 @@
     polkadot: Polkadot,
     substrate: Jdenticon
   };
-  const Wrapper = styled.div.withConfig({
-    displayName: "Identicon__Wrapper",
-    componentId: "sc-1gm2vek-0"
-  })(["cursor:copy;display:inline-block;line-height:0;> .container{position:relative;> div,> svg{position:relative;}&.highlight:before{position:absolute;top:0;left:0;right:0;bottom:0;border-radius:50%;box-shadow:0 0 5px 2px #aaa;content:'';}}"]);
   class BaseIcon extends r.PureComponent {
     state = {
       address: '',
@@ -5120,7 +5119,7 @@
         theme = uiSettings.settings.icon
       } = this.props;
       const Component = !address ? Empty : Custom || Components[theme === 'default' ? uiSettings.ICON_DEFAULT_HOST : theme] || Fallback;
-      return jsxRuntimeExports.jsx(Wrapper, {
+      return jsxRuntimeExports.jsx(StyledDiv, {
         className: `ui--IdentityIcon  ${className}`,
         style: style,
         children: jsxRuntimeExports.jsx(Component, {
@@ -5149,13 +5148,17 @@
       ...props
     });
   }
+  const StyledDiv = styled.div.withConfig({
+    displayName: "Identicon__StyledDiv",
+    componentId: "sc-1gm2vek-0"
+  })(["cursor:copy;display:inline-block;line-height:0;> .container{position:relative;> div,> svg{position:relative;}&.highlight:before{position:absolute;top:0;left:0;right:0;bottom:0;border-radius:50%;box-shadow:0 0 5px 2px #aaa;content:'';}}"]);
   const Identicon = r.memo(Icon);
 
   const packageInfo = {
     name: '@polkadot/react-identicon',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '2.10.1'
+    version: '2.11.1'
   };
 
   exports.Beachball = Beachball;

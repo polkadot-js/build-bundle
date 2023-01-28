@@ -1083,6 +1083,16 @@
 	  text: 'On each transaction',
 	  value: 'tx'
 	}];
+	const METADATA_UP_DEFAULT = 'off';
+	const METADATA_UP = [{
+	  info: 'off',
+	  text: 'Do not auto-update extension metadata',
+	  value: 'off'
+	}, {
+	  info: 'on',
+	  text: 'Auto-update extension metadata',
+	  value: 'on'
+	}];
 	const STORAGE_DEFAULT = 'off';
 	const STORAGE = [{
 	  info: 'on',
@@ -1109,6 +1119,7 @@
 	  #icon;
 	  #ledgerConn;
 	  #locking;
+	  #metadataUp;
 	  #prefix;
 	  #storage;
 	  #uiMode;
@@ -1127,6 +1138,7 @@
 	    this.#i18nLang = settings.i18nLang || LANGUAGE_DEFAULT;
 	    this.#icon = settings.icon || ICON_DEFAULT;
 	    this.#locking = settings.locking || LOCKING_DEFAULT;
+	    this.#metadataUp = withDefault(METADATA_UP, settings.storage, METADATA_UP_DEFAULT);
 	    this.#notification = settings.notification || NOTIFICATION_DEFAULT;
 	    this.#prefix = util$7.isUndefined(settings.prefix) ? PREFIX_DEFAULT : settings.prefix;
 	    this.#storage = withDefault(STORAGE, settings.storage, STORAGE_DEFAULT);
@@ -1156,6 +1168,9 @@
 	  }
 	  get locking() {
 	    return this.#locking;
+	  }
+	  get metadataUp() {
+	    return this.#metadataUp;
 	  }
 	  get prefix() {
 	    return this.#prefix;
@@ -1190,6 +1205,9 @@
 	  get availableLocking() {
 	    return LOCKING;
 	  }
+	  get availableMetadataUp() {
+	    return METADATA_UP;
+	  }
 	  get availableNodes() {
 	    return ENDPOINTS;
 	  }
@@ -1214,6 +1232,7 @@
 	      icon: this.#icon,
 	      ledgerConn: this.#ledgerConn,
 	      locking: this.#locking,
+	      metadataUp: this.#metadataUp,
 	      notification: this.#notification,
 	      prefix: this.#prefix,
 	      storage: this.#storage,
@@ -1229,6 +1248,7 @@
 	    this.#i18nLang = settings.i18nLang || this.#i18nLang;
 	    this.#icon = settings.icon || this.#icon;
 	    this.#locking = settings.locking || this.#locking;
+	    this.#metadataUp = settings.metadataUp || this.#metadataUp;
 	    this.#notification = settings.notification || this.#notification;
 	    this.#prefix = util$7.isUndefined(settings.prefix) ? this.#prefix : settings.prefix;
 	    this.#storage = settings.storage || this.#storage;
@@ -1255,7 +1275,7 @@
 	  name: '@polkadot/ui-settings',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '2.10.1'
+	  version: '2.11.1'
 	};
 
 	exports.ENDPOINT_DEFAULT = ENDPOINT_DEFAULT;
