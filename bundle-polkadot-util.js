@@ -10,7 +10,7 @@
     name: '@polkadot/util',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.2.6'
+    version: '10.3.1'
   };
 
   function arrayChunk(array, chunkSize) {
@@ -114,7 +114,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.2.6'
+    version: '10.3.1'
   };
 
   function evaluateThis(fn) {
@@ -142,10 +142,22 @@
 
   const _0n = BigInt(0);
   const _1n = BigInt(1);
+  const _2n = BigInt(2);
+  const _3n = BigInt(3);
+  const _4n = BigInt(4);
+  const _5n = BigInt(5);
+  const _6n = BigInt(6);
+  const _7n = BigInt(7);
+  const _8n = BigInt(8);
+  const _9n = BigInt(9);
+  const _10n = BigInt(10);
+  const _100n = BigInt(100);
+  const _1000n = BigInt(1000);
   const _1Mn = BigInt(1000000);
   const _1Bn = BigInt(1000000000);
   const _1Qn = _1Bn * _1Bn;
   const _2pow53n = BigInt(Number.MAX_SAFE_INTEGER);
+  const _sqrt2pow53n = BigInt(94906265);
 
   const U8_MAX = BigInt(256);
   const U16_MAX = BigInt(256 * 256);
@@ -179,8 +191,8 @@
   }
 
   const CHR = '0123456789abcdef';
-  const U8$1 = new Array(256);
-  const U16$1 = new Array(256 * 256);
+  const U8$1 = new Uint8Array(256);
+  const U16$1 = new Uint8Array(256 * 256);
   for (let i = 0; i < CHR.length; i++) {
     U8$1[CHR[i].charCodeAt(0) | 0] = i | 0;
     if (i > 9) {
@@ -2970,7 +2982,6 @@
     return typeof value === 'bigint' ? value : !value ? BigInt(0) : isHex(value) ? hexToBigInt(value.toString()) : isBn(value) ? BigInt(value.toString()) : isToBigInt(value) ? value.toBigInt() : isToBn(value) ? BigInt(value.toBn().toString()) : BigInt(value);
   }
 
-  const SQRT_MAX_SAFE_INTEGER$1 = BigInt(94906265);
   function nSqrt(value) {
     const n = nToBigInt(value);
     if (n < _0n) {
@@ -2979,7 +2990,7 @@
     if (n <= _2pow53n) {
       return BigInt(~~Math.sqrt(Number(n)));
     }
-    let x0 = SQRT_MAX_SAFE_INTEGER$1;
+    let x0 = _sqrt2pow53n;
     while (true) {
       const x1 = n / x0 + x0 >> _1n;
       if (x0 === x1 || x0 === x1 - _1n) {
@@ -3054,7 +3065,7 @@
     name: '@polkadot/x-textencoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.2.6'
+    version: '10.3.1'
   };
   packageInfo$3.packageInfo = packageInfo$2;
 
@@ -3379,7 +3390,7 @@
     name: '@polkadot/x-textdecoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.2.6'
+    version: '10.3.1'
   };
   packageInfo$1.packageInfo = packageInfo;
 
@@ -3493,6 +3504,7 @@
   const BN_BILLION = new BN(1000000000);
   const BN_QUINTILL = BN_BILLION.mul(BN_BILLION);
   const BN_MAX_INTEGER = new BN(Number.MAX_SAFE_INTEGER);
+  const BN_SQRT_MAX_INTEGER = new BN(94906265);
 
   function hexStripPrefix(value) {
     if (!value || value === '0x') {
@@ -3528,7 +3540,6 @@
     return value ? BN.isBN(value) ? value : isHex(value) ? hexToBn(value.toString()) : isBigInt(value) ? new BN(value.toString()) : isToBn(value) ? value.toBn() : isToBigInt(value) ? new BN(value.toBigInt().toString()) : new BN(value) : new BN(0);
   }
 
-  const SQRT_MAX_SAFE_INTEGER = new BN(94906265);
   function bnSqrt(value) {
     const n = bnToBn(value);
     if (n.isNeg()) {
@@ -3537,7 +3548,7 @@
     if (n.lte(BN_MAX_INTEGER)) {
       return new BN(~~Math.sqrt(n.toNumber()));
     }
-    let x0 = SQRT_MAX_SAFE_INTEGER.clone();
+    let x0 = BN_SQRT_MAX_INTEGER.clone();
     while (true) {
       const x1 = n.div(x0).iadd(x0).ishrn(1);
       if (x0.eq(x1) || x0.eq(x1.sub(BN_ONE))) {
@@ -4565,6 +4576,7 @@
   exports.BN_QUINTILL = BN_QUINTILL;
   exports.BN_SEVEN = BN_SEVEN;
   exports.BN_SIX = BN_SIX;
+  exports.BN_SQRT_MAX_INTEGER = BN_SQRT_MAX_INTEGER;
   exports.BN_TEN = BN_TEN;
   exports.BN_THOUSAND = BN_THOUSAND;
   exports.BN_THREE = BN_THREE;
@@ -4574,11 +4586,23 @@
   exports.U8A_WRAP_POSTFIX = U8A_WRAP_POSTFIX;
   exports.U8A_WRAP_PREFIX = U8A_WRAP_PREFIX;
   exports._0n = _0n;
+  exports._1000n = _1000n;
+  exports._100n = _100n;
+  exports._10n = _10n;
   exports._1Bn = _1Bn;
   exports._1Mn = _1Mn;
   exports._1Qn = _1Qn;
   exports._1n = _1n;
+  exports._2n = _2n;
   exports._2pow53n = _2pow53n;
+  exports._3n = _3n;
+  exports._4n = _4n;
+  exports._5n = _5n;
+  exports._6n = _6n;
+  exports._7n = _7n;
+  exports._8n = _8n;
+  exports._9n = _9n;
+  exports._sqrt2pow53n = _sqrt2pow53n;
   exports.arrayChunk = arrayChunk;
   exports.arrayFilter = arrayFilter;
   exports.arrayFlatten = arrayFlatten;

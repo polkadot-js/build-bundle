@@ -10,7 +10,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.2.6'
+    version: '10.3.1'
   };
 
   function evaluateThis(fn) {
@@ -1094,7 +1094,7 @@
     name: '@polkadot/x-randomvalues',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.2.6'
+    version: '10.3.1'
   };
   packageInfo$2.packageInfo = packageInfo$1;
 
@@ -2350,7 +2350,7 @@
     name: '@polkadot/util-crypto',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.2.6'
+    version: '10.3.1'
   };
 
   /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
@@ -4268,6 +4268,19 @@
   		"website": "https://geek.gl"
   	},
   	{
+  		"prefix": 995,
+  		"network": "ternoa",
+  		"displayName": "Ternoa",
+  		"symbols": [
+  			"CAPS"
+  		],
+  		"decimals": [
+  			18
+  		],
+  		"standardAccount": "*25519",
+  		"website": "https://www.ternoa.network"
+  	},
+  	{
   		"prefix": 1110,
   		"network": "efinity",
   		"displayName": "Efinity",
@@ -4448,19 +4461,6 @@
   		],
   		"standardAccount": "*25519",
   		"website": "https://chainflip.io/"
-  	},
-  	{
-  		"prefix": 2114,
-  		"network": "Turing",
-  		"displayName": "Turing Network",
-  		"symbols": [
-  			"TUR"
-  		],
-  		"decimals": [
-  			10
-  		],
-  		"standardAccount": "*25519",
-  		"website": "https://oak.tech/turing/home/"
   	},
   	{
   		"prefix": 2207,
@@ -4784,6 +4784,7 @@
     statemine: ['0x48239ef607d7928874027a43a67689209727dfb3d3dc5e5b03a39bdc2eda771a'],
     statemint: ['0x68d56f15f85d3136970ec16946040bc1752654e906147f7e43e9d539d7c3de2f'],
     subsocial: ['0x0bd72c1c305172e1275278aaeb3f161e02eccb7a819e63f62d47bd53a28189f8'],
+    ternoa: ['0x6859c81ca95ef624c9dfe4dc6e3381c33e5d6509e35e147092bfbc780f777c4e'],
     unique: ['0x84322d9cddbf35088f1e54e9a85c967a41a56a4f43445768125e61af166c7d31'],
     vtb: ['0x286bc8414c7000ce1d6ee6a834e29a54c1784814b76243eb77ed0b2c5573c60f', '0x7483b89572fb2bd687c7b9a93b242d0b237f9aba463aba07ec24503931038aaa'],
     westend: ['0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e'],
@@ -4830,6 +4831,7 @@
     stafi: 0x0000038b,
     statemine: 0x000001b2,
     statemint: 0x00000162,
+    ternoa: 0x00003e3,
     unique: 0x00000162,
     vtb: 0x000002b6,
     xxnetwork: 0x000007a3
