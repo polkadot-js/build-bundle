@@ -2,6 +2,7 @@
 
 ## master
 
+- api, api-contract, types 9.13.2
 - phishing 0.19.1
 - api, api-contract, types 9.13.1
 - react-{identicon, qr}, ui-{keyring, settings}, vue-identicon 2.11.1
