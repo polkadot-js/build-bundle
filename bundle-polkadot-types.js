@@ -757,7 +757,7 @@
         refTime: 'Compact<u64>',
         proofSize: 'Compact<u64>'
       },
-      Weight: 'WeightV1',
+      Weight: 'WeightV2',
       WeightMultiplier: 'Fixed64',
       PreRuntime: '(ConsensusEngineId, Bytes)',
       SealV0: '(u64, Signature)',
@@ -5230,10 +5230,10 @@
     toU8a(isBare) {
       return this.#raw.toU8a(isBare);
     }
-    toRawType() {
-      return 'Base';
-    }
     unwrap() {
+      return this.#raw;
+    }
+    valueOf() {
       return this.#raw;
     }
   }
@@ -5242,6 +5242,9 @@
   const MAX_NUMBER_BITS = 52;
   const MUL_P = new util.BN(10000);
   const FORMATTERS = [['Perquintill', util.BN_QUINTILL], ['Perbill', util.BN_BILLION], ['Permill', util.BN_MILLION], ['Percent', util.BN_HUNDRED]];
+  function isToBn(value) {
+    return util.isFunction(value.toBn);
+  }
   function toPercentage(value, divisor) {
     return `${(value.mul(MUL_P).div(divisor).toNumber() / 100).toFixed(2)}%`;
   }
@@ -5262,20 +5265,19 @@
         throw new Error('String should not contain decimal points or scientific notation');
       }
       return value;
-    } else if (util.isBn(value)) {
+    } else if (util.isBn(value) || util.isBigInt(value)) {
       return value.toString();
-    } else if (util.isObject(value) && !util.isFunction(value.toBn)) {
+    } else if (util.isObject(value)) {
+      if (isToBn(value)) {
+        return value.toBn().toString();
+      }
       const keys = Object.keys(value);
       if (keys.length !== 1) {
         throw new Error('Unable to construct number from multi-key object');
       }
-      const inner = value[keys[0]];
-      if (!util.isString(inner) && !util.isNumber(inner)) {
-        throw new Error('Unable to construct from object with non-string/non-number value');
-      }
-      return decodeAbstractInt(inner, isNegative);
+      return decodeAbstractInt(value[keys[0]], isNegative);
     }
-    return util.bnToBn(value).toString();
+    throw new Error(`Unable to create BN from unknown type ${typeof value}`);
   }
   class AbstractInt extends util.BN {
     #bitLength;
@@ -10919,7 +10921,7 @@
     }
   };
 
-  const V1_V2_SHARED_PAY = {
+  const V1_V2_V3_SHARED_PAY = {
     query_fee_details: {
       description: 'The transaction fee details',
       params: [{
@@ -10932,7 +10934,7 @@
       type: 'FeeDetails'
     }
   };
-  const V1_V2_SHARED_CALL = {
+  const V1_V2_V3_SHARED_CALL = {
     query_call_fee_details: {
       description: 'The call fee details',
       params: [{
@@ -10945,21 +10947,56 @@
       type: 'FeeDetails'
     }
   };
+  const V2_V3_SHARED_PAY = {
+    query_info: {
+      description: 'The transaction info',
+      params: [{
+        name: 'uxt',
+        type: 'Extrinsic'
+      }, {
+        name: 'len',
+        type: 'u32'
+      }],
+      type: 'RuntimeDispatchInfo'
+    }
+  };
+  const V2_V3_SHARED_CALL = {
+    query_call_info: {
+      description: 'The call info',
+      params: [{
+        name: 'call',
+        type: 'Call'
+      }, {
+        name: 'len',
+        type: 'u32'
+      }],
+      type: 'RuntimeDispatchInfo'
+    }
+  };
+  const V3_SHARED_PAY_CALL = {
+    query_length_to_fee: {
+      description: 'Query the output of the current LengthToFee given some input',
+      params: [{
+        name: 'length',
+        type: 'u32'
+      }],
+      type: 'Balance'
+    },
+    query_weight_to_fee: {
+      description: 'Query the output of the current WeightToFee given some input',
+      params: [{
+        name: 'weight',
+        type: 'Weight'
+      }],
+      type: 'Balance'
+    }
+  };
   const runtime = {
     TransactionPaymentApi: [{
-      methods: util.objectSpread({
-        query_info: {
-          description: 'The transaction info',
-          params: [{
-            name: 'uxt',
-            type: 'Extrinsic'
-          }, {
-            name: 'len',
-            type: 'u32'
-          }],
-          type: 'RuntimeDispatchInfo'
-        }
-      }, V1_V2_SHARED_PAY),
+      methods: util.objectSpread({}, V3_SHARED_PAY_CALL, V2_V3_SHARED_PAY, V1_V2_V3_SHARED_PAY),
+      version: 3
+    }, {
+      methods: util.objectSpread({}, V2_V3_SHARED_PAY, V1_V2_V3_SHARED_PAY),
       version: 2
     }, {
       methods: util.objectSpread({
@@ -10974,27 +11011,18 @@
           }],
           type: 'RuntimeDispatchInfo'
         }
-      }, V1_V2_SHARED_PAY),
+      }, V1_V2_V3_SHARED_PAY),
       version: 1
     }],
     TransactionPaymentCallApi: [{
-      methods: util.objectSpread({
-        query_call_info: {
-          description: 'The call info',
-          params: [{
-            name: 'call',
-            type: 'Call'
-          }, {
-            name: 'len',
-            type: 'u32'
-          }],
-          type: 'RuntimeDispatchInfo'
-        }
-      }, V1_V2_SHARED_CALL),
+      methods: util.objectSpread({}, V3_SHARED_PAY_CALL, V2_V3_SHARED_CALL, V1_V2_V3_SHARED_CALL),
+      version: 3
+    }, {
+      methods: util.objectSpread({}, V2_V3_SHARED_CALL, V1_V2_V3_SHARED_CALL),
       version: 2
     }, {
       methods: util.objectSpread({
-        query_call_info: {
+        CALL: {
           description: 'The call info',
           params: [{
             name: 'call',
@@ -11005,7 +11033,7 @@
           }],
           type: 'RuntimeDispatchInfo'
         }
-      }, V1_V2_SHARED_CALL),
+      }, V1_V2_V3_SHARED_CALL),
       version: 1
     }]
   };
@@ -12180,6 +12208,9 @@
     }
     toJSON() {
       return this.toHex();
+    }
+    toRawType() {
+      return 'ExtrinsicPayload';
     }
     toString() {
       return this.toHex();
@@ -14886,18 +14917,6 @@
         ExtrinsicSignature: ['sp_runtime::MultiSignature'].includes(nsSignature) ? 'MultiSignature' : names[sigParam.type.unwrap().toNumber()] || 'MultiSignature'
       });
     }
-    if (params.SpWeightsWeightV2Weight) {
-      const weight = Object.entries(names).find(([, n]) => n === 'SpWeightsWeightV2Weight');
-      if (!weight) {
-        throw new Error('Unable to extract weight type from SpWeightsWeightV2Weight');
-      }
-      const weightDef = lookup.getTypeDef(`Lookup${weight[0]}`);
-      lookup.registry.register({
-        Weight: Array.isArray(weightDef.sub) && weightDef.sub.length !== 1
-        ? 'SpWeightsWeightV2Weight'
-        : 'WeightV1'
-      });
-    }
   }
   function extractAliases(params, isContract) {
     const hasParams = Object.keys(params).some(k => !k.startsWith('Pallet'));
@@ -15835,13 +15854,13 @@
       return /Lookup\d+$/.test(value);
     }
     createLookupType(lookupId) {
-      return `Lookup${lookupId.toString()}`;
+      return `Lookup${typeof lookupId === 'number' ? lookupId : lookupId.toNumber()}`;
     }
     get knownTypes() {
       return this.#knownTypes;
     }
     get lookup() {
-      return util.assertReturn(this.#lookup, 'Lookup has not been set on this registry');
+      return util.assertReturn(this.#lookup, 'PortableRegistry has not been set on this registry');
     }
     get metadata() {
       return util.assertReturn(this.#metadata, 'Metadata has not been set on this registry');
@@ -15931,10 +15950,10 @@
       var _this$knownTypes, _this$knownTypes$type, _this$knownTypes$type2, _this$knownTypes$type3, _this$knownTypes$type4;
       return ((_this$knownTypes = this.#knownTypes) == null ? void 0 : (_this$knownTypes$type = _this$knownTypes.typesBundle) == null ? void 0 : (_this$knownTypes$type2 = _this$knownTypes$type.spec) == null ? void 0 : (_this$knownTypes$type3 = _this$knownTypes$type2[specName.toString()]) == null ? void 0 : (_this$knownTypes$type4 = _this$knownTypes$type3.instances) == null ? void 0 : _this$knownTypes$type4[moduleName]) || this.#moduleMap[moduleName];
     }
-    getOrThrow(name, msg) {
+    getOrThrow(name) {
       const Clazz = this.get(name);
       if (!Clazz) {
-        throw new Error(msg || `type ${name} not found`);
+        throw new Error(`type ${name} not found`);
       }
       return Clazz;
     }
@@ -15970,10 +15989,10 @@
         }
         this.#classes.set(arg1, arg2);
       } else {
-        this._registerObject(arg1);
+        this.#registerObject(arg1);
       }
     }
-    _registerObject(obj) {
+    #registerObject = obj => {
       const entries = Object.entries(obj);
       for (let e = 0; e < entries.length; e++) {
         const [name, type] = entries[e];
@@ -15990,7 +16009,7 @@
           this.#definitions.set(name, def);
         }
       }
-    }
+    };
     setChainProperties(properties) {
       if (properties) {
         this.#chainProperties = properties;
@@ -16006,11 +16025,25 @@
       this.#lookup = lookup;
       lookup.register();
     }
+    #registerLookup = lookup => {
+      this.setLookup(lookup);
+      let weightType = 'WeightV1';
+      const Clazz = this.get('SpWeightsWeightV2Weight');
+      if (Clazz) {
+        const weight = new Clazz(this);
+        if (weight.refTime && weight.proofSize) {
+          weightType = 'SpWeightsWeightV2Weight';
+        }
+      }
+      this.register({
+        Weight: weightType
+      });
+    };
     setMetadata(metadata, signedExtensions, userExtensions) {
       this.#metadata = metadata.asLatest;
       this.#metadataVersion = metadata.version;
       this.#firstCallIndex = null;
-      this.setLookup(this.#metadata.lookup);
+      this.#registerLookup(this.#metadata.lookup);
       injectExtrinsics(this, this.#metadata, this.#metadataVersion, this.#metadataCalls, this.#moduleMap);
       injectErrors(this, this.#metadata, this.#metadataVersion, this.#metadataErrors);
       injectEvents(this, this.#metadata, this.#metadataVersion, this.#metadataEvents);
@@ -16041,7 +16074,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.12.1'
+    version: '9.13.1'
   };
 
   exports.BTreeMap = BTreeMap;
