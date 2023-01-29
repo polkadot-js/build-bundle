@@ -42,75 +42,95 @@
     name: '@polkadot/phishing',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-phishing.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-phishing.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-phishing.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-phishing.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '0.18.13'
+    version: '0.19.1'
   };
 
-  const ADDRESS_JSON = 'https://polkadot.js.org/phishing/address.json';
-  const ALL_JSON = 'https://polkadot.js.org/phishing/all.json';
+  const PHISHING = 'https://polkadot.js.org/phishing';
+  const ADDRESS_JSON = `${PHISHING}/address.json`;
   const CACHE_TIMEOUT = 45 * 60 * 1000;
-  let cacheAddrEnd = 0;
-  let cacheAddrList = null;
-  let cacheAddrU8a = null;
-  let cacheHostEnd = 0;
-  let cacheHostList = null;
-  function extractHost(path) {
-    return path.replace(/https:\/\/|http:\/\/|wss:\/\/|ws:\/\//, '').split('/')[0];
+  const cacheAddr = {
+    end: 0,
+    list: {},
+    u8a: []
+  };
+  const cacheHost = {};
+  function splitHostParts(host) {
+    return host
+    .split('.')
+    .reverse();
   }
-  function log(error, check) {
-    console.warn(`Error checking ${check}, assuming non-phishing`, error.message);
+  function extractHostParts(host) {
+    return splitHostParts(host
+    .replace(/https:\/\/|http:\/\/|wss:\/\/|ws:\/\//, '')
+    .split('/')[0]);
+  }
+  async function retrieveAddrCache(allowCached = true) {
+    const now = Date.now();
+    if (allowCached && now < cacheAddr.end) {
+      return cacheAddr;
+    }
+    const list = await fetchJson(ADDRESS_JSON);
+    cacheAddr.end = now + CACHE_TIMEOUT;
+    cacheAddr.list = list;
+    cacheAddr.u8a = Object.entries(list).map(([key, addresses]) => [key, addresses.map(a => utilCrypto.decodeAddress(a))]);
+    return cacheAddr;
+  }
+  async function retrieveHostCache(allowCached = true, root = '*') {
+    const now = Date.now();
+    if (allowCached && cacheHost[root] && now < cacheHost[root].end) {
+      return cacheHost[root];
+    }
+    let list;
+    try {
+      list = root === '*' ? await fetchJson(`${PHISHING}/all.json`) : {
+        allow: [],
+        deny: await fetchJson(`${PHISHING}/all/${root}/all.json`)
+      };
+    } catch {
+      list = {
+        allow: [],
+        deny: []
+      };
+    }
+    cacheHost[root] = {
+      end: now + CACHE_TIMEOUT,
+      list,
+      parts: list.deny.map(h => splitHostParts(h))
+    };
+    return cacheHost[root];
+  }
+  function checkHostParts(items, hostParts) {
+    return items.some(parts =>
+    parts.length <= hostParts.length &&
+    parts.every((part, index) => hostParts[index] === part));
   }
   async function retrieveAddrList(allowCached = true) {
-    const now = Date.now();
-    return allowCached && cacheAddrList && now < cacheAddrEnd ? cacheAddrList : fetchJson(ADDRESS_JSON).then(list => {
-      cacheAddrEnd = now + CACHE_TIMEOUT;
-      cacheAddrList = list;
-      return list;
-    });
+    const cache = await retrieveAddrCache(allowCached);
+    return cache.list;
   }
-  async function retrieveAddrU8a(allowCached = true) {
-    const now = Date.now();
-    return allowCached && cacheAddrU8a && now < cacheAddrEnd ? cacheAddrU8a : retrieveAddrList(allowCached).then(all => {
-      cacheAddrU8a = Object.entries(all).map(([key, addresses]) => [key, addresses.map(a => utilCrypto.decodeAddress(a))]);
-      return cacheAddrU8a;
-    });
+  async function retrieveHostList(allowCached = true, root = '*') {
+    const cache = await retrieveHostCache(allowCached, root);
+    return cache.list;
   }
-  async function retrieveHostList(allowCached = true) {
-    const now = Date.now();
-    return allowCached && cacheHostList && now < cacheHostEnd ? cacheHostList : fetchJson(ALL_JSON).then(list => {
-      cacheHostEnd = now + CACHE_TIMEOUT;
-      cacheHostList = list;
-      return list;
-    });
-  }
-  function checkHost(items, host) {
-    const hostParts = extractHost(host).split('.').reverse();
-    return items.some(item => {
-      const checkParts = item.split('.').reverse();
-      if (checkParts.length > hostParts.length) {
-        return false;
-      }
-      return checkParts.every((part, index) => hostParts[index] === part);
-    });
+  function checkHost(list, host) {
+    return checkHostParts(list.map(h => splitHostParts(h)), extractHostParts(host));
   }
   async function checkAddress(address, allowCached = true) {
     try {
       const u8a = utilCrypto.decodeAddress(address);
-      const all = await retrieveAddrU8a(allowCached);
-      const entry = all.find(([, all]) => all.some(a => util.u8aEq(a, u8a))) || [null];
-      return entry[0];
-    } catch (error) {
-      log(error, 'address');
+      const cache = await retrieveAddrCache(allowCached);
+      const entry = cache.u8a.find(([, u8as]) => u8as.some(a => util.u8aEq(a, u8a)));
+      return entry && entry[0] || null;
+    } catch {
       return null;
     }
   }
   async function checkIfDenied(host, allowCached = true) {
     try {
-      const {
-        deny
-      } = await retrieveHostList(allowCached);
-      return checkHost(deny, host);
-    } catch (error) {
-      log(error, host);
+      const hostParts = extractHostParts(host);
+      const cache = await retrieveHostCache(allowCached, hostParts[0]);
+      return checkHostParts(cache.parts, hostParts);
+    } catch {
       return false;
     }
   }
