@@ -752,6 +752,7 @@
       },
       ValidatorId: 'AccountId',
       ValidatorIdOf: 'ValidatorId',
+      WeightV0: 'u32',
       WeightV1: 'u64',
       WeightV2: {
         refTime: 'Compact<u64>',
@@ -6521,12 +6522,7 @@
       const [decodeFrom, length, startAt] = decodeVecLength(value);
       super(registry, length);
       this.#Type = definition || setDefinition(typeToConstructor(registry, Type));
-      try {
-        this.initialU8aLength = (util.isU8a(decodeFrom) ? decodeU8aVec(registry, this, decodeFrom, startAt, this.#Type) : decodeVec(registry, this, decodeFrom, startAt, this.#Type))[0];
-      } catch (e) {
-        console.error(decodeFrom, length, startAt);
-        throw e;
-      }
+      this.initialU8aLength = (util.isU8a(decodeFrom) ? decodeU8aVec(registry, this, decodeFrom, startAt, this.#Type) : decodeVec(registry, this, decodeFrom, startAt, this.#Type))[0];
     }
     static with(Type) {
       let definition;
@@ -16030,16 +16026,18 @@
     #registerLookup = lookup => {
       this.setLookup(lookup);
       let weightType = 'WeightV1';
-      const Clazz = this.get('SpWeightsWeightV2Weight');
-      if (Clazz) {
-        const weight = new Clazz(this);
+      const WeightV2 = this.get('SpWeightsWeightV2Weight');
+      if (WeightV2) {
+        const weight = new WeightV2(this);
         if (weight.refTime && weight.proofSize) {
           weightType = 'SpWeightsWeightV2Weight';
         }
       }
-      this.register({
-        Weight: weightType
-      });
+      if (weightType !== 'WeightV1' || !util.isBn(this.createType('Weight'))) {
+        this.register({
+          Weight: weightType
+        });
+      }
     };
     setMetadata(metadata, signedExtensions, userExtensions) {
       this.#metadata = metadata.asLatest;
@@ -16076,7 +16074,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.13.2'
+    version: '9.13.3'
   };
 
   exports.BTreeMap = BTreeMap;
