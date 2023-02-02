@@ -14681,7 +14681,7 @@
   };
   const PATHS_ALIAS = splitNamespace([
   'sp_core::crypto::AccountId32', 'sp_runtime::generic::era::Era', 'sp_runtime::multiaddress::MultiAddress',
-  'frame_support::weights::weight_v2::Weight', 'sp_weights::weight_v2::Weight',
+  'frame_support::weights::weight_v2::Weight',
   'account::AccountId20', 'polkadot_runtime_common::claims::EthereumAddress',
   '*_democracy::vote::Vote', '*_conviction_voting::vote::Vote', '*_identity::types::Data',
   'sp_core::OpaqueMetadata', 'sp_core::OpaquePeerId', 'sp_core::offchain::OpaqueMultiaddr',
@@ -14735,12 +14735,8 @@
     });
   }
   function getAliasPath({
-    def,
     path
   }) {
-    if (path.join('::') === 'sp_weights::weight_v2::Weight' && def.isComposite && def.asComposite.fields.length !== 1) {
-      return null;
-    }
     return path.length && PATHS_ALIAS.some(a => matchParts(a, path)) ? path[path.length - 1].toString() : null;
   }
   function extractNameFlat(portable, lookupIndex, params, path, isInternal = false) {
@@ -16025,17 +16021,18 @@
     }
     #registerLookup = lookup => {
       this.setLookup(lookup);
-      let weightType = 'WeightV1';
-      const WeightV2 = this.get('SpWeightsWeightV2Weight');
-      if (WeightV2) {
-        const weight = new WeightV2(this);
-        if (weight.refTime && weight.proofSize) {
-          weightType = 'SpWeightsWeightV2Weight';
-        }
+      let Weight = null;
+      if (this.hasType('SpWeightsWeightV2Weight')) {
+        const weightv2 = this.createType('SpWeightsWeightV2Weight');
+        Weight = weightv2.refTime && weightv2.proofSize
+        ? 'SpWeightsWeightV2Weight'
+        : 'WeightV1';
+      } else if (!util.isBn(this.createType('Weight'))) {
+        Weight = 'WeightV1';
       }
-      if (weightType !== 'WeightV1' || !util.isBn(this.createType('Weight'))) {
+      if (Weight) {
         this.register({
-          Weight: weightType
+          Weight
         });
       }
     };
@@ -16074,7 +16071,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.13.4'
+    version: '9.13.5'
   };
 
   exports.BTreeMap = BTreeMap;
