@@ -9696,8 +9696,8 @@
     getTransactionCount: {
       description: 'Returns the number of transactions sent from given address at given time (block number).',
       params: [{
-        name: 'hash',
-        type: 'H256'
+        name: 'address',
+        type: 'H160'
       }, {
         isHistoric: true,
         isOptional: true,
@@ -14681,8 +14681,8 @@
   };
   const PATHS_ALIAS = splitNamespace([
   'sp_core::crypto::AccountId32', 'sp_runtime::generic::era::Era', 'sp_runtime::multiaddress::MultiAddress',
-  'frame_support::weights::weight_v2::Weight',
   'account::AccountId20', 'polkadot_runtime_common::claims::EthereumAddress',
+  'frame_support::weights::weight_v2::Weight', 'sp_weights::weight_v2::Weight',
   '*_democracy::vote::Vote', '*_conviction_voting::vote::Vote', '*_identity::types::Data',
   'sp_core::OpaqueMetadata', 'sp_core::OpaquePeerId', 'sp_core::offchain::OpaqueMultiaddr',
   'primitive_types::*', 'sp_arithmetic::per_things::*',
@@ -14735,8 +14735,12 @@
     });
   }
   function getAliasPath({
+    def,
     path
   }) {
+    if (['frame_support::weights::weight_v2::Weight', 'sp_weights::weight_v2::Weight'].includes(path.join('::'))) {
+      return !def.isComposite || def.asComposite.fields.length === 1 ? 'WeightV1' : null;
+    }
     return path.length && PATHS_ALIAS.some(a => matchParts(a, path)) ? path[path.length - 1].toString() : null;
   }
   function extractNameFlat(portable, lookupIndex, params, path, isInternal = false) {
@@ -16071,7 +16075,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.13.5'
+    version: '9.13.6'
   };
 
   exports.BTreeMap = BTreeMap;
