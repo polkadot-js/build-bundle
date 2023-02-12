@@ -708,6 +708,8 @@
       Releases: {
         _enum: ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'V9', 'V10']
       },
+      RuntimeCall: 'Call',
+      RuntimeEvent: 'Event',
       RuntimeDbWeight: {
         read: 'Weight',
         write: 'Weight'
@@ -14686,6 +14688,7 @@
   '*_democracy::vote::Vote', '*_conviction_voting::vote::Vote', '*_identity::types::Data',
   'sp_core::OpaqueMetadata', 'sp_core::OpaquePeerId', 'sp_core::offchain::OpaqueMultiaddr',
   'primitive_types::*', 'sp_arithmetic::per_things::*',
+  '*_runtime::RuntimeCall', '*_runtime::RuntimeEvent',
   'ink_env::types::*', 'ink_primitives::types::*']);
   const PATHS_SET = splitNamespace(['pallet_identity::types::BitFlags']);
   const BITVEC_NS_LSB = ['bitvec::order::Lsb0', 'BitOrderLsb0'];
@@ -16075,7 +16078,7 @@
     name: '@polkadot/types',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.13.6'
+    version: '9.14.1'
   };
 
   exports.BTreeMap = BTreeMap;
