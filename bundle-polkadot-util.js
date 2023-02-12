@@ -10,7 +10,7 @@
     name: '@polkadot/util',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.3.1'
+    version: '10.4.1'
   };
 
   function arrayChunk(array, chunkSize) {
@@ -114,7 +114,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.3.1'
+    version: '10.4.1'
   };
 
   function evaluateThis(fn) {
@@ -2970,6 +2970,9 @@
   function isOn(...fns) {
     return value => (isObject(value) || isFunction(value)) && fns.every(f => isFunction(value[f]));
   }
+  function isOnFunction(...fns) {
+    return value => isFunction(value) && fns.every(f => isFunction(value[f]));
+  }
   function isOnObject(...fns) {
     return value => isObject(value) && fns.every(f => isFunction(value[f]));
   }
@@ -3065,7 +3068,7 @@
     name: '@polkadot/x-textencoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.3.1'
+    version: '10.4.1'
   };
   packageInfo$3.packageInfo = packageInfo$2;
 
@@ -3390,7 +3393,7 @@
     name: '@polkadot/x-textdecoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.3.1'
+    version: '10.4.1'
   };
   packageInfo$1.packageInfo = packageInfo;
 
@@ -3758,10 +3761,17 @@
   }
 
   const NUMBER_REGEX = new RegExp('(\\d+?)(?=(\\d{3})+(?!\\d)|$)', 'g');
-  function formatDecimal(value) {
+  function formatDecimal(value, separator = ',') {
     const isNegative = value[0].startsWith('-');
     const matched = isNegative ? value.substring(1).match(NUMBER_REGEX) : value.match(NUMBER_REGEX);
-    return matched ? `${isNegative ? '-' : ''}${matched.join(',')}` : value;
+    return matched ? `${isNegative ? '-' : ''}${matched.join(separator)}` : value;
+  }
+
+  function getSeparator(locale) {
+    return {
+      decimal: 0.1.toLocaleString(locale).substring(1, 2),
+      thousand: 1000 .toLocaleString(locale).substring(1, 2)
+    };
   }
 
   const SI_MID = 8;
@@ -3865,7 +3875,8 @@
     withSi = true,
     withSiFull = false,
     withUnit = true,
-    withZero = true
+    withZero = true,
+    locale = 'en'
   } = {}) {
     let text = bnToBn(input).toString();
     if (text.length === 0 || text === '0') {
@@ -3891,7 +3902,11 @@
     }
     const unit = isBoolean(withUnit) ? SI[SI_MID].text : withUnit;
     const units = withSi || withSiFull ? si.value === '-' ? withUnit ? ` ${unit}` : '' : ` ${withSiFull ? `${si.text}${withUnit ? ' ' : ''}` : si.value}${withUnit ? unit : ''}` : '';
-    return `${sign}${formatDecimal(pre)}${post && `.${post}`}${units}`;
+    const {
+      decimal,
+      thousand
+    } = getSeparator(locale);
+    return `${sign}${formatDecimal(pre, thousand)}${post && `${decimal}${post}`}${units}`;
   }
   const formatBalance = _formatBalance;
   formatBalance.calcSi = (text, decimals = defaultDecimals) => calcSi(text, decimals);
@@ -3945,8 +3960,13 @@
     return tsNow && tsValue ? formatValue(Math.max(Math.abs(tsNow - tsValue), 0) / 1000) : '0.0s';
   }
 
-  function formatNumber(value) {
-    return formatDecimal(bnToBn(value).toString());
+  function formatNumber(value, {
+    locale = 'en'
+  } = {}) {
+    const {
+      thousand
+    } = getSeparator(locale);
+    return formatDecimal(bnToBn(value).toString(), thousand);
   }
 
   function hexHasPrefix(value) {
@@ -4003,8 +4023,10 @@
     return isString(value) ? isHex(value) ? isAsciiBytes(u8aToU8a(value)) : isAsciiStr(value) : value ? isAsciiBytes(value) : false;
   }
 
+  const isClass = isOnFunction('isPrototypeOf', 'hasOwnProperty');
+
   function isChildClass(Parent, Child) {
-    return Child
+    return isClass(Child) && isClass(Parent)
     ? Parent === Child || Parent.isPrototypeOf(Child) : false;
   }
 
@@ -4659,6 +4681,7 @@
   exports.isBoolean = isBoolean;
   exports.isBuffer = isBuffer;
   exports.isChildClass = isChildClass;
+  exports.isClass = isClass;
   exports.isCodec = isCodec;
   exports.isCompact = isCompact;
   exports.isError = isError;

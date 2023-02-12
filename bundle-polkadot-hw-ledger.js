@@ -1304,6 +1304,17 @@
 	        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
 	    }
 	};
+	var __values = (global && global.__values) || function(o) {
+	    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+	    if (m) return m.call(o);
+	    if (o && typeof o.length === "number") return {
+	        next: function () {
+	            if (o && i >= o.length) o = void 0;
+	            return { value: o && o[i++], done: !o };
+	        }
+	    };
+	    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+	};
 	var __read$1 = (global && global.__read) || function (o, n) {
 	    var m = typeof Symbol === "function" && o[Symbol.iterator];
 	    if (!m) return o;
@@ -1328,17 +1339,6 @@
 	        }
 	    }
 	    return to.concat(ar || Array.prototype.slice.call(from));
-	};
-	var __values = (global && global.__values) || function(o) {
-	    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-	    if (m) return m.call(o);
-	    if (o && typeof o.length === "number") return {
-	        next: function () {
-	            if (o && i >= o.length) o = void 0;
-	            return { value: o && o[i++], done: !o };
-	        }
-	    };
-	    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 	};
 	var Transport =  (function () {
 	    function Transport() {
@@ -1417,6 +1417,60 @@
 	    Transport.prototype.exchange = function (_apdu) {
 	        throw new Error("exchange not implemented");
 	    };
+	    Transport.prototype.exchangeBulk = function (apdus, observer) {
+	        var _this = this;
+	        var unsubscribed = false;
+	        var unsubscribe = function () {
+	            unsubscribed = true;
+	        };
+	        var main = function () { return __awaiter$3(_this, void 0, void 0, function () {
+	            var apdus_1, apdus_1_1, apdu, r, status_1, e_1_1;
+	            var e_1, _a;
+	            return __generator$3(this, function (_b) {
+	                switch (_b.label) {
+	                    case 0:
+	                        if (unsubscribed)
+	                            return [2 ];
+	                        _b.label = 1;
+	                    case 1:
+	                        _b.trys.push([1, 6, 7, 8]);
+	                        apdus_1 = __values(apdus), apdus_1_1 = apdus_1.next();
+	                        _b.label = 2;
+	                    case 2:
+	                        if (!!apdus_1_1.done) return [3 , 5];
+	                        apdu = apdus_1_1.value;
+	                        return [4 , this.exchange(apdu)];
+	                    case 3:
+	                        r = _b.sent();
+	                        if (unsubscribed)
+	                            return [2 ];
+	                        status_1 = r.readUInt16BE(r.length - 2);
+	                        if (status_1 !== StatusCodes.OK) {
+	                            throw new TransportStatusError(status_1);
+	                        }
+	                        observer.next(r);
+	                        _b.label = 4;
+	                    case 4:
+	                        apdus_1_1 = apdus_1.next();
+	                        return [3 , 2];
+	                    case 5: return [3 , 8];
+	                    case 6:
+	                        e_1_1 = _b.sent();
+	                        e_1 = { error: e_1_1 };
+	                        return [3 , 8];
+	                    case 7:
+	                        try {
+	                            if (apdus_1_1 && !apdus_1_1.done && (_a = apdus_1["return"])) _a.call(apdus_1);
+	                        }
+	                        finally { if (e_1) throw e_1.error; }
+	                        return [7 ];
+	                    case 8: return [2 ];
+	                }
+	            });
+	        }); };
+	        main().then(function () { return !unsubscribed && observer.complete(); }, function (e) { return !unsubscribed && observer.error(e); });
+	        return { unsubscribe: unsubscribe };
+	    };
 	    Transport.prototype.setScrambleKey = function (_key) { };
 	    Transport.prototype.close = function () {
 	        return Promise.resolve();
@@ -1480,19 +1534,19 @@
 	        });
 	    };
 	    Transport.prototype.decorateAppAPIMethods = function (self, methods, scrambleKey) {
-	        var e_1, _a;
+	        var e_2, _a;
 	        try {
 	            for (var methods_1 = __values(methods), methods_1_1 = methods_1.next(); !methods_1_1.done; methods_1_1 = methods_1.next()) {
 	                var methodName = methods_1_1.value;
 	                self[methodName] = this.decorateAppAPIMethod(methodName, self[methodName], self, scrambleKey);
 	            }
 	        }
-	        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+	        catch (e_2_1) { e_2 = { error: e_2_1 }; }
 	        finally {
 	            try {
 	                if (methods_1_1 && !methods_1_1.done && (_a = methods_1["return"])) _a.call(methods_1);
 	            }
-	            finally { if (e_1) throw e_1.error; }
+	            finally { if (e_2) throw e_2.error; }
 	        }
 	    };
 	    Transport.prototype.decorateAppAPIMethod = function (methodName, f, ctx, scrambleKey) {
@@ -1757,7 +1811,7 @@
 	let SemVer$d = class SemVer {
 	  constructor (version, options) {
 	    options = parseOptions$1(options);
-	    if (version instanceof SemVer$d) {
+	    if (version instanceof SemVer) {
 	      if (version.loose === !!options.loose &&
 	          version.includePrerelease === !!options.includePrerelease) {
 	        return version
@@ -1821,11 +1875,11 @@
 	  }
 	  compare (other) {
 	    debug('SemVer.compare', this.version, this.options, other);
-	    if (!(other instanceof SemVer$d)) {
+	    if (!(other instanceof SemVer)) {
 	      if (typeof other === 'string' && other === this.version) {
 	        return 0
 	      }
-	      other = new SemVer$d(other, this.options);
+	      other = new SemVer(other, this.options);
 	    }
 	    if (other.version === this.version) {
 	      return 0
@@ -1833,8 +1887,8 @@
 	    return this.compareMain(other) || this.comparePre(other)
 	  }
 	  compareMain (other) {
-	    if (!(other instanceof SemVer$d)) {
-	      other = new SemVer$d(other, this.options);
+	    if (!(other instanceof SemVer)) {
+	      other = new SemVer(other, this.options);
 	    }
 	    return (
 	      compareIdentifiers(this.major, other.major) ||
@@ -1843,8 +1897,8 @@
 	    )
 	  }
 	  comparePre (other) {
-	    if (!(other instanceof SemVer$d)) {
-	      other = new SemVer$d(other, this.options);
+	    if (!(other instanceof SemVer)) {
+	      other = new SemVer(other, this.options);
 	    }
 	    if (this.prerelease.length && !other.prerelease.length) {
 	      return -1
@@ -1872,8 +1926,8 @@
 	    } while (++i)
 	  }
 	  compareBuild (other) {
-	    if (!(other instanceof SemVer$d)) {
-	      other = new SemVer$d(other, this.options);
+	    if (!(other instanceof SemVer)) {
+	      other = new SemVer(other, this.options);
 	    }
 	    let i = 0;
 	    do {
@@ -4767,7 +4821,7 @@
 		  name: '@polkadot/hw-ledger-transports',
 		  path: typeof __dirname === 'string' ? __dirname : 'auto',
 		  type: 'cjs',
-		  version: '10.3.1'
+		  version: '10.4.1'
 		};
 		packageInfo$1.packageInfo = packageInfo;
 		return packageInfo$1;
@@ -4827,6 +4881,7 @@
 	  origintrail: 'OriginTrail',
 	  parallel: 'Parallel',
 	  phala: 'Phala',
+	  picasso: 'Picasso',
 	  polkadex: 'Polkadex',
 	  polkadot: 'Polkadot',
 	  polymesh: 'Polymesh',
@@ -4844,7 +4899,7 @@
 	  name: '@polkadot/hw-ledger',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '10.3.1'
+	  version: '10.4.1'
 	};
 
 	async function wrapError(promise) {
