@@ -20,7 +20,7 @@
     name: '@polkadot/extension-dapp',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-extension-dapp.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-extension-dapp.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-extension-dapp.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-extension-dapp.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '0.44.8'
+    version: '0.44.9'
   };
 
   const unwrapBytes = util.u8aUnwrapBytes;
@@ -28,6 +28,8 @@
 
   const win = window;
   win.injectedWeb3 = win.injectedWeb3 || {};
+  exports.isWeb3Injected = web3IsInjected();
+  exports.web3EnablePromise = null;
   function web3IsInjected() {
     return Object.values(win.injectedWeb3).filter(({
       connect,
@@ -56,8 +58,6 @@
   function filterAccounts(list, genesisHash, type) {
     return list.filter(a => (!a.type || !type || type.includes(a.type)) && (!a.genesisHash || !genesisHash || a.genesisHash === genesisHash));
   }
-  exports.isWeb3Injected = web3IsInjected();
-  exports.web3EnablePromise = null;
   function getWindowExtensions(originName) {
     return Promise.all(Object.entries(win.injectedWeb3).map(([nameOrHash, {
       connect,
@@ -73,6 +73,15 @@
     }) => {
       console.error(`Error initializing ${nameOrHash}: ${message}`);
     }))).then(exts => exts.filter(e => !!e));
+  }
+  async function filterEnable(caller, extensions) {
+    if (!exports.web3EnablePromise) {
+      return throwError(caller);
+    }
+    const sources = await exports.web3EnablePromise;
+    return sources.filter(({
+      name
+    }) => !extensions || extensions.includes(name));
   }
   function web3Enable(originName, compatInits = []) {
     if (!originName) {
@@ -105,14 +114,9 @@
     genesisHash,
     ss58Format
   } = {}) {
-    if (!exports.web3EnablePromise) {
-      return throwError('web3Accounts');
-    }
     const accounts = [];
-    const sources = await exports.web3EnablePromise;
-    const retrieved = await Promise.all(sources.filter(({
-      name: source
-    }) => !extensions || extensions.includes(source)).map(async ({
+    const sources = await filterEnable('web3Accounts', extensions);
+    const retrieved = await Promise.all(sources.map(async ({
       accounts,
       name: source
     }) => {
@@ -135,18 +139,13 @@
     genesisHash,
     ss58Format
   } = {}) {
-    if (!exports.web3EnablePromise) {
-      return throwError('web3AccountsSubscribe');
-    }
+    const sources = await filterEnable('web3AccountsSubscribe', extensions);
     const accounts = {};
     const triggerUpdate = () => cb(Object.entries(accounts).reduce((result, [source, list]) => {
       result.push(...mapAccounts(source, filterAccounts(list, genesisHash, accountType), ss58Format));
       return result;
     }, []));
-    const sources = await exports.web3EnablePromise;
-    const unsubs = sources.filter(({
-      name: source
-    }) => !extensions || extensions.includes(source)).map(({
+    const unsubs = sources.map(({
       accounts: {
         subscribe
       },
