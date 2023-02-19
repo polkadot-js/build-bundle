@@ -824,6 +824,12 @@
 		        slip0044: 0x800003e3,
 		        ss58_addr_type: 42
 		    },
+		    {
+		        name: 'Pendulum',
+		        cla: 0xb6,
+		        slip0044: 0x80000162,
+		        ss58_addr_type: 56
+		    },
 		];
 	} (supported_apps));
 	getDefaultExportFromCjs(supported_apps);
@@ -4821,7 +4827,7 @@
 		  name: '@polkadot/hw-ledger-transports',
 		  path: typeof __dirname === 'string' ? __dirname : 'auto',
 		  type: 'cjs',
-		  version: '10.4.1'
+		  version: '10.4.2'
 		};
 		packageInfo$1.packageInfo = packageInfo;
 		return packageInfo$1;
@@ -4880,6 +4886,7 @@
 	  nodle: 'Nodle',
 	  origintrail: 'OriginTrail',
 	  parallel: 'Parallel',
+	  pendulum: 'Pendulum',
 	  phala: 'Phala',
 	  picasso: 'Picasso',
 	  polkadex: 'Polkadex',
@@ -4899,7 +4906,7 @@
 	  name: '@polkadot/hw-ledger',
 	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
 	  type: 'esm',
-	  version: '10.4.1'
+	  version: '10.4.2'
 	};
 
 	async function wrapError(promise) {

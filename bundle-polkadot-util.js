@@ -10,7 +10,7 @@
     name: '@polkadot/util',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.4.1'
+    version: '10.4.2'
   };
 
   function arrayChunk(array, chunkSize) {
@@ -114,7 +114,7 @@
     name: '@polkadot/x-global',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '10.4.1'
+    version: '10.4.2'
   };
 
   function evaluateThis(fn) {
@@ -3068,7 +3068,7 @@
     name: '@polkadot/x-textencoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.4.1'
+    version: '10.4.2'
   };
   packageInfo$3.packageInfo = packageInfo$2;
 
@@ -3097,7 +3097,8 @@
   }
 
   function u8aToU8a(value) {
-    return isU8a(value) ? value : isHex(value) ? hexToU8a(value) : isBuffer(value) || Array.isArray(value) ? new Uint8Array(value) : stringToU8a(value);
+    return isU8a(value)
+    ? isBuffer(value) ? new Uint8Array(value) : value : isHex(value) ? hexToU8a(value) : Array.isArray(value) ? new Uint8Array(value) : stringToU8a(value);
   }
 
   function u8aCmp(a, b) {
@@ -3393,7 +3394,7 @@
     name: '@polkadot/x-textdecoder',
     path: typeof __dirname === 'string' ? __dirname : 'auto',
     type: 'cjs',
-    version: '10.4.1'
+    version: '10.4.2'
   };
   packageInfo$1.packageInfo = packageInfo;
 
@@ -3871,12 +3872,12 @@
   function _formatBalance(input, {
     decimals = defaultDecimals,
     forceUnit,
+    locale = 'en',
     withAll = false,
     withSi = true,
     withSiFull = false,
     withUnit = true,
-    withZero = true,
-    locale = 'en'
+    withZero = true
   } = {}) {
     let text = bnToBn(input).toString();
     if (text.length === 0 || text === '0') {
