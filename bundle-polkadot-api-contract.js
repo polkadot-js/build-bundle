@@ -294,7 +294,7 @@
     name: '@polkadot/api-contract',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.14.1'
+    version: '9.14.2'
   };
 
   function applyOnEvent(result, types, fn) {
@@ -584,21 +584,6 @@
 
   function noop() { }
 
-  var COMPLETE_NOTIFICATION = (function () { return createNotification('C', undefined, undefined); })();
-  function errorNotification(error) {
-      return createNotification('E', undefined, error);
-  }
-  function nextNotification(value) {
-      return createNotification('N', value, undefined);
-  }
-  function createNotification(kind, value, error) {
-      return {
-          kind: kind,
-          value: value,
-          error: error,
-      };
-  }
-
   var Subscriber = (function (_super) {
       __extends(Subscriber, _super);
       function Subscriber(destination) {
@@ -619,26 +604,20 @@
           return new SafeSubscriber(next, error, complete);
       };
       Subscriber.prototype.next = function (value) {
-          if (this.isStopped) {
-              handleStoppedNotification(nextNotification(value), this);
-          }
+          if (this.isStopped) ;
           else {
               this._next(value);
           }
       };
       Subscriber.prototype.error = function (err) {
-          if (this.isStopped) {
-              handleStoppedNotification(errorNotification(err), this);
-          }
+          if (this.isStopped) ;
           else {
               this.isStopped = true;
               this._error(err);
           }
       };
       Subscriber.prototype.complete = function () {
-          if (this.isStopped) {
-              handleStoppedNotification(COMPLETE_NOTIFICATION, this);
-          }
+          if (this.isStopped) ;
           else {
               this.isStopped = true;
               this._complete();
@@ -757,10 +736,6 @@
   }
   function defaultErrorHandler(err) {
       throw err;
-  }
-  function handleStoppedNotification(notification, subscriber) {
-      var onStoppedNotification = config.onStoppedNotification;
-      onStoppedNotification && timeoutProvider.setTimeout(function () { return onStoppedNotification(notification, subscriber); });
   }
   var EMPTY_OBSERVER = {
       closed: true,

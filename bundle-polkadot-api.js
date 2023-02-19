@@ -1333,6 +1333,9 @@
       return new WsProvider(_classPrivateFieldBase(this, _endpoints)[_endpoints]);
     }
     async connect() {
+      if (_classPrivateFieldBase(this, _websocket)[_websocket]) {
+        throw new Error('WebSocket is already connected');
+      }
       try {
         _classPrivateFieldBase(this, _endpointIndex)[_endpointIndex] = (_classPrivateFieldBase(this, _endpointIndex)[_endpointIndex] + 1) % _classPrivateFieldBase(this, _endpoints)[_endpoints].length;
         _classPrivateFieldBase(this, _websocket)[_websocket] = typeof xglobal.WebSocket !== 'undefined' && util.isChildClass(xglobal.WebSocket, WebSocket) ? new WebSocket(_classPrivateFieldBase(this, _endpoints)[_endpoints][_classPrivateFieldBase(this, _endpointIndex)[_endpointIndex]])
@@ -1459,7 +1462,7 @@
     name: '@polkadot/api',
     path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
     type: 'esm',
-    version: '9.14.1'
+    version: '9.14.2'
   };
 
   var extendStatics = function(d, b) {
@@ -1769,11 +1772,7 @@
 
   function reportUnhandledError(err) {
       timeoutProvider.setTimeout(function () {
-          var onUnhandledError = config.onUnhandledError;
-          if (onUnhandledError) {
-              onUnhandledError(err);
-          }
-          else {
+          {
               throw err;
           }
       });
@@ -1781,23 +1780,8 @@
 
   function noop() { }
 
-  var context = null;
   function errorContext(cb) {
-      if (config.useDeprecatedSynchronousErrorHandling) {
-          var isRoot = !context;
-          if (isRoot) {
-              context = { errorThrown: false, error: null };
-          }
-          cb();
-          if (isRoot) {
-              var _a = context, errorThrown = _a.errorThrown, error = _a.error;
-              context = null;
-              if (errorThrown) {
-                  throw error;
-              }
-          }
-      }
-      else {
+      {
           cb();
       }
   }
