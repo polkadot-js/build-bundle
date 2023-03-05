@@ -1326,82 +1326,78 @@
 
     const subject = new BehaviorSubject(false);
     const env = {
-      isDevelopment: () => subject.getValue(),
-      set: isDevelopment => {
-        subject.next(isDevelopment);
-      },
-      subject
+        isDevelopment: () => subject.getValue(),
+        set: (isDevelopment) => {
+            subject.next(isDevelopment);
+        },
+        subject
     };
 
     const ACCOUNT_PREFIX = 'account:';
     const ADDRESS_PREFIX = 'address:';
     const CONTRACT_PREFIX = 'contract:';
     function toHex(address) {
-      return util$7.u8aToHex(
-      keyring$1.decodeAddress(address, true));
+        return util$7.u8aToHex(
+        keyring$1.decodeAddress(address, true));
     }
-    const accountKey = address => `${ACCOUNT_PREFIX}${toHex(address)}`;
-    const addressKey = address => `${ADDRESS_PREFIX}${toHex(address)}`;
-    const contractKey = address => `${CONTRACT_PREFIX}${toHex(address)}`;
+    const accountKey = (address) => `${ACCOUNT_PREFIX}${toHex(address)}`;
+    const addressKey = (address) => `${ADDRESS_PREFIX}${toHex(address)}`;
+    const contractKey = (address) => `${CONTRACT_PREFIX}${toHex(address)}`;
     const accountRegex = new RegExp(`^${ACCOUNT_PREFIX}0x[0-9a-f]*`, '');
     const addressRegex = new RegExp(`^${ADDRESS_PREFIX}0x[0-9a-f]*`, '');
     const contractRegex = new RegExp(`^${CONTRACT_PREFIX}0x[0-9a-f]*`, '');
 
     function createOptionItem(address, _name) {
-      const name = util$7.isUndefined(_name) ? address.length > 15 ? `${address.slice(0, 6)}…${address.slice(-6)}` : address : _name;
-      return {
-        key: address,
-        name,
-        value: address
-      };
+        const name = util$7.isUndefined(_name)
+            ? ((address.length > 15)
+                ? `${address.slice(0, 6)}…${address.slice(-6)}`
+                : address)
+            : _name;
+        return {
+            key: address,
+            name,
+            value: address
+        };
     }
 
     function callNext(current, subject, withTest) {
-      const isDevMode = env.isDevelopment();
-      const filtered = {};
-      Object.keys(current).forEach(key => {
-        const {
-          json: {
-            meta: {
-              isTesting = false
-            } = {}
-          } = {}
-        } = current[key];
-        if (!withTest || isDevMode || isTesting !== true) {
-          filtered[key] = current[key];
-        }
-      });
-      subject.next(filtered);
+        const isDevMode = env.isDevelopment();
+        const filtered = {};
+        Object.keys(current).forEach((key) => {
+            const { json: { meta: { isTesting = false } = {} } = {} } = current[key];
+            if (!withTest || isDevMode || isTesting !== true) {
+                filtered[key] = current[key];
+            }
+        });
+        subject.next(filtered);
     }
     function genericSubject(keyCreator, withTest = false) {
-      let current = {};
-      const subject = new BehaviorSubject({});
-      const next = () => callNext(current, subject, withTest);
-      env.subject.subscribe(next);
-      return {
-        add: (store, address, json, type) => {
-          current = util$7.objectCopy(current);
-          current[address] = {
-            json: util$7.objectSpread({}, json, {
-              address
-            }),
-            option: createOptionItem(address, json.meta.name),
-            type
-          };
-          if (!json.meta.isInjected && (!json.meta.isTesting || env.isDevelopment())) {
-            store.set(keyCreator(address), json);
-          }
-          next();
-          return current[address];
-        },
-        remove: (store, address) => {
-          current = util$7.objectCopy(current);
-          delete current[address];
-          store.remove(keyCreator(address));
-          next();
-        },
-        subject
-      };
+        let current = {};
+        const subject = new BehaviorSubject({});
+        const next = () => callNext(current, subject, withTest);
+        env.subject.subscribe(next);
+        return {
+            add: (store, address, json, type) => {
+                current = util$7.objectCopy(current);
+                current[address] = {
+                    json: util$7.objectSpread({}, json, { address }),
+                    option: createOptionItem(address, json.meta.name),
+                    type
+                };
+                if (!json.meta.isInjected && (!json.meta.isTesting || env.isDevelopment())) {
+                    store.set(keyCreator(address), json);
+                }
+                next();
+                return current[address];
+            },
+            remove: (store, address) => {
+                current = util$7.objectCopy(current);
+                delete current[address];
+                store.remove(keyCreator(address));
+                next();
+            },
+            subject
+        };
     }
 
     const accounts = genericSubject(accountKey, true);
@@ -2194,525 +2190,513 @@
     var store_legacy = engine.createStore(storages, plugins);
 
     class BrowserStore {
-      all(fn) {
-        store_legacy.each((value, key) => {
-          fn(key, value);
-        });
-      }
-      get(key, fn) {
-        fn(store_legacy.get(key));
-      }
-      remove(key, fn) {
-        store_legacy.remove(key);
-        fn && fn();
-      }
-      set(key, value, fn) {
-        store_legacy.set(key, value);
-        fn && fn();
-      }
+        all(fn) {
+            store_legacy.each((value, key) => {
+                fn(key, value);
+            });
+        }
+        get(key, fn) {
+            fn(store_legacy.get(key));
+        }
+        remove(key, fn) {
+            store_legacy.remove(key);
+            fn && fn();
+        }
+        set(key, value, fn) {
+            store_legacy.set(key, value);
+            fn && fn();
+        }
     }
 
     class Base {
-      #accounts;
-      #addresses;
-      #contracts;
-      #keyring;
-      _genesisHashAdd = [];
-      constructor() {
-        this.#accounts = accounts;
-        this.#addresses = addresses;
-        this.#contracts = contracts;
-        this._store = new BrowserStore();
-      }
-      get accounts() {
-        return this.#accounts;
-      }
-      get addresses() {
-        return this.#addresses;
-      }
-      get contracts() {
-        return this.#contracts;
-      }
-      get keyring() {
-        if (this.#keyring) {
-          return this.#keyring;
+        #accounts;
+        #addresses;
+        #contracts;
+        #keyring;
+        _store;
+        _genesisHash;
+        _genesisHashAdd = [];
+        constructor() {
+            this.#accounts = accounts;
+            this.#addresses = addresses;
+            this.#contracts = contracts;
+            this._store = new BrowserStore();
         }
-        throw new Error('Keyring should be initialised via \'loadAll\' before use');
-      }
-      get genesisHash() {
-        return this._genesisHash;
-      }
-      get genesisHashes() {
-        return this._genesisHash ? [this._genesisHash, ...this._genesisHashAdd] : [...this._genesisHashAdd];
-      }
-      decodeAddress = (key, ignoreChecksum, ss58Format) => {
-        return this.keyring.decodeAddress(key, ignoreChecksum, ss58Format);
-      };
-      encodeAddress = (key, ss58Format) => {
-        return this.keyring.encodeAddress(key, ss58Format);
-      };
-      getPair(address) {
-        return this.keyring.getPair(address);
-      }
-      getPairs() {
-        return this.keyring.getPairs().filter(pair => env.isDevelopment() || pair.meta.isTesting !== true);
-      }
-      isAvailable(_address) {
-        const accountsValue = this.accounts.subject.getValue();
-        const addressesValue = this.addresses.subject.getValue();
-        const contractsValue = this.contracts.subject.getValue();
-        const address = util$7.isString(_address) ? _address : this.encodeAddress(_address);
-        return !accountsValue[address] && !addressesValue[address] && !contractsValue[address];
-      }
-      isPassValid(password) {
-        return password.length > 0;
-      }
-      setSS58Format(ss58Format) {
-        if (this.#keyring && util$7.isNumber(ss58Format)) {
-          this.#keyring.setSS58Format(ss58Format);
+        get accounts() {
+            return this.#accounts;
         }
-      }
-      setDevMode(isDevelopment) {
-        env.set(isDevelopment);
-      }
-      initKeyring(options) {
-        const keyring = keyring$1.createTestKeyring(options, true);
-        if (util$7.isBoolean(options.isDevelopment)) {
-          this.setDevMode(options.isDevelopment);
+        get addresses() {
+            return this.#addresses;
         }
-        this.#keyring = keyring;
-        this._genesisHash = options.genesisHash && (util$7.isString(options.genesisHash) ? options.genesisHash.toString() : options.genesisHash.toHex());
-        this._genesisHashAdd = options.genesisHashAdd || [];
-        this._store = options.store || this._store;
-        this.addAccountPairs();
-      }
-      addAccountPairs() {
-        this.keyring.getPairs().forEach(({
-          address,
-          meta
-        }) => {
-          this.accounts.add(this._store, address, {
-            address,
-            meta
-          });
-        });
-      }
-      addTimestamp(pair) {
-        if (!pair.meta.whenCreated) {
-          pair.setMeta({
-            whenCreated: Date.now()
-          });
+        get contracts() {
+            return this.#contracts;
         }
-      }
+        get keyring() {
+            if (this.#keyring) {
+                return this.#keyring;
+            }
+            throw new Error('Keyring should be initialised via \'loadAll\' before use');
+        }
+        get genesisHash() {
+            return this._genesisHash;
+        }
+        get genesisHashes() {
+            return this._genesisHash
+                ? [this._genesisHash, ...this._genesisHashAdd]
+                : [...this._genesisHashAdd];
+        }
+        decodeAddress = (key, ignoreChecksum, ss58Format) => {
+            return this.keyring.decodeAddress(key, ignoreChecksum, ss58Format);
+        };
+        encodeAddress = (key, ss58Format) => {
+            return this.keyring.encodeAddress(key, ss58Format);
+        };
+        getPair(address) {
+            return this.keyring.getPair(address);
+        }
+        getPairs() {
+            return this.keyring.getPairs().filter((pair) => env.isDevelopment() || pair.meta.isTesting !== true);
+        }
+        isAvailable(_address) {
+            const accountsValue = this.accounts.subject.getValue();
+            const addressesValue = this.addresses.subject.getValue();
+            const contractsValue = this.contracts.subject.getValue();
+            const address = util$7.isString(_address)
+                ? _address
+                : this.encodeAddress(_address);
+            return !accountsValue[address] && !addressesValue[address] && !contractsValue[address];
+        }
+        isPassValid(password) {
+            return password.length > 0;
+        }
+        setSS58Format(ss58Format) {
+            if (this.#keyring && util$7.isNumber(ss58Format)) {
+                this.#keyring.setSS58Format(ss58Format);
+            }
+        }
+        setDevMode(isDevelopment) {
+            env.set(isDevelopment);
+        }
+        initKeyring(options) {
+            const keyring = keyring$1.createTestKeyring(options, true);
+            if (util$7.isBoolean(options.isDevelopment)) {
+                this.setDevMode(options.isDevelopment);
+            }
+            this.#keyring = keyring;
+            this._genesisHash = options.genesisHash && (util$7.isString(options.genesisHash)
+                ? options.genesisHash.toString()
+                : options.genesisHash.toHex());
+            this._genesisHashAdd = options.genesisHashAdd || [];
+            this._store = options.store || this._store;
+            this.addAccountPairs();
+        }
+        addAccountPairs() {
+            this.keyring
+                .getPairs()
+                .forEach(({ address, meta }) => {
+                this.accounts.add(this._store, address, { address, meta });
+            });
+        }
+        addTimestamp(pair) {
+            if (!pair.meta.whenCreated) {
+                pair.setMeta({ whenCreated: Date.now() });
+            }
+        }
     }
 
-    const obervableAll = combineLatest([accounts.subject, addresses.subject, contracts.subject]).pipe(map$1(([accounts, addresses, contracts]) => ({
-      accounts,
-      addresses,
-      contracts
+    const obervableAll = combineLatest([
+        accounts.subject,
+        addresses.subject,
+        contracts.subject
+    ]).pipe(map$1(([accounts, addresses, contracts]) => ({
+        accounts,
+        addresses,
+        contracts
     })));
 
     let hasCalledInitOptions = false;
     const sortByName = (a, b) => {
-      const valueA = a.option.name;
-      const valueB = b.option.name;
-      return valueA.localeCompare(valueB);
+        const valueA = a.option.name;
+        const valueB = b.option.name;
+        return valueA.localeCompare(valueB);
     };
     const sortByCreated = (a, b) => {
-      const valueA = a.json.meta.whenCreated || 0;
-      const valueB = b.json.meta.whenCreated || 0;
-      if (valueA < valueB) {
-        return 1;
-      }
-      if (valueA > valueB) {
-        return -1;
-      }
-      return 0;
+        const valueA = a.json.meta.whenCreated || 0;
+        const valueB = b.json.meta.whenCreated || 0;
+        if (valueA < valueB) {
+            return 1;
+        }
+        if (valueA > valueB) {
+            return -1;
+        }
+        return 0;
     };
     class KeyringOption {
-      optionsSubject = new BehaviorSubject(this.emptyOptions());
-      createOptionHeader(name) {
-        return {
-          key: `header-${name.toLowerCase()}`,
-          name,
-          value: null
-        };
-      }
-      init(keyring) {
-        util$7.assert(!hasCalledInitOptions, 'Unable to initialise options more than once');
-        obervableAll.subscribe(() => {
-          const opts = this.emptyOptions();
-          this.addAccounts(keyring, opts);
-          this.addAddresses(keyring, opts);
-          this.addContracts(keyring, opts);
-          opts.address = this.linkItems({
-            Addresses: opts.address,
-            Recent: opts.recent
-          });
-          opts.account = this.linkItems({
-            Accounts: opts.account,
-            Development: opts.testing
-          });
-          opts.contract = this.linkItems({
-            Contracts: opts.contract
-          });
-          opts.all = [].concat(opts.account, opts.address);
-          opts.allPlus = [].concat(opts.account, opts.address, opts.contract);
-          this.optionsSubject.next(opts);
-        });
-        hasCalledInitOptions = true;
-      }
-      linkItems(items) {
-        return Object.keys(items).reduce((result, header) => {
-          const options = items[header];
-          return result.concat(options.length ? [this.createOptionHeader(header)] : [], options);
-        }, []);
-      }
-      addAccounts(keyring, options) {
-        const available = keyring.accounts.subject.getValue();
-        Object.values(available).sort(sortByName).forEach(({
-          json: {
-            meta: {
-              isTesting = false
-            }
-          },
-          option
-        }) => {
-          if (!isTesting) {
-            options.account.push(option);
-          } else {
-            options.testing.push(option);
-          }
-        });
-      }
-      addAddresses(keyring, options) {
-        const available = keyring.addresses.subject.getValue();
-        Object.values(available).filter(({
-          json
-        }) => !!json.meta.isRecent).sort(sortByCreated).forEach(({
-          option
-        }) => {
-          options.recent.push(option);
-        });
-        Object.values(available).filter(({
-          json
-        }) => !json.meta.isRecent).sort(sortByName).forEach(({
-          option
-        }) => {
-          options.address.push(option);
-        });
-      }
-      addContracts(keyring, options) {
-        const available = keyring.contracts.subject.getValue();
-        Object.values(available).sort(sortByName).forEach(({
-          option
-        }) => {
-          options.contract.push(option);
-        });
-      }
-      emptyOptions() {
-        return {
-          account: [],
-          address: [],
-          all: [],
-          allPlus: [],
-          contract: [],
-          recent: [],
-          testing: []
-        };
-      }
+        optionsSubject = new BehaviorSubject(this.emptyOptions());
+        createOptionHeader(name) {
+            return {
+                key: `header-${name.toLowerCase()}`,
+                name,
+                value: null
+            };
+        }
+        init(keyring) {
+            util$7.assert(!hasCalledInitOptions, 'Unable to initialise options more than once');
+            obervableAll.subscribe(() => {
+                const opts = this.emptyOptions();
+                this.addAccounts(keyring, opts);
+                this.addAddresses(keyring, opts);
+                this.addContracts(keyring, opts);
+                opts.address = this.linkItems({ Addresses: opts.address, Recent: opts.recent });
+                opts.account = this.linkItems({ Accounts: opts.account, Development: opts.testing });
+                opts.contract = this.linkItems({ Contracts: opts.contract });
+                opts.all = [].concat(opts.account, opts.address);
+                opts.allPlus = [].concat(opts.account, opts.address, opts.contract);
+                this.optionsSubject.next(opts);
+            });
+            hasCalledInitOptions = true;
+        }
+        linkItems(items) {
+            return Object.keys(items).reduce((result, header) => {
+                const options = items[header];
+                return result.concat(options.length
+                    ? [this.createOptionHeader(header)]
+                    : [], options);
+            }, []);
+        }
+        addAccounts(keyring, options) {
+            const available = keyring.accounts.subject.getValue();
+            Object
+                .values(available)
+                .sort(sortByName)
+                .forEach(({ json: { meta: { isTesting = false } }, option }) => {
+                if (!isTesting) {
+                    options.account.push(option);
+                }
+                else {
+                    options.testing.push(option);
+                }
+            });
+        }
+        addAddresses(keyring, options) {
+            const available = keyring.addresses.subject.getValue();
+            Object
+                .values(available)
+                .filter(({ json }) => !!json.meta.isRecent)
+                .sort(sortByCreated)
+                .forEach(({ option }) => {
+                options.recent.push(option);
+            });
+            Object
+                .values(available)
+                .filter(({ json }) => !json.meta.isRecent)
+                .sort(sortByName)
+                .forEach(({ option }) => {
+                options.address.push(option);
+            });
+        }
+        addContracts(keyring, options) {
+            const available = keyring.contracts.subject.getValue();
+            Object
+                .values(available)
+                .sort(sortByName)
+                .forEach(({ option }) => {
+                options.contract.push(option);
+            });
+        }
+        emptyOptions() {
+            return {
+                account: [],
+                address: [],
+                all: [],
+                allPlus: [],
+                contract: [],
+                recent: [],
+                testing: []
+            };
+        }
     }
 
     const RECENT_EXPIRY = 24 * 60 * 60;
     class Keyring extends Base {
-      keyringOption = new KeyringOption();
-      #stores = {
-        account: () => this.accounts,
-        address: () => this.addresses,
-        contract: () => this.contracts
-      };
-      addExternal(address, meta = {}) {
-        const pair = this.keyring.addFromAddress(address, util$7.objectSpread({}, meta, {
-          isExternal: true
-        }), null);
-        return {
-          json: this.saveAccount(pair),
-          pair
+        keyringOption = new KeyringOption();
+        #stores = {
+            account: () => this.accounts,
+            address: () => this.addresses,
+            contract: () => this.contracts
         };
-      }
-      addHardware(address, hardwareType, meta = {}) {
-        return this.addExternal(address, util$7.objectSpread({}, meta, {
-          hardwareType,
-          isHardware: true
-        }));
-      }
-      addMultisig(addresses, threshold, meta = {}) {
-        const address = utilCrypto.createKeyMulti(addresses, threshold);
-        const who = util$7.u8aSorted(addresses.map(who => this.decodeAddress(who))).map(who => this.encodeAddress(who));
-        return this.addExternal(address, util$7.objectSpread({}, meta, {
-          isMultisig: true,
-          threshold: util$7.bnToBn(threshold).toNumber(),
-          who
-        }));
-      }
-      addPair(pair, password) {
-        this.keyring.addPair(pair);
-        return {
-          json: this.saveAccount(pair, password),
-          pair
-        };
-      }
-      addUri(suri, password, meta = {}, type) {
-        const pair = this.keyring.addFromUri(suri, meta, type);
-        return {
-          json: this.saveAccount(pair, password),
-          pair
-        };
-      }
-      backupAccount(pair, password) {
-        if (!pair.isLocked) {
-          pair.lock();
+        addExternal(address, meta = {}) {
+            const pair = this.keyring.addFromAddress(address, util$7.objectSpread({}, meta, { isExternal: true }), null);
+            return {
+                json: this.saveAccount(pair),
+                pair
+            };
         }
-        pair.decodePkcs8(password);
-        return pair.toJson(password);
-      }
-      async backupAccounts(addresses, password) {
-        const accountPromises = addresses.map(address => {
-          return new Promise(resolve => {
-            this._store.get(accountKey(address), resolve);
-          });
-        });
-        const accounts = await Promise.all(accountPromises);
-        return util$7.objectSpread({}, utilCrypto.jsonEncrypt(util$7.stringToU8a(JSON.stringify(accounts)), ['batch-pkcs8'], password), {
-          accounts: accounts.map(account => ({
-            address: account.address,
-            meta: account.meta
-          }))
-        });
-      }
-      createFromJson(json, meta = {}) {
-        return this.keyring.createFromJson(util$7.objectSpread({}, json, {
-          meta: util$7.objectSpread({}, json.meta, meta)
-        }));
-      }
-      createFromUri(suri, meta = {}, type) {
-        return this.keyring.createFromUri(suri, meta, type);
-      }
-      encryptAccount(pair, password) {
-        const json = pair.toJson(password);
-        json.meta.whenEdited = Date.now();
-        this.keyring.addFromJson(json);
-        this.accounts.add(this._store, pair.address, json, pair.type);
-      }
-      forgetAccount(address) {
-        this.keyring.removePair(address);
-        this.accounts.remove(this._store, address);
-      }
-      forgetAddress(address) {
-        this.addresses.remove(this._store, address);
-      }
-      forgetContract(address) {
-        this.contracts.remove(this._store, address);
-      }
-      getAccount(address) {
-        return this.getAddress(address, 'account');
-      }
-      getAccounts() {
-        const available = this.accounts.subject.getValue();
-        return Object.keys(available).map(address => this.getAddress(address, 'account')).filter(account => env.isDevelopment() || account.meta.isTesting !== true);
-      }
-      getAddress(_address, type = null) {
-        const address = util$7.isString(_address) ? _address : this.encodeAddress(_address);
-        const publicKey = this.decodeAddress(address);
-        const stores = type ? [this.#stores[type]] : Object.values(this.#stores);
-        const info = stores.reduce((lastInfo, store) => store().subject.getValue()[address] || lastInfo, undefined);
-        return info && {
-          address,
-          meta: info.json.meta,
-          publicKey
-        };
-      }
-      getAddresses() {
-        const available = this.addresses.subject.getValue();
-        return Object.keys(available).map(address => this.getAddress(address));
-      }
-      getContract(address) {
-        return this.getAddress(address, 'contract');
-      }
-      getContracts() {
-        const available = this.contracts.subject.getValue();
-        return Object.entries(available).filter(([, {
-          json: {
-            meta: {
-              contract
+        addHardware(address, hardwareType, meta = {}) {
+            return this.addExternal(address, util$7.objectSpread({}, meta, { hardwareType, isHardware: true }));
+        }
+        addMultisig(addresses, threshold, meta = {}) {
+            const address = utilCrypto.createKeyMulti(addresses, threshold);
+            const who = util$7.u8aSorted(addresses.map((who) => this.decodeAddress(who))).map((who) => this.encodeAddress(who));
+            return this.addExternal(address, util$7.objectSpread({}, meta, { isMultisig: true, threshold: util$7.bnToBn(threshold).toNumber(), who }));
+        }
+        addPair(pair, password) {
+            this.keyring.addPair(pair);
+            return {
+                json: this.saveAccount(pair, password),
+                pair
+            };
+        }
+        addUri(suri, password, meta = {}, type) {
+            const pair = this.keyring.addFromUri(suri, meta, type);
+            return {
+                json: this.saveAccount(pair, password),
+                pair
+            };
+        }
+        backupAccount(pair, password) {
+            if (!pair.isLocked) {
+                pair.lock();
             }
-          }
-        }]) => !!contract && contract.genesisHash === this.genesisHash).map(([address]) => this.getContract(address));
-      }
-      rewriteKey(json, key, hexAddr, creator) {
-        if (hexAddr.substring(0, 2) === '0x') {
-          return;
+            pair.decodePkcs8(password);
+            return pair.toJson(password);
         }
-        this._store.remove(key);
-        this._store.set(creator(hexAddr), json);
-      }
-      loadAccount(json, key) {
-        if (!json.meta.isTesting && json.encoded) {
-          const pair = this.keyring.addFromJson(json, true);
-          this.accounts.add(this._store, pair.address, json, pair.type);
+        async backupAccounts(addresses, password) {
+            const accountPromises = addresses.map((address) => {
+                return new Promise((resolve) => {
+                    this._store.get(accountKey(address), resolve);
+                });
+            });
+            const accounts = await Promise.all(accountPromises);
+            return util$7.objectSpread({}, utilCrypto.jsonEncrypt(util$7.stringToU8a(JSON.stringify(accounts)), ['batch-pkcs8'], password), {
+                accounts: accounts.map((account) => ({
+                    address: account.address,
+                    meta: account.meta
+                }))
+            });
         }
-        const [, hexAddr] = key.split(':');
-        this.rewriteKey(json, key, hexAddr.trim(), accountKey);
-      }
-      loadAddress(json, key) {
-        const {
-          isRecent,
-          whenCreated = 0
-        } = json.meta;
-        if (isRecent && Date.now() - whenCreated > RECENT_EXPIRY) {
-          this._store.remove(key);
-          return;
+        createFromJson(json, meta = {}) {
+            return this.keyring.createFromJson(util$7.objectSpread({}, json, {
+                meta: util$7.objectSpread({}, json.meta, meta)
+            }));
         }
-        const address = util$7.isHex(json.address) && json.address.length !== 66 ? json.address : this.encodeAddress(util$7.isHex(json.address) ? util$7.hexToU8a(json.address)
-        : this.decodeAddress(json.address, true));
-        const [, hexAddr] = key.split(':');
-        this.addresses.add(this._store, address, json);
-        this.rewriteKey(json, key, hexAddr, addressKey);
-      }
-      loadContract(json, key) {
-        const address = this.encodeAddress(this.decodeAddress(json.address));
-        const [, hexAddr] = key.split(':');
-        json.meta.genesisHash = json.meta.genesisHash || json.meta.contract && json.meta.contract.genesisHash;
-        this.contracts.add(this._store, address, json);
-        this.rewriteKey(json, key, hexAddr, contractKey);
-      }
-      loadInjected(address, meta, type) {
-        const json = {
-          address,
-          meta: util$7.objectSpread({}, meta, {
-            isInjected: true
-          })
-        };
-        const pair = this.keyring.addFromAddress(address, json.meta, null, type);
-        this.accounts.add(this._store, pair.address, json, pair.type);
-      }
-      allowGenesis(json) {
-        if (json && json.meta && this.genesisHash) {
-          const hashes = Object.values(uiSettings.chains).find(hashes => hashes.includes(this.genesisHash || '')) || [this.genesisHash];
-          if (json.meta.genesisHash) {
-            return hashes.includes(json.meta.genesisHash) || this.genesisHashes.includes(json.meta.genesisHash);
-          } else if (json.meta.contract) {
-            return hashes.includes(json.meta.contract.genesisHash);
-          }
+        createFromUri(suri, meta = {}, type) {
+            return this.keyring.createFromUri(suri, meta, type);
         }
-        return true;
-      }
-      loadAll(options, injected = []) {
-        super.initKeyring(options);
-        this._store.all((key, json) => {
-          if (!util$7.isFunction(options.filter) || options.filter(json)) {
-            try {
-              if (this.allowGenesis(json)) {
-                if (accountRegex.test(key)) {
-                  this.loadAccount(json, key);
-                } else if (addressRegex.test(key)) {
-                  this.loadAddress(json, key);
-                } else if (contractRegex.test(key)) {
-                  this.loadContract(json, key);
+        encryptAccount(pair, password) {
+            const json = pair.toJson(password);
+            json.meta.whenEdited = Date.now();
+            this.keyring.addFromJson(json);
+            this.accounts.add(this._store, pair.address, json, pair.type);
+        }
+        forgetAccount(address) {
+            this.keyring.removePair(address);
+            this.accounts.remove(this._store, address);
+        }
+        forgetAddress(address) {
+            this.addresses.remove(this._store, address);
+        }
+        forgetContract(address) {
+            this.contracts.remove(this._store, address);
+        }
+        getAccount(address) {
+            return this.getAddress(address, 'account');
+        }
+        getAccounts() {
+            const available = this.accounts.subject.getValue();
+            return Object
+                .keys(available)
+                .map((address) => this.getAddress(address, 'account'))
+                .filter((account) => env.isDevelopment() || account.meta.isTesting !== true);
+        }
+        getAddress(_address, type = null) {
+            const address = util$7.isString(_address)
+                ? _address
+                : this.encodeAddress(_address);
+            const publicKey = this.decodeAddress(address);
+            const stores = type
+                ? [this.#stores[type]]
+                : Object.values(this.#stores);
+            const info = stores.reduce((lastInfo, store) => (store().subject.getValue()[address] || lastInfo), undefined);
+            return info && {
+                address,
+                meta: info.json.meta,
+                publicKey
+            };
+        }
+        getAddresses() {
+            const available = this.addresses.subject.getValue();
+            return Object
+                .keys(available)
+                .map((address) => this.getAddress(address));
+        }
+        getContract(address) {
+            return this.getAddress(address, 'contract');
+        }
+        getContracts() {
+            const available = this.contracts.subject.getValue();
+            return Object
+                .entries(available)
+                .filter(([, { json: { meta: { contract } } }]) => !!contract && contract.genesisHash === this.genesisHash)
+                .map(([address]) => this.getContract(address));
+        }
+        rewriteKey(json, key, hexAddr, creator) {
+            if (hexAddr.substring(0, 2) === '0x') {
+                return;
+            }
+            this._store.remove(key);
+            this._store.set(creator(hexAddr), json);
+        }
+        loadAccount(json, key) {
+            if (!json.meta.isTesting && json.encoded) {
+                const pair = this.keyring.addFromJson(json, true);
+                this.accounts.add(this._store, pair.address, json, pair.type);
+            }
+            const [, hexAddr] = key.split(':');
+            this.rewriteKey(json, key, hexAddr.trim(), accountKey);
+        }
+        loadAddress(json, key) {
+            const { isRecent, whenCreated = 0 } = json.meta;
+            if (isRecent && (Date.now() - whenCreated) > RECENT_EXPIRY) {
+                this._store.remove(key);
+                return;
+            }
+            const address = util$7.isHex(json.address) && json.address.length !== 66
+                ? json.address
+                : this.encodeAddress(util$7.isHex(json.address)
+                    ? util$7.hexToU8a(json.address)
+                    : this.decodeAddress(json.address, true));
+            const [, hexAddr] = key.split(':');
+            this.addresses.add(this._store, address, json);
+            this.rewriteKey(json, key, hexAddr, addressKey);
+        }
+        loadContract(json, key) {
+            const address = this.encodeAddress(this.decodeAddress(json.address));
+            const [, hexAddr] = key.split(':');
+            json.meta.genesisHash = json.meta.genesisHash || (json.meta.contract && json.meta.contract.genesisHash);
+            this.contracts.add(this._store, address, json);
+            this.rewriteKey(json, key, hexAddr, contractKey);
+        }
+        loadInjected(address, meta, type) {
+            const json = {
+                address,
+                meta: util$7.objectSpread({}, meta, { isInjected: true })
+            };
+            const pair = this.keyring.addFromAddress(address, json.meta, null, type);
+            this.accounts.add(this._store, pair.address, json, pair.type);
+        }
+        allowGenesis(json) {
+            if (json && json.meta && this.genesisHash) {
+                const hashes = Object.values(uiSettings.chains).find((hashes) => hashes.includes(this.genesisHash || '')) || [this.genesisHash];
+                if (json.meta.genesisHash) {
+                    return hashes.includes(json.meta.genesisHash) || this.genesisHashes.includes(json.meta.genesisHash);
                 }
-              }
-            } catch (error) {
-              console.warn(`Keyring: Unable to load ${key}:${util$7.stringify(json)}`);
+                else if (json.meta.contract) {
+                    return hashes.includes(json.meta.contract.genesisHash);
+                }
             }
-          }
-        });
-        injected.forEach(account => {
-          if (this.allowGenesis(account)) {
-            try {
-              this.loadInjected(account.address, account.meta, account.type);
-            } catch (error) {
-              console.warn(`Keyring: Unable to inject ${util$7.stringify(account)}`);
-            }
-          }
-        });
-        this.keyringOption.init(this);
-      }
-      restoreAccount(json, password) {
-        const cryptoType = Array.isArray(json.encoding.content) ? json.encoding.content[1] : 'ed25519';
-        const encType = Array.isArray(json.encoding.type) ? json.encoding.type : [json.encoding.type];
-        const pair = keyring$1.createPair({
-          toSS58: this.encodeAddress,
-          type: cryptoType
-        }, {
-          publicKey: this.decodeAddress(json.address, true)
-        }, json.meta, util$7.isHex(json.encoded) ? util$7.hexToU8a(json.encoded) : utilCrypto.base64Decode(json.encoded), encType);
-        pair.decodePkcs8(password);
-        this.addPair(pair, password);
-        pair.lock();
-        return pair;
-      }
-      restoreAccounts(json, password) {
-        const accounts = JSON.parse(util$7.u8aToString(utilCrypto.jsonDecrypt(json, password)));
-        accounts.forEach(account => {
-          this.loadAccount(account, accountKey(account.address));
-        });
-      }
-      saveAccount(pair, password) {
-        this.addTimestamp(pair);
-        const json = pair.toJson(password);
-        this.keyring.addFromJson(json);
-        this.accounts.add(this._store, pair.address, json, pair.type);
-        return json;
-      }
-      saveAccountMeta(pair, meta) {
-        const address = pair.address;
-        this._store.get(accountKey(address), json => {
-          pair.setMeta(meta);
-          json.meta = pair.meta;
-          this.accounts.add(this._store, address, json, pair.type);
-        });
-      }
-      saveAddress(address, meta, type = 'address') {
-        const available = this.addresses.subject.getValue();
-        const json = available[address] && available[address].json || {
-          address,
-          meta: {
-            isRecent: undefined,
-            whenCreated: Date.now()
-          }
-        };
-        Object.keys(meta).forEach(key => {
-          json.meta[key] = meta[key];
-        });
-        delete json.meta.isRecent;
-        this.#stores[type]().add(this._store, address, json);
-        return json;
-      }
-      saveContract(address, meta) {
-        return this.saveAddress(address, meta, 'contract');
-      }
-      saveRecent(address) {
-        const available = this.addresses.subject.getValue();
-        if (!available[address]) {
-          this.addresses.add(this._store, address, {
-            address,
-            meta: {
-              genesisHash: this.genesisHash,
-              isRecent: true,
-              whenCreated: Date.now()
-            }
-          });
+            return true;
         }
-        return this.addresses.subject.getValue()[address];
-      }
+        loadAll(options, injected = []) {
+            super.initKeyring(options);
+            this._store.all((key, json) => {
+                if (!util$7.isFunction(options.filter) || options.filter(json)) {
+                    try {
+                        if (this.allowGenesis(json)) {
+                            if (accountRegex.test(key)) {
+                                this.loadAccount(json, key);
+                            }
+                            else if (addressRegex.test(key)) {
+                                this.loadAddress(json, key);
+                            }
+                            else if (contractRegex.test(key)) {
+                                this.loadContract(json, key);
+                            }
+                        }
+                    }
+                    catch (error) {
+                        console.warn(`Keyring: Unable to load ${key}:${util$7.stringify(json)}`);
+                    }
+                }
+            });
+            injected.forEach((account) => {
+                if (this.allowGenesis(account)) {
+                    try {
+                        this.loadInjected(account.address, account.meta, account.type);
+                    }
+                    catch (error) {
+                        console.warn(`Keyring: Unable to inject ${util$7.stringify(account)}`);
+                    }
+                }
+            });
+            this.keyringOption.init(this);
+        }
+        restoreAccount(json, password) {
+            const cryptoType = Array.isArray(json.encoding.content) ? json.encoding.content[1] : 'ed25519';
+            const encType = Array.isArray(json.encoding.type) ? json.encoding.type : [json.encoding.type];
+            const pair = keyring$1.createPair({ toSS58: this.encodeAddress, type: cryptoType }, { publicKey: this.decodeAddress(json.address, true) }, json.meta, util$7.isHex(json.encoded) ? util$7.hexToU8a(json.encoded) : utilCrypto.base64Decode(json.encoded), encType);
+            pair.decodePkcs8(password);
+            this.addPair(pair, password);
+            pair.lock();
+            return pair;
+        }
+        restoreAccounts(json, password) {
+            const accounts = JSON.parse(util$7.u8aToString(utilCrypto.jsonDecrypt(json, password)));
+            accounts.forEach((account) => {
+                this.loadAccount(account, accountKey(account.address));
+            });
+        }
+        saveAccount(pair, password) {
+            this.addTimestamp(pair);
+            const json = pair.toJson(password);
+            this.keyring.addFromJson(json);
+            this.accounts.add(this._store, pair.address, json, pair.type);
+            return json;
+        }
+        saveAccountMeta(pair, meta) {
+            const address = pair.address;
+            this._store.get(accountKey(address), (json) => {
+                pair.setMeta(meta);
+                json.meta = pair.meta;
+                this.accounts.add(this._store, address, json, pair.type);
+            });
+        }
+        saveAddress(address, meta, type = 'address') {
+            const available = this.addresses.subject.getValue();
+            const json = (available[address] && available[address].json) || {
+                address,
+                meta: {
+                    isRecent: undefined,
+                    whenCreated: Date.now()
+                }
+            };
+            Object.keys(meta).forEach((key) => {
+                json.meta[key] = meta[key];
+            });
+            delete json.meta.isRecent;
+            this.#stores[type]().add(this._store, address, json);
+            return json;
+        }
+        saveContract(address, meta) {
+            return this.saveAddress(address, meta, 'contract');
+        }
+        saveRecent(address) {
+            const available = this.addresses.subject.getValue();
+            if (!available[address]) {
+                this.addresses.add(this._store, address, {
+                    address,
+                    meta: {
+                        genesisHash: this.genesisHash,
+                        isRecent: true,
+                        whenCreated: Date.now()
+                    }
+                });
+            }
+            return this.addresses.subject.getValue()[address];
+        }
     }
 
-    const packageInfo = {
-      name: '@polkadot/ui-keyring',
-      path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
-      type: 'esm',
-      version: '2.12.1'
-    };
+    const packageInfo = { name: '@polkadot/ui-keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.0.1' };
 
     const keyring = new Keyring();
 

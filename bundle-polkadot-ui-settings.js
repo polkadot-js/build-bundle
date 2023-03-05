@@ -955,328 +955,354 @@
 	var plugins = [json2];
 	var store_legacy = engine.createStore(storages, plugins);
 
-	const CRYPTOS = [{
-	  info: 'sr25519',
-	  text: 'Schnorrkel (sr25519, recommended)',
-	  value: 'sr25519'
-	}, {
-	  info: 'ed25519',
-	  text: 'Edwards (ed25519, alternative)',
-	  value: 'ed25519'
-	}, {
-	  info: 'ecdsa',
-	  text: 'ECDSA (Non BTC/ETH compatible)',
-	  value: 'ecdsa'
-	}];
-	const CRYPTOS_ETH = [{
-	  info: 'ethereum',
-	  text: 'ECDSA (ETH compatible)',
-	  value: 'ethereum'
-	}];
-	const CRYPTOS_LEDGER = [...CRYPTOS, {
-	  info: 'ed25519-ledger',
-	  text: 'Ledger (ed25519, BIP32 derivation)',
-	  value: 'ed25519-ledger'
-	}];
+	const CRYPTOS = [
+	    {
+	        info: 'sr25519',
+	        text: 'Schnorrkel (sr25519, recommended)',
+	        value: 'sr25519'
+	    },
+	    {
+	        info: 'ed25519',
+	        text: 'Edwards (ed25519, alternative)',
+	        value: 'ed25519'
+	    },
+	    {
+	        info: 'ecdsa',
+	        text: 'ECDSA (Non BTC/ETH compatible)',
+	        value: 'ecdsa'
+	    }
+	];
+	const CRYPTOS_ETH = [
+	    {
+	        info: 'ethereum',
+	        text: 'ECDSA (ETH compatible)',
+	        value: 'ethereum'
+	    }
+	];
+	const CRYPTOS_LEDGER = [
+	    ...CRYPTOS,
+	    {
+	        info: 'ed25519-ledger',
+	        text: 'Ledger (ed25519, BIP32 derivation)',
+	        value: 'ed25519-ledger'
+	    }
+	];
 
 	const ENDPOINTS = [{
-	  info: 'local',
-	  text: 'Local Node (Own, 127.0.0.1:9944)',
-	  value: 'ws://127.0.0.1:9944/'
-	}];
+	        info: 'local',
+	        text: 'Local Node (Own, 127.0.0.1:9944)',
+	        value: 'ws://127.0.0.1:9944/'
+	    }];
 	const ENDPOINT_DEFAULT = ENDPOINTS[0];
 
 	const LEDGER_CONN_DEFAULT = 'none';
-	const LEDGER_CONN = [{
-	  info: 'none',
-	  text: 'Do not attach Ledger devices',
-	  value: 'none'
-	},
-	{
-	  info: 'webusb',
-	  text: 'Attach Ledger via WebUSB (Chrome, recommended)',
-	  value: 'webusb'
-	}, {
-	  info: 'hid',
-	  text: 'Attach Ledger via WebHID (Chrome, experimental)',
-	  value: 'hid'
-	}];
+	const LEDGER_CONN = [
+	    {
+	        info: 'none',
+	        text: 'Do not attach Ledger devices',
+	        value: 'none'
+	    },
+	    {
+	        info: 'webusb',
+	        text: 'Attach Ledger via WebUSB (Chrome, recommended)',
+	        value: 'webusb'
+	    },
+	    {
+	        info: 'hid',
+	        text: 'Attach Ledger via WebHID (Chrome, experimental)',
+	        value: 'hid'
+	    }
+	];
 
 	const PREFIX_DEFAULT = -1;
 	const defaultNetwork = {
-	  info: 'default',
-	  text: 'Default for the connected node',
-	  value: -1
+	    info: 'default',
+	    text: 'Default for the connected node',
+	    value: -1
 	};
-	const networks = utilCrypto.availableNetworks.map(({
-	  displayName,
-	  network,
-	  prefix
-	}) => ({
-	  info: network,
-	  text: displayName,
-	  value: prefix
+	const networks = utilCrypto.availableNetworks.map(({ displayName, network, prefix }) => ({
+	    info: network,
+	    text: displayName,
+	    value: prefix
 	}));
 	const PREFIXES = [defaultNetwork, ...networks];
 
 	const isPolkadot = typeof window !== 'undefined' && window.location.host.includes('polkadot');
 
-	const UIMODE_DEFAULT = !isPolkadot && typeof window !== 'undefined' && window.location.host.includes('ui-light') ? 'light' : 'full';
-	const UIMODES = [{
-	  info: 'full',
-	  text: 'Fully featured',
-	  value: 'full'
-	}, {
-	  info: 'light',
-	  text: 'Basic features only',
-	  value: 'light'
-	}];
-	const UITHEME_DEFAULT = isPolkadot ? 'polkadot' : 'substrate';
-	const UITHEMES = [{
-	  info: 'polkadot',
-	  text: 'Polkadot',
-	  value: 'polkadot'
-	}, {
-	  info: 'substrate',
-	  text: 'Substrate',
-	  value: 'substrate'
-	}];
+	const UIMODE_DEFAULT = !isPolkadot && typeof window !== 'undefined' && window.location.host.includes('ui-light')
+	    ? 'light'
+	    : 'full';
+	const UIMODES = [
+	    {
+	        info: 'full',
+	        text: 'Fully featured',
+	        value: 'full'
+	    },
+	    {
+	        info: 'light',
+	        text: 'Basic features only',
+	        value: 'light'
+	    }
+	];
+	const UITHEME_DEFAULT = isPolkadot
+	    ? 'polkadot'
+	    : 'substrate';
+	const UITHEMES = [
+	    {
+	        info: 'polkadot',
+	        text: 'Polkadot',
+	        value: 'polkadot'
+	    },
+	    {
+	        info: 'substrate',
+	        text: 'Substrate',
+	        value: 'substrate'
+	    }
+	];
 	const ICON_DEFAULT = 'default';
-	const ICON_DEFAULT_HOST = isPolkadot ? 'polkadot' : 'substrate';
-	const ICONS = [{
-	  info: 'default',
-	  text: 'Default for the connected node',
-	  value: 'default'
-	}, {
-	  info: 'polkadot',
-	  text: 'Polkadot',
-	  value: 'polkadot'
-	}, {
-	  info: 'substrate',
-	  text: 'Substrate',
-	  value: 'substrate'
-	}, {
-	  info: 'beachball',
-	  text: 'Beachball',
-	  value: 'beachball'
-	}];
+	const ICON_DEFAULT_HOST = isPolkadot
+	    ? 'polkadot'
+	    : 'substrate';
+	const ICONS = [
+	    {
+	        info: 'default',
+	        text: 'Default for the connected node',
+	        value: 'default'
+	    },
+	    {
+	        info: 'polkadot',
+	        text: 'Polkadot',
+	        value: 'polkadot'
+	    },
+	    {
+	        info: 'substrate',
+	        text: 'Substrate',
+	        value: 'substrate'
+	    },
+	    {
+	        info: 'beachball',
+	        text: 'Beachball',
+	        value: 'beachball'
+	    }
+	];
 	const NOTIFICATION_DEFAULT = 'popup';
 
 	const CAMERA_DEFAULT = 'off';
-	const CAMERA = [{
-	  info: 'on',
-	  text: 'Allow camera access',
-	  value: 'on'
-	}, {
-	  info: 'off',
-	  text: 'Do not allow camera access',
-	  value: 'off'
-	}];
+	const CAMERA = [
+	    {
+	        info: 'on',
+	        text: 'Allow camera access',
+	        value: 'on'
+	    },
+	    {
+	        info: 'off',
+	        text: 'Do not allow camera access',
+	        value: 'off'
+	    }
+	];
 	const LANGUAGE_DEFAULT = 'default';
 	const LOCKING_DEFAULT = 'session';
-	const LOCKING = [{
-	  info: 'session',
-	  text: 'Once per session',
-	  value: 'session'
-	}, {
-	  info: 'tx',
-	  text: 'On each transaction',
-	  value: 'tx'
-	}];
+	const LOCKING = [
+	    {
+	        info: 'session',
+	        text: 'Once per session',
+	        value: 'session'
+	    },
+	    {
+	        info: 'tx',
+	        text: 'On each transaction',
+	        value: 'tx'
+	    }
+	];
 	const METADATA_UP_DEFAULT = 'off';
-	const METADATA_UP = [{
-	  info: 'off',
-	  text: 'Do not auto-update extension metadata',
-	  value: 'off'
-	}, {
-	  info: 'on',
-	  text: 'Auto-update extension metadata',
-	  value: 'on'
-	}];
+	const METADATA_UP = [
+	    {
+	        info: 'off',
+	        text: 'Do not auto-update extension metadata',
+	        value: 'off'
+	    },
+	    {
+	        info: 'on',
+	        text: 'Auto-update extension metadata',
+	        value: 'on'
+	    }
+	];
 	const STORAGE_DEFAULT = 'off';
-	const STORAGE = [{
-	  info: 'on',
-	  text: 'Allow local in-browser account storage',
-	  value: 'on'
-	}, {
-	  info: 'off',
-	  text: 'Do not allow local in-browser account storage',
-	  value: 'off'
-	}];
+	const STORAGE = [
+	    {
+	        info: 'on',
+	        text: 'Allow local in-browser account storage',
+	        value: 'on'
+	    },
+	    {
+	        info: 'off',
+	        text: 'Do not allow local in-browser account storage',
+	        value: 'off'
+	    }
+	];
 
 	function withDefault(options, option, fallback) {
-	  const _option = option || fallback;
-	  return options.some(({
-	    value
-	  }) => value === _option) ? _option : fallback;
+	    const _option = option || fallback;
+	    return options.some(({ value }) => value === _option)
+	        ? _option
+	        : fallback;
 	}
 	class Settings {
-	  #emitter;
-	  #apiType;
-	  #apiUrl;
-	  #camera;
-	  #i18nLang;
-	  #icon;
-	  #ledgerConn;
-	  #locking;
-	  #metadataUp;
-	  #prefix;
-	  #storage;
-	  #uiMode;
-	  #uiTheme;
-	  #notification;
-	  constructor() {
-	    const settings = store_legacy.get('settings') || {};
-	    this.#emitter = new eventemitter3Exports();
-	    this.#apiUrl = typeof settings.apiUrl === 'string' && settings.apiUrl || util$7.hasProcess && process.env && process.env.WS_URL || ENDPOINT_DEFAULT.value;
-	    this.#apiType = {
-	      param: this.#apiUrl,
-	      type: 'json-rpc'
-	    };
-	    this.#camera = withDefault(CAMERA, settings.camera, CAMERA_DEFAULT);
-	    this.#ledgerConn = withDefault(LEDGER_CONN, settings.ledgerConn, LEDGER_CONN_DEFAULT);
-	    this.#i18nLang = settings.i18nLang || LANGUAGE_DEFAULT;
-	    this.#icon = settings.icon || ICON_DEFAULT;
-	    this.#locking = settings.locking || LOCKING_DEFAULT;
-	    this.#metadataUp = withDefault(METADATA_UP, settings.storage, METADATA_UP_DEFAULT);
-	    this.#notification = settings.notification || NOTIFICATION_DEFAULT;
-	    this.#prefix = util$7.isUndefined(settings.prefix) ? PREFIX_DEFAULT : settings.prefix;
-	    this.#storage = withDefault(STORAGE, settings.storage, STORAGE_DEFAULT);
-	    this.#uiMode = settings.uiMode || UIMODE_DEFAULT;
-	    this.#uiTheme = settings.uiTheme || UITHEME_DEFAULT;
-	  }
-	  get camera() {
-	    return this.#camera;
-	  }
-	  get apiType() {
-	    return this.#apiType;
-	  }
-	  get apiUrl() {
-	    return this.#apiUrl;
-	  }
-	  get i18nLang() {
-	    return this.#i18nLang;
-	  }
-	  get icon() {
-	    return this.#icon;
-	  }
-	  get notification() {
-	    return this.#notification;
-	  }
-	  get ledgerConn() {
-	    return this.#ledgerConn;
-	  }
-	  get locking() {
-	    return this.#locking;
-	  }
-	  get metadataUp() {
-	    return this.#metadataUp;
-	  }
-	  get prefix() {
-	    return this.#prefix;
-	  }
-	  get storage() {
-	    return this.#storage;
-	  }
-	  get uiMode() {
-	    return this.#uiMode;
-	  }
-	  get uiTheme() {
-	    return this.#uiTheme;
-	  }
-	  get availableCamera() {
-	    return CAMERA;
-	  }
-	  get availableCryptos() {
-	    return CRYPTOS;
-	  }
-	  get availableCryptosEth() {
-	    return CRYPTOS_ETH;
-	  }
-	  get availableCryptosLedger() {
-	    return CRYPTOS_LEDGER;
-	  }
-	  get availableIcons() {
-	    return ICONS;
-	  }
-	  get availableLedgerConn() {
-	    return LEDGER_CONN;
-	  }
-	  get availableLocking() {
-	    return LOCKING;
-	  }
-	  get availableMetadataUp() {
-	    return METADATA_UP;
-	  }
-	  get availableNodes() {
-	    return ENDPOINTS;
-	  }
-	  get availablePrefixes() {
-	    return PREFIXES;
-	  }
-	  get availableStorage() {
-	    return STORAGE;
-	  }
-	  get availableUIModes() {
-	    return UIMODES;
-	  }
-	  get availableUIThemes() {
-	    return UITHEMES;
-	  }
-	  get() {
-	    return {
-	      apiType: this.#apiType,
-	      apiUrl: this.#apiUrl,
-	      camera: this.#camera,
-	      i18nLang: this.#i18nLang,
-	      icon: this.#icon,
-	      ledgerConn: this.#ledgerConn,
-	      locking: this.#locking,
-	      metadataUp: this.#metadataUp,
-	      notification: this.#notification,
-	      prefix: this.#prefix,
-	      storage: this.#storage,
-	      uiMode: this.#uiMode,
-	      uiTheme: this.#uiTheme
-	    };
-	  }
-	  set(settings) {
-	    this.#apiType = settings.apiType || this.#apiType;
-	    this.#apiUrl = settings.apiUrl || this.#apiUrl;
-	    this.#camera = settings.camera || this.#camera;
-	    this.#ledgerConn = settings.ledgerConn || this.#ledgerConn;
-	    this.#i18nLang = settings.i18nLang || this.#i18nLang;
-	    this.#icon = settings.icon || this.#icon;
-	    this.#locking = settings.locking || this.#locking;
-	    this.#metadataUp = settings.metadataUp || this.#metadataUp;
-	    this.#notification = settings.notification || this.#notification;
-	    this.#prefix = util$7.isUndefined(settings.prefix) ? this.#prefix : settings.prefix;
-	    this.#storage = settings.storage || this.#storage;
-	    this.#uiMode = settings.uiMode || this.#uiMode;
-	    this.#uiTheme = settings.uiTheme || this.#uiTheme;
-	    const newValues = this.get();
-	    store_legacy.set('settings', newValues);
-	    this.#emitter.emit('change', newValues);
-	  }
-	  on(type, cb) {
-	    this.#emitter.on(type, cb);
-	  }
+	    #emitter;
+	    #apiType;
+	    #apiUrl;
+	    #camera;
+	    #i18nLang;
+	    #icon;
+	    #ledgerConn;
+	    #locking;
+	    #metadataUp;
+	    #prefix;
+	    #storage;
+	    #uiMode;
+	    #uiTheme;
+	    #notification;
+	    constructor() {
+	        const settings = store_legacy.get('settings') || {};
+	        this.#emitter = new eventemitter3Exports();
+	        this.#apiUrl = (typeof settings.apiUrl === 'string' && settings.apiUrl) || (util$7.hasProcess && process.env && process.env.WS_URL) || ENDPOINT_DEFAULT.value;
+	        this.#apiType = { param: this.#apiUrl, type: 'json-rpc' };
+	        this.#camera = withDefault(CAMERA, settings.camera, CAMERA_DEFAULT);
+	        this.#ledgerConn = withDefault(LEDGER_CONN, settings.ledgerConn, LEDGER_CONN_DEFAULT);
+	        this.#i18nLang = settings.i18nLang || LANGUAGE_DEFAULT;
+	        this.#icon = settings.icon || ICON_DEFAULT;
+	        this.#locking = settings.locking || LOCKING_DEFAULT;
+	        this.#metadataUp = withDefault(METADATA_UP, settings.storage, METADATA_UP_DEFAULT);
+	        this.#notification = settings.notification || NOTIFICATION_DEFAULT;
+	        this.#prefix = util$7.isUndefined(settings.prefix) ? PREFIX_DEFAULT : settings.prefix;
+	        this.#storage = withDefault(STORAGE, settings.storage, STORAGE_DEFAULT);
+	        this.#uiMode = settings.uiMode || UIMODE_DEFAULT;
+	        this.#uiTheme = settings.uiTheme || UITHEME_DEFAULT;
+	    }
+	    get camera() {
+	        return this.#camera;
+	    }
+	    get apiType() {
+	        return this.#apiType;
+	    }
+	    get apiUrl() {
+	        return this.#apiUrl;
+	    }
+	    get i18nLang() {
+	        return this.#i18nLang;
+	    }
+	    get icon() {
+	        return this.#icon;
+	    }
+	    get notification() {
+	        return this.#notification;
+	    }
+	    get ledgerConn() {
+	        return this.#ledgerConn;
+	    }
+	    get locking() {
+	        return this.#locking;
+	    }
+	    get metadataUp() {
+	        return this.#metadataUp;
+	    }
+	    get prefix() {
+	        return this.#prefix;
+	    }
+	    get storage() {
+	        return this.#storage;
+	    }
+	    get uiMode() {
+	        return this.#uiMode;
+	    }
+	    get uiTheme() {
+	        return this.#uiTheme;
+	    }
+	    get availableCamera() {
+	        return CAMERA;
+	    }
+	    get availableCryptos() {
+	        return CRYPTOS;
+	    }
+	    get availableCryptosEth() {
+	        return CRYPTOS_ETH;
+	    }
+	    get availableCryptosLedger() {
+	        return CRYPTOS_LEDGER;
+	    }
+	    get availableIcons() {
+	        return ICONS;
+	    }
+	    get availableLedgerConn() {
+	        return LEDGER_CONN;
+	    }
+	    get availableLocking() {
+	        return LOCKING;
+	    }
+	    get availableMetadataUp() {
+	        return METADATA_UP;
+	    }
+	    get availableNodes() {
+	        return ENDPOINTS;
+	    }
+	    get availablePrefixes() {
+	        return PREFIXES;
+	    }
+	    get availableStorage() {
+	        return STORAGE;
+	    }
+	    get availableUIModes() {
+	        return UIMODES;
+	    }
+	    get availableUIThemes() {
+	        return UITHEMES;
+	    }
+	    get() {
+	        return {
+	            apiType: this.#apiType,
+	            apiUrl: this.#apiUrl,
+	            camera: this.#camera,
+	            i18nLang: this.#i18nLang,
+	            icon: this.#icon,
+	            ledgerConn: this.#ledgerConn,
+	            locking: this.#locking,
+	            metadataUp: this.#metadataUp,
+	            notification: this.#notification,
+	            prefix: this.#prefix,
+	            storage: this.#storage,
+	            uiMode: this.#uiMode,
+	            uiTheme: this.#uiTheme
+	        };
+	    }
+	    set(settings) {
+	        this.#apiType = settings.apiType || this.#apiType;
+	        this.#apiUrl = settings.apiUrl || this.#apiUrl;
+	        this.#camera = settings.camera || this.#camera;
+	        this.#ledgerConn = settings.ledgerConn || this.#ledgerConn;
+	        this.#i18nLang = settings.i18nLang || this.#i18nLang;
+	        this.#icon = settings.icon || this.#icon;
+	        this.#locking = settings.locking || this.#locking;
+	        this.#metadataUp = settings.metadataUp || this.#metadataUp;
+	        this.#notification = settings.notification || this.#notification;
+	        this.#prefix = util$7.isUndefined(settings.prefix) ? this.#prefix : settings.prefix;
+	        this.#storage = settings.storage || this.#storage;
+	        this.#uiMode = settings.uiMode || this.#uiMode;
+	        this.#uiTheme = settings.uiTheme || this.#uiTheme;
+	        const newValues = this.get();
+	        store_legacy.set('settings', newValues);
+	        this.#emitter.emit('change', newValues);
+	    }
+	    on(type, cb) {
+	        this.#emitter.on(type, cb);
+	    }
 	}
 	const settings = new Settings();
 
-	const chains = utilCrypto.selectableNetworks.filter(n => n.genesisHash.length).reduce((chains, {
-	  genesisHash,
-	  network
-	}) => util$7.objectSpread(chains, {
-	  [network]: genesisHash
-	}), {});
+	const chains = utilCrypto.selectableNetworks
+	    .filter((n) => n.genesisHash.length)
+	    .reduce((chains, { genesisHash, network }) => util$7.objectSpread(chains, { [network]: genesisHash }), {});
 
-	const packageInfo = {
-	  name: '@polkadot/ui-settings',
-	  path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto',
-	  type: 'esm',
-	  version: '2.12.1'
-	};
+	const packageInfo = { name: '@polkadot/ui-settings', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.0.1' };
 
 	exports.ENDPOINT_DEFAULT = ENDPOINT_DEFAULT;
 	exports.ICON_DEFAULT = ICON_DEFAULT;
