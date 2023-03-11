@@ -2,6 +2,7 @@
 
 ## master
 
+- phishing 0.20.2
 - hw-ledger, keyring, util, util-crypto 11.0.2
 - wasm-crypto 7.0.3
 - extension-dapp 0.45.1
