@@ -1478,7 +1478,7 @@
         });
     };
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.1.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.1.2' };
 
     function isFunction(value) {
         return typeof value === 'function';
@@ -4024,7 +4024,7 @@
     function identity$1(instanceId, api) {
         return memo(instanceId, (accountId) => api.derive.accounts._identity(accountId).pipe(switchMap(([identityOfOpt, superOfOpt]) => getParent(api, identityOfOpt, superOfOpt)), map(([identityOfOpt, superOf]) => extractIdentity(identityOfOpt, superOf))));
     }
-    const hasIdentity = firstMemo((api, accountId) => api.derive.accounts.hasIdentityMulti([accountId]));
+    const hasIdentity =  firstMemo((api, accountId) => api.derive.accounts.hasIdentityMulti([accountId]));
     function hasIdentityMulti(instanceId, api) {
         return memo(instanceId, (accountIds) => api.query.identity?.identityOf
             ? combineLatest([
@@ -4122,7 +4122,7 @@
             : of(empty));
     }
 
-    const members$5 = callMethod('members', []);
+    const members$5 =  callMethod('members', []);
 
     function prime$4(section) {
         return withSection(section, (query) => () => util.isFunction(query?.prime)
@@ -4159,16 +4159,16 @@
             ? firstObservable(_proposalsFrom(api, query, [hash]))
             : of(null));
     }
-    const proposalCount$4 = callMethod('proposalCount', null);
-    const proposalHashes$4 = callMethod('proposals', []);
+    const proposalCount$4 =  callMethod('proposalCount', null);
+    const proposalHashes$4 =  callMethod('proposals', []);
 
-    const members$4 = members$5('allianceMotion');
-    const hasProposals$3 = hasProposals$4('allianceMotion');
-    const proposal$3 = proposal$4('allianceMotion');
-    const proposalCount$3 = proposalCount$4('allianceMotion');
-    const proposalHashes$3 = proposalHashes$4('allianceMotion');
-    const proposals$5 = proposals$6('allianceMotion');
-    const prime$3 = prime$4('allianceMotion');
+    const members$4 =  members$5('allianceMotion');
+    const hasProposals$3 =  hasProposals$4('allianceMotion');
+    const proposal$3 =  proposal$4('allianceMotion');
+    const proposalCount$3 =  proposalCount$4('allianceMotion');
+    const proposalHashes$3 =  proposalHashes$4('allianceMotion');
+    const proposals$5 =  proposals$6('allianceMotion');
+    const prime$3 =  prime$4('allianceMotion');
 
     const alliance = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -4583,9 +4583,9 @@
         ]);
     }
 
-    const bestNumber = createBlockNumberDerive((api) => api.rpc.chain.subscribeNewHeads());
+    const bestNumber =  createBlockNumberDerive((api) => api.rpc.chain.subscribeNewHeads());
 
-    const bestNumberFinalized = createBlockNumberDerive((api) => api.rpc.chain.subscribeFinalizedHeads());
+    const bestNumberFinalized =  createBlockNumberDerive((api) => api.rpc.chain.subscribeFinalizedHeads());
 
     function bestNumberLag(instanceId, api) {
         return memo(instanceId, () => combineLatest([
@@ -4842,13 +4842,13 @@
             [null, { stake: api.registry.createType('Balance'), votes: [] }])[1])));
     }
 
-    const members$3 = members$5('council');
-    const hasProposals$2 = hasProposals$4('council');
-    const proposal$2 = proposal$4('council');
-    const proposalCount$2 = proposalCount$4('council');
-    const proposalHashes$2 = proposalHashes$4('council');
-    const proposals$4 = proposals$6('council');
-    const prime$2 = prime$4('council');
+    const members$3 =  members$5('council');
+    const hasProposals$2 =  hasProposals$4('council');
+    const proposal$2 =  proposal$4('council');
+    const proposalCount$2 =  proposalCount$4('council');
+    const proposalHashes$2 =  proposalHashes$4('council');
+    const proposals$4 =  proposals$6('council');
+    const prime$2 =  prime$4('council');
 
     const council = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -5336,7 +5336,7 @@
                     : of([])
             : of([]));
     }
-    const preimage = firstMemo((api, hash) => api.derive.democracy.preimages([hash]));
+    const preimage =  firstMemo((api, hash) => api.derive.democracy.preimages([hash]));
 
     function isNewDepositors(depositors) {
         return util.isFunction(depositors[1].mul);
@@ -5622,13 +5622,13 @@
         receivedHeartbeats: receivedHeartbeats
     });
 
-    const members$2 = members$5('membership');
-    const hasProposals$1 = hasProposals$4('membership');
-    const proposal$1 = proposal$4('membership');
-    const proposalCount$1 = proposalCount$4('membership');
-    const proposalHashes$1 = proposalHashes$4('membership');
-    const proposals$2 = proposals$6('membership');
-    const prime$1 = prime$4('membership');
+    const members$2 =  members$5('membership');
+    const hasProposals$1 =  hasProposals$4('membership');
+    const proposal$1 =  proposal$4('membership');
+    const proposalCount$1 =  proposalCount$4('membership');
+    const proposalHashes$1 =  proposalHashes$4('membership');
+    const proposals$2 =  proposals$6('membership');
+    const prime$1 =  prime$4('membership');
 
     const membership = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -5835,9 +5835,9 @@
             ? queryBabe(api).pipe(map(([info, slots]) => createDerive(api, info, slots)))
             : queryAura(api));
     }
-    const eraLength = withProgressField('eraLength');
-    const eraProgress = withProgressField('eraProgress');
-    const sessionProgress = withProgressField('sessionProgress');
+    const eraLength =  withProgressField('eraLength');
+    const eraProgress =  withProgressField('eraProgress');
+    const sessionProgress =  withProgressField('sessionProgress');
 
     const session = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -5958,7 +5958,7 @@
             api.derive.staking.queryMulti(accountIds, opts)
         ]).pipe(map(([keys, queries]) => queries.map((q, index) => parseResult$1(api, sessionInfo, keys[index], q)))))));
     }
-    const account = firstMemo((api, accountId, opts) => api.derive.staking.accounts([accountId], opts));
+    const account =  firstMemo((api, accountId, opts) => api.derive.staking.accounts([accountId], opts));
 
     function currentPoints(instanceId, api) {
         return memo(instanceId, () => api.derive.session.indexes().pipe(switchMap(({ activeEra }) => api.query.staking.erasRewardPoints(activeEra))));
@@ -6053,9 +6053,9 @@
                 : api.query.staking.erasStakersClipped.entries(era).pipe(map((r) => setEraCache(cacheKey, withActive, mapStakers(era, r))));
         });
     }
-    const eraExposure = singleEra('_eraExposure');
-    const _erasExposure = combineEras('_eraExposure');
-    const erasExposure = erasHistoricApply('_erasExposure');
+    const eraExposure =  singleEra('_eraExposure');
+    const _erasExposure =  combineEras('_eraExposure');
+    const erasExposure =  erasHistoricApply('_erasExposure');
 
     function erasHistoric(instanceId, api) {
         return memo(instanceId, (withActive) => combineLatest([
@@ -6106,7 +6106,7 @@
                 : api.query.staking.erasRewardPoints.multi(remaining).pipe(map((p) => filterCachedEras(eras, cached, setEraMultiCache(CACHE_KEY$3, withActive, mapPoints(remaining, p)))));
         });
     }
-    const erasPoints = erasHistoricApply('_erasPoints');
+    const erasPoints =  erasHistoricApply('_erasPoints');
 
     const CACHE_KEY$2 = 'eraPrefs';
     function mapPrefs(era, all) {
@@ -6124,9 +6124,9 @@
                 : api.query.staking.erasValidatorPrefs.entries(era).pipe(map((r) => setEraCache(cacheKey, withActive, mapPrefs(era, r))));
         });
     }
-    const eraPrefs = singleEra('_eraPrefs');
-    const _erasPrefs = combineEras('_eraPrefs');
-    const erasPrefs = erasHistoricApply('_erasPrefs');
+    const eraPrefs =  singleEra('_eraPrefs');
+    const _erasPrefs =  combineEras('_eraPrefs');
+    const erasPrefs =  erasHistoricApply('_erasPrefs');
 
     const CACHE_KEY$1 = 'eraRewards';
     function mapRewards(eras, optRewards) {
@@ -6148,7 +6148,7 @@
             return api.query.staking.erasValidatorReward.multi(remaining).pipe(map((r) => filterCachedEras(eras, cached, setEraMultiCache(CACHE_KEY$1, withActive, mapRewards(remaining, r)))));
         });
     }
-    const erasRewards = erasHistoricApply('_erasRewards');
+    const erasRewards =  erasHistoricApply('_erasRewards');
 
     const CACHE_KEY = 'eraSlashes';
     function mapSlashes(era, noms, vals) {
@@ -6173,9 +6173,9 @@
                 ]).pipe(map(([n, v]) => setEraCache(cacheKey, withActive, mapSlashes(era, n, v))));
         });
     }
-    const eraSlashes = singleEra('_eraSlashes');
-    const _erasSlashes = combineEras('_eraSlashes');
-    const erasSlashes = erasHistoricApply('_erasSlashes');
+    const eraSlashes =  singleEra('_eraSlashes');
+    const _erasSlashes =  combineEras('_eraSlashes');
+    const erasSlashes =  erasHistoricApply('_erasSlashes');
 
     const DEFAULT_FLAGS$1 = { withController: true, withExposure: true, withPrefs: true };
     function combineAccounts(nextElected, validators) {
@@ -6201,7 +6201,7 @@
                 : [...sessionIds.values()]
         };
     }
-    const keys = firstMemo((api, stashId) => api.derive.staking.keysMulti([stashId]));
+    const keys =  firstMemo((api, stashId) => api.derive.staking.keysMulti([stashId]));
     function keysMulti(instanceId, api) {
         return memo(instanceId, (stashIds) => stashIds.length
             ? api.query.session.queuedKeys().pipe(switchMap((queuedKeys) => combineLatest([
@@ -6231,8 +6231,8 @@
             ]).pipe(map(([clp, exp]) => eras.map((era, index) => ({ clipped: clp[index], era, exposure: exp[index] }))))
             : of([]));
     }
-    const ownExposure = firstMemo((api, accountId, era) => api.derive.staking._ownExposures(accountId, [era], true));
-    const ownExposures = erasHistoricApplyAccount('_ownExposures');
+    const ownExposure =  firstMemo((api, accountId, era) => api.derive.staking._ownExposures(accountId, [era], true));
+    const ownExposures =  erasHistoricApplyAccount('_ownExposures');
 
     function _ownSlashes(instanceId, api) {
         return memo(instanceId, (accountId, eras, _withActive) => eras.length
@@ -6247,8 +6247,8 @@
             }))))
             : of([]));
     }
-    const ownSlash = firstMemo((api, accountId, era) => api.derive.staking._ownSlashes(accountId, [era], true));
-    const ownSlashes = erasHistoricApplyAccount('_ownSlashes');
+    const ownSlash =  firstMemo((api, accountId, era) => api.derive.staking._ownSlashes(accountId, [era], true));
+    const ownSlashes =  erasHistoricApplyAccount('_ownSlashes');
 
     function parseDetails(stashId, controllerIdOpt, nominatorsOpt, rewardDestination, validatorPrefs, exposure, stakingLedgerOpt) {
         return {
@@ -6304,7 +6304,7 @@
     function getBatch(api, activeEra, stashIds, flags) {
         return getStashInfo(api, stashIds, activeEra, flags).pipe(switchMap(([controllerIdOpt, nominatorsOpt, rewardDestination, validatorPrefs, exposure]) => getLedgers(api, controllerIdOpt, flags).pipe(map((stakingLedgerOpts) => stashIds.map((stashId, index) => parseDetails(stashId, controllerIdOpt[index], nominatorsOpt[index], rewardDestination[index], validatorPrefs[index], exposure[index], stakingLedgerOpts[index]))))));
     }
-    const query = firstMemo((api, accountId, flags) => api.derive.staking.queryMulti([accountId], flags));
+    const query =  firstMemo((api, accountId, flags) => api.derive.staking.queryMulti([accountId], flags));
     function queryMulti(instanceId, api) {
         return memo(instanceId, (accountIds, flags) => api.derive.session.indexes().pipe(switchMap(({ activeEra }) => {
             const stashIds = accountIds.map((a) => api.registry.createType('AccountId', a));
@@ -6336,7 +6336,7 @@
     function stakerExposures(instanceId, api) {
         return memo(instanceId, (accountIds, withActive = false) => api.derive.staking.erasHistoric(withActive).pipe(switchMap((eras) => api.derive.staking._stakerExposures(accountIds, eras, withActive))));
     }
-    const stakerExposure = firstMemo((api, accountId, withActive) => api.derive.staking.stakerExposures([accountId], withActive));
+    const stakerExposure =  firstMemo((api, accountId, withActive) => api.derive.staking.stakerExposures([accountId], withActive));
 
     function _stakerPoints(instanceId, api) {
         return memo(instanceId, (accountId, eras, withActive) => {
@@ -6348,7 +6348,7 @@
             }))));
         });
     }
-    const stakerPoints = erasHistoricApplyAccount('_stakerPoints');
+    const stakerPoints =  erasHistoricApplyAccount('_stakerPoints');
 
     function _stakerPrefs(instanceId, api) {
         return memo(instanceId, (accountId, eras, _withActive) => api.query.staking.erasValidatorPrefs.multi(eras.map((e) => [e, accountId])).pipe(map((all) => all.map((validatorPrefs, index) => ({
@@ -6356,7 +6356,7 @@
             validatorPrefs
         })))));
     }
-    const stakerPrefs = erasHistoricApplyAccount('_stakerPrefs');
+    const stakerPrefs =  erasHistoricApplyAccount('_stakerPrefs');
 
     function parseRewards(api, stashId, [erasPoints, erasPrefs, erasRewards], exposures) {
         return exposures.map(({ era, isEmpty, isValidator, nominating, validators: eraValidators }) => {
@@ -6478,7 +6478,7 @@
             }))));
         })));
     }
-    const stakerRewards = firstMemo((api, accountId, withActive) => api.derive.staking.erasHistoric(withActive).pipe(switchMap((eras) => api.derive.staking._stakerRewards([accountId], eras, withActive))));
+    const stakerRewards =  firstMemo((api, accountId, withActive) => api.derive.staking.erasHistoric(withActive).pipe(switchMap((eras) => api.derive.staking._stakerRewards([accountId], eras, withActive))));
     function stakerRewardsMultiEras(instanceId, api) {
         return memo(instanceId, (accountIds, eras) => accountIds.length && eras.length
             ? api.derive.staking._stakerRewards(accountIds, eras, false)
@@ -6497,7 +6497,7 @@
             }))));
         });
     }
-    const stakerSlashes = erasHistoricApplyAccount('_stakerSlashes');
+    const stakerSlashes =  erasHistoricApplyAccount('_stakerSlashes');
 
     function onBondedEvent(api) {
         let current = Date.now();
@@ -6613,13 +6613,13 @@
         waitingInfo: waitingInfo
     });
 
-    const members = members$5('technicalCommittee');
-    const hasProposals = hasProposals$4('technicalCommittee');
-    const proposal = proposal$4('technicalCommittee');
-    const proposalCount = proposalCount$4('technicalCommittee');
-    const proposalHashes = proposalHashes$4('technicalCommittee');
-    const proposals$1 = proposals$6('technicalCommittee');
-    const prime = prime$4('technicalCommittee');
+    const members =  members$5('technicalCommittee');
+    const hasProposals =  hasProposals$4('technicalCommittee');
+    const proposal =  proposal$4('technicalCommittee');
+    const proposalCount =  proposalCount$4('technicalCommittee');
+    const proposalHashes =  proposalHashes$4('technicalCommittee');
+    const proposals$1 =  proposals$6('technicalCommittee');
+    const prime =  prime$4('technicalCommittee');
 
     const technicalCommittee = /*#__PURE__*/Object.freeze({
         __proto__: null,
