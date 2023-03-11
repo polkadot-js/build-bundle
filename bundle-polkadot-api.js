@@ -6,6 +6,124 @@
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
+    var extendStatics = function(d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    function __extends(d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    }
+    function __awaiter(thisArg, _arguments, P, generator) {
+        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+        return new (P || (P = Promise))(function (resolve, reject) {
+            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+            step((generator = generator.apply(thisArg, _arguments || [])).next());
+        });
+    }
+    function __generator(thisArg, body) {
+        var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+        function verb(n) { return function (v) { return step([n, v]); }; }
+        function step(op) {
+            if (f) throw new TypeError("Generator is already executing.");
+            while (g && (g = 0, op[0] && (_ = 0)), _) try {
+                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+                if (y = 0, t) op = [op[0] & 2, t.value];
+                switch (op[0]) {
+                    case 0: case 1: t = op; break;
+                    case 4: _.label++; return { value: op[1], done: false };
+                    case 5: _.label++; y = op[1]; op = [0]; continue;
+                    case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                    default:
+                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                        if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                        if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                        if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                        if (t[2]) _.ops.pop();
+                        _.trys.pop(); continue;
+                }
+                op = body.call(thisArg, _);
+            } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+            if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+        }
+    }
+    function __values(o) {
+        var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+        if (m) return m.call(o);
+        if (o && typeof o.length === "number") return {
+            next: function () {
+                if (o && i >= o.length) o = void 0;
+                return { value: o && o[i++], done: !o };
+            }
+        };
+        throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+    }
+    function __read(o, n) {
+        var m = typeof Symbol === "function" && o[Symbol.iterator];
+        if (!m) return o;
+        var i = m.call(o), r, ar = [], e;
+        try {
+            while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+        }
+        catch (error) { e = { error: error }; }
+        finally {
+            try {
+                if (r && !r.done && (m = i["return"])) m.call(i);
+            }
+            finally { if (e) throw e.error; }
+        }
+        return ar;
+    }
+    function __spreadArray(to, from, pack) {
+        if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+            if (ar || !(i in from)) {
+                if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+                ar[i] = from[i];
+            }
+        }
+        return to.concat(ar || Array.prototype.slice.call(from));
+    }
+    function __await(v) {
+        return this instanceof __await ? (this.v = v, this) : new __await(v);
+    }
+    function __asyncGenerator(thisArg, _arguments, generator) {
+        if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+        var g = generator.apply(thisArg, _arguments || []), i, q = [];
+        return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
+        function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+        function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
+        function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
+        function fulfill(value) { resume("next", value); }
+        function reject(value) { resume("throw", value); }
+        function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
+    }
+    function __asyncValues(o) {
+        if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+        var m = o[Symbol.asyncIterator], i;
+        return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+        function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+        function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+    }
+    function __classPrivateFieldGet(receiver, state, kind, f) {
+        if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+        return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+    }
+    function __classPrivateFieldSet(receiver, state, value, kind, f) {
+        if (kind === "m") throw new TypeError("Private method is not writable");
+        if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+        return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+    }
+
     function evaluateThis(fn) {
         return fn('return this');
     }
@@ -21,10 +139,6 @@
 
     const fetch = xglobal.fetch;
 
-    function isFunction$1(value) {
-        return typeof value === 'function';
-    }
-
     const UNKNOWN = -99999;
     function extend(that, name, value) {
         Object.defineProperty(that, name, {
@@ -34,18 +148,13 @@
         });
     }
     class RpcError extends Error {
-        code;
-        data;
-        message;
-        name;
-        stack;
         constructor(message = '', code = UNKNOWN, data) {
             super();
             extend(this, 'message', String(message));
             extend(this, 'name', this.constructor.name);
             extend(this, 'data', data);
             extend(this, 'code', code);
-            if (isFunction$1(Error.captureStackTrace)) {
+            if (util.isFunction(Error.captureStackTrace)) {
                 Error.captureStackTrace(this, this.constructor);
             }
             else {
@@ -53,14 +162,15 @@
                 stack && extend(this, 'stack', stack);
             }
         }
-        static CODES = {
-            ASSERT: -90009,
-            INVALID_JSONRPC: -99998,
-            METHOD_NOT_FOUND: -32601,
-            UNKNOWN
-        };
     }
+    RpcError.CODES = {
+        ASSERT: -90009,
+        INVALID_JSONRPC: -99998,
+        METHOD_NOT_FOUND: -32601,
+        UNKNOWN
+    };
 
+    var _RpcCoder_id;
     function formatErrorData(data) {
         if (util.isUndefined(data)) {
             return '';
@@ -79,7 +189,9 @@
         }
     }
     class RpcCoder {
-        #id = 0;
+        constructor() {
+            _RpcCoder_id.set(this, 0);
+        }
         decodeResponse(response) {
             if (!response || response.jsonrpc !== '2.0') {
                 throw new Error('Invalid jsonrpc field in decoded object');
@@ -105,7 +217,8 @@
             return [id, util.stringify(data)];
         }
         encodeObject(method, params) {
-            const id = ++this.#id;
+            var _a;
+            const id = __classPrivateFieldSet(this, _RpcCoder_id, (_a = __classPrivateFieldGet(this, _RpcCoder_id, "f"), ++_a), "f");
             return [id, {
                     id,
                     jsonrpc: '2.0',
@@ -114,6 +227,7 @@
                 }];
         }
     }
+    _RpcCoder_id = new WeakMap();
 
     const HTTP_URL = 'http://127.0.0.1:9933';
     const WS_URL = 'ws://127.0.0.1:9944';
@@ -122,50 +236,48 @@
         WS_URL
     };
 
+    var _LRUCache_instances, _LRUCache_data, _LRUCache_refs, _LRUCache_length, _LRUCache_head, _LRUCache_tail, _LRUCache_toHead;
     const DEFAULT_CAPACITY = 128;
     class LRUNode {
-        key;
-        next;
-        prev;
         constructor(key) {
             this.key = key;
             this.next = this.prev = this;
         }
     }
     class LRUCache {
-        capacity;
-        #data = new Map();
-        #refs = new Map();
-        #length = 0;
-        #head;
-        #tail;
         constructor(capacity = DEFAULT_CAPACITY) {
+            _LRUCache_instances.add(this);
+            _LRUCache_data.set(this, new Map());
+            _LRUCache_refs.set(this, new Map());
+            _LRUCache_length.set(this, 0);
+            _LRUCache_head.set(this, void 0);
+            _LRUCache_tail.set(this, void 0);
             this.capacity = capacity;
-            this.#head = this.#tail = new LRUNode('<empty>');
+            __classPrivateFieldSet(this, _LRUCache_head, __classPrivateFieldSet(this, _LRUCache_tail, new LRUNode('<empty>'), "f"), "f");
         }
         get length() {
-            return this.#length;
+            return __classPrivateFieldGet(this, _LRUCache_length, "f");
         }
         get lengthData() {
-            return this.#data.size;
+            return __classPrivateFieldGet(this, _LRUCache_data, "f").size;
         }
         get lengthRefs() {
-            return this.#refs.size;
+            return __classPrivateFieldGet(this, _LRUCache_refs, "f").size;
         }
         entries() {
             const keys = this.keys();
             const entries = new Array(keys.length);
             for (let i = 0; i < keys.length; i++) {
                 const key = keys[i];
-                entries[i] = [key, this.#data.get(key)];
+                entries[i] = [key, __classPrivateFieldGet(this, _LRUCache_data, "f").get(key)];
             }
             return entries;
         }
         keys() {
             const keys = [];
-            if (this.#length) {
-                let curr = this.#head;
-                while (curr !== this.#tail) {
+            if (__classPrivateFieldGet(this, _LRUCache_length, "f")) {
+                let curr = __classPrivateFieldGet(this, _LRUCache_head, "f");
+                while (curr !== __classPrivateFieldGet(this, _LRUCache_tail, "f")) {
                     keys.push(curr.key);
                     curr = curr.next;
                 }
@@ -174,84 +286,86 @@
             return keys;
         }
         get(key) {
-            const data = this.#data.get(key);
+            const data = __classPrivateFieldGet(this, _LRUCache_data, "f").get(key);
             if (data) {
-                this.#toHead(key);
+                __classPrivateFieldGet(this, _LRUCache_instances, "m", _LRUCache_toHead).call(this, key);
                 return data;
             }
             return null;
         }
         set(key, value) {
-            if (this.#data.has(key)) {
-                this.#toHead(key);
+            if (__classPrivateFieldGet(this, _LRUCache_data, "f").has(key)) {
+                __classPrivateFieldGet(this, _LRUCache_instances, "m", _LRUCache_toHead).call(this, key);
             }
             else {
                 const node = new LRUNode(key);
-                this.#refs.set(node.key, node);
+                __classPrivateFieldGet(this, _LRUCache_refs, "f").set(node.key, node);
                 if (this.length === 0) {
-                    this.#head = this.#tail = node;
+                    __classPrivateFieldSet(this, _LRUCache_head, __classPrivateFieldSet(this, _LRUCache_tail, node, "f"), "f");
                 }
                 else {
-                    this.#head.prev = node;
-                    node.next = this.#head;
-                    this.#head = node;
+                    __classPrivateFieldGet(this, _LRUCache_head, "f").prev = node;
+                    node.next = __classPrivateFieldGet(this, _LRUCache_head, "f");
+                    __classPrivateFieldSet(this, _LRUCache_head, node, "f");
                 }
-                if (this.#length === this.capacity) {
-                    this.#data.delete(this.#tail.key);
-                    this.#refs.delete(this.#tail.key);
-                    this.#tail = this.#tail.prev;
-                    this.#tail.next = this.#head;
+                if (__classPrivateFieldGet(this, _LRUCache_length, "f") === this.capacity) {
+                    __classPrivateFieldGet(this, _LRUCache_data, "f").delete(__classPrivateFieldGet(this, _LRUCache_tail, "f").key);
+                    __classPrivateFieldGet(this, _LRUCache_refs, "f").delete(__classPrivateFieldGet(this, _LRUCache_tail, "f").key);
+                    __classPrivateFieldSet(this, _LRUCache_tail, __classPrivateFieldGet(this, _LRUCache_tail, "f").prev, "f");
+                    __classPrivateFieldGet(this, _LRUCache_tail, "f").next = __classPrivateFieldGet(this, _LRUCache_head, "f");
                 }
                 else {
-                    this.#length += 1;
+                    __classPrivateFieldSet(this, _LRUCache_length, __classPrivateFieldGet(this, _LRUCache_length, "f") + 1, "f");
                 }
             }
-            this.#data.set(key, value);
-        }
-        #toHead(key) {
-            const ref = this.#refs.get(key);
-            if (ref && ref !== this.#head) {
-                ref.prev.next = ref.next;
-                ref.next.prev = ref.prev;
-                ref.next = this.#head;
-                this.#head.prev = ref;
-                this.#head = ref;
-            }
+            __classPrivateFieldGet(this, _LRUCache_data, "f").set(key, value);
         }
     }
+    _LRUCache_data = new WeakMap(), _LRUCache_refs = new WeakMap(), _LRUCache_length = new WeakMap(), _LRUCache_head = new WeakMap(), _LRUCache_tail = new WeakMap(), _LRUCache_instances = new WeakSet(), _LRUCache_toHead = function _LRUCache_toHead(key) {
+        const ref = __classPrivateFieldGet(this, _LRUCache_refs, "f").get(key);
+        if (ref && ref !== __classPrivateFieldGet(this, _LRUCache_head, "f")) {
+            ref.prev.next = ref.next;
+            ref.next.prev = ref.prev;
+            ref.next = __classPrivateFieldGet(this, _LRUCache_head, "f");
+            __classPrivateFieldGet(this, _LRUCache_head, "f").prev = ref;
+            __classPrivateFieldSet(this, _LRUCache_head, ref, "f");
+        }
+    };
 
+    var _HttpProvider_instances, _HttpProvider_callCache, _HttpProvider_coder, _HttpProvider_endpoint, _HttpProvider_headers, _HttpProvider_stats, _HttpProvider_send;
     const ERROR_SUBSCRIBE = 'HTTP Provider does not have subscriptions, use WebSockets instead';
     const l$7 = util.logger('api-http');
     class HttpProvider {
-        #callCache = new LRUCache();
-        #coder;
-        #endpoint;
-        #headers;
-        #stats;
         constructor(endpoint = defaults.HTTP_URL, headers = {}) {
+            _HttpProvider_instances.add(this);
+            _HttpProvider_callCache.set(this, new LRUCache());
+            _HttpProvider_coder.set(this, void 0);
+            _HttpProvider_endpoint.set(this, void 0);
+            _HttpProvider_headers.set(this, void 0);
+            _HttpProvider_stats.set(this, void 0);
             if (!/^(https|http):\/\//.test(endpoint)) {
                 throw new Error(`Endpoint should start with 'http://' or 'https://', received '${endpoint}'`);
             }
-            this.#coder = new RpcCoder();
-            this.#endpoint = endpoint;
-            this.#headers = headers;
-            this.#stats = {
+            __classPrivateFieldSet(this, _HttpProvider_coder, new RpcCoder(), "f");
+            __classPrivateFieldSet(this, _HttpProvider_endpoint, endpoint, "f");
+            __classPrivateFieldSet(this, _HttpProvider_headers, headers, "f");
+            __classPrivateFieldSet(this, _HttpProvider_stats, {
                 active: { requests: 0, subscriptions: 0 },
                 total: { bytesRecv: 0, bytesSent: 0, cached: 0, errors: 0, requests: 0, subscriptions: 0, timeout: 0 }
-            };
+            }, "f");
         }
         get hasSubscriptions() {
             return false;
         }
         clone() {
-            return new HttpProvider(this.#endpoint, this.#headers);
+            return new HttpProvider(__classPrivateFieldGet(this, _HttpProvider_endpoint, "f"), __classPrivateFieldGet(this, _HttpProvider_headers, "f"));
         }
         async connect() {
         }
         async disconnect() {
         }
         get stats() {
-            return this.#stats;
+            return __classPrivateFieldGet(this, _HttpProvider_stats, "f");
         }
         get isClonable() {
             return true;
@@ -265,50 +379,21 @@
             };
         }
         async send(method, params, isCacheable) {
-            this.#stats.total.requests++;
-            const [, body] = this.#coder.encodeJson(method, params);
+            __classPrivateFieldGet(this, _HttpProvider_stats, "f").total.requests++;
+            const [, body] = __classPrivateFieldGet(this, _HttpProvider_coder, "f").encodeJson(method, params);
             let resultPromise = isCacheable
-                ? this.#callCache.get(body)
+                ? __classPrivateFieldGet(this, _HttpProvider_callCache, "f").get(body)
                 : null;
             if (!resultPromise) {
-                resultPromise = this.#send(body);
+                resultPromise = __classPrivateFieldGet(this, _HttpProvider_instances, "m", _HttpProvider_send).call(this, body);
                 if (isCacheable) {
-                    this.#callCache.set(body, resultPromise);
+                    __classPrivateFieldGet(this, _HttpProvider_callCache, "f").set(body, resultPromise);
                 }
             }
             else {
-                this.#stats.total.cached++;
+                __classPrivateFieldGet(this, _HttpProvider_stats, "f").total.cached++;
             }
             return resultPromise;
-        }
-        async #send(body) {
-            this.#stats.active.requests++;
-            this.#stats.total.bytesSent += body.length;
-            try {
-                const response = await fetch(this.#endpoint, {
-                    body,
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Length': `${body.length}`,
-                        'Content-Type': 'application/json',
-                        ...this.#headers
-                    },
-                    method: 'POST'
-                });
-                if (!response.ok) {
-                    throw new Error(`[${response.status}]: ${response.statusText}`);
-                }
-                const result = await response.text();
-                this.#stats.total.bytesRecv += result.length;
-                const decoded = this.#coder.decodeResponse(JSON.parse(result));
-                this.#stats.active.requests--;
-                return decoded;
-            }
-            catch (e) {
-                this.#stats.active.requests--;
-                this.#stats.total.errors++;
-                throw e;
-            }
         }
         async subscribe(types, method, params, cb) {
             l$7.error(ERROR_SUBSCRIBE);
@@ -319,6 +404,35 @@
             throw new Error(ERROR_SUBSCRIBE);
         }
     }
+    _HttpProvider_callCache = new WeakMap(), _HttpProvider_coder = new WeakMap(), _HttpProvider_endpoint = new WeakMap(), _HttpProvider_headers = new WeakMap(), _HttpProvider_stats = new WeakMap(), _HttpProvider_instances = new WeakSet(), _HttpProvider_send = async function _HttpProvider_send(body) {
+        __classPrivateFieldGet(this, _HttpProvider_stats, "f").active.requests++;
+        __classPrivateFieldGet(this, _HttpProvider_stats, "f").total.bytesSent += body.length;
+        try {
+            const response = await fetch(__classPrivateFieldGet(this, _HttpProvider_endpoint, "f"), {
+                body,
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Length': `${body.length}`,
+                    'Content-Type': 'application/json',
+                    ...__classPrivateFieldGet(this, _HttpProvider_headers, "f")
+                },
+                method: 'POST'
+            });
+            if (!response.ok) {
+                throw new Error(`[${response.status}]: ${response.statusText}`);
+            }
+            const result = await response.text();
+            __classPrivateFieldGet(this, _HttpProvider_stats, "f").total.bytesRecv += result.length;
+            const decoded = __classPrivateFieldGet(this, _HttpProvider_coder, "f").decodeResponse(JSON.parse(result));
+            __classPrivateFieldGet(this, _HttpProvider_stats, "f").active.requests--;
+            return decoded;
+        }
+        catch (e) {
+            __classPrivateFieldGet(this, _HttpProvider_stats, "f").active.requests--;
+            __classPrivateFieldGet(this, _HttpProvider_stats, "f").total.errors++;
+            throw e;
+        }
+    };
 
     var eventemitter3Exports = {};
     var eventemitter3 = {
@@ -485,8 +599,8 @@
     	  module.exports = EventEmitter;
     	}
     } (eventemitter3));
-    const EventEmitter = eventemitter3Exports;
 
+    var _InnerChecker_healthCallback, _InnerChecker_currentHealthCheckId, _InnerChecker_currentHealthTimeout, _InnerChecker_currentSubunsubRequestId, _InnerChecker_currentSubscriptionId, _InnerChecker_requestToSmoldot, _InnerChecker_isSyncing, _InnerChecker_nextRequestId;
     function healthChecker() {
         let checker = null;
         let sendJsonRpc = null;
@@ -531,155 +645,157 @@
         };
     }
     class InnerChecker {
-        #healthCallback;
-        #currentHealthCheckId = null;
-        #currentHealthTimeout = null;
-        #currentSubunsubRequestId = null;
-        #currentSubscriptionId = null;
-        #requestToSmoldot;
-        #isSyncing = false;
-        #nextRequestId = 0;
         constructor(healthCallback, requestToSmoldot) {
-            this.#healthCallback = healthCallback;
-            this.#requestToSmoldot = (request) => requestToSmoldot(util.stringify(request));
-        }
-        sendJsonRpc = (request) => {
-            let parsedRequest;
-            try {
-                parsedRequest = JSON.parse(request);
-            }
-            catch (err) {
-                return;
-            }
-            if (parsedRequest.id) {
-                const newId = 'extern:' + util.stringify(parsedRequest.id);
-                parsedRequest.id = newId;
-            }
-            this.#requestToSmoldot(parsedRequest);
-        };
-        responsePassThrough = (jsonRpcResponse) => {
-            let parsedResponse;
-            try {
-                parsedResponse = JSON.parse(jsonRpcResponse);
-            }
-            catch (err) {
-                return jsonRpcResponse;
-            }
-            if (parsedResponse.id && this.#currentHealthCheckId === parsedResponse.id) {
-                this.#currentHealthCheckId = null;
-                if (!parsedResponse.result) {
-                    this.update(false);
-                    return null;
+            _InnerChecker_healthCallback.set(this, void 0);
+            _InnerChecker_currentHealthCheckId.set(this, null);
+            _InnerChecker_currentHealthTimeout.set(this, null);
+            _InnerChecker_currentSubunsubRequestId.set(this, null);
+            _InnerChecker_currentSubscriptionId.set(this, null);
+            _InnerChecker_requestToSmoldot.set(this, void 0);
+            _InnerChecker_isSyncing.set(this, false);
+            _InnerChecker_nextRequestId.set(this, 0);
+            this.sendJsonRpc = (request) => {
+                let parsedRequest;
+                try {
+                    parsedRequest = JSON.parse(request);
                 }
-                this.#healthCallback(parsedResponse.result);
-                this.#isSyncing = parsedResponse.result.isSyncing;
-                this.update(false);
-                return null;
-            }
-            if (parsedResponse.id &&
-                this.#currentSubunsubRequestId === parsedResponse.id) {
-                this.#currentSubunsubRequestId = null;
-                if (!parsedResponse.result) {
-                    this.update(false);
-                    return null;
+                catch (err) {
+                    return;
                 }
-                if (this.#currentSubscriptionId) {
-                    this.#currentSubscriptionId = null;
+                if (parsedRequest.id) {
+                    const newId = 'extern:' + util.stringify(parsedRequest.id);
+                    parsedRequest.id = newId;
                 }
-                else {
-                    this.#currentSubscriptionId = parsedResponse.result;
+                __classPrivateFieldGet(this, _InnerChecker_requestToSmoldot, "f").call(this, parsedRequest);
+            };
+            this.responsePassThrough = (jsonRpcResponse) => {
+                let parsedResponse;
+                try {
+                    parsedResponse = JSON.parse(jsonRpcResponse);
                 }
-                this.update(false);
-                return null;
-            }
-            if (parsedResponse.params &&
-                this.#currentSubscriptionId &&
-                parsedResponse.params.subscription === this.#currentSubscriptionId) {
-                this.update(true);
-                return null;
-            }
-            if (parsedResponse.id) {
-                const id = parsedResponse.id;
-                if (!id.startsWith('extern:')) {
-                    throw new Error('State inconsistency in health checker');
+                catch (err) {
+                    return jsonRpcResponse;
                 }
-                const newId = JSON.parse(id.slice('extern:'.length));
-                parsedResponse.id = newId;
-            }
-            return util.stringify(parsedResponse);
-        };
-        update = (startNow) => {
-            if (startNow && this.#currentHealthTimeout) {
-                clearTimeout(this.#currentHealthTimeout);
-                this.#currentHealthTimeout = null;
-            }
-            if (!this.#currentHealthTimeout) {
-                const startHealthRequest = () => {
-                    this.#currentHealthTimeout = null;
-                    if (this.#currentHealthCheckId) {
-                        return;
+                if (parsedResponse.id && __classPrivateFieldGet(this, _InnerChecker_currentHealthCheckId, "f") === parsedResponse.id) {
+                    __classPrivateFieldSet(this, _InnerChecker_currentHealthCheckId, null, "f");
+                    if (!parsedResponse.result) {
+                        this.update(false);
+                        return null;
                     }
-                    this.#currentHealthCheckId = `health-checker:${this.#nextRequestId}`;
-                    this.#nextRequestId += 1;
-                    this.#requestToSmoldot({
-                        id: this.#currentHealthCheckId,
-                        jsonrpc: '2.0',
-                        method: 'system_health',
-                        params: []
-                    });
-                };
-                if (startNow) {
-                    startHealthRequest();
+                    __classPrivateFieldGet(this, _InnerChecker_healthCallback, "f").call(this, parsedResponse.result);
+                    __classPrivateFieldSet(this, _InnerChecker_isSyncing, parsedResponse.result.isSyncing, "f");
+                    this.update(false);
+                    return null;
                 }
-                else {
-                    this.#currentHealthTimeout = setTimeout(startHealthRequest, 1000);
+                if (parsedResponse.id &&
+                    __classPrivateFieldGet(this, _InnerChecker_currentSubunsubRequestId, "f") === parsedResponse.id) {
+                    __classPrivateFieldSet(this, _InnerChecker_currentSubunsubRequestId, null, "f");
+                    if (!parsedResponse.result) {
+                        this.update(false);
+                        return null;
+                    }
+                    if (__classPrivateFieldGet(this, _InnerChecker_currentSubscriptionId, "f")) {
+                        __classPrivateFieldSet(this, _InnerChecker_currentSubscriptionId, null, "f");
+                    }
+                    else {
+                        __classPrivateFieldSet(this, _InnerChecker_currentSubscriptionId, parsedResponse.result, "f");
+                    }
+                    this.update(false);
+                    return null;
                 }
-            }
-            if (this.#isSyncing &&
-                !this.#currentSubscriptionId &&
-                !this.#currentSubunsubRequestId) {
-                this.startSubscription();
-            }
-            if (!this.#isSyncing &&
-                this.#currentSubscriptionId &&
-                !this.#currentSubunsubRequestId) {
-                this.endSubscription();
-            }
-        };
-        startSubscription = () => {
-            if (this.#currentSubunsubRequestId || this.#currentSubscriptionId) {
-                throw new Error('Internal error in health checker');
-            }
-            this.#currentSubunsubRequestId = `health-checker:${this.#nextRequestId}`;
-            this.#nextRequestId += 1;
-            this.#requestToSmoldot({
-                id: this.#currentSubunsubRequestId,
-                jsonrpc: '2.0',
-                method: 'chain_subscribeNewHeads',
-                params: []
-            });
-        };
-        endSubscription = () => {
-            if (this.#currentSubunsubRequestId || !this.#currentSubscriptionId) {
-                throw new Error('Internal error in health checker');
-            }
-            this.#currentSubunsubRequestId = `health-checker:${this.#nextRequestId}`;
-            this.#nextRequestId += 1;
-            this.#requestToSmoldot({
-                id: this.#currentSubunsubRequestId,
-                jsonrpc: '2.0',
-                method: 'chain_unsubscribeNewHeads',
-                params: [this.#currentSubscriptionId]
-            });
-        };
-        destroy = () => {
-            if (this.#currentHealthTimeout) {
-                clearTimeout(this.#currentHealthTimeout);
-                this.#currentHealthTimeout = null;
-            }
-        };
+                if (parsedResponse.params &&
+                    __classPrivateFieldGet(this, _InnerChecker_currentSubscriptionId, "f") &&
+                    parsedResponse.params.subscription === __classPrivateFieldGet(this, _InnerChecker_currentSubscriptionId, "f")) {
+                    this.update(true);
+                    return null;
+                }
+                if (parsedResponse.id) {
+                    const id = parsedResponse.id;
+                    if (!id.startsWith('extern:')) {
+                        throw new Error('State inconsistency in health checker');
+                    }
+                    const newId = JSON.parse(id.slice('extern:'.length));
+                    parsedResponse.id = newId;
+                }
+                return util.stringify(parsedResponse);
+            };
+            this.update = (startNow) => {
+                if (startNow && __classPrivateFieldGet(this, _InnerChecker_currentHealthTimeout, "f")) {
+                    clearTimeout(__classPrivateFieldGet(this, _InnerChecker_currentHealthTimeout, "f"));
+                    __classPrivateFieldSet(this, _InnerChecker_currentHealthTimeout, null, "f");
+                }
+                if (!__classPrivateFieldGet(this, _InnerChecker_currentHealthTimeout, "f")) {
+                    const startHealthRequest = () => {
+                        __classPrivateFieldSet(this, _InnerChecker_currentHealthTimeout, null, "f");
+                        if (__classPrivateFieldGet(this, _InnerChecker_currentHealthCheckId, "f")) {
+                            return;
+                        }
+                        __classPrivateFieldSet(this, _InnerChecker_currentHealthCheckId, `health-checker:${__classPrivateFieldGet(this, _InnerChecker_nextRequestId, "f")}`, "f");
+                        __classPrivateFieldSet(this, _InnerChecker_nextRequestId, __classPrivateFieldGet(this, _InnerChecker_nextRequestId, "f") + 1, "f");
+                        __classPrivateFieldGet(this, _InnerChecker_requestToSmoldot, "f").call(this, {
+                            id: __classPrivateFieldGet(this, _InnerChecker_currentHealthCheckId, "f"),
+                            jsonrpc: '2.0',
+                            method: 'system_health',
+                            params: []
+                        });
+                    };
+                    if (startNow) {
+                        startHealthRequest();
+                    }
+                    else {
+                        __classPrivateFieldSet(this, _InnerChecker_currentHealthTimeout, setTimeout(startHealthRequest, 1000), "f");
+                    }
+                }
+                if (__classPrivateFieldGet(this, _InnerChecker_isSyncing, "f") &&
+                    !__classPrivateFieldGet(this, _InnerChecker_currentSubscriptionId, "f") &&
+                    !__classPrivateFieldGet(this, _InnerChecker_currentSubunsubRequestId, "f")) {
+                    this.startSubscription();
+                }
+                if (!__classPrivateFieldGet(this, _InnerChecker_isSyncing, "f") &&
+                    __classPrivateFieldGet(this, _InnerChecker_currentSubscriptionId, "f") &&
+                    !__classPrivateFieldGet(this, _InnerChecker_currentSubunsubRequestId, "f")) {
+                    this.endSubscription();
+                }
+            };
+            this.startSubscription = () => {
+                if (__classPrivateFieldGet(this, _InnerChecker_currentSubunsubRequestId, "f") || __classPrivateFieldGet(this, _InnerChecker_currentSubscriptionId, "f")) {
+                    throw new Error('Internal error in health checker');
+                }
+                __classPrivateFieldSet(this, _InnerChecker_currentSubunsubRequestId, `health-checker:${__classPrivateFieldGet(this, _InnerChecker_nextRequestId, "f")}`, "f");
+                __classPrivateFieldSet(this, _InnerChecker_nextRequestId, __classPrivateFieldGet(this, _InnerChecker_nextRequestId, "f") + 1, "f");
+                __classPrivateFieldGet(this, _InnerChecker_requestToSmoldot, "f").call(this, {
+                    id: __classPrivateFieldGet(this, _InnerChecker_currentSubunsubRequestId, "f"),
+                    jsonrpc: '2.0',
+                    method: 'chain_subscribeNewHeads',
+                    params: []
+                });
+            };
+            this.endSubscription = () => {
+                if (__classPrivateFieldGet(this, _InnerChecker_currentSubunsubRequestId, "f") || !__classPrivateFieldGet(this, _InnerChecker_currentSubscriptionId, "f")) {
+                    throw new Error('Internal error in health checker');
+                }
+                __classPrivateFieldSet(this, _InnerChecker_currentSubunsubRequestId, `health-checker:${__classPrivateFieldGet(this, _InnerChecker_nextRequestId, "f")}`, "f");
+                __classPrivateFieldSet(this, _InnerChecker_nextRequestId, __classPrivateFieldGet(this, _InnerChecker_nextRequestId, "f") + 1, "f");
+                __classPrivateFieldGet(this, _InnerChecker_requestToSmoldot, "f").call(this, {
+                    id: __classPrivateFieldGet(this, _InnerChecker_currentSubunsubRequestId, "f"),
+                    jsonrpc: '2.0',
+                    method: 'chain_unsubscribeNewHeads',
+                    params: [__classPrivateFieldGet(this, _InnerChecker_currentSubscriptionId, "f")]
+                });
+            };
+            this.destroy = () => {
+                if (__classPrivateFieldGet(this, _InnerChecker_currentHealthTimeout, "f")) {
+                    clearTimeout(__classPrivateFieldGet(this, _InnerChecker_currentHealthTimeout, "f"));
+                    __classPrivateFieldSet(this, _InnerChecker_currentHealthTimeout, null, "f");
+                }
+            };
+            __classPrivateFieldSet(this, _InnerChecker_healthCallback, healthCallback, "f");
+            __classPrivateFieldSet(this, _InnerChecker_requestToSmoldot, (request) => requestToSmoldot(util.stringify(request)), "f");
+        }
     }
+    _InnerChecker_healthCallback = new WeakMap(), _InnerChecker_currentHealthCheckId = new WeakMap(), _InnerChecker_currentHealthTimeout = new WeakMap(), _InnerChecker_currentSubunsubRequestId = new WeakMap(), _InnerChecker_currentSubscriptionId = new WeakMap(), _InnerChecker_requestToSmoldot = new WeakMap(), _InnerChecker_isSyncing = new WeakMap(), _InnerChecker_nextRequestId = new WeakMap();
 
+    var _ScProvider_Sc, _ScProvider_coder, _ScProvider_spec, _ScProvider_sharedSandbox, _ScProvider_subscriptions, _ScProvider_resubscribeMethods, _ScProvider_requests, _ScProvider_wellKnownChains, _ScProvider_eventemitter, _ScProvider_chain, _ScProvider_isChainReady, _ScProvider_resubscribe;
     const l$6 = util.logger('api-substrate-connect');
     const subscriptionUnsubscriptionMethods = new Map([
         ['author_submitAndWatchExtrinsic', 'author_unwatchExtrinsic'],
@@ -695,25 +811,44 @@
     ]);
     const scClients = new WeakMap();
     class ScProvider {
-        #Sc;
-        #coder = new RpcCoder();
-        #spec;
-        #sharedSandbox;
-        #subscriptions = new Map();
-        #resubscribeMethods = new Map();
-        #requests = new Map();
-        #wellKnownChains;
-        #eventemitter = new eventemitter3Exports();
-        #chain = null;
-        #isChainReady = false;
         constructor(Sc, spec, sharedSandbox) {
+            _ScProvider_Sc.set(this, void 0);
+            _ScProvider_coder.set(this, new RpcCoder());
+            _ScProvider_spec.set(this, void 0);
+            _ScProvider_sharedSandbox.set(this, void 0);
+            _ScProvider_subscriptions.set(this, new Map());
+            _ScProvider_resubscribeMethods.set(this, new Map());
+            _ScProvider_requests.set(this, new Map());
+            _ScProvider_wellKnownChains.set(this, void 0);
+            _ScProvider_eventemitter.set(this, new eventemitter3Exports());
+            _ScProvider_chain.set(this, null);
+            _ScProvider_isChainReady.set(this, false);
+            _ScProvider_resubscribe.set(this, () => {
+                const promises = [];
+                __classPrivateFieldGet(this, _ScProvider_resubscribeMethods, "f").forEach((subDetails) => {
+                    if (subDetails.type.startsWith('author_')) {
+                        return;
+                    }
+                    try {
+                        const promise = new Promise((resolve) => {
+                            this.subscribe(subDetails.type, subDetails.method, subDetails.params, subDetails.callback).catch((error) => console.log(error));
+                            resolve();
+                        });
+                        promises.push(promise);
+                    }
+                    catch (error) {
+                        l$6.error(error);
+                    }
+                });
+                Promise.all(promises).catch((err) => l$6.log(err));
+            });
             if (!util.isObject(Sc) || !util.isObject(Sc.WellKnownChain) || !util.isFunction(Sc.createScClient)) {
                 throw new Error('Expected an @substrate/connect interface as first parameter to ScProvider');
             }
-            this.#Sc = Sc;
-            this.#spec = spec;
-            this.#sharedSandbox = sharedSandbox;
-            this.#wellKnownChains = new Set(Object.values(Sc.WellKnownChain));
+            __classPrivateFieldSet(this, _ScProvider_Sc, Sc, "f");
+            __classPrivateFieldSet(this, _ScProvider_spec, spec, "f");
+            __classPrivateFieldSet(this, _ScProvider_sharedSandbox, sharedSandbox, "f");
+            __classPrivateFieldSet(this, _ScProvider_wellKnownChains, new Set(Object.values(Sc.WellKnownChain)), "f");
         }
         get hasSubscriptions() {
             return true;
@@ -722,7 +857,7 @@
             return false;
         }
         get isConnected() {
-            return !!this.#chain && this.#isChainReady;
+            return !!__classPrivateFieldGet(this, _ScProvider_chain, "f") && __classPrivateFieldGet(this, _ScProvider_isChainReady, "f");
         }
         clone() {
             throw new Error('clone() is not supported.');
@@ -731,16 +866,16 @@
             if (this.isConnected) {
                 throw new Error('Already connected!');
             }
-            if (this.#chain) {
-                await this.#chain;
+            if (__classPrivateFieldGet(this, _ScProvider_chain, "f")) {
+                await __classPrivateFieldGet(this, _ScProvider_chain, "f");
                 return;
             }
-            if (this.#sharedSandbox && !this.#sharedSandbox.isConnected) {
-                await this.#sharedSandbox.connect();
+            if (__classPrivateFieldGet(this, _ScProvider_sharedSandbox, "f") && !__classPrivateFieldGet(this, _ScProvider_sharedSandbox, "f").isConnected) {
+                await __classPrivateFieldGet(this, _ScProvider_sharedSandbox, "f").connect();
             }
-            const client = this.#sharedSandbox
-                ? scClients.get(this.#sharedSandbox)
-                : this.#Sc.createScClient(config);
+            const client = __classPrivateFieldGet(this, _ScProvider_sharedSandbox, "f")
+                ? scClients.get(__classPrivateFieldGet(this, _ScProvider_sharedSandbox, "f"))
+                : __classPrivateFieldGet(this, _ScProvider_Sc, "f").createScClient(config);
             if (!client) {
                 throw new Error('Unkown ScProvider!');
             }
@@ -754,29 +889,29 @@
                 const response = JSON.parse(hcRes);
                 let decodedResponse;
                 try {
-                    decodedResponse = this.#coder.decodeResponse(response);
+                    decodedResponse = __classPrivateFieldGet(this, _ScProvider_coder, "f").decodeResponse(response);
                 }
                 catch (e) {
                     decodedResponse = e;
                 }
                 if (response.params?.subscription === undefined || !response.method) {
-                    return this.#requests.get(response.id)?.(decodedResponse);
+                    return __classPrivateFieldGet(this, _ScProvider_requests, "f").get(response.id)?.(decodedResponse);
                 }
                 const subscriptionId = `${response.method}::${response.params.subscription}`;
-                const callback = this.#subscriptions.get(subscriptionId)?.[0];
+                const callback = __classPrivateFieldGet(this, _ScProvider_subscriptions, "f").get(subscriptionId)?.[0];
                 callback?.(decodedResponse);
             };
-            const addChain = this.#wellKnownChains.has(this.#spec)
+            const addChain = __classPrivateFieldGet(this, _ScProvider_wellKnownChains, "f").has(__classPrivateFieldGet(this, _ScProvider_spec, "f"))
                 ? client.addWellKnownChain
                 : client.addChain;
-            this.#chain = addChain(this.#spec, onResponse).then((chain) => {
+            __classPrivateFieldSet(this, _ScProvider_chain, addChain(__classPrivateFieldGet(this, _ScProvider_spec, "f"), onResponse).then((chain) => {
                 hc.setSendJsonRpc(chain.sendJsonRpc);
-                this.#isChainReady = false;
+                __classPrivateFieldSet(this, _ScProvider_isChainReady, false, "f");
                 const cleanup = () => {
                     const disconnectionError = new Error('Disconnected');
-                    this.#requests.forEach((cb) => cb(disconnectionError));
-                    this.#subscriptions.forEach(([cb]) => cb(disconnectionError));
-                    this.#subscriptions.clear();
+                    __classPrivateFieldGet(this, _ScProvider_requests, "f").forEach((cb) => cb(disconnectionError));
+                    __classPrivateFieldGet(this, _ScProvider_subscriptions, "f").forEach(([cb]) => cb(disconnectionError));
+                    __classPrivateFieldGet(this, _ScProvider_subscriptions, "f").clear();
                 };
                 const staleSubscriptions = [];
                 const killStaleSubscriptions = () => {
@@ -798,22 +933,22 @@
                 };
                 hc.start((health) => {
                     const isReady = !health.isSyncing && (health.peers > 0 || !health.shouldHavePeers);
-                    if (this.#isChainReady === isReady) {
+                    if (__classPrivateFieldGet(this, _ScProvider_isChainReady, "f") === isReady) {
                         return;
                     }
-                    this.#isChainReady = isReady;
+                    __classPrivateFieldSet(this, _ScProvider_isChainReady, isReady, "f");
                     if (!isReady) {
-                        [...this.#subscriptions.values()].forEach((s) => {
+                        [...__classPrivateFieldGet(this, _ScProvider_subscriptions, "f").values()].forEach((s) => {
                             staleSubscriptions.push(s[1]);
                         });
                         cleanup();
-                        this.#eventemitter.emit('disconnected');
+                        __classPrivateFieldGet(this, _ScProvider_eventemitter, "f").emit('disconnected');
                     }
                     else {
                         killStaleSubscriptions();
-                        this.#eventemitter.emit('connected');
-                        if (this.#resubscribeMethods.size) {
-                            this.#resubscribe();
+                        __classPrivateFieldGet(this, _ScProvider_eventemitter, "f").emit('connected');
+                        if (__classPrivateFieldGet(this, _ScProvider_resubscribeMethods, "f").size) {
+                            __classPrivateFieldGet(this, _ScProvider_resubscribe, "f").call(this);
                         }
                     }
                 });
@@ -825,84 +960,65 @@
                     },
                     sendJsonRpc: hc.sendJsonRpc.bind(hc)
                 });
-            });
+            }), "f");
             try {
-                await this.#chain;
+                await __classPrivateFieldGet(this, _ScProvider_chain, "f");
             }
             catch (e) {
-                this.#chain = null;
-                this.#eventemitter.emit('error', e);
+                __classPrivateFieldSet(this, _ScProvider_chain, null, "f");
+                __classPrivateFieldGet(this, _ScProvider_eventemitter, "f").emit('error', e);
                 throw e;
             }
         }
-        #resubscribe = () => {
-            const promises = [];
-            this.#resubscribeMethods.forEach((subDetails) => {
-                if (subDetails.type.startsWith('author_')) {
-                    return;
-                }
-                try {
-                    const promise = new Promise((resolve) => {
-                        this.subscribe(subDetails.type, subDetails.method, subDetails.params, subDetails.callback).catch((error) => console.log(error));
-                        resolve();
-                    });
-                    promises.push(promise);
-                }
-                catch (error) {
-                    l$6.error(error);
-                }
-            });
-            Promise.all(promises).catch((err) => l$6.log(err));
-        };
         async disconnect() {
-            if (!this.#chain) {
+            if (!__classPrivateFieldGet(this, _ScProvider_chain, "f")) {
                 return;
             }
-            const chain = await this.#chain;
-            this.#chain = null;
-            this.#isChainReady = false;
+            const chain = await __classPrivateFieldGet(this, _ScProvider_chain, "f");
+            __classPrivateFieldSet(this, _ScProvider_chain, null, "f");
+            __classPrivateFieldSet(this, _ScProvider_isChainReady, false, "f");
             try {
                 chain.remove();
             }
             catch (_) { }
-            this.#eventemitter.emit('disconnected');
+            __classPrivateFieldGet(this, _ScProvider_eventemitter, "f").emit('disconnected');
         }
         on(type, sub) {
             if (type === 'connected' && this.isConnected) {
                 sub();
             }
-            this.#eventemitter.on(type, sub);
+            __classPrivateFieldGet(this, _ScProvider_eventemitter, "f").on(type, sub);
             return () => {
-                this.#eventemitter.removeListener(type, sub);
+                __classPrivateFieldGet(this, _ScProvider_eventemitter, "f").removeListener(type, sub);
             };
         }
         async send(method, params) {
-            if (!this.isConnected || !this.#chain) {
+            if (!this.isConnected || !__classPrivateFieldGet(this, _ScProvider_chain, "f")) {
                 throw new Error('Provider is not connected');
             }
-            const chain = await this.#chain;
-            const [id, json] = this.#coder.encodeJson(method, params);
+            const chain = await __classPrivateFieldGet(this, _ScProvider_chain, "f");
+            const [id, json] = __classPrivateFieldGet(this, _ScProvider_coder, "f").encodeJson(method, params);
             const result = new Promise((resolve, reject) => {
-                this.#requests.set(id, (response) => {
+                __classPrivateFieldGet(this, _ScProvider_requests, "f").set(id, (response) => {
                     (util.isError(response) ? reject : resolve)(response);
                 });
                 try {
                     chain.sendJsonRpc(json);
                 }
                 catch (e) {
-                    this.#chain = null;
+                    __classPrivateFieldSet(this, _ScProvider_chain, null, "f");
                     try {
                         chain.remove();
                     }
                     catch (_) { }
-                    this.#eventemitter.emit('error', e);
+                    __classPrivateFieldGet(this, _ScProvider_eventemitter, "f").emit('error', e);
                 }
             });
             try {
                 return await result;
             }
             finally {
-                this.#requests.delete(id);
+                __classPrivateFieldGet(this, _ScProvider_requests, "f").delete(id);
             }
         }
         async subscribe(type, method, params, callback) {
@@ -923,8 +1039,8 @@
             if (!unsubscribeMethod) {
                 throw new Error('Invalid unsubscribe method found');
             }
-            this.#resubscribeMethods.set(subscriptionId, { callback, method, params, type });
-            this.#subscriptions.set(subscriptionId, [cb, { id, unsubscribeMethod }]);
+            __classPrivateFieldGet(this, _ScProvider_resubscribeMethods, "f").set(subscriptionId, { callback, method, params, type });
+            __classPrivateFieldGet(this, _ScProvider_subscriptions, "f").set(subscriptionId, [cb, { id, unsubscribeMethod }]);
             return id;
         }
         unsubscribe(type, method, id) {
@@ -932,14 +1048,15 @@
                 throw new Error('Provider is not connected');
             }
             const subscriptionId = `${type}::${id}`;
-            if (!this.#subscriptions.has(subscriptionId)) {
+            if (!__classPrivateFieldGet(this, _ScProvider_subscriptions, "f").has(subscriptionId)) {
                 return Promise.reject(new Error(`Unable to find active subscription=${subscriptionId}`));
             }
-            this.#resubscribeMethods.delete(subscriptionId);
-            this.#subscriptions.delete(subscriptionId);
+            __classPrivateFieldGet(this, _ScProvider_resubscribeMethods, "f").delete(subscriptionId);
+            __classPrivateFieldGet(this, _ScProvider_subscriptions, "f").delete(subscriptionId);
             return this.send(method, [id]);
         }
     }
+    _ScProvider_Sc = new WeakMap(), _ScProvider_coder = new WeakMap(), _ScProvider_spec = new WeakMap(), _ScProvider_sharedSandbox = new WeakMap(), _ScProvider_subscriptions = new WeakMap(), _ScProvider_resubscribeMethods = new WeakMap(), _ScProvider_requests = new WeakMap(), _ScProvider_wellKnownChains = new WeakMap(), _ScProvider_eventemitter = new WeakMap(), _ScProvider_chain = new WeakMap(), _ScProvider_isChainReady = new WeakMap(), _ScProvider_resubscribe = new WeakMap();
 
     const WebSocket = xglobal.WebSocket;
 
@@ -982,14 +1099,15 @@
         return known[code] || '(Unknown)';
     }
 
+    var _WsProvider_instances, _WsProvider_callCache, _WsProvider_coder, _WsProvider_endpoints, _WsProvider_headers, _WsProvider_eventemitter, _WsProvider_handlers, _WsProvider_isReadyPromise, _WsProvider_stats, _WsProvider_waitingForId, _WsProvider_autoConnectMs, _WsProvider_endpointIndex, _WsProvider_endpointStats, _WsProvider_isConnected, _WsProvider_subscriptions, _WsProvider_timeoutId, _WsProvider_websocket, _WsProvider_timeout, _WsProvider_send, _WsProvider_emit, _WsProvider_onSocketClose, _WsProvider_onSocketError, _WsProvider_onSocketMessage, _WsProvider_onSocketMessageResult, _WsProvider_onSocketMessageSubscribe, _WsProvider_onSocketOpen, _WsProvider_resubscribe, _WsProvider_timeoutHandlers;
     const ALIASES = {
         chain_finalisedHead: 'chain_finalizedHead',
         chain_subscribeFinalisedHeads: 'chain_subscribeFinalizedHeads',
         chain_unsubscribeFinalisedHeads: 'chain_unsubscribeFinalizedHeads'
     };
-    const RETRY_DELAY = 2_500;
+    const RETRY_DELAY = 2500;
     const DEFAULT_TIMEOUT_MS = 60 * 1000;
-    const TIMEOUT_INTERVAL = 5_000;
+    const TIMEOUT_INTERVAL = 5000;
     const l$5 = util.logger('api-ws');
     function eraseRecord(record, cb) {
         Object.keys(record).forEach((key) => {
@@ -1003,24 +1121,167 @@
         return { bytesRecv: 0, bytesSent: 0, cached: 0, errors: 0, requests: 0, subscriptions: 0, timeout: 0 };
     }
     class WsProvider {
-        #callCache = new LRUCache();
-        #coder;
-        #endpoints;
-        #headers;
-        #eventemitter;
-        #handlers = {};
-        #isReadyPromise;
-        #stats;
-        #waitingForId = {};
-        #autoConnectMs;
-        #endpointIndex;
-        #endpointStats;
-        #isConnected = false;
-        #subscriptions = {};
-        #timeoutId = null;
-        #websocket;
-        #timeout;
         constructor(endpoint = defaults.WS_URL, autoConnectMs = RETRY_DELAY, headers = {}, timeout) {
+            _WsProvider_instances.add(this);
+            _WsProvider_callCache.set(this, new LRUCache());
+            _WsProvider_coder.set(this, void 0);
+            _WsProvider_endpoints.set(this, void 0);
+            _WsProvider_headers.set(this, void 0);
+            _WsProvider_eventemitter.set(this, void 0);
+            _WsProvider_handlers.set(this, {});
+            _WsProvider_isReadyPromise.set(this, void 0);
+            _WsProvider_stats.set(this, void 0);
+            _WsProvider_waitingForId.set(this, {});
+            _WsProvider_autoConnectMs.set(this, void 0);
+            _WsProvider_endpointIndex.set(this, void 0);
+            _WsProvider_endpointStats.set(this, void 0);
+            _WsProvider_isConnected.set(this, false);
+            _WsProvider_subscriptions.set(this, {});
+            _WsProvider_timeoutId.set(this, null);
+            _WsProvider_websocket.set(this, void 0);
+            _WsProvider_timeout.set(this, void 0);
+            _WsProvider_emit.set(this, (type, ...args) => {
+                __classPrivateFieldGet(this, _WsProvider_eventemitter, "f").emit(type, ...args);
+            });
+            _WsProvider_onSocketClose.set(this, (event) => {
+                const error = new Error(`disconnected from ${this.endpoint}: ${event.code}:: ${event.reason || getWSErrorString(event.code)}`);
+                if (__classPrivateFieldGet(this, _WsProvider_autoConnectMs, "f") > 0) {
+                    l$5.error(error.message);
+                }
+                __classPrivateFieldSet(this, _WsProvider_isConnected, false, "f");
+                if (__classPrivateFieldGet(this, _WsProvider_websocket, "f")) {
+                    __classPrivateFieldGet(this, _WsProvider_websocket, "f").onclose = null;
+                    __classPrivateFieldGet(this, _WsProvider_websocket, "f").onerror = null;
+                    __classPrivateFieldGet(this, _WsProvider_websocket, "f").onmessage = null;
+                    __classPrivateFieldGet(this, _WsProvider_websocket, "f").onopen = null;
+                    __classPrivateFieldSet(this, _WsProvider_websocket, null, "f");
+                }
+                if (__classPrivateFieldGet(this, _WsProvider_timeoutId, "f")) {
+                    clearInterval(__classPrivateFieldGet(this, _WsProvider_timeoutId, "f"));
+                    __classPrivateFieldSet(this, _WsProvider_timeoutId, null, "f");
+                }
+                eraseRecord(__classPrivateFieldGet(this, _WsProvider_handlers, "f"), (h) => {
+                    try {
+                        h.callback(error, undefined);
+                    }
+                    catch (err) {
+                        l$5.error(err);
+                    }
+                });
+                eraseRecord(__classPrivateFieldGet(this, _WsProvider_waitingForId, "f"));
+                __classPrivateFieldSet(this, _WsProvider_endpointStats, defaultEndpointStats(), "f");
+                __classPrivateFieldGet(this, _WsProvider_emit, "f").call(this, 'disconnected');
+                if (__classPrivateFieldGet(this, _WsProvider_autoConnectMs, "f") > 0) {
+                    setTimeout(() => {
+                        this.connectWithRetry().catch(() => {
+                        });
+                    }, __classPrivateFieldGet(this, _WsProvider_autoConnectMs, "f"));
+                }
+            });
+            _WsProvider_onSocketError.set(this, (error) => {
+                l$5.debug(() => ['socket error', error]);
+                __classPrivateFieldGet(this, _WsProvider_emit, "f").call(this, 'error', error);
+            });
+            _WsProvider_onSocketMessage.set(this, (message) => {
+                l$5.debug(() => ['received', message.data]);
+                __classPrivateFieldGet(this, _WsProvider_endpointStats, "f").bytesRecv += message.data.length;
+                __classPrivateFieldGet(this, _WsProvider_stats, "f").total.bytesRecv += message.data.length;
+                const response = JSON.parse(message.data);
+                return util.isUndefined(response.method)
+                    ? __classPrivateFieldGet(this, _WsProvider_onSocketMessageResult, "f").call(this, response)
+                    : __classPrivateFieldGet(this, _WsProvider_onSocketMessageSubscribe, "f").call(this, response);
+            });
+            _WsProvider_onSocketMessageResult.set(this, (response) => {
+                const handler = __classPrivateFieldGet(this, _WsProvider_handlers, "f")[response.id];
+                if (!handler) {
+                    l$5.debug(() => `Unable to find handler for id=${response.id}`);
+                    return;
+                }
+                try {
+                    const { method, params, subscription } = handler;
+                    const result = __classPrivateFieldGet(this, _WsProvider_coder, "f").decodeResponse(response);
+                    handler.callback(null, result);
+                    if (subscription) {
+                        const subId = `${subscription.type}::${result}`;
+                        __classPrivateFieldGet(this, _WsProvider_subscriptions, "f")[subId] = util.objectSpread({}, subscription, {
+                            method,
+                            params
+                        });
+                        if (__classPrivateFieldGet(this, _WsProvider_waitingForId, "f")[subId]) {
+                            __classPrivateFieldGet(this, _WsProvider_onSocketMessageSubscribe, "f").call(this, __classPrivateFieldGet(this, _WsProvider_waitingForId, "f")[subId]);
+                        }
+                    }
+                }
+                catch (error) {
+                    __classPrivateFieldGet(this, _WsProvider_endpointStats, "f").errors++;
+                    __classPrivateFieldGet(this, _WsProvider_stats, "f").total.errors++;
+                    handler.callback(error, undefined);
+                }
+                delete __classPrivateFieldGet(this, _WsProvider_handlers, "f")[response.id];
+            });
+            _WsProvider_onSocketMessageSubscribe.set(this, (response) => {
+                const method = ALIASES[response.method] || response.method || 'invalid';
+                const subId = `${method}::${response.params.subscription}`;
+                const handler = __classPrivateFieldGet(this, _WsProvider_subscriptions, "f")[subId];
+                if (!handler) {
+                    __classPrivateFieldGet(this, _WsProvider_waitingForId, "f")[subId] = response;
+                    l$5.debug(() => `Unable to find handler for subscription=${subId}`);
+                    return;
+                }
+                delete __classPrivateFieldGet(this, _WsProvider_waitingForId, "f")[subId];
+                try {
+                    const result = __classPrivateFieldGet(this, _WsProvider_coder, "f").decodeResponse(response);
+                    handler.callback(null, result);
+                }
+                catch (error) {
+                    __classPrivateFieldGet(this, _WsProvider_endpointStats, "f").errors++;
+                    __classPrivateFieldGet(this, _WsProvider_stats, "f").total.errors++;
+                    handler.callback(error, undefined);
+                }
+            });
+            _WsProvider_onSocketOpen.set(this, () => {
+                if (__classPrivateFieldGet(this, _WsProvider_websocket, "f") === null) {
+                    throw new Error('WebSocket cannot be null in onOpen');
+                }
+                l$5.debug(() => ['connected to', this.endpoint]);
+                __classPrivateFieldSet(this, _WsProvider_isConnected, true, "f");
+                __classPrivateFieldGet(this, _WsProvider_resubscribe, "f").call(this);
+                __classPrivateFieldGet(this, _WsProvider_emit, "f").call(this, 'connected');
+                return true;
+            });
+            _WsProvider_resubscribe.set(this, () => {
+                const subscriptions = __classPrivateFieldGet(this, _WsProvider_subscriptions, "f");
+                __classPrivateFieldSet(this, _WsProvider_subscriptions, {}, "f");
+                Promise.all(Object.keys(subscriptions).map(async (id) => {
+                    const { callback, method, params, type } = subscriptions[id];
+                    if (type.startsWith('author_')) {
+                        return;
+                    }
+                    try {
+                        await this.subscribe(type, method, params, callback);
+                    }
+                    catch (error) {
+                        l$5.error(error);
+                    }
+                })).catch(l$5.error);
+            });
+            _WsProvider_timeoutHandlers.set(this, () => {
+                const now = Date.now();
+                const ids = Object.keys(__classPrivateFieldGet(this, _WsProvider_handlers, "f"));
+                for (let i = 0; i < ids.length; i++) {
+                    const handler = __classPrivateFieldGet(this, _WsProvider_handlers, "f")[ids[i]];
+                    if ((now - handler.start) > __classPrivateFieldGet(this, _WsProvider_timeout, "f")) {
+                        try {
+                            handler.callback(new Error(`No response received from RPC endpoint in ${__classPrivateFieldGet(this, _WsProvider_timeout, "f") / 1000}s`), undefined);
+                        }
+                        catch {
+                        }
+                        __classPrivateFieldGet(this, _WsProvider_endpointStats, "f").timeout++;
+                        __classPrivateFieldGet(this, _WsProvider_stats, "f").total.timeout++;
+                        delete __classPrivateFieldGet(this, _WsProvider_handlers, "f")[ids[i]];
+                    }
+                }
+            });
             const endpoints = Array.isArray(endpoint)
                 ? endpoint
                 : [endpoint];
@@ -1032,28 +1293,28 @@
                     throw new Error(`Endpoint should start with 'ws://', received '${endpoint}'`);
                 }
             });
-            this.#eventemitter = new eventemitter3Exports();
-            this.#autoConnectMs = autoConnectMs || 0;
-            this.#coder = new RpcCoder();
-            this.#endpointIndex = -1;
-            this.#endpoints = endpoints;
-            this.#headers = headers;
-            this.#websocket = null;
-            this.#stats = {
+            __classPrivateFieldSet(this, _WsProvider_eventemitter, new eventemitter3Exports(), "f");
+            __classPrivateFieldSet(this, _WsProvider_autoConnectMs, autoConnectMs || 0, "f");
+            __classPrivateFieldSet(this, _WsProvider_coder, new RpcCoder(), "f");
+            __classPrivateFieldSet(this, _WsProvider_endpointIndex, -1, "f");
+            __classPrivateFieldSet(this, _WsProvider_endpoints, endpoints, "f");
+            __classPrivateFieldSet(this, _WsProvider_headers, headers, "f");
+            __classPrivateFieldSet(this, _WsProvider_websocket, null, "f");
+            __classPrivateFieldSet(this, _WsProvider_stats, {
                 active: { requests: 0, subscriptions: 0 },
                 total: defaultEndpointStats()
-            };
-            this.#endpointStats = defaultEndpointStats();
-            this.#timeout = timeout || DEFAULT_TIMEOUT_MS;
+            }, "f");
+            __classPrivateFieldSet(this, _WsProvider_endpointStats, defaultEndpointStats(), "f");
+            __classPrivateFieldSet(this, _WsProvider_timeout, timeout || DEFAULT_TIMEOUT_MS, "f");
             if (autoConnectMs > 0) {
                 this.connectWithRetry().catch(() => {
                 });
             }
-            this.#isReadyPromise = new Promise((resolve) => {
-                this.#eventemitter.once('connected', () => {
+            __classPrivateFieldSet(this, _WsProvider_isReadyPromise, new Promise((resolve) => {
+                __classPrivateFieldGet(this, _WsProvider_eventemitter, "f").once('connected', () => {
                     resolve(this);
                 });
-            });
+            }), "f");
         }
         get hasSubscriptions() {
             return true;
@@ -1062,47 +1323,47 @@
             return true;
         }
         get isConnected() {
-            return this.#isConnected;
+            return __classPrivateFieldGet(this, _WsProvider_isConnected, "f");
         }
         get isReady() {
-            return this.#isReadyPromise;
+            return __classPrivateFieldGet(this, _WsProvider_isReadyPromise, "f");
         }
         get endpoint() {
-            return this.#endpoints[this.#endpointIndex];
+            return __classPrivateFieldGet(this, _WsProvider_endpoints, "f")[__classPrivateFieldGet(this, _WsProvider_endpointIndex, "f")];
         }
         clone() {
-            return new WsProvider(this.#endpoints);
+            return new WsProvider(__classPrivateFieldGet(this, _WsProvider_endpoints, "f"));
         }
         selectEndpointIndex(endpoints) {
-            return (this.#endpointIndex + 1) % endpoints.length;
+            return (__classPrivateFieldGet(this, _WsProvider_endpointIndex, "f") + 1) % endpoints.length;
         }
         async connect() {
-            if (this.#websocket) {
+            if (__classPrivateFieldGet(this, _WsProvider_websocket, "f")) {
                 throw new Error('WebSocket is already connected');
             }
             try {
-                this.#endpointIndex = this.selectEndpointIndex(this.#endpoints);
-                this.#websocket = typeof xglobal.WebSocket !== 'undefined' && util.isChildClass(xglobal.WebSocket, WebSocket)
+                __classPrivateFieldSet(this, _WsProvider_endpointIndex, this.selectEndpointIndex(__classPrivateFieldGet(this, _WsProvider_endpoints, "f")), "f");
+                __classPrivateFieldSet(this, _WsProvider_websocket, typeof xglobal.WebSocket !== 'undefined' && util.isChildClass(xglobal.WebSocket, WebSocket)
                     ? new WebSocket(this.endpoint)
                     : new WebSocket(this.endpoint, undefined, {
-                        headers: this.#headers
-                    });
-                if (this.#websocket) {
-                    this.#websocket.onclose = this.#onSocketClose;
-                    this.#websocket.onerror = this.#onSocketError;
-                    this.#websocket.onmessage = this.#onSocketMessage;
-                    this.#websocket.onopen = this.#onSocketOpen;
+                        headers: __classPrivateFieldGet(this, _WsProvider_headers, "f")
+                    }), "f");
+                if (__classPrivateFieldGet(this, _WsProvider_websocket, "f")) {
+                    __classPrivateFieldGet(this, _WsProvider_websocket, "f").onclose = __classPrivateFieldGet(this, _WsProvider_onSocketClose, "f");
+                    __classPrivateFieldGet(this, _WsProvider_websocket, "f").onerror = __classPrivateFieldGet(this, _WsProvider_onSocketError, "f");
+                    __classPrivateFieldGet(this, _WsProvider_websocket, "f").onmessage = __classPrivateFieldGet(this, _WsProvider_onSocketMessage, "f");
+                    __classPrivateFieldGet(this, _WsProvider_websocket, "f").onopen = __classPrivateFieldGet(this, _WsProvider_onSocketOpen, "f");
                 }
-                this.#timeoutId = setInterval(() => this.#timeoutHandlers(), TIMEOUT_INTERVAL);
+                __classPrivateFieldSet(this, _WsProvider_timeoutId, setInterval(() => __classPrivateFieldGet(this, _WsProvider_timeoutHandlers, "f").call(this), TIMEOUT_INTERVAL), "f");
             }
             catch (error) {
                 l$5.error(error);
-                this.#emit('error', error);
+                __classPrivateFieldGet(this, _WsProvider_emit, "f").call(this, 'error', error);
                 throw error;
             }
         }
         async connectWithRetry() {
-            if (this.#autoConnectMs > 0) {
+            if (__classPrivateFieldGet(this, _WsProvider_autoConnectMs, "f") > 0) {
                 try {
                     await this.connect();
                 }
@@ -1110,104 +1371,74 @@
                     setTimeout(() => {
                         this.connectWithRetry().catch(() => {
                         });
-                    }, this.#autoConnectMs);
+                    }, __classPrivateFieldGet(this, _WsProvider_autoConnectMs, "f"));
                 }
             }
         }
         async disconnect() {
-            this.#autoConnectMs = 0;
+            __classPrivateFieldSet(this, _WsProvider_autoConnectMs, 0, "f");
             try {
-                if (this.#websocket) {
-                    this.#websocket.close(1000);
+                if (__classPrivateFieldGet(this, _WsProvider_websocket, "f")) {
+                    __classPrivateFieldGet(this, _WsProvider_websocket, "f").close(1000);
                 }
             }
             catch (error) {
                 l$5.error(error);
-                this.#emit('error', error);
+                __classPrivateFieldGet(this, _WsProvider_emit, "f").call(this, 'error', error);
                 throw error;
             }
         }
         get stats() {
             return {
                 active: {
-                    requests: Object.keys(this.#handlers).length,
-                    subscriptions: Object.keys(this.#subscriptions).length
+                    requests: Object.keys(__classPrivateFieldGet(this, _WsProvider_handlers, "f")).length,
+                    subscriptions: Object.keys(__classPrivateFieldGet(this, _WsProvider_subscriptions, "f")).length
                 },
-                total: this.#stats.total
+                total: __classPrivateFieldGet(this, _WsProvider_stats, "f").total
             };
         }
         get endpointStats() {
-            return this.#endpointStats;
+            return __classPrivateFieldGet(this, _WsProvider_endpointStats, "f");
         }
         on(type, sub) {
-            this.#eventemitter.on(type, sub);
+            __classPrivateFieldGet(this, _WsProvider_eventemitter, "f").on(type, sub);
             return () => {
-                this.#eventemitter.removeListener(type, sub);
+                __classPrivateFieldGet(this, _WsProvider_eventemitter, "f").removeListener(type, sub);
             };
         }
         send(method, params, isCacheable, subscription) {
-            this.#endpointStats.requests++;
-            this.#stats.total.requests++;
-            const [id, body] = this.#coder.encodeJson(method, params);
+            __classPrivateFieldGet(this, _WsProvider_endpointStats, "f").requests++;
+            __classPrivateFieldGet(this, _WsProvider_stats, "f").total.requests++;
+            const [id, body] = __classPrivateFieldGet(this, _WsProvider_coder, "f").encodeJson(method, params);
             let resultPromise = isCacheable
-                ? this.#callCache.get(body)
+                ? __classPrivateFieldGet(this, _WsProvider_callCache, "f").get(body)
                 : null;
             if (!resultPromise) {
-                resultPromise = this.#send(id, body, method, params, subscription);
+                resultPromise = __classPrivateFieldGet(this, _WsProvider_instances, "m", _WsProvider_send).call(this, id, body, method, params, subscription);
                 if (isCacheable) {
-                    this.#callCache.set(body, resultPromise);
+                    __classPrivateFieldGet(this, _WsProvider_callCache, "f").set(body, resultPromise);
                 }
             }
             else {
-                this.#endpointStats.cached++;
-                this.#stats.total.cached++;
+                __classPrivateFieldGet(this, _WsProvider_endpointStats, "f").cached++;
+                __classPrivateFieldGet(this, _WsProvider_stats, "f").total.cached++;
             }
             return resultPromise;
         }
-        async #send(id, body, method, params, subscription) {
-            return new Promise((resolve, reject) => {
-                try {
-                    if (!this.isConnected || this.#websocket === null) {
-                        throw new Error('WebSocket is not connected');
-                    }
-                    const callback = (error, result) => {
-                        error
-                            ? reject(error)
-                            : resolve(result);
-                    };
-                    l$5.debug(() => ['calling', method, body]);
-                    this.#handlers[id] = {
-                        callback,
-                        method,
-                        params,
-                        start: Date.now(),
-                        subscription
-                    };
-                    this.#endpointStats.bytesSent += body.length;
-                    this.#stats.total.bytesSent += body.length;
-                    this.#websocket.send(body);
-                }
-                catch (error) {
-                    this.#endpointStats.errors++;
-                    this.#stats.total.errors++;
-                    reject(error);
-                }
-            });
-        }
         subscribe(type, method, params, callback) {
-            this.#endpointStats.subscriptions++;
-            this.#stats.total.subscriptions++;
+            __classPrivateFieldGet(this, _WsProvider_endpointStats, "f").subscriptions++;
+            __classPrivateFieldGet(this, _WsProvider_stats, "f").total.subscriptions++;
             return this.send(method, params, false, { callback, type });
         }
         async unsubscribe(type, method, id) {
             const subscription = `${type}::${id}`;
-            if (util.isUndefined(this.#subscriptions[subscription])) {
+            if (util.isUndefined(__classPrivateFieldGet(this, _WsProvider_subscriptions, "f")[subscription])) {
                 l$5.debug(() => `Unable to find active subscription=${subscription}`);
                 return false;
             }
-            delete this.#subscriptions[subscription];
+            delete __classPrivateFieldGet(this, _WsProvider_subscriptions, "f")[subscription];
             try {
-                return this.isConnected && !util.isNull(this.#websocket)
+                return this.isConnected && !util.isNull(__classPrivateFieldGet(this, _WsProvider_websocket, "f"))
                     ? this.send(method, [id])
                     : true;
             }
@@ -1215,258 +1446,39 @@
                 return false;
             }
         }
-        #emit = (type, ...args) => {
-            this.#eventemitter.emit(type, ...args);
-        };
-        #onSocketClose = (event) => {
-            const error = new Error(`disconnected from ${this.endpoint}: ${event.code}:: ${event.reason || getWSErrorString(event.code)}`);
-            if (this.#autoConnectMs > 0) {
-                l$5.error(error.message);
-            }
-            this.#isConnected = false;
-            if (this.#websocket) {
-                this.#websocket.onclose = null;
-                this.#websocket.onerror = null;
-                this.#websocket.onmessage = null;
-                this.#websocket.onopen = null;
-                this.#websocket = null;
-            }
-            if (this.#timeoutId) {
-                clearInterval(this.#timeoutId);
-                this.#timeoutId = null;
-            }
-            eraseRecord(this.#handlers, (h) => {
-                try {
-                    h.callback(error, undefined);
-                }
-                catch (err) {
-                    l$5.error(err);
-                }
-            });
-            eraseRecord(this.#waitingForId);
-            this.#endpointStats = defaultEndpointStats();
-            this.#emit('disconnected');
-            if (this.#autoConnectMs > 0) {
-                setTimeout(() => {
-                    this.connectWithRetry().catch(() => {
-                    });
-                }, this.#autoConnectMs);
-            }
-        };
-        #onSocketError = (error) => {
-            l$5.debug(() => ['socket error', error]);
-            this.#emit('error', error);
-        };
-        #onSocketMessage = (message) => {
-            l$5.debug(() => ['received', message.data]);
-            this.#endpointStats.bytesRecv += message.data.length;
-            this.#stats.total.bytesRecv += message.data.length;
-            const response = JSON.parse(message.data);
-            return util.isUndefined(response.method)
-                ? this.#onSocketMessageResult(response)
-                : this.#onSocketMessageSubscribe(response);
-        };
-        #onSocketMessageResult = (response) => {
-            const handler = this.#handlers[response.id];
-            if (!handler) {
-                l$5.debug(() => `Unable to find handler for id=${response.id}`);
-                return;
-            }
+    }
+    _WsProvider_callCache = new WeakMap(), _WsProvider_coder = new WeakMap(), _WsProvider_endpoints = new WeakMap(), _WsProvider_headers = new WeakMap(), _WsProvider_eventemitter = new WeakMap(), _WsProvider_handlers = new WeakMap(), _WsProvider_isReadyPromise = new WeakMap(), _WsProvider_stats = new WeakMap(), _WsProvider_waitingForId = new WeakMap(), _WsProvider_autoConnectMs = new WeakMap(), _WsProvider_endpointIndex = new WeakMap(), _WsProvider_endpointStats = new WeakMap(), _WsProvider_isConnected = new WeakMap(), _WsProvider_subscriptions = new WeakMap(), _WsProvider_timeoutId = new WeakMap(), _WsProvider_websocket = new WeakMap(), _WsProvider_timeout = new WeakMap(), _WsProvider_emit = new WeakMap(), _WsProvider_onSocketClose = new WeakMap(), _WsProvider_onSocketError = new WeakMap(), _WsProvider_onSocketMessage = new WeakMap(), _WsProvider_onSocketMessageResult = new WeakMap(), _WsProvider_onSocketMessageSubscribe = new WeakMap(), _WsProvider_onSocketOpen = new WeakMap(), _WsProvider_resubscribe = new WeakMap(), _WsProvider_timeoutHandlers = new WeakMap(), _WsProvider_instances = new WeakSet(), _WsProvider_send = async function _WsProvider_send(id, body, method, params, subscription) {
+        return new Promise((resolve, reject) => {
             try {
-                const { method, params, subscription } = handler;
-                const result = this.#coder.decodeResponse(response);
-                handler.callback(null, result);
-                if (subscription) {
-                    const subId = `${subscription.type}::${result}`;
-                    this.#subscriptions[subId] = util.objectSpread({}, subscription, {
-                        method,
-                        params
-                    });
-                    if (this.#waitingForId[subId]) {
-                        this.#onSocketMessageSubscribe(this.#waitingForId[subId]);
-                    }
+                if (!this.isConnected || __classPrivateFieldGet(this, _WsProvider_websocket, "f") === null) {
+                    throw new Error('WebSocket is not connected');
                 }
+                const callback = (error, result) => {
+                    error
+                        ? reject(error)
+                        : resolve(result);
+                };
+                l$5.debug(() => ['calling', method, body]);
+                __classPrivateFieldGet(this, _WsProvider_handlers, "f")[id] = {
+                    callback,
+                    method,
+                    params,
+                    start: Date.now(),
+                    subscription
+                };
+                __classPrivateFieldGet(this, _WsProvider_endpointStats, "f").bytesSent += body.length;
+                __classPrivateFieldGet(this, _WsProvider_stats, "f").total.bytesSent += body.length;
+                __classPrivateFieldGet(this, _WsProvider_websocket, "f").send(body);
             }
             catch (error) {
-                this.#endpointStats.errors++;
-                this.#stats.total.errors++;
-                handler.callback(error, undefined);
+                __classPrivateFieldGet(this, _WsProvider_endpointStats, "f").errors++;
+                __classPrivateFieldGet(this, _WsProvider_stats, "f").total.errors++;
+                reject(error);
             }
-            delete this.#handlers[response.id];
-        };
-        #onSocketMessageSubscribe = (response) => {
-            const method = ALIASES[response.method] || response.method || 'invalid';
-            const subId = `${method}::${response.params.subscription}`;
-            const handler = this.#subscriptions[subId];
-            if (!handler) {
-                this.#waitingForId[subId] = response;
-                l$5.debug(() => `Unable to find handler for subscription=${subId}`);
-                return;
-            }
-            delete this.#waitingForId[subId];
-            try {
-                const result = this.#coder.decodeResponse(response);
-                handler.callback(null, result);
-            }
-            catch (error) {
-                this.#endpointStats.errors++;
-                this.#stats.total.errors++;
-                handler.callback(error, undefined);
-            }
-        };
-        #onSocketOpen = () => {
-            if (this.#websocket === null) {
-                throw new Error('WebSocket cannot be null in onOpen');
-            }
-            l$5.debug(() => ['connected to', this.endpoint]);
-            this.#isConnected = true;
-            this.#resubscribe();
-            this.#emit('connected');
-            return true;
-        };
-        #resubscribe = () => {
-            const subscriptions = this.#subscriptions;
-            this.#subscriptions = {};
-            Promise.all(Object.keys(subscriptions).map(async (id) => {
-                const { callback, method, params, type } = subscriptions[id];
-                if (type.startsWith('author_')) {
-                    return;
-                }
-                try {
-                    await this.subscribe(type, method, params, callback);
-                }
-                catch (error) {
-                    l$5.error(error);
-                }
-            })).catch(l$5.error);
-        };
-        #timeoutHandlers = () => {
-            const now = Date.now();
-            const ids = Object.keys(this.#handlers);
-            for (let i = 0; i < ids.length; i++) {
-                const handler = this.#handlers[ids[i]];
-                if ((now - handler.start) > this.#timeout) {
-                    try {
-                        handler.callback(new Error(`No response received from RPC endpoint in ${this.#timeout / 1000}s`), undefined);
-                    }
-                    catch {
-                    }
-                    this.#endpointStats.timeout++;
-                    this.#stats.total.timeout++;
-                    delete this.#handlers[ids[i]];
-                }
-            }
-        };
-    }
-
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.0.1' };
-
-    var extendStatics = function(d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    function __extends(d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    }
-    function __awaiter(thisArg, _arguments, P, generator) {
-        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-        return new (P || (P = Promise))(function (resolve, reject) {
-            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-            step((generator = generator.apply(thisArg, _arguments || [])).next());
         });
-    }
-    function __generator(thisArg, body) {
-        var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-        function verb(n) { return function (v) { return step([n, v]); }; }
-        function step(op) {
-            if (f) throw new TypeError("Generator is already executing.");
-            while (g && (g = 0, op[0] && (_ = 0)), _) try {
-                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-                if (y = 0, t) op = [op[0] & 2, t.value];
-                switch (op[0]) {
-                    case 0: case 1: t = op; break;
-                    case 4: _.label++; return { value: op[1], done: false };
-                    case 5: _.label++; y = op[1]; op = [0]; continue;
-                    case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                    default:
-                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                        if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                        if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                        if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                        if (t[2]) _.ops.pop();
-                        _.trys.pop(); continue;
-                }
-                op = body.call(thisArg, _);
-            } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-            if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-        }
-    }
-    function __values(o) {
-        var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-        if (m) return m.call(o);
-        if (o && typeof o.length === "number") return {
-            next: function () {
-                if (o && i >= o.length) o = void 0;
-                return { value: o && o[i++], done: !o };
-            }
-        };
-        throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-    }
-    function __read(o, n) {
-        var m = typeof Symbol === "function" && o[Symbol.iterator];
-        if (!m) return o;
-        var i = m.call(o), r, ar = [], e;
-        try {
-            while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-        }
-        catch (error) { e = { error: error }; }
-        finally {
-            try {
-                if (r && !r.done && (m = i["return"])) m.call(i);
-            }
-            finally { if (e) throw e.error; }
-        }
-        return ar;
-    }
-    function __spreadArray(to, from, pack) {
-        if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-            if (ar || !(i in from)) {
-                if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-                ar[i] = from[i];
-            }
-        }
-        return to.concat(ar || Array.prototype.slice.call(from));
-    }
-    function __await(v) {
-        return this instanceof __await ? (this.v = v, this) : new __await(v);
-    }
-    function __asyncGenerator(thisArg, _arguments, generator) {
-        if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-        var g = generator.apply(thisArg, _arguments || []), i, q = [];
-        return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
-        function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
-        function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
-        function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
-        function fulfill(value) { resume("next", value); }
-        function reject(value) { resume("throw", value); }
-        function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
-    }
-    function __asyncValues(o) {
-        if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-        var m = o[Symbol.asyncIterator], i;
-        return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-        function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-        function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
-    }
+    };
+
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.1.1' };
 
     function isFunction(value) {
         return typeof value === 'function';
@@ -3512,6 +3524,7 @@
         return cached;
     }
 
+    var _RpcCore_instanceId, _RpcCore_registryDefault, _RpcCore_getBlockRegistry, _RpcCore_getBlockHash, _RpcCore_storageCache;
     const l$4 = util.logger('rpc-core');
     const EMPTY_META = {
         fallback: undefined,
@@ -3532,20 +3545,19 @@
         return ['0x3a636f6465'].includes(key.toHex());
     }
     class RpcCore {
-        #instanceId;
-        #registryDefault;
-        #getBlockRegistry;
-        #getBlockHash;
-        #storageCache = new Map();
-        mapping = new Map();
-        provider;
-        sections = [];
         constructor(instanceId, registry, provider, userRpc = {}) {
+            _RpcCore_instanceId.set(this, void 0);
+            _RpcCore_registryDefault.set(this, void 0);
+            _RpcCore_getBlockRegistry.set(this, void 0);
+            _RpcCore_getBlockHash.set(this, void 0);
+            _RpcCore_storageCache.set(this, new Map());
+            this.mapping = new Map();
+            this.sections = [];
             if (!provider || !util.isFunction(provider.send)) {
                 throw new Error('Expected Provider to API create');
             }
-            this.#instanceId = instanceId;
-            this.#registryDefault = registry;
+            __classPrivateFieldSet(this, _RpcCore_instanceId, instanceId, "f");
+            __classPrivateFieldSet(this, _RpcCore_registryDefault, registry, "f");
             this.provider = provider;
             const sectionNames = Object.keys(types.rpcDefinitions);
             this.sections.push(...sectionNames);
@@ -3561,14 +3573,14 @@
             return this.provider.disconnect();
         }
         setRegistrySwap(registrySwap) {
-            this.#getBlockRegistry = util.memoize(registrySwap, {
-                getInstanceId: () => this.#instanceId
-            });
+            __classPrivateFieldSet(this, _RpcCore_getBlockRegistry, util.memoize(registrySwap, {
+                getInstanceId: () => __classPrivateFieldGet(this, _RpcCore_instanceId, "f")
+            }), "f");
         }
         setResolveBlockHash(resolveBlockHash) {
-            this.#getBlockHash = util.memoize(resolveBlockHash, {
-                getInstanceId: () => this.#instanceId
-            });
+            __classPrivateFieldSet(this, _RpcCore_getBlockHash, util.memoize(resolveBlockHash, {
+                getInstanceId: () => __classPrivateFieldGet(this, _RpcCore_instanceId, "f")
+            }), "f");
         }
         addUserInterfaces(userRpc) {
             this.sections.push(...Object.keys(userRpc).filter((k) => !this.sections.includes(k)));
@@ -3594,7 +3606,7 @@
             }
         }
         _memomize(creator, def) {
-            const memoOpts = { getInstanceId: () => this.#instanceId };
+            const memoOpts = { getInstanceId: () => __classPrivateFieldGet(this, _RpcCore_instanceId, "f") };
             const memoized = util.memoize(creator(true), memoOpts);
             memoized.raw = util.memoize(creator(false), memoOpts);
             memoized.meta = def;
@@ -3614,11 +3626,11 @@
                     ? null
                     : values[hashIndex];
                 const blockHash = blockId && def.params[hashIndex].type === 'BlockNumber'
-                    ? await this.#getBlockHash?.(blockId)
+                    ? await __classPrivateFieldGet(this, _RpcCore_getBlockHash, "f")?.call(this, blockId)
                     : blockId;
-                const { registry } = isScale && blockHash && this.#getBlockRegistry
-                    ? await this.#getBlockRegistry(util.u8aToU8a(blockHash))
-                    : { registry: this.#registryDefault };
+                const { registry } = isScale && blockHash && __classPrivateFieldGet(this, _RpcCore_getBlockRegistry, "f")
+                    ? await __classPrivateFieldGet(this, _RpcCore_getBlockRegistry, "f").call(this, util.u8aToU8a(blockHash))
+                    : { registry: __classPrivateFieldGet(this, _RpcCore_registryDefault, "f") };
                 const params = this._formatInputs(registry, null, def, values);
                 const result = await this.provider.send(rpcName, params.map((p) => p.toJSON()), !!blockHash);
                 return this._formatResult(isScale, registry, blockHash, method, def, params, result);
@@ -3673,7 +3685,7 @@
             const creator = (isScale) => (...values) => {
                 return new Observable((observer) => {
                     let subscriptionPromise = Promise.resolve(null);
-                    const registry = this.#registryDefault;
+                    const registry = __classPrivateFieldGet(this, _RpcCore_registryDefault, "f");
                     const errorHandler = (error) => {
                         logErrorMessage(method, def, error);
                         observer.error(error);
@@ -3769,7 +3781,7 @@
             const found = changes.find(([key]) => key === hexKey);
             const isNotFound = util.isUndefined(found);
             if (isNotFound && withCache) {
-                const cached = this.#storageCache.get(hexKey);
+                const cached = __classPrivateFieldGet(this, _RpcCore_storageCache, "f").get(hexKey);
                 if (cached) {
                     return cached;
                 }
@@ -3782,7 +3794,7 @@
                 ? value
                 : util.u8aToU8a(value);
             const codec = this._newType(registry, blockHash, key, input, isEmpty, entryIndex);
-            this.#storageCache.set(hexKey, codec);
+            __classPrivateFieldGet(this, _RpcCore_storageCache, "f").set(hexKey, codec);
             return codec;
         }
         _newType(registry, blockHash, key, input, isEmpty, entryIndex = -1) {
@@ -3809,6 +3821,7 @@
             }
         }
     }
+    _RpcCore_instanceId = new WeakMap(), _RpcCore_registryDefault = new WeakMap(), _RpcCore_getBlockRegistry = new WeakMap(), _RpcCore_getBlockHash = new WeakMap(), _RpcCore_storageCache = new WeakMap();
 
     function unwrapBlockNumber(hdr) {
         return util.isCompact(hdr.number)
@@ -4606,18 +4619,20 @@
     }
 
     function createHeaderExtended(registry, header, validators, author) {
+        var _Implementation_author;
         const HeaderBase = registry.createClass('Header');
         class Implementation extends HeaderBase {
-            #author;
             constructor(registry, header, validators, author) {
                 super(registry, header);
-                this.#author = author || extractAuthor(this.digest, validators || []);
+                _Implementation_author.set(this, void 0);
+                __classPrivateFieldSet(this, _Implementation_author, author || extractAuthor(this.digest, validators || []), "f");
                 this.createdAtHash = header?.createdAtHash;
             }
             get author() {
-                return this.#author;
+                return __classPrivateFieldGet(this, _Implementation_author, "f");
             }
         }
+        _Implementation_author = new WeakMap();
         return new Implementation(registry, header, validators, author);
     }
 
@@ -4643,28 +4658,30 @@
         });
     }
     function createSignedBlockExtended(registry, block, events, validators, author) {
+        var _Implementation_author, _Implementation_events, _Implementation_extrinsics;
         const SignedBlockBase = registry.createClass('SignedBlock');
         class Implementation extends SignedBlockBase {
-            #author;
-            #events;
-            #extrinsics;
             constructor(registry, block, events, validators, author) {
                 super(registry, block);
-                this.#author = author || extractAuthor(this.block.header.digest, validators || []);
-                this.#events = events || [];
-                this.#extrinsics = mapExtrinsics(this.block.extrinsics, this.#events);
+                _Implementation_author.set(this, void 0);
+                _Implementation_events.set(this, void 0);
+                _Implementation_extrinsics.set(this, void 0);
+                __classPrivateFieldSet(this, _Implementation_author, author || extractAuthor(this.block.header.digest, validators || []), "f");
+                __classPrivateFieldSet(this, _Implementation_events, events || [], "f");
+                __classPrivateFieldSet(this, _Implementation_extrinsics, mapExtrinsics(this.block.extrinsics, __classPrivateFieldGet(this, _Implementation_events, "f")), "f");
                 this.createdAtHash = block?.createdAtHash;
             }
             get author() {
-                return this.#author;
+                return __classPrivateFieldGet(this, _Implementation_author, "f");
             }
             get events() {
-                return this.#events;
+                return __classPrivateFieldGet(this, _Implementation_events, "f");
             }
             get extrinsics() {
-                return this.#extrinsics;
+                return __classPrivateFieldGet(this, _Implementation_extrinsics, "f");
             }
         }
+        _Implementation_author = new WeakMap(), _Implementation_events = new WeakMap(), _Implementation_extrinsics = new WeakMap();
         return new Implementation(registry, block, events, validators, author);
     }
 
@@ -6891,14 +6908,6 @@
         return filterAndApply(events, 'system', ['ExtrinsicFailed', 'ExtrinsicSuccess'], getDispatchInfo)[0];
     }
     class SubmittableResult {
-        dispatchError;
-        dispatchInfo;
-        internalError;
-        events;
-        status;
-        txHash;
-        txIndex;
-        blockNumber;
         constructor({ blockNumber, dispatchError, dispatchInfo, events, internalError, status, txHash, txIndex }) {
             this.dispatchError = dispatchError || extractError(events);
             this.dispatchInfo = dispatchInfo || extractInfo(events);
@@ -6981,13 +6990,92 @@
             : partialOptions;
     }
     function createClass({ api, apiType, blockHash, decorateMethod }) {
+        var _Submittable_ignoreStatusCb, _Submittable_transformResult, _Submittable_observeSign, _Submittable_observeStatus, _Submittable_observeSend, _Submittable_observeSubscribe, _Submittable_signViaSigner, _Submittable_updateSigner;
         const ExtrinsicBase = api.registry.createClass('Extrinsic');
         class Submittable extends ExtrinsicBase {
-            #ignoreStatusCb;
-            #transformResult = identity;
             constructor(registry, extrinsic) {
                 super(registry, extrinsic, { version: api.extrinsicType });
-                this.#ignoreStatusCb = apiType === 'rxjs';
+                _Submittable_ignoreStatusCb.set(this, void 0);
+                _Submittable_transformResult.set(this, identity);
+                _Submittable_observeSign.set(this, (account, partialOptions) => {
+                    const address = isKeyringPair(account) ? account.address : account.toString();
+                    const options = optionsOrNonce(partialOptions);
+                    return api.derive.tx.signingInfo(address, options.nonce, options.era).pipe(first(), mergeMap(async (signingInfo) => {
+                        const eraOptions = makeEraOptions(api, this.registry, options, signingInfo);
+                        let updateId = -1;
+                        if (isKeyringPair(account)) {
+                            this.sign(account, eraOptions);
+                        }
+                        else {
+                            updateId = await __classPrivateFieldGet(this, _Submittable_signViaSigner, "f").call(this, address, eraOptions, signingInfo.header);
+                        }
+                        return { options: eraOptions, updateId };
+                    }));
+                });
+                _Submittable_observeStatus.set(this, (txHash, status) => {
+                    if (!status.isFinalized && !status.isInBlock) {
+                        return of(__classPrivateFieldGet(this, _Submittable_transformResult, "f").call(this, new SubmittableResult({
+                            status,
+                            txHash
+                        })));
+                    }
+                    const blockHash = status.isInBlock
+                        ? status.asInBlock
+                        : status.asFinalized;
+                    return api.derive.tx.events(blockHash).pipe(map(({ block, events }) => __classPrivateFieldGet(this, _Submittable_transformResult, "f").call(this, new SubmittableResult({
+                        ...filterEvents(txHash, block, events, status),
+                        status,
+                        txHash
+                    }))), catchError((internalError) => of(__classPrivateFieldGet(this, _Submittable_transformResult, "f").call(this, new SubmittableResult({
+                        internalError,
+                        status,
+                        txHash
+                    })))));
+                });
+                _Submittable_observeSend.set(this, (info) => {
+                    return api.rpc.author.submitExtrinsic(this).pipe(tap((hash) => {
+                        __classPrivateFieldGet(this, _Submittable_updateSigner, "f").call(this, hash, info);
+                    }));
+                });
+                _Submittable_observeSubscribe.set(this, (info) => {
+                    const txHash = this.hash;
+                    return api.rpc.author.submitAndWatchExtrinsic(this).pipe(switchMap((status) => __classPrivateFieldGet(this, _Submittable_observeStatus, "f").call(this, txHash, status)), tap((status) => {
+                        __classPrivateFieldGet(this, _Submittable_updateSigner, "f").call(this, status, info);
+                    }));
+                });
+                _Submittable_signViaSigner.set(this, async (address, options, header) => {
+                    const signer = options.signer || api.signer;
+                    if (!signer) {
+                        throw new Error('No signer specified, either via api.setSigner or via sign options. You possibly need to pass through an explicit keypair for the origin so it can be used for signing.');
+                    }
+                    const payload = this.registry.createTypeUnsafe('SignerPayload', [util.objectSpread({}, options, {
+                            address,
+                            blockNumber: header ? header.number : 0,
+                            method: this.method
+                        })]);
+                    let result;
+                    if (util.isFunction(signer.signPayload)) {
+                        result = await signer.signPayload(payload.toPayload());
+                    }
+                    else if (util.isFunction(signer.signRaw)) {
+                        result = await signer.signRaw(payload.toRaw());
+                    }
+                    else {
+                        throw new Error('Invalid signer interface, it should implement either signPayload or signRaw (or both)');
+                    }
+                    super.addSignature(address, result.signature, payload.toPayload());
+                    return result.id;
+                });
+                _Submittable_updateSigner.set(this, (status, info) => {
+                    if (info && (info.updateId !== -1)) {
+                        const { options, updateId } = info;
+                        const signer = options.signer || api.signer;
+                        if (signer && util.isFunction(signer.update)) {
+                            signer.update(updateId, status);
+                        }
+                    }
+                });
+                __classPrivateFieldSet(this, _Submittable_ignoreStatusCb, apiType === 'rxjs', "f");
             }
             get hasDryRun() {
                 return util.isFunction(api.rpc.system?.dryRun);
@@ -7002,7 +7090,7 @@
                 if (blockHash || util.isString(optionsOrHash) || util.isU8a(optionsOrHash)) {
                     return decorateMethod(() => api.rpc.system.dryRun(this.toHex(), blockHash || optionsOrHash));
                 }
-                return decorateMethod(() => this.#observeSign(account, optionsOrHash).pipe(switchMap(() => api.rpc.system.dryRun(this.toHex()))))();
+                return decorateMethod(() => __classPrivateFieldGet(this, _Submittable_observeSign, "f").call(this, account, optionsOrHash).pipe(switchMap(() => api.rpc.system.dryRun(this.toHex()))))();
             }
             paymentInfo(account, optionsOrHash) {
                 if (!this.hasPaymentInfo) {
@@ -7026,105 +7114,28 @@
                 })))();
             }
             send(statusCb) {
-                const isSubscription = api.hasSubscriptions && (this.#ignoreStatusCb || !!statusCb);
+                const isSubscription = api.hasSubscriptions && (__classPrivateFieldGet(this, _Submittable_ignoreStatusCb, "f") || !!statusCb);
                 return decorateMethod(isSubscription
-                    ? this.#observeSubscribe
-                    : this.#observeSend)(statusCb);
+                    ? __classPrivateFieldGet(this, _Submittable_observeSubscribe, "f")
+                    : __classPrivateFieldGet(this, _Submittable_observeSend, "f"))(statusCb);
             }
             signAsync(account, partialOptions) {
-                return decorateMethod(() => this.#observeSign(account, partialOptions).pipe(map(() => this)))();
+                return decorateMethod(() => __classPrivateFieldGet(this, _Submittable_observeSign, "f").call(this, account, partialOptions).pipe(map(() => this)))();
             }
             signAndSend(account, partialOptions, optionalStatusCb) {
                 const [options, statusCb] = makeSignAndSendOptions(partialOptions, optionalStatusCb);
-                const isSubscription = api.hasSubscriptions && (this.#ignoreStatusCb || !!statusCb);
-                return decorateMethod(() => this.#observeSign(account, options).pipe(switchMap((info) => isSubscription
-                    ? this.#observeSubscribe(info)
-                    : this.#observeSend(info)))
+                const isSubscription = api.hasSubscriptions && (__classPrivateFieldGet(this, _Submittable_ignoreStatusCb, "f") || !!statusCb);
+                return decorateMethod(() => __classPrivateFieldGet(this, _Submittable_observeSign, "f").call(this, account, options).pipe(switchMap((info) => isSubscription
+                    ? __classPrivateFieldGet(this, _Submittable_observeSubscribe, "f").call(this, info)
+                    : __classPrivateFieldGet(this, _Submittable_observeSend, "f").call(this, info)))
                 )(statusCb);
             }
             withResultTransform(transform) {
-                this.#transformResult = transform;
+                __classPrivateFieldSet(this, _Submittable_transformResult, transform, "f");
                 return this;
             }
-            #observeSign = (account, partialOptions) => {
-                const address = isKeyringPair(account) ? account.address : account.toString();
-                const options = optionsOrNonce(partialOptions);
-                return api.derive.tx.signingInfo(address, options.nonce, options.era).pipe(first(), mergeMap(async (signingInfo) => {
-                    const eraOptions = makeEraOptions(api, this.registry, options, signingInfo);
-                    let updateId = -1;
-                    if (isKeyringPair(account)) {
-                        this.sign(account, eraOptions);
-                    }
-                    else {
-                        updateId = await this.#signViaSigner(address, eraOptions, signingInfo.header);
-                    }
-                    return { options: eraOptions, updateId };
-                }));
-            };
-            #observeStatus = (txHash, status) => {
-                if (!status.isFinalized && !status.isInBlock) {
-                    return of(this.#transformResult(new SubmittableResult({
-                        status,
-                        txHash
-                    })));
-                }
-                const blockHash = status.isInBlock
-                    ? status.asInBlock
-                    : status.asFinalized;
-                return api.derive.tx.events(blockHash).pipe(map(({ block, events }) => this.#transformResult(new SubmittableResult({
-                    ...filterEvents(txHash, block, events, status),
-                    status,
-                    txHash
-                }))), catchError((internalError) => of(this.#transformResult(new SubmittableResult({
-                    internalError,
-                    status,
-                    txHash
-                })))));
-            };
-            #observeSend = (info) => {
-                return api.rpc.author.submitExtrinsic(this).pipe(tap((hash) => {
-                    this.#updateSigner(hash, info);
-                }));
-            };
-            #observeSubscribe = (info) => {
-                const txHash = this.hash;
-                return api.rpc.author.submitAndWatchExtrinsic(this).pipe(switchMap((status) => this.#observeStatus(txHash, status)), tap((status) => {
-                    this.#updateSigner(status, info);
-                }));
-            };
-            #signViaSigner = async (address, options, header) => {
-                const signer = options.signer || api.signer;
-                if (!signer) {
-                    throw new Error('No signer specified, either via api.setSigner or via sign options. You possibly need to pass through an explicit keypair for the origin so it can be used for signing.');
-                }
-                const payload = this.registry.createTypeUnsafe('SignerPayload', [util.objectSpread({}, options, {
-                        address,
-                        blockNumber: header ? header.number : 0,
-                        method: this.method
-                    })]);
-                let result;
-                if (util.isFunction(signer.signPayload)) {
-                    result = await signer.signPayload(payload.toPayload());
-                }
-                else if (util.isFunction(signer.signRaw)) {
-                    result = await signer.signRaw(payload.toRaw());
-                }
-                else {
-                    throw new Error('Invalid signer interface, it should implement either signPayload or signRaw (or both)');
-                }
-                super.addSignature(address, result.signature, payload.toPayload());
-                return result.id;
-            };
-            #updateSigner = (status, info) => {
-                if (info && (info.updateId !== -1)) {
-                    const { options, updateId } = info;
-                    const signer = options.signer || api.signer;
-                    if (signer && util.isFunction(signer.update)) {
-                        signer.update(updateId, status);
-                    }
-                }
-            };
         }
+        _Submittable_ignoreStatusCb = new WeakMap(), _Submittable_transformResult = new WeakMap(), _Submittable_observeSign = new WeakMap(), _Submittable_observeStatus = new WeakMap(), _Submittable_observeSend = new WeakMap(), _Submittable_observeSubscribe = new WeakMap(), _Submittable_signViaSigner = new WeakMap(), _Submittable_updateSigner = new WeakMap();
         return Submittable;
     }
 
@@ -18710,25 +18721,30 @@
         return [creator, args];
     }
 
+    var _Events_eventemitter;
     class Events {
-        #eventemitter = new eventemitter3Exports();
+        constructor() {
+            _Events_eventemitter.set(this, new eventemitter3Exports());
+        }
         emit(type, ...args) {
-            return this.#eventemitter.emit(type, ...args);
+            return __classPrivateFieldGet(this, _Events_eventemitter, "f").emit(type, ...args);
         }
         on(type, handler) {
-            this.#eventemitter.on(type, handler);
+            __classPrivateFieldGet(this, _Events_eventemitter, "f").on(type, handler);
             return this;
         }
         off(type, handler) {
-            this.#eventemitter.removeListener(type, handler);
+            __classPrivateFieldGet(this, _Events_eventemitter, "f").removeListener(type, handler);
             return this;
         }
         once(type, handler) {
-            this.#eventemitter.once(type, handler);
+            __classPrivateFieldGet(this, _Events_eventemitter, "f").once(type, handler);
             return this;
         }
     }
+    _Events_eventemitter = new WeakMap();
 
+    var _Decorate_instanceId, _Decorate_runtimeLog, _Decorate_registry, _Decorate_storageGetQ, _Decorate_storageSubQ;
     const PAGE_SIZE_K = 1000;
     const PAGE_SIZE_V = 250;
     const PAGE_SIZE_Q = 50;
@@ -18738,41 +18754,31 @@
         return util.assertReturn(api.rx.query[section] && api.rx.query[section][method], () => `query.${section}.${method} is not available in this version of the metadata`);
     }
     class Decorate extends Events {
-        #instanceId;
-        #runtimeLog = {};
-        #registry;
-        #storageGetQ = [];
-        #storageSubQ = [];
-        __phantom = new util.BN(0);
-        _type;
-        _call = {};
-        _consts = {};
-        _derive;
-        _errors = {};
-        _events = {};
-        _extrinsics;
-        _extrinsicType = types.GenericExtrinsic.LATEST_EXTRINSIC_VERSION;
-        _genesisHash;
-        _isConnected;
-        _isReady = false;
-        _query = {};
-        _queryMulti;
-        _rpc;
-        _rpcCore;
-        _runtimeMap = {};
-        _runtimeChain;
-        _runtimeMetadata;
-        _runtimeVersion;
-        _rx = { call: {}, consts: {}, query: {}, tx: {} };
-        _options;
-        _decorateMethod;
         constructor(options, type, decorateMethod) {
             super();
-            this.#instanceId = `${++instanceCounter}`;
-            this.#registry = options.source?.registry || options.registry || new types.TypeRegistry();
+            _Decorate_instanceId.set(this, void 0);
+            _Decorate_runtimeLog.set(this, {});
+            _Decorate_registry.set(this, void 0);
+            _Decorate_storageGetQ.set(this, []);
+            _Decorate_storageSubQ.set(this, []);
+            this.__phantom = new util.BN(0);
+            this._call = {};
+            this._consts = {};
+            this._errors = {};
+            this._events = {};
+            this._extrinsicType = types.GenericExtrinsic.LATEST_EXTRINSIC_VERSION;
+            this._isReady = false;
+            this._query = {};
+            this._runtimeMap = {};
+            this._rx = { call: {}, consts: {}, query: {}, tx: {} };
+            this._rxDecorateMethod = (method) => {
+                return method;
+            };
+            __classPrivateFieldSet(this, _Decorate_instanceId, `${++instanceCounter}`, "f");
+            __classPrivateFieldSet(this, _Decorate_registry, options.source?.registry || options.registry || new types.TypeRegistry(), "f");
             this._rx.callAt = (blockHash, knownVersion) => from(this.at(blockHash, knownVersion)).pipe(map((a) => a.rx.call));
             this._rx.queryAt = (blockHash, knownVersion) => from(this.at(blockHash, knownVersion)).pipe(map((a) => a.rx.query));
-            this._rx.registry = this.#registry;
+            this._rx.registry = __classPrivateFieldGet(this, _Decorate_registry, "f");
             const thisProvider = options.source
                 ? options.source._rpcCore.provider.isClonable
                     ? options.source._rpcCore.provider.clone()
@@ -18781,18 +18787,18 @@
             this._decorateMethod = decorateMethod;
             this._options = options;
             this._type = type;
-            this._rpcCore = new RpcCore(this.#instanceId, this.#registry, thisProvider, this._options.rpc);
+            this._rpcCore = new RpcCore(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), __classPrivateFieldGet(this, _Decorate_registry, "f"), thisProvider, this._options.rpc);
             this._isConnected = new BehaviorSubject(this._rpcCore.provider.isConnected);
             this._rx.hasSubscriptions = this._rpcCore.provider.hasSubscriptions;
         }
         get registry() {
-            return this.#registry;
+            return __classPrivateFieldGet(this, _Decorate_registry, "f");
         }
         createType(type, ...params) {
-            return this.#registry.createType(type, ...params);
+            return __classPrivateFieldGet(this, _Decorate_registry, "f").createType(type, ...params);
         }
         registerTypes(types) {
-            types && this.#registry.register(types);
+            types && __classPrivateFieldGet(this, _Decorate_registry, "f").register(types);
         }
         get hasSubscriptions() {
             return this._rpcCore.provider.hasSubscriptions;
@@ -18871,7 +18877,7 @@
             this.emit('decorated');
         }
         injectMetadata(metadata, fromEmpty, registry) {
-            this._injectMetadata({ counter: 0, metadata, registry: registry || this.#registry, runtimeVersion: this.#registry.createType('RuntimeVersionPartial') }, fromEmpty);
+            this._injectMetadata({ counter: 0, metadata, registry: registry || __classPrivateFieldGet(this, _Decorate_registry, "f"), runtimeVersion: __classPrivateFieldGet(this, _Decorate_registry, "f").createType('RuntimeVersionPartial') }, fromEmpty);
         }
         _decorateFunctionMeta(input, output) {
             output.meta = input.meta;
@@ -19010,8 +19016,8 @@
             const sections = this._getRuntimeDefs(registry, specName, this._runtimeChain);
             const older = [];
             const implName = `${specName.toString()}/${specVersion.toString()}`;
-            const hasLogged = this.#runtimeLog[implName] || false;
-            this.#runtimeLog[implName] = true;
+            const hasLogged = __classPrivateFieldGet(this, _Decorate_runtimeLog, "f")[implName] || false;
+            __classPrivateFieldGet(this, _Decorate_runtimeLog, "f")[implName] = true;
             for (let i = 0; i < sections.length; i++) {
                 const [_section, secs] = sections[i];
                 const sectionHash = utilCrypto.blake2AsHex(_section, 64);
@@ -19128,7 +19134,7 @@
             return result;
         }
         _decorateStorageEntry(creator, decorateMethod) {
-            const getArgs = (args, registry) => extractStorageArgs(registry || this.#registry, creator, args);
+            const getArgs = (args, registry) => extractStorageArgs(registry || __classPrivateFieldGet(this, _Decorate_registry, "f"), creator, args);
             const getQueryAt = (blockHash) => from(this.at(blockHash)).pipe(map((api) => getAtQueryFn(api, creator)));
             const decorated = this._decorateStorageCall(creator, decorateMethod);
             decorated.creator = creator;
@@ -19141,12 +19147,12 @@
             decorated.size = decorateMethod((...args) => this._rpcCore.state.getStorageSize(getArgs(args)));
             decorated.sizeAt = decorateMethod((blockHash, ...args) => getQueryAt(blockHash).pipe(switchMap((q) => this._rpcCore.state.getStorageSize(getArgs(args, q.creator.meta.registry), blockHash))));
             if (creator.iterKey && creator.meta.type.isMap) {
-                decorated.entries = decorateMethod(memo(this.#instanceId, (...args) => this._retrieveMapEntries(creator, null, args)));
-                decorated.entriesAt = decorateMethod(memo(this.#instanceId, (blockHash, ...args) => getQueryAt(blockHash).pipe(switchMap((q) => this._retrieveMapEntries(q.creator, blockHash, args)))));
-                decorated.entriesPaged = decorateMethod(memo(this.#instanceId, (opts) => this._retrieveMapEntriesPaged(creator, undefined, opts)));
-                decorated.keys = decorateMethod(memo(this.#instanceId, (...args) => this._retrieveMapKeys(creator, null, args)));
-                decorated.keysAt = decorateMethod(memo(this.#instanceId, (blockHash, ...args) => getQueryAt(blockHash).pipe(switchMap((q) => this._retrieveMapKeys(q.creator, blockHash, args)))));
-                decorated.keysPaged = decorateMethod(memo(this.#instanceId, (opts) => this._retrieveMapKeysPaged(creator, undefined, opts)));
+                decorated.entries = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (...args) => this._retrieveMapEntries(creator, null, args)));
+                decorated.entriesAt = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (blockHash, ...args) => getQueryAt(blockHash).pipe(switchMap((q) => this._retrieveMapEntries(q.creator, blockHash, args)))));
+                decorated.entriesPaged = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (opts) => this._retrieveMapEntriesPaged(creator, undefined, opts)));
+                decorated.keys = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (...args) => this._retrieveMapKeys(creator, null, args)));
+                decorated.keysAt = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (blockHash, ...args) => getQueryAt(blockHash).pipe(switchMap((q) => this._retrieveMapKeys(q.creator, blockHash, args)))));
+                decorated.keysPaged = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (opts) => this._retrieveMapKeysPaged(creator, undefined, opts)));
             }
             if (this.supportMulti && creator.meta.type.isMap) {
                 decorated.multi = decorateMethod((args) => creator.meta.type.asMap.hashers.length === 1
@@ -19166,10 +19172,10 @@
             decorated.keyPrefix = (...keys) => util.u8aToHex(creator.keyPrefix(...keys));
             decorated.size = decorateMethod((...args) => this._rpcCore.state.getStorageSize(getArgs(args), blockHash));
             if (creator.iterKey && creator.meta.type.isMap) {
-                decorated.entries = decorateMethod(memo(this.#instanceId, (...args) => this._retrieveMapEntries(creator, blockHash, args)));
-                decorated.entriesPaged = decorateMethod(memo(this.#instanceId, (opts) => this._retrieveMapEntriesPaged(creator, blockHash, opts)));
-                decorated.keys = decorateMethod(memo(this.#instanceId, (...args) => this._retrieveMapKeys(creator, blockHash, args)));
-                decorated.keysPaged = decorateMethod(memo(this.#instanceId, (opts) => this._retrieveMapKeysPaged(creator, blockHash, opts)));
+                decorated.entries = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (...args) => this._retrieveMapEntries(creator, blockHash, args)));
+                decorated.entriesPaged = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (opts) => this._retrieveMapEntriesPaged(creator, blockHash, opts)));
+                decorated.keys = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (...args) => this._retrieveMapKeys(creator, blockHash, args)));
+                decorated.keysPaged = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (opts) => this._retrieveMapKeysPaged(creator, blockHash, opts)));
             }
             if (this.supportMulti && creator.meta.type.isMap) {
                 decorated.multi = decorateMethod((args) => creator.meta.type.asMap.hashers.length === 1
@@ -19179,7 +19185,7 @@
             return this._decorateFunctionMeta(creator, decorated);
         }
         _queueStorage(call, queue) {
-            const query = queue === this.#storageSubQ
+            const query = queue === __classPrivateFieldGet(this, _Decorate_storageSubQ, "f")
                 ? this._rpcCore.state.subscribeStorage
                 : this._rpcCore.state.queryStorageAt;
             let queueIdx = queue.length - 1;
@@ -19206,16 +19212,16 @@
             map((values) => values[valueIdx]));
         }
         _decorateStorageCall(creator, decorateMethod) {
-            const memoed = memo(this.#instanceId, (...args) => {
-                const call = extractStorageArgs(this.#registry, creator, args);
+            const memoed = memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (...args) => {
+                const call = extractStorageArgs(__classPrivateFieldGet(this, _Decorate_registry, "f"), creator, args);
                 if (!this.hasSubscriptions) {
                     return this._rpcCore.state.getStorage(call);
                 }
-                return this._queueStorage(call, this.#storageSubQ);
+                return this._queueStorage(call, __classPrivateFieldGet(this, _Decorate_storageSubQ, "f"));
             });
             return decorateMethod(memoed, {
                 methodName: creator.method,
-                overrideNoSub: (...args) => this._queueStorage(extractStorageArgs(this.#registry, creator, args), this.#storageGetQ)
+                overrideNoSub: (...args) => this._queueStorage(extractStorageArgs(__classPrivateFieldGet(this, _Decorate_registry, "f"), creator, args), __classPrivateFieldGet(this, _Decorate_storageGetQ, "f"))
             });
         }
         _retrieveMulti(keys, blockHash) {
@@ -19279,36 +19285,36 @@
         }
         _decorateDeriveRx(decorateMethod) {
             const specName = this._runtimeVersion?.specName.toString();
-            const available = getAvailableDerives(this.#instanceId, this._rx, util.objectSpread({}, this._options.derives, this._options.typesBundle?.spec?.[specName || '']?.derives));
+            const available = getAvailableDerives(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), this._rx, util.objectSpread({}, this._options.derives, this._options.typesBundle?.spec?.[specName || '']?.derives));
             return decorateDeriveSections(decorateMethod, available);
         }
         _decorateDerive(decorateMethod) {
             return decorateDeriveSections(decorateMethod, this._rx.derive);
         }
-        _rxDecorateMethod = (method) => {
-            return method;
-        };
     }
+    _Decorate_instanceId = new WeakMap(), _Decorate_runtimeLog = new WeakMap(), _Decorate_registry = new WeakMap(), _Decorate_storageGetQ = new WeakMap(), _Decorate_storageSubQ = new WeakMap();
 
+    var _Init_instances, _Init_atLast, _Init_healthTimer, _Init_registries, _Init_updateSub, _Init_waitingRegistries, _Init_onProviderConnect, _Init_onProviderDisconnect, _Init_onProviderError;
     const KEEPALIVE_INTERVAL = 10000;
     const l = util.logger('api/init');
     function textToString(t) {
         return t.toString();
     }
     class Init extends Decorate {
-        #atLast = null;
-        #healthTimer = null;
-        #registries = [];
-        #updateSub = null;
-        #waitingRegistries = {};
         constructor(options, type, decorateMethod) {
             super(options, type, decorateMethod);
+            _Init_instances.add(this);
+            _Init_atLast.set(this, null);
+            _Init_healthTimer.set(this, null);
+            _Init_registries.set(this, []);
+            _Init_updateSub.set(this, null);
+            _Init_waitingRegistries.set(this, {});
             this.registry.setKnownTypes(options);
             if (!options.source) {
                 this.registerTypes(options.types);
             }
             else {
-                this.#registries = options.source.#registries;
+                __classPrivateFieldSet(this, _Init_registries, __classPrivateFieldGet(options.source, _Init_registries, "f"), "f");
             }
             this._rpc = this._decorateRpc(this._rpcCore, this._decorateMethod);
             this._rx.rpc = this._decorateRpc(this._rpcCore, this._rxDecorateMethod);
@@ -19320,15 +19326,15 @@
             this._rpcCore.setRegistrySwap((blockHash) => this.getBlockRegistry(blockHash));
             this._rpcCore.setResolveBlockHash((blockNumber) => firstValueFrom(this._rpcCore.chain.getBlockHash(blockNumber)));
             if (this.hasSubscriptions) {
-                this._rpcCore.provider.on('disconnected', () => this.#onProviderDisconnect());
-                this._rpcCore.provider.on('error', (e) => this.#onProviderError(e));
-                this._rpcCore.provider.on('connected', () => this.#onProviderConnect());
+                this._rpcCore.provider.on('disconnected', () => __classPrivateFieldGet(this, _Init_instances, "m", _Init_onProviderDisconnect).call(this));
+                this._rpcCore.provider.on('error', (e) => __classPrivateFieldGet(this, _Init_instances, "m", _Init_onProviderError).call(this, e));
+                this._rpcCore.provider.on('connected', () => __classPrivateFieldGet(this, _Init_instances, "m", _Init_onProviderConnect).call(this));
             }
             else if (!this._options.noInitWarn) {
                 l.warn('Api will be available in a limited mode since the provider does not support subscriptions');
             }
             if (this._rpcCore.provider.isConnected) {
-                this.#onProviderConnect();
+                __classPrivateFieldGet(this, _Init_instances, "m", _Init_onProviderConnect).call(this);
             }
         }
         _initRegistry(registry, chain, version, metadata, chainProps) {
@@ -19343,36 +19349,36 @@
             registry.setMetadata(metadata, undefined, util.objectSpread({}, getSpecExtensions(registry, chain, version.specName), this._options.signedExtensions));
         }
         _getDefaultRegistry() {
-            return util.assertReturn(this.#registries.find(({ isDefault }) => isDefault), 'Initialization error, cannot find the default registry');
+            return util.assertReturn(__classPrivateFieldGet(this, _Init_registries, "f").find(({ isDefault }) => isDefault), 'Initialization error, cannot find the default registry');
         }
         async at(blockHash, knownVersion) {
             const u8aHash = util.u8aToU8a(blockHash);
             const u8aHex = util.u8aToHex(u8aHash);
             const registry = await this.getBlockRegistry(u8aHash, knownVersion);
-            if (!this.#atLast || this.#atLast[0] !== u8aHex) {
-                this.#atLast = [u8aHex, this._createDecorated(registry, true, null, u8aHash).decoratedApi];
+            if (!__classPrivateFieldGet(this, _Init_atLast, "f") || __classPrivateFieldGet(this, _Init_atLast, "f")[0] !== u8aHex) {
+                __classPrivateFieldSet(this, _Init_atLast, [u8aHex, this._createDecorated(registry, true, null, u8aHash).decoratedApi], "f");
             }
-            return this.#atLast[1];
+            return __classPrivateFieldGet(this, _Init_atLast, "f")[1];
         }
         async _createBlockRegistry(blockHash, header, version) {
             const registry = new types.TypeRegistry(blockHash);
             const metadata = new types.Metadata(registry, await firstValueFrom(this._rpcCore.state.getMetadata.raw(header.parentHash)));
             this._initRegistry(registry, this._runtimeChain, version, metadata);
             const result = { counter: 0, lastBlockHash: blockHash, metadata, registry, runtimeVersion: version };
-            this.#registries.push(result);
+            __classPrivateFieldGet(this, _Init_registries, "f").push(result);
             return result;
         }
         _cacheBlockRegistryProgress(key, creator) {
-            let waiting = this.#waitingRegistries[key];
+            let waiting = __classPrivateFieldGet(this, _Init_waitingRegistries, "f")[key];
             if (util.isUndefined(waiting)) {
-                waiting = this.#waitingRegistries[key] = new Promise((resolve, reject) => {
+                waiting = __classPrivateFieldGet(this, _Init_waitingRegistries, "f")[key] = new Promise((resolve, reject) => {
                     creator()
                         .then((registry) => {
-                        delete this.#waitingRegistries[key];
+                        delete __classPrivateFieldGet(this, _Init_waitingRegistries, "f")[key];
                         resolve(registry);
                     })
                         .catch((error) => {
-                        delete this.#waitingRegistries[key];
+                        delete __classPrivateFieldGet(this, _Init_waitingRegistries, "f")[key];
                         reject(error);
                     });
                 });
@@ -19381,7 +19387,7 @@
         }
         _getBlockRegistryViaVersion(blockHash, version) {
             if (version) {
-                const existingViaVersion = this.#registries.find(({ runtimeVersion: { specName, specVersion } }) => specName.eq(version.specName) &&
+                const existingViaVersion = __classPrivateFieldGet(this, _Init_registries, "f").find(({ runtimeVersion: { specName, specVersion } }) => specName.eq(version.specName) &&
                     specVersion.eq(version.specVersion));
                 if (existingViaVersion) {
                     existingViaVersion.counter++;
@@ -19409,7 +19415,7 @@
         }
         async getBlockRegistry(blockHash, knownVersion) {
             return (
-            this.#registries.find(({ lastBlockHash }) => lastBlockHash && util.u8aEq(lastBlockHash, blockHash)) ||
+            __classPrivateFieldGet(this, _Init_registries, "f").find(({ lastBlockHash }) => lastBlockHash && util.u8aEq(lastBlockHash, blockHash)) ||
                 this._getBlockRegistryViaVersion(blockHash, knownVersion) ||
                 await this._cacheBlockRegistryProgress(util.u8aToHex(blockHash), () => this._getBlockRegistryViaHash(blockHash)));
         }
@@ -19440,10 +19446,10 @@
             return [source.genesisHash, source.runtimeMetadata];
         }
         _subscribeUpdates() {
-            if (this.#updateSub || !this.hasSubscriptions) {
+            if (__classPrivateFieldGet(this, _Init_updateSub, "f") || !this.hasSubscriptions) {
                 return;
             }
-            this.#updateSub = this._rpcCore.state.subscribeRuntimeVersion().pipe(switchMap((version) =>
+            __classPrivateFieldSet(this, _Init_updateSub, this._rpcCore.state.subscribeRuntimeVersion().pipe(switchMap((version) =>
             this._runtimeVersion?.specVersion.eq(version.specVersion)
                 ? of(false)
                 : this._rpcCore.state.getMetadata().pipe(map((metadata) => {
@@ -19457,7 +19463,7 @@
                     this._initRegistry(this.registry, this._runtimeChain, version, metadata);
                     this._injectMetadata(thisRegistry, true);
                     return true;
-                })))).subscribe();
+                })))).subscribe(), "f");
         }
         async _metaFromChain(optMetadata) {
             const [genesisHash, runtimeVersion, chain, chainProps, rpcMethods, chainMetadata] = await Promise.all([
@@ -19480,8 +19486,8 @@
             this._initRegistry(this.registry, chain, runtimeVersion, metadata, chainProps);
             this._filterRpc(rpcMethods.methods.map(textToString), getSpecRpc(this.registry, chain, runtimeVersion.specName));
             this._subscribeUpdates();
-            if (!this.#registries.length) {
-                this.#registries.push({ counter: 0, isDefault: true, metadata, registry: this.registry, runtimeVersion });
+            if (!__classPrivateFieldGet(this, _Init_registries, "f").length) {
+                __classPrivateFieldGet(this, _Init_registries, "f").push({ counter: 0, isDefault: true, metadata, registry: this.registry, runtimeVersion });
             }
             metadata.getUniqTypes(this._options.throwOnUnknown || false);
             return [genesisHash, metadata];
@@ -19498,57 +19504,55 @@
         }
         _subscribeHealth() {
             this._unsubscribeHealth();
-            this.#healthTimer = this.hasSubscriptions
+            __classPrivateFieldSet(this, _Init_healthTimer, this.hasSubscriptions
                 ? setInterval(() => {
                     firstValueFrom(this._rpcCore.system.health.raw()).catch(() => undefined);
                 }, KEEPALIVE_INTERVAL)
-                : null;
+                : null, "f");
         }
         _unsubscribeHealth() {
-            if (this.#healthTimer) {
-                clearInterval(this.#healthTimer);
-                this.#healthTimer = null;
+            if (__classPrivateFieldGet(this, _Init_healthTimer, "f")) {
+                clearInterval(__classPrivateFieldGet(this, _Init_healthTimer, "f"));
+                __classPrivateFieldSet(this, _Init_healthTimer, null, "f");
             }
         }
         _unsubscribeUpdates() {
-            if (this.#updateSub) {
-                this.#updateSub.unsubscribe();
-                this.#updateSub = null;
+            if (__classPrivateFieldGet(this, _Init_updateSub, "f")) {
+                __classPrivateFieldGet(this, _Init_updateSub, "f").unsubscribe();
+                __classPrivateFieldSet(this, _Init_updateSub, null, "f");
             }
         }
         _unsubscribe() {
             this._unsubscribeHealth();
             this._unsubscribeUpdates();
         }
-        async #onProviderConnect() {
-            this._isConnected.next(true);
-            this.emit('connected');
-            try {
-                const cryptoReady = this._options.initWasm === false
-                    ? true
-                    : await utilCrypto.cryptoWaitReady();
-                const hasMeta = await this._loadMeta();
-                this._subscribeHealth();
-                if (hasMeta && !this._isReady && cryptoReady) {
-                    this._isReady = true;
-                    this.emit('ready', this);
-                }
-            }
-            catch (_error) {
-                const error = new Error(`FATAL: Unable to initialize the API: ${_error.message}`);
-                l.error(error);
-                this.emit('error', error);
+    }
+    _Init_atLast = new WeakMap(), _Init_healthTimer = new WeakMap(), _Init_registries = new WeakMap(), _Init_updateSub = new WeakMap(), _Init_waitingRegistries = new WeakMap(), _Init_instances = new WeakSet(), _Init_onProviderConnect = async function _Init_onProviderConnect() {
+        this._isConnected.next(true);
+        this.emit('connected');
+        try {
+            const cryptoReady = this._options.initWasm === false
+                ? true
+                : await utilCrypto.cryptoWaitReady();
+            const hasMeta = await this._loadMeta();
+            this._subscribeHealth();
+            if (hasMeta && !this._isReady && cryptoReady) {
+                this._isReady = true;
+                this.emit('ready', this);
             }
         }
-        #onProviderDisconnect() {
-            this._isConnected.next(false);
-            this._unsubscribe();
-            this.emit('disconnected');
-        }
-        #onProviderError(error) {
+        catch (_error) {
+            const error = new Error(`FATAL: Unable to initialize the API: ${_error.message}`);
+            l.error(error);
             this.emit('error', error);
         }
-    }
+    }, _Init_onProviderDisconnect = function _Init_onProviderDisconnect() {
+        this._isConnected.next(false);
+        this._unsubscribe();
+        this.emit('disconnected');
+    }, _Init_onProviderError = function _Init_onProviderError(error) {
+        this.emit('error', error);
+    };
 
     function assertResult(value) {
         if (value === undefined) {
@@ -19648,52 +19652,53 @@
         }
     }
 
+    var _Combinator_allHasFired, _Combinator_callback, _Combinator_fired, _Combinator_fns, _Combinator_isActive, _Combinator_results, _Combinator_subscriptions;
     class Combinator {
-        #allHasFired = false;
-        #callback;
-        #fired = [];
-        #fns = [];
-        #isActive = true;
-        #results = [];
-        #subscriptions = [];
         constructor(fns, callback) {
-            this.#callback = callback;
-            this.#subscriptions = fns.map(async (input, index) => {
+            _Combinator_allHasFired.set(this, false);
+            _Combinator_callback.set(this, void 0);
+            _Combinator_fired.set(this, []);
+            _Combinator_fns.set(this, []);
+            _Combinator_isActive.set(this, true);
+            _Combinator_results.set(this, []);
+            _Combinator_subscriptions.set(this, []);
+            __classPrivateFieldSet(this, _Combinator_callback, callback, "f");
+            __classPrivateFieldSet(this, _Combinator_subscriptions, fns.map(async (input, index) => {
                 const [fn, ...args] = Array.isArray(input)
                     ? input
                     : [input];
-                this.#fired.push(false);
-                this.#fns.push(fn);
+                __classPrivateFieldGet(this, _Combinator_fired, "f").push(false);
+                __classPrivateFieldGet(this, _Combinator_fns, "f").push(fn);
                 return fn(...args, this._createCallback(index));
-            });
+            }), "f");
         }
         _allHasFired() {
-            this.#allHasFired ||= this.#fired.filter((hasFired) => !hasFired).length === 0;
-            return this.#allHasFired;
+            __classPrivateFieldSet(this, _Combinator_allHasFired, __classPrivateFieldGet(this, _Combinator_allHasFired, "f") || __classPrivateFieldGet(this, _Combinator_fired, "f").filter((hasFired) => !hasFired).length === 0, "f");
+            return __classPrivateFieldGet(this, _Combinator_allHasFired, "f");
         }
         _createCallback(index) {
             return (value) => {
-                this.#fired[index] = true;
-                this.#results[index] = value;
+                __classPrivateFieldGet(this, _Combinator_fired, "f")[index] = true;
+                __classPrivateFieldGet(this, _Combinator_results, "f")[index] = value;
                 this._triggerUpdate();
             };
         }
         _triggerUpdate() {
-            if (!this.#isActive || !util.isFunction(this.#callback) || !this._allHasFired()) {
+            if (!__classPrivateFieldGet(this, _Combinator_isActive, "f") || !util.isFunction(__classPrivateFieldGet(this, _Combinator_callback, "f")) || !this._allHasFired()) {
                 return;
             }
             try {
-                this.#callback(this.#results);
+                __classPrivateFieldGet(this, _Combinator_callback, "f").call(this, __classPrivateFieldGet(this, _Combinator_results, "f"));
             }
             catch (error) {
             }
         }
         unsubscribe() {
-            if (!this.#isActive) {
+            if (!__classPrivateFieldGet(this, _Combinator_isActive, "f")) {
                 return;
             }
-            this.#isActive = false;
-            this.#subscriptions.forEach(async (subscription) => {
+            __classPrivateFieldSet(this, _Combinator_isActive, false, "f");
+            __classPrivateFieldGet(this, _Combinator_subscriptions, "f").forEach(async (subscription) => {
                 try {
                     const unsubscribe = await subscription;
                     if (util.isFunction(unsubscribe)) {
@@ -19705,6 +19710,7 @@
             });
         }
     }
+    _Combinator_allHasFired = new WeakMap(), _Combinator_callback = new WeakMap(), _Combinator_fired = new WeakMap(), _Combinator_fns = new WeakMap(), _Combinator_isActive = new WeakMap(), _Combinator_results = new WeakMap(), _Combinator_subscriptions = new WeakMap();
 
     function promiseTracker(resolve, reject) {
         let isCompleted = false;
@@ -19765,19 +19771,20 @@
         };
     }
 
+    var _ApiPromise_isReadyPromise, _ApiPromise_isReadyOrErrorPromise;
     class ApiPromise extends ApiBase {
-        #isReadyPromise;
-        #isReadyOrErrorPromise;
         constructor(options) {
             super(options, 'promise', toPromiseMethod);
-            this.#isReadyPromise = new Promise((resolve) => {
+            _ApiPromise_isReadyPromise.set(this, void 0);
+            _ApiPromise_isReadyOrErrorPromise.set(this, void 0);
+            __classPrivateFieldSet(this, _ApiPromise_isReadyPromise, new Promise((resolve) => {
                 super.once('ready', () => resolve(this));
-            });
-            this.#isReadyOrErrorPromise = new Promise((resolve, reject) => {
+            }), "f");
+            __classPrivateFieldSet(this, _ApiPromise_isReadyOrErrorPromise, new Promise((resolve, reject) => {
                 const tracker = promiseTracker(resolve, reject);
                 super.once('ready', () => tracker.resolve(this));
                 super.once('error', (error) => tracker.reject(error));
-            });
+            }), "f");
         }
         static create(options) {
             const instance = new ApiPromise(options);
@@ -19789,10 +19796,10 @@
             return instance.isReady;
         }
         get isReady() {
-            return this.#isReadyPromise;
+            return __classPrivateFieldGet(this, _ApiPromise_isReadyPromise, "f");
         }
         get isReadyOrError() {
-            return this.#isReadyOrErrorPromise;
+            return __classPrivateFieldGet(this, _ApiPromise_isReadyOrErrorPromise, "f");
         }
         clone() {
             return new ApiPromise(util.objectSpread({}, this._options, { source: this }));
@@ -19804,30 +19811,33 @@
             };
         }
     }
+    _ApiPromise_isReadyPromise = new WeakMap(), _ApiPromise_isReadyOrErrorPromise = new WeakMap();
 
     function toRxMethod(method) {
         return method;
     }
 
+    var _ApiRx_isReadyRx;
     class ApiRx extends ApiBase {
-        #isReadyRx;
         constructor(options) {
             super(options, 'rxjs', toRxMethod);
-            this.#isReadyRx = from(
+            _ApiRx_isReadyRx.set(this, void 0);
+            __classPrivateFieldSet(this, _ApiRx_isReadyRx, from(
             new Promise((resolve) => {
                 super.on('ready', () => resolve(this));
-            }));
+            })), "f");
         }
         static create(options) {
             return new ApiRx(options).isReady;
         }
         get isReady() {
-            return this.#isReadyRx;
+            return __classPrivateFieldGet(this, _ApiRx_isReadyRx, "f");
         }
         clone() {
             return new ApiRx(util.objectSpread({}, this._options, { source: this }));
         }
     }
+    _ApiRx_isReadyRx = new WeakMap();
 
     Object.defineProperty(exports, 'Keyring', {
         enumerable: true,

@@ -6,6 +6,61 @@
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
+    var extendStatics = function(d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    function __extends(d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    }
+    function __values(o) {
+        var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+        if (m) return m.call(o);
+        if (o && typeof o.length === "number") return {
+            next: function () {
+                if (o && i >= o.length) o = void 0;
+                return { value: o && o[i++], done: !o };
+            }
+        };
+        throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+    }
+    function __read(o, n) {
+        var m = typeof Symbol === "function" && o[Symbol.iterator];
+        if (!m) return o;
+        var i = m.call(o), r, ar = [], e;
+        try {
+            while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+        }
+        catch (error) { e = { error: error }; }
+        finally {
+            try {
+                if (r && !r.done && (m = i["return"])) m.call(i);
+            }
+            finally { if (e) throw e.error; }
+        }
+        return ar;
+    }
+    function __spreadArray(to, from, pack) {
+        if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+            if (ar || !(i in from)) {
+                if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+                ar[i] = from[i];
+            }
+        }
+        return to.concat(ar || Array.prototype.slice.call(from));
+    }
+    function __classPrivateFieldGet(receiver, state, kind, f) {
+        if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+        return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+    }
+
     var TypeDefInfo;
     (function (TypeDefInfo) {
         TypeDefInfo[TypeDefInfo["BTreeMap"] = 0] = "BTreeMap";
@@ -112,6 +167,7 @@
         ['V0', v0ToLatest]
     ];
 
+    var _Abi_createArgs, _Abi_createEvent, _Abi_createMessage, _Abi_decodeArgs, _Abi_decodeMessage, _Abi_encodeArgs;
     const l$1 = util.logger('Abi');
     const PRIMITIVE_ALWAYS = ['AccountId', 'AccountIndex', 'Address', 'Balance'];
     function findMessage(list, messageOrId) {
@@ -152,25 +208,108 @@
         return [json, registry, latest, info];
     }
     class Abi {
-        events;
-        constructors;
-        info;
-        json;
-        messages;
-        metadata;
-        registry;
         constructor(abiJson, chainProperties) {
+            _Abi_createArgs.set(this, (args, spec) => {
+                return args.map(({ label, type }, index) => {
+                    try {
+                        if (!util.isObject(type)) {
+                            throw new Error('Invalid type definition found');
+                        }
+                        const displayName = type.displayName.length
+                            ? type.displayName[type.displayName.length - 1].toString()
+                            : undefined;
+                        const camelName = util.stringCamelCase(label);
+                        if (displayName && PRIMITIVE_ALWAYS.includes(displayName)) {
+                            return {
+                                name: camelName,
+                                type: {
+                                    info: TypeDefInfo.Plain,
+                                    type: displayName
+                                }
+                            };
+                        }
+                        const typeDef = this.registry.lookup.getTypeDef(type.type);
+                        return {
+                            name: camelName,
+                            type: displayName && !typeDef.type.startsWith(displayName)
+                                ? { displayName, ...typeDef }
+                                : typeDef
+                        };
+                    }
+                    catch (error) {
+                        l$1.error(`Error expanding argument ${index} in ${util.stringify(spec)}`);
+                        throw error;
+                    }
+                });
+            });
+            _Abi_createEvent.set(this, (spec, index) => {
+                const args = __classPrivateFieldGet(this, _Abi_createArgs, "f").call(this, spec.args, spec);
+                const event = {
+                    args,
+                    docs: spec.docs.map((d) => d.toString()),
+                    fromU8a: (data) => ({
+                        args: __classPrivateFieldGet(this, _Abi_decodeArgs, "f").call(this, args, data),
+                        event
+                    }),
+                    identifier: spec.label.toString(),
+                    index
+                };
+                return event;
+            });
+            _Abi_createMessage.set(this, (spec, index, add = {}) => {
+                const args = __classPrivateFieldGet(this, _Abi_createArgs, "f").call(this, spec.args, spec);
+                const identifier = spec.label.toString();
+                const message = {
+                    ...add,
+                    args,
+                    docs: spec.docs.map((d) => d.toString()),
+                    fromU8a: (data) => ({
+                        args: __classPrivateFieldGet(this, _Abi_decodeArgs, "f").call(this, args, data),
+                        message
+                    }),
+                    identifier,
+                    index,
+                    method: util.stringCamelCase(identifier),
+                    path: identifier.split('::').map((s) => util.stringCamelCase(s)),
+                    selector: spec.selector,
+                    toU8a: (params) => __classPrivateFieldGet(this, _Abi_encodeArgs, "f").call(this, spec, args, params)
+                };
+                return message;
+            });
+            _Abi_decodeArgs.set(this, (args, data) => {
+                let offset = 0;
+                return args.map(({ type: { lookupName, type } }) => {
+                    const value = this.registry.createType(lookupName || type, data.subarray(offset));
+                    offset += value.encodedLength;
+                    return value;
+                });
+            });
+            _Abi_decodeMessage.set(this, (type, list, data) => {
+                const [, trimmed] = util.compactStripLength(data);
+                const selector = trimmed.subarray(0, 4);
+                const message = list.find((m) => m.selector.eq(selector));
+                if (!message) {
+                    throw new Error(`Unable to find ${type} with selector ${util.u8aToHex(selector)}`);
+                }
+                return message.fromU8a(trimmed.subarray(4));
+            });
+            _Abi_encodeArgs.set(this, ({ label, selector }, args, data) => {
+                if (data.length !== args.length) {
+                    throw new Error(`Expected ${args.length} arguments to contract message '${label.toString()}', found ${data.length}`);
+                }
+                return util.compactAddLength(util.u8aConcat(this.registry.createType('ContractSelector', selector).toU8a(), ...args.map(({ type: { lookupName, type } }, index) => this.registry.createType(lookupName || type, data[index]).toU8a())));
+            });
             [this.json, this.registry, this.metadata, this.info] = parseJson(util.isString(abiJson)
                 ? JSON.parse(abiJson)
                 : abiJson, chainProperties);
-            this.constructors = this.metadata.spec.constructors.map((spec, index) => this.#createMessage(spec, index, {
+            this.constructors = this.metadata.spec.constructors.map((spec, index) => __classPrivateFieldGet(this, _Abi_createMessage, "f").call(this, spec, index, {
                 isConstructor: true,
                 isPayable: spec.payable.isTrue
             }));
-            this.events = this.metadata.spec.events.map((spec, index) => this.#createEvent(spec, index));
+            this.events = this.metadata.spec.events.map((spec, index) => __classPrivateFieldGet(this, _Abi_createEvent, "f").call(this, spec, index));
             this.messages = this.metadata.spec.messages.map((spec, index) => {
                 const typeSpec = spec.returnType.unwrapOr(null);
-                return this.#createMessage(spec, index, {
+                return __classPrivateFieldGet(this, _Abi_createMessage, "f").call(this, spec, index, {
                     isMutating: spec.mutates.isTrue,
                     isPayable: spec.payable.isTrue,
                     returnType: typeSpec
@@ -188,10 +327,10 @@
             return event.fromU8a(data.subarray(1));
         }
         decodeConstructor(data) {
-            return this.#decodeMessage('message', this.constructors, data);
+            return __classPrivateFieldGet(this, _Abi_decodeMessage, "f").call(this, 'message', this.constructors, data);
         }
         decodeMessage(data) {
-            return this.#decodeMessage('message', this.messages, data);
+            return __classPrivateFieldGet(this, _Abi_decodeMessage, "f").call(this, 'message', this.messages, data);
         }
         findConstructor(constructorOrId) {
             return findMessage(this.constructors, constructorOrId);
@@ -199,99 +338,10 @@
         findMessage(messageOrId) {
             return findMessage(this.messages, messageOrId);
         }
-        #createArgs = (args, spec) => {
-            return args.map(({ label, type }, index) => {
-                try {
-                    if (!util.isObject(type)) {
-                        throw new Error('Invalid type definition found');
-                    }
-                    const displayName = type.displayName.length
-                        ? type.displayName[type.displayName.length - 1].toString()
-                        : undefined;
-                    const camelName = util.stringCamelCase(label);
-                    if (displayName && PRIMITIVE_ALWAYS.includes(displayName)) {
-                        return {
-                            name: camelName,
-                            type: {
-                                info: TypeDefInfo.Plain,
-                                type: displayName
-                            }
-                        };
-                    }
-                    const typeDef = this.registry.lookup.getTypeDef(type.type);
-                    return {
-                        name: camelName,
-                        type: displayName && !typeDef.type.startsWith(displayName)
-                            ? { displayName, ...typeDef }
-                            : typeDef
-                    };
-                }
-                catch (error) {
-                    l$1.error(`Error expanding argument ${index} in ${util.stringify(spec)}`);
-                    throw error;
-                }
-            });
-        };
-        #createEvent = (spec, index) => {
-            const args = this.#createArgs(spec.args, spec);
-            const event = {
-                args,
-                docs: spec.docs.map((d) => d.toString()),
-                fromU8a: (data) => ({
-                    args: this.#decodeArgs(args, data),
-                    event
-                }),
-                identifier: spec.label.toString(),
-                index
-            };
-            return event;
-        };
-        #createMessage = (spec, index, add = {}) => {
-            const args = this.#createArgs(spec.args, spec);
-            const identifier = spec.label.toString();
-            const message = {
-                ...add,
-                args,
-                docs: spec.docs.map((d) => d.toString()),
-                fromU8a: (data) => ({
-                    args: this.#decodeArgs(args, data),
-                    message
-                }),
-                identifier,
-                index,
-                method: util.stringCamelCase(identifier),
-                path: identifier.split('::').map((s) => util.stringCamelCase(s)),
-                selector: spec.selector,
-                toU8a: (params) => this.#encodeArgs(spec, args, params)
-            };
-            return message;
-        };
-        #decodeArgs = (args, data) => {
-            let offset = 0;
-            return args.map(({ type: { lookupName, type } }) => {
-                const value = this.registry.createType(lookupName || type, data.subarray(offset));
-                offset += value.encodedLength;
-                return value;
-            });
-        };
-        #decodeMessage = (type, list, data) => {
-            const [, trimmed] = util.compactStripLength(data);
-            const selector = trimmed.subarray(0, 4);
-            const message = list.find((m) => m.selector.eq(selector));
-            if (!message) {
-                throw new Error(`Unable to find ${type} with selector ${util.u8aToHex(selector)}`);
-            }
-            return message.fromU8a(trimmed.subarray(4));
-        };
-        #encodeArgs = ({ label, selector }, args, data) => {
-            if (data.length !== args.length) {
-                throw new Error(`Expected ${args.length} arguments to contract message '${label.toString()}', found ${data.length}`);
-            }
-            return util.compactAddLength(util.u8aConcat(this.registry.createType('ContractSelector', selector).toU8a(), ...args.map(({ type: { lookupName, type } }, index) => this.registry.createType(lookupName || type, data[index]).toU8a())));
-        };
     }
+    _Abi_createArgs = new WeakMap(), _Abi_createEvent = new WeakMap(), _Abi_createMessage = new WeakMap(), _Abi_decodeArgs = new WeakMap(), _Abi_decodeMessage = new WeakMap(), _Abi_encodeArgs = new WeakMap();
 
-    const packageInfo = { name: '@polkadot/api-contract', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.0.1' };
+    const packageInfo = { name: '@polkadot/api-contract', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.1.1' };
 
     function applyOnEvent(result, types, fn) {
         if (result.isInBlock || result.isFinalized) {
@@ -304,10 +354,6 @@
     }
 
     class Base {
-        abi;
-        api;
-        _decorateMethod;
-        _isWeightV1;
         constructor(api, abi, decorateMethod) {
             if (!api || !api.isConnected || !api.tx) {
                 throw new Error('Your API has not been initialized correctly and is not connected to a chain');
@@ -328,56 +374,6 @@
         get registry() {
             return this.api.registry;
         }
-    }
-
-    var extendStatics = function(d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    function __extends(d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    }
-    function __values(o) {
-        var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-        if (m) return m.call(o);
-        if (o && typeof o.length === "number") return {
-            next: function () {
-                if (o && i >= o.length) o = void 0;
-                return { value: o && o[i++], done: !o };
-            }
-        };
-        throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-    }
-    function __read(o, n) {
-        var m = typeof Symbol === "function" && o[Symbol.iterator];
-        if (!m) return o;
-        var i = m.call(o), r, ar = [], e;
-        try {
-            while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-        }
-        catch (error) { e = { error: error }; }
-        finally {
-            try {
-                if (r && !r.done && (m = i["return"])) m.call(i);
-            }
-            finally { if (e) throw e.error; }
-        }
-        return ar;
-    }
-    function __spreadArray(to, from, pack) {
-        if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-            if (ar || !(i in from)) {
-                if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-                ar[i] = from[i];
-            }
-        }
-        return to.concat(ar || Array.prototype.slice.call(from));
     }
 
     function isFunction(value) {
@@ -862,7 +858,8 @@
         return !!weight.proofSize;
     }
 
-    const MAX_CALL_GAS = new util.BN(5_000_000_000_000).isub(util.BN_ONE);
+    var _Contract_query, _Contract_tx, _Contract_getGas, _Contract_exec, _Contract_read;
+    const MAX_CALL_GAS = new util.BN(5000000000000).isub(util.BN_ONE);
     const l = util.logger('Contract');
     function createQuery(meta, fn) {
         return withMeta(meta, (origin, options, ...params) => fn(origin, options, params));
@@ -871,117 +868,115 @@
         return withMeta(meta, (options, ...params) => fn(options, params));
     }
     class ContractSubmittableResult extends api.SubmittableResult {
-        contractEvents;
         constructor(result, contractEvents) {
             super(result);
             this.contractEvents = contractEvents;
         }
     }
     class Contract extends Base {
-        address;
-        #query = {};
-        #tx = {};
         constructor(api, abi, address, decorateMethod) {
             super(api, abi, decorateMethod);
+            _Contract_query.set(this, {});
+            _Contract_tx.set(this, {});
+            _Contract_getGas.set(this, (_gasLimit, isCall = false) => {
+                const weight = convertWeight(_gasLimit);
+                if (weight.v1Weight.gt(util.BN_ZERO)) {
+                    return weight;
+                }
+                return convertWeight(isCall
+                    ? MAX_CALL_GAS
+                    : convertWeight(this.api.consts.system.blockWeights
+                        ? this.api.consts.system.blockWeights.maxBlock
+                        : this.api.consts.system.maximumBlockWeight).v1Weight.muln(64).div(util.BN_HUNDRED));
+            });
+            _Contract_exec.set(this, (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
+                return this.api.tx.contracts.call(this.address, value,
+                this._isWeightV1
+                    ? convertWeight(gasLimit).v1Weight
+                    : convertWeight(gasLimit).v2Weight, storageDepositLimit, this.abi.findMessage(messageOrId).toU8a(params)).withResultTransform((result) =>
+                new ContractSubmittableResult(result, applyOnEvent(result, ['ContractEmitted', 'ContractExecution'], (records) => records
+                    .map(({ event: { data: [, data] } }) => {
+                    try {
+                        return this.abi.decodeEvent(data);
+                    }
+                    catch (error) {
+                        l.error(`Unable to decode contract event: ${error.message}`);
+                        return null;
+                    }
+                })
+                    .filter((decoded) => !!decoded))));
+            });
+            _Contract_read.set(this, (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
+                const message = this.abi.findMessage(messageOrId);
+                return {
+                    send: this._decorateMethod((origin) => this.api.rx.call.contractsApi.call(origin, this.address, value,
+                    this._isWeightV1
+                        ? __classPrivateFieldGet(this, _Contract_getGas, "f").call(this, gasLimit, true).v1Weight
+                        : __classPrivateFieldGet(this, _Contract_getGas, "f").call(this, gasLimit, true).v2Weight, storageDepositLimit, message.toU8a(params)).pipe(map(({ debugMessage, gasConsumed, gasRequired, result, storageDeposit }) => ({
+                        debugMessage,
+                        gasConsumed,
+                        gasRequired: gasRequired && !convertWeight(gasRequired).v1Weight.isZero()
+                            ? gasRequired
+                            : gasConsumed,
+                        output: result.isOk && message.returnType
+                            ? this.abi.registry.createTypeUnsafe(message.returnType.lookupName || message.returnType.type, [result.asOk.data.toU8a(true)], { isPedantic: true })
+                            : null,
+                        result,
+                        storageDeposit
+                    }))))
+                };
+            });
             this.address = this.registry.createType('AccountId', address);
             this.abi.messages.forEach((m) => {
-                if (util.isUndefined(this.#tx[m.method])) {
-                    this.#tx[m.method] = createTx(m, (o, p) => this.#exec(m, o, p));
+                if (util.isUndefined(__classPrivateFieldGet(this, _Contract_tx, "f")[m.method])) {
+                    __classPrivateFieldGet(this, _Contract_tx, "f")[m.method] = createTx(m, (o, p) => __classPrivateFieldGet(this, _Contract_exec, "f").call(this, m, o, p));
                 }
-                if (util.isUndefined(this.#query[m.method])) {
-                    this.#query[m.method] = createQuery(m, (f, o, p) => this.#read(m, o, p).send(f));
+                if (util.isUndefined(__classPrivateFieldGet(this, _Contract_query, "f")[m.method])) {
+                    __classPrivateFieldGet(this, _Contract_query, "f")[m.method] = createQuery(m, (f, o, p) => __classPrivateFieldGet(this, _Contract_read, "f").call(this, m, o, p).send(f));
                 }
             });
         }
         get query() {
-            return this.#query;
+            return __classPrivateFieldGet(this, _Contract_query, "f");
         }
         get tx() {
-            return this.#tx;
+            return __classPrivateFieldGet(this, _Contract_tx, "f");
         }
-        #getGas = (_gasLimit, isCall = false) => {
-            const weight = convertWeight(_gasLimit);
-            if (weight.v1Weight.gt(util.BN_ZERO)) {
-                return weight;
-            }
-            return convertWeight(isCall
-                ? MAX_CALL_GAS
-                : convertWeight(this.api.consts.system.blockWeights
-                    ? this.api.consts.system.blockWeights.maxBlock
-                    : this.api.consts.system.maximumBlockWeight).v1Weight.muln(64).div(util.BN_HUNDRED));
-        };
-        #exec = (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
-            return this.api.tx.contracts.call(this.address, value,
-            this._isWeightV1
-                ? convertWeight(gasLimit).v1Weight
-                : convertWeight(gasLimit).v2Weight, storageDepositLimit, this.abi.findMessage(messageOrId).toU8a(params)).withResultTransform((result) =>
-            new ContractSubmittableResult(result, applyOnEvent(result, ['ContractEmitted', 'ContractExecution'], (records) => records
-                .map(({ event: { data: [, data] } }) => {
-                try {
-                    return this.abi.decodeEvent(data);
-                }
-                catch (error) {
-                    l.error(`Unable to decode contract event: ${error.message}`);
-                    return null;
-                }
-            })
-                .filter((decoded) => !!decoded))));
-        };
-        #read = (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
-            const message = this.abi.findMessage(messageOrId);
-            return {
-                send: this._decorateMethod((origin) => this.api.rx.call.contractsApi.call(origin, this.address, value,
-                this._isWeightV1
-                    ? this.#getGas(gasLimit, true).v1Weight
-                    : this.#getGas(gasLimit, true).v2Weight, storageDepositLimit, message.toU8a(params)).pipe(map(({ debugMessage, gasConsumed, gasRequired, result, storageDeposit }) => ({
-                    debugMessage,
-                    gasConsumed,
-                    gasRequired: gasRequired && !convertWeight(gasRequired).v1Weight.isZero()
-                        ? gasRequired
-                        : gasConsumed,
-                    output: result.isOk && message.returnType
-                        ? this.abi.registry.createTypeUnsafe(message.returnType.lookupName || message.returnType.type, [result.asOk.data.toU8a(true)], { isPedantic: true })
-                        : null,
-                    result,
-                    storageDeposit
-                }))))
-            };
-        };
     }
+    _Contract_query = new WeakMap(), _Contract_tx = new WeakMap(), _Contract_getGas = new WeakMap(), _Contract_exec = new WeakMap(), _Contract_read = new WeakMap();
 
+    var _Blueprint_tx, _Blueprint_deploy;
     class BlueprintSubmittableResult extends api.SubmittableResult {
-        contract;
         constructor(result, contract) {
             super(result);
             this.contract = contract;
         }
     }
     class Blueprint extends Base {
-        codeHash;
-        #tx = {};
         constructor(api, abi, codeHash, decorateMethod) {
             super(api, abi, decorateMethod);
+            _Blueprint_tx.set(this, {});
+            _Blueprint_deploy.set(this, (constructorOrId, { gasLimit = util.BN_ZERO, salt, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
+                return this.api.tx.contracts.instantiate(value,
+                this._isWeightV1
+                    ? convertWeight(gasLimit).v1Weight
+                    : convertWeight(gasLimit).v2Weight, storageDepositLimit, this.codeHash, this.abi.findConstructor(constructorOrId).toU8a(params), encodeSalt(salt)).withResultTransform((result) => new BlueprintSubmittableResult(result, applyOnEvent(result, ['Instantiated'], ([record]) => new Contract(this.api, this.abi, record.event.data[1], this._decorateMethod))));
+            });
             this.codeHash = this.registry.createType('Hash', codeHash);
             this.abi.constructors.forEach((c) => {
-                if (util.isUndefined(this.#tx[c.method])) {
-                    this.#tx[c.method] = createBluePrintTx(c, (o, p) => this.#deploy(c, o, p));
+                if (util.isUndefined(__classPrivateFieldGet(this, _Blueprint_tx, "f")[c.method])) {
+                    __classPrivateFieldGet(this, _Blueprint_tx, "f")[c.method] = createBluePrintTx(c, (o, p) => __classPrivateFieldGet(this, _Blueprint_deploy, "f").call(this, c, o, p));
                 }
             });
         }
         get tx() {
-            return this.#tx;
+            return __classPrivateFieldGet(this, _Blueprint_tx, "f");
         }
-        #deploy = (constructorOrId, { gasLimit = util.BN_ZERO, salt, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
-            return this.api.tx.contracts.instantiate(value,
-            this._isWeightV1
-                ? convertWeight(gasLimit).v1Weight
-                : convertWeight(gasLimit).v2Weight, storageDepositLimit, this.codeHash, this.abi.findConstructor(constructorOrId).toU8a(params), encodeSalt(salt)).withResultTransform((result) => new BlueprintSubmittableResult(result, applyOnEvent(result, ['Instantiated'], ([record]) => new Contract(this.api, this.abi, record.event.data[1], this._decorateMethod))));
-        };
     }
+    _Blueprint_tx = new WeakMap(), _Blueprint_deploy = new WeakMap();
 
+    var _Code_tx, _Code_instantiate;
     class CodeSubmittableResult extends api.SubmittableResult {
-        blueprint;
-        contract;
         constructor(result, blueprint, contract) {
             super(result);
             this.blueprint = blueprint;
@@ -989,10 +984,19 @@
         }
     }
     class Code extends Base {
-        code;
-        #tx = {};
         constructor(api, abi, wasm, decorateMethod) {
             super(api, abi, decorateMethod);
+            _Code_tx.set(this, {});
+            _Code_instantiate.set(this, (constructorOrId, { gasLimit = util.BN_ZERO, salt, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
+                return this.api.tx.contracts.instantiateWithCode(value,
+                this._isWeightV1
+                    ? convertWeight(gasLimit).v1Weight
+                    : convertWeight(gasLimit).v2Weight, storageDepositLimit, util.compactAddLength(this.code), this.abi.findConstructor(constructorOrId).toU8a(params), encodeSalt(salt)).withResultTransform((result) => new CodeSubmittableResult(result, ...(applyOnEvent(result, ['CodeStored', 'Instantiated'], (records) => records.reduce(([blueprint, contract], { event }) => this.api.events.contracts.Instantiated.is(event)
+                    ? [blueprint, new Contract(this.api, this.abi, event.data[1], this._decorateMethod)]
+                    : this.api.events.contracts.CodeStored.is(event)
+                        ? [new Blueprint(this.api, this.abi, event.data[0], this._decorateMethod), contract]
+                        : [blueprint, contract], [])) || [])));
+            });
             this.code = util.isWasm(this.abi.info.source.wasm)
                 ? this.abi.info.source.wasm
                 : util.u8aToU8a(wasm);
@@ -1000,25 +1004,16 @@
                 throw new Error('No WASM code provided');
             }
             this.abi.constructors.forEach((c) => {
-                if (util.isUndefined(this.#tx[c.method])) {
-                    this.#tx[c.method] = createBluePrintTx(c, (o, p) => this.#instantiate(c, o, p));
+                if (util.isUndefined(__classPrivateFieldGet(this, _Code_tx, "f")[c.method])) {
+                    __classPrivateFieldGet(this, _Code_tx, "f")[c.method] = createBluePrintTx(c, (o, p) => __classPrivateFieldGet(this, _Code_instantiate, "f").call(this, c, o, p));
                 }
             });
         }
         get tx() {
-            return this.#tx;
+            return __classPrivateFieldGet(this, _Code_tx, "f");
         }
-        #instantiate = (constructorOrId, { gasLimit = util.BN_ZERO, salt, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
-            return this.api.tx.contracts.instantiateWithCode(value,
-            this._isWeightV1
-                ? convertWeight(gasLimit).v1Weight
-                : convertWeight(gasLimit).v2Weight, storageDepositLimit, util.compactAddLength(this.code), this.abi.findConstructor(constructorOrId).toU8a(params), encodeSalt(salt)).withResultTransform((result) => new CodeSubmittableResult(result, ...(applyOnEvent(result, ['CodeStored', 'Instantiated'], (records) => records.reduce(([blueprint, contract], { event }) => this.api.events.contracts.Instantiated.is(event)
-                ? [blueprint, new Contract(this.api, this.abi, event.data[1], this._decorateMethod)]
-                : this.api.events.contracts.CodeStored.is(event)
-                    ? [new Blueprint(this.api, this.abi, event.data[0], this._decorateMethod), contract]
-                    : [blueprint, contract], [])) || [])));
-        };
     }
+    _Code_tx = new WeakMap(), _Code_instantiate = new WeakMap();
 
     class BlueprintPromise extends Blueprint {
         constructor(api$1, abi, codeHash) {
