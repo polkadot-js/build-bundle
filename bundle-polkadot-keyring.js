@@ -6,8 +6,17 @@
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
-    const DEV_PHRASE = 'bottom drive obey lake curtain smoke basket hold race lonely fit walk';
-    const DEV_SEED = '0xfac7959dbfe72f052e5a0c3c8d6530f202b02fd8f9f5ca3580ec8deb7797479e';
+    function __classPrivateFieldGet(receiver, state, kind, f) {
+        if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+        return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+    }
+    function __classPrivateFieldSet(receiver, state, value, kind, f) {
+        if (kind === "m") throw new TypeError("Private method is not writable");
+        if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+        return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+    }
 
     const PKCS8_DIVIDER = new Uint8Array([161, 35, 3, 33, 0]);
     const PKCS8_HEADER = new Uint8Array([48, 83, 2, 1, 1, 48, 5, 6, 3, 43, 101, 112, 4, 34, 4, 32]);
@@ -225,17 +234,23 @@
         };
     }
 
+    const DEV_PHRASE = 'bottom drive obey lake curtain smoke basket hold race lonely fit walk';
+    const DEV_SEED = '0xfac7959dbfe72f052e5a0c3c8d6530f202b02fd8f9f5ca3580ec8deb7797479e';
+
+    var _Pairs_map;
     class Pairs {
-        #map = {};
+        constructor() {
+            _Pairs_map.set(this, {});
+        }
         add(pair) {
-            this.#map[utilCrypto.decodeAddress(pair.address).toString()] = pair;
+            __classPrivateFieldGet(this, _Pairs_map, "f")[utilCrypto.decodeAddress(pair.address).toString()] = pair;
             return pair;
         }
         all() {
-            return Object.values(this.#map);
+            return Object.values(__classPrivateFieldGet(this, _Pairs_map, "f"));
         }
         get(address) {
-            const pair = this.#map[utilCrypto.decodeAddress(address).toString()];
+            const pair = __classPrivateFieldGet(this, _Pairs_map, "f")[utilCrypto.decodeAddress(address).toString()];
             if (!pair) {
                 throw new Error(`Unable to retrieve keypair '${util.isU8a(address) || util.isHex(address)
                 ? util.u8aToHex(util.u8aToU8a(address))
@@ -244,10 +259,12 @@
             return pair;
         }
         remove(address) {
-            delete this.#map[utilCrypto.decodeAddress(address).toString()];
+            delete __classPrivateFieldGet(this, _Pairs_map, "f")[utilCrypto.decodeAddress(address).toString()];
         }
     }
+    _Pairs_map = new WeakMap();
 
+    var _Keyring_pairs, _Keyring_type, _Keyring_ss58;
     const PairFromSeed = {
         ecdsa: (seed) => utilCrypto.secp256k1PairFromSeed(seed),
         ed25519: (seed) => utilCrypto.ed25519PairFromSeed(seed),
@@ -258,18 +275,23 @@
         return publicKey;
     }
     class Keyring {
-        #pairs;
-        #type;
-        #ss58;
-        decodeAddress = utilCrypto.decodeAddress;
         constructor(options = {}) {
+            _Keyring_pairs.set(this, void 0);
+            _Keyring_type.set(this, void 0);
+            _Keyring_ss58.set(this, void 0);
+            this.decodeAddress = utilCrypto.decodeAddress;
+            this.encodeAddress = (address, ss58Format) => {
+                return this.type === 'ethereum'
+                    ? utilCrypto.ethereumEncode(address)
+                    : utilCrypto.encodeAddress(address, ss58Format === undefined ? __classPrivateFieldGet(this, _Keyring_ss58, "f") : ss58Format);
+            };
             options.type = options.type || 'ed25519';
             if (!['ecdsa', 'ethereum', 'ed25519', 'sr25519'].includes(options.type || 'undefined')) {
                 throw new Error(`Expected a keyring type of either 'ed25519', 'sr25519', 'ethereum' or 'ecdsa', found '${options.type || 'unknown'}`);
             }
-            this.#pairs = new Pairs();
-            this.#ss58 = options.ss58Format;
-            this.#type = options.type;
+            __classPrivateFieldSet(this, _Keyring_pairs, new Pairs(), "f");
+            __classPrivateFieldSet(this, _Keyring_ss58, options.ss58Format, "f");
+            __classPrivateFieldSet(this, _Keyring_type, options.type, "f");
         }
         get pairs() {
             return this.getPairs();
@@ -278,10 +300,10 @@
             return this.getPublicKeys();
         }
         get type() {
-            return this.#type;
+            return __classPrivateFieldGet(this, _Keyring_type, "f");
         }
         addPair(pair) {
-            return this.#pairs.add(pair);
+            return __classPrivateFieldGet(this, _Keyring_pairs, "f").add(pair);
         }
         addFromAddress(address, meta = {}, encoded = null, type = this.type, ignoreChecksum, encType) {
             const publicKey = this.decodeAddress(address, ignoreChecksum);
@@ -357,32 +379,28 @@
                 : utilCrypto.keyFromPath(PairFromSeed[type](seed), path, type);
             return createPair({ toSS58: this.encodeAddress, type }, derived, meta, null);
         }
-        encodeAddress = (address, ss58Format) => {
-            return this.type === 'ethereum'
-                ? utilCrypto.ethereumEncode(address)
-                : utilCrypto.encodeAddress(address, ss58Format === undefined ? this.#ss58 : ss58Format);
-        };
         getPair(address) {
-            return this.#pairs.get(address);
+            return __classPrivateFieldGet(this, _Keyring_pairs, "f").get(address);
         }
         getPairs() {
-            return this.#pairs.all();
+            return __classPrivateFieldGet(this, _Keyring_pairs, "f").all();
         }
         getPublicKeys() {
-            return this.#pairs.all().map(pairToPublic);
+            return __classPrivateFieldGet(this, _Keyring_pairs, "f").all().map(pairToPublic);
         }
         removePair(address) {
-            this.#pairs.remove(address);
+            __classPrivateFieldGet(this, _Keyring_pairs, "f").remove(address);
         }
         setSS58Format(ss58) {
-            this.#ss58 = ss58;
+            __classPrivateFieldSet(this, _Keyring_ss58, ss58, "f");
         }
         toJson(address, passphrase) {
-            return this.#pairs.get(address).toJson(passphrase);
+            return __classPrivateFieldGet(this, _Keyring_pairs, "f").get(address).toJson(passphrase);
         }
     }
+    _Keyring_pairs = new WeakMap(), _Keyring_type = new WeakMap(), _Keyring_ss58 = new WeakMap();
 
-    const packageInfo = { name: '@polkadot/keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.0.1' };
+    const packageInfo = { name: '@polkadot/keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.0.2' };
 
     const PAIRSSR25519 = [
         {

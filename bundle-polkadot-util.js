@@ -6,7 +6,7 @@
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
-    const packageInfo$3 = { name: '@polkadot/util', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.0.1' };
+    const packageInfo$3 = { name: '@polkadot/util', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.0.2' };
 
     function arrayChunk(array, chunkSize) {
         const outputSize = Math.ceil(array.length / chunkSize);
@@ -109,7 +109,7 @@
         throw new Error(`This codepath should be unreachable. Unhandled input: ${x}`);
     }
 
-    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.0.1' };
+    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.0.2' };
 
     function evaluateThis(fn) {
         return fn('return this');
@@ -158,9 +158,9 @@
     const _9n =  BigInt(9);
     const _10n =  BigInt(10);
     const _100n =  BigInt(100);
-    const _1000n =  BigInt(1_000);
-    const _1Mn =  BigInt(1_000_000);
-    const _1Bn =  BigInt(1_000_000_000);
+    const _1000n =  BigInt(1000);
+    const _1Mn =  BigInt(1000000);
+    const _1Bn =  BigInt(1000000000);
     const _1Qn = _1Bn * _1Bn;
     const _2pow53n =  BigInt(Number.MAX_SAFE_INTEGER);
     const _sqrt2pow53n =  BigInt(94906265);
@@ -3089,16 +3089,16 @@
 
     Object.defineProperty(packageInfo$1, "__esModule", { value: true });
     packageInfo$1.packageInfo = void 0;
-    packageInfo$1.packageInfo = { name: '@polkadot/x-textencoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '11.0.1' };
+    packageInfo$1.packageInfo = { name: '@polkadot/x-textencoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '11.0.2' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
     	exports.TextEncoder = exports.packageInfo = void 0;
     	const x_global_1 = require$$0;
-    	const fallback_1 = fallback$1;
-    	var packageInfo_1 = packageInfo$1;
-    	Object.defineProperty(exports, "packageInfo", { enumerable: true, get: function () { return packageInfo_1.packageInfo; } });
-    	exports.TextEncoder = (0, x_global_1.extractGlobal)('TextEncoder', fallback_1.TextEncoder);
+    	const fallback_js_1 = fallback$1;
+    	var packageInfo_js_1 = packageInfo$1;
+    	Object.defineProperty(exports, "packageInfo", { enumerable: true, get: function () { return packageInfo_js_1.packageInfo; } });
+    	exports.TextEncoder = (0, x_global_1.extractGlobal)('TextEncoder', fallback_js_1.TextEncoder);
     } (browser$1));
     getDefaultExportFromCjs(browser$1);
 
@@ -3243,28 +3243,28 @@
                         case 0:
                             return new BN(0);
                         case 1:
-                            result = value[0] ^ 0x0000_00ff;
+                            result = value[0] ^ 255;
                             break;
                         case 2:
-                            result = (value[0] + (value[1] << 8)) ^ 0x0000_ffff;
+                            result = (value[0] + (value[1] << 8)) ^ 65535;
                             break;
                         case 3:
-                            result = (value[0] + (value[1] << 8) + (value[2] << 16)) ^ 0x00ff_ffff;
+                            result = (value[0] + (value[1] << 8) + (value[2] << 16)) ^ 16777215;
                             break;
                         case 4:
-                            result = (value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 0x1_00_00_00)) ^ 0xffff_ffff;
+                            result = (value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295;
                             break;
                         case 5:
-                            result = ((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 0x1_00_00_00)) ^ 0xffff_ffff) + ((value[4] ^ 0xff) * 0x1_00_00_00_00);
+                            result = ((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) + ((value[4] ^ 0xff) * 4294967296);
                             break;
                         default:
-                            result = ((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 0x1_00_00_00)) ^ 0xffff_ffff) + (((value[4] + (value[5] << 8)) ^ 0x0000_ffff) * 0x1_00_00_00_00);
+                            result = ((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) + (((value[4] + (value[5] << 8)) ^ 65535) * 4294967296);
                             break;
                     }
                 }
                 else {
                     for (let i = 0; i < count; i++) {
-                        result = (result * 0x1_00) + (value[i] ^ 0xff);
+                        result = (result * 256) + (value[i] ^ 0xff);
                     }
                 }
                 return count
@@ -3282,17 +3282,17 @@
                     case 3:
                         return new BN(value[0] + (value[1] << 8) + (value[2] << 16));
                     case 4:
-                        return new BN(value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 0x1_00_00_00));
+                        return new BN(value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216));
                     case 5:
-                        return new BN(value[0] + (value[1] << 8) + (value[2] << 16) + ((value[3] + (value[4] << 8)) * 0x1_00_00_00));
+                        return new BN(value[0] + (value[1] << 8) + (value[2] << 16) + ((value[3] + (value[4] << 8)) * 16777216));
                     default:
-                        return new BN(value[0] + (value[1] << 8) + (value[2] << 16) + ((value[3] + (value[4] << 8) + (value[5] << 16)) * 0x1_00_00_00));
+                        return new BN(value[0] + (value[1] << 8) + (value[2] << 16) + ((value[3] + (value[4] << 8) + (value[5] << 16)) * 16777216));
                 }
             }
             else {
                 let result = 0;
                 for (let i = 0; i < count; i++) {
-                    result = (result * 0x1_00) + value[i];
+                    result = (result * 256) + value[i];
                 }
                 return new BN(result);
             }
@@ -3352,22 +3352,22 @@
                 case 0:
                     return 0;
                 case 1:
-                    result = value[0] ^ 0x0000_00ff;
+                    result = value[0] ^ 255;
                     break;
                 case 2:
-                    result = (value[0] + (value[1] << 8)) ^ 0x0000_ffff;
+                    result = (value[0] + (value[1] << 8)) ^ 65535;
                     break;
                 case 3:
-                    result = (value[0] + (value[1] << 8) + (value[2] << 16)) ^ 0x00ff_ffff;
+                    result = (value[0] + (value[1] << 8) + (value[2] << 16)) ^ 16777215;
                     break;
                 case 4:
-                    result = (value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 0x1_00_00_00)) ^ 0xffff_ffff;
+                    result = (value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295;
                     break;
                 case 5:
-                    result = ((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 0x1_00_00_00)) ^ 0xffff_ffff) + ((value[4] ^ 0xff) * 0x1_00_00_00_00);
+                    result = ((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) + ((value[4] ^ 0xff) * 4294967296);
                     break;
                 case 6:
-                    result = ((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 0x1_00_00_00)) ^ 0xffff_ffff) + (((value[4] + (value[5] << 8)) ^ 0x0000_ffff) * 0x1_00_00_00_00);
+                    result = ((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) + (((value[4] + (value[5] << 8)) ^ 65535) * 4294967296);
                     break;
                 default:
                     throw new Error('Value more than 48-bits cannot be reliably converted');
@@ -3384,11 +3384,11 @@
             case 3:
                 return value[0] + (value[1] << 8) + (value[2] << 16);
             case 4:
-                return value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 0x1_00_00_00);
+                return value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216);
             case 5:
-                return value[0] + (value[1] << 8) + (value[2] << 16) + ((value[3] + (value[4] << 8)) * 0x1_00_00_00);
+                return value[0] + (value[1] << 8) + (value[2] << 16) + ((value[3] + (value[4] << 8)) * 16777216);
             case 6:
-                return value[0] + (value[1] << 8) + (value[2] << 16) + ((value[3] + (value[4] << 8) + (value[5] << 16)) * 0x1_00_00_00);
+                return value[0] + (value[1] << 8) + (value[2] << 16) + ((value[3] + (value[4] << 8) + (value[5] << 16)) * 16777216);
             default:
                 throw new Error('Value more than 48-bits cannot be reliably converted');
         }
@@ -3417,16 +3417,16 @@
 
     Object.defineProperty(packageInfo, "__esModule", { value: true });
     packageInfo.packageInfo = void 0;
-    packageInfo.packageInfo = { name: '@polkadot/x-textdecoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '11.0.1' };
+    packageInfo.packageInfo = { name: '@polkadot/x-textdecoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '11.0.2' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
     	exports.TextDecoder = exports.packageInfo = void 0;
     	const x_global_1 = require$$0;
-    	const fallback_1 = fallback;
-    	var packageInfo_1 = packageInfo;
-    	Object.defineProperty(exports, "packageInfo", { enumerable: true, get: function () { return packageInfo_1.packageInfo; } });
-    	exports.TextDecoder = (0, x_global_1.extractGlobal)('TextDecoder', fallback_1.TextDecoder);
+    	const fallback_js_1 = fallback;
+    	var packageInfo_js_1 = packageInfo;
+    	Object.defineProperty(exports, "packageInfo", { enumerable: true, get: function () { return packageInfo_js_1.packageInfo; } });
+    	exports.TextDecoder = (0, x_global_1.extractGlobal)('TextDecoder', fallback_js_1.TextDecoder);
     } (browser));
     getDefaultExportFromCjs(browser);
 
@@ -3520,9 +3520,9 @@
     const BN_NINE =  new BN(9);
     const BN_TEN =  new BN(10);
     const BN_HUNDRED =  new BN(100);
-    const BN_THOUSAND =  new BN(1_000);
-    const BN_MILLION =  new BN(1_000_000);
-    const BN_BILLION =  new BN(1_000_000_000);
+    const BN_THOUSAND =  new BN(1000);
+    const BN_MILLION =  new BN(1000000);
+    const BN_BILLION =  new BN(1000000000);
     const BN_QUINTILL = BN_BILLION.mul(BN_BILLION);
     const BN_MAX_INTEGER =  new BN(Number.MAX_SAFE_INTEGER);
     const BN_SQRT_MAX_INTEGER =  new BN(94906265);
@@ -3664,16 +3664,16 @@
             case 0b01:
                 return [2, new BN((u8a[0] + (u8a[1] << 8)) >>> 2)];
             case 0b10:
-                return [4, new BN((u8a[0] + (u8a[1] << 8) + (u8a[2] << 16) + (u8a[3] * 0x1_00_00_00)) >>> 2)];
+                return [4, new BN((u8a[0] + (u8a[1] << 8) + (u8a[2] << 16) + (u8a[3] * 16777216)) >>> 2)];
             default: {
                 const offset = (u8a[0] >>> 2) + 5;
                 switch (offset) {
                     case 5:
-                        return [5, new BN(u8a[1] + (u8a[2] << 8) + (u8a[3] << 16) + (u8a[4] * 0x1_00_00_00))];
+                        return [5, new BN(u8a[1] + (u8a[2] << 8) + (u8a[3] << 16) + (u8a[4] * 16777216))];
                     case 6:
-                        return [6, new BN(u8a[1] + (u8a[2] << 8) + (u8a[3] << 16) + ((u8a[4] + (u8a[5] << 8)) * 0x1_00_00_00))];
+                        return [6, new BN(u8a[1] + (u8a[2] << 8) + (u8a[3] << 16) + ((u8a[4] + (u8a[5] << 8)) * 16777216))];
                     case 7:
-                        return [7, new BN(u8a[1] + (u8a[2] << 8) + (u8a[3] << 16) + ((u8a[4] + (u8a[5] << 8) + (u8a[6] << 16)) * 0x1_00_00_00))];
+                        return [7, new BN(u8a[1] + (u8a[2] << 8) + (u8a[3] << 16) + ((u8a[4] + (u8a[5] << 8) + (u8a[6] << 16)) * 16777216))];
                     default:
                         return [offset, u8aToBn(u8a.subarray(1, offset))];
                 }
@@ -3687,15 +3687,15 @@
             case 0b01:
                 return [2, (u8a[0] + (u8a[1] << 8)) >>> 2];
             case 0b10:
-                return [4, (u8a[0] + (u8a[1] << 8) + (u8a[2] << 16) + (u8a[3] * 0x1_00_00_00)) >>> 2];
+                return [4, (u8a[0] + (u8a[1] << 8) + (u8a[2] << 16) + (u8a[3] * 16777216)) >>> 2];
             default: {
                 switch ((u8a[0] >>> 2) + 5) {
                     case 5:
-                        return [5, u8a[1] + (u8a[2] << 8) + (u8a[3] << 16) + (u8a[4] * 0x1_00_00_00)];
+                        return [5, u8a[1] + (u8a[2] << 8) + (u8a[3] << 16) + (u8a[4] * 16777216)];
                     case 6:
-                        return [6, u8a[1] + (u8a[2] << 8) + (u8a[3] << 16) + ((u8a[4] + (u8a[5] << 8)) * 0x1_00_00_00)];
+                        return [6, u8a[1] + (u8a[2] << 8) + (u8a[3] << 16) + ((u8a[4] + (u8a[5] << 8)) * 16777216)];
                     case 7:
-                        return [7, u8a[1] + (u8a[2] << 8) + (u8a[3] << 16) + ((u8a[4] + (u8a[5] << 8) + (u8a[6] << 16)) * 0x1_00_00_00)];
+                        return [7, u8a[1] + (u8a[2] << 8) + (u8a[3] << 16) + ((u8a[4] + (u8a[5] << 8) + (u8a[6] << 16)) * 16777216)];
                     default:
                         throw new Error('Compact input is > Number.MAX_SAFE_INTEGER');
                 }
