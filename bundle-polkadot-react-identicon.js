@@ -4977,11 +4977,20 @@
 	    substrate: Jdenticon
 	};
 	class BaseIcon extends r.PureComponent {
-	    state = {
-	        address: '',
-	        publicKey: '0x'
-	    };
-	    static prefix = undefined;
+	    constructor() {
+	        super(...arguments);
+	        this.state = {
+	            address: '',
+	            publicKey: '0x'
+	        };
+	        this.onCopy = () => {
+	            const { onCopy } = this.props;
+	            const { address } = this.state;
+	            if (address && onCopy) {
+	                onCopy(address);
+	            }
+	        };
+	    }
 	    static setDefaultPrefix(prefix) {
 	        BaseIcon.prefix = prefix;
 	    }
@@ -5025,14 +5034,8 @@
 	            : Custom || Components[theme === 'default' ? uiSettings.ICON_DEFAULT_HOST : theme] || Fallback;
 	        return (jsxRuntimeExports.jsx(StyledDiv, { className: `ui--IdentityIcon  ${className}`, style: style, children: jsxRuntimeExports.jsx(Component, { address: address, className: isHighlight ? 'highlight' : '', isAlternative: isAlternative, publicKey: publicKey, size: size }) }, address));
 	    }
-	    onCopy = () => {
-	        const { onCopy } = this.props;
-	        const { address } = this.state;
-	        if (address && onCopy) {
-	            onCopy(address);
-	        }
-	    };
 	}
+	BaseIcon.prefix = undefined;
 	function Icon(props) {
 	    return jsxRuntimeExports.jsx(BaseIcon, { ...props });
 	}
@@ -5063,7 +5066,7 @@
 `;
 	const Identicon = r.memo(Icon);
 
-	const packageInfo = { name: '@polkadot/react-identicon', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.0.1' };
+	const packageInfo = { name: '@polkadot/react-identicon', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.0.2' };
 
 	exports.Beachball = Beachball;
 	exports.Empty = Empty;

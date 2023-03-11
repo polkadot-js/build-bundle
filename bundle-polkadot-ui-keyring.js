@@ -112,6 +112,17 @@
         function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
         function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
     }
+    function __classPrivateFieldGet(receiver, state, kind, f) {
+        if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+        return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+    }
+    function __classPrivateFieldSet(receiver, state, value, kind, f) {
+        if (kind === "m") throw new TypeError("Private method is not writable");
+        if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+        return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+    }
 
     function isFunction$2(value) {
         return typeof value === 'function';
@@ -1406,6 +1417,121 @@
 
     const contracts = genericSubject(contractKey);
 
+    const obervableAll = combineLatest([
+        accounts.subject,
+        addresses.subject,
+        contracts.subject
+    ]).pipe(map$1(([accounts, addresses, contracts]) => ({
+        accounts,
+        addresses,
+        contracts
+    })));
+
+    let hasCalledInitOptions = false;
+    const sortByName = (a, b) => {
+        const valueA = a.option.name;
+        const valueB = b.option.name;
+        return valueA.localeCompare(valueB);
+    };
+    const sortByCreated = (a, b) => {
+        const valueA = a.json.meta.whenCreated || 0;
+        const valueB = b.json.meta.whenCreated || 0;
+        if (valueA < valueB) {
+            return 1;
+        }
+        if (valueA > valueB) {
+            return -1;
+        }
+        return 0;
+    };
+    class KeyringOption {
+        constructor() {
+            this.optionsSubject = new BehaviorSubject(this.emptyOptions());
+        }
+        createOptionHeader(name) {
+            return {
+                key: `header-${name.toLowerCase()}`,
+                name,
+                value: null
+            };
+        }
+        init(keyring) {
+            util$7.assert(!hasCalledInitOptions, 'Unable to initialise options more than once');
+            obervableAll.subscribe(() => {
+                const opts = this.emptyOptions();
+                this.addAccounts(keyring, opts);
+                this.addAddresses(keyring, opts);
+                this.addContracts(keyring, opts);
+                opts.address = this.linkItems({ Addresses: opts.address, Recent: opts.recent });
+                opts.account = this.linkItems({ Accounts: opts.account, Development: opts.testing });
+                opts.contract = this.linkItems({ Contracts: opts.contract });
+                opts.all = [].concat(opts.account, opts.address);
+                opts.allPlus = [].concat(opts.account, opts.address, opts.contract);
+                this.optionsSubject.next(opts);
+            });
+            hasCalledInitOptions = true;
+        }
+        linkItems(items) {
+            return Object.keys(items).reduce((result, header) => {
+                const options = items[header];
+                return result.concat(options.length
+                    ? [this.createOptionHeader(header)]
+                    : [], options);
+            }, []);
+        }
+        addAccounts(keyring, options) {
+            const available = keyring.accounts.subject.getValue();
+            Object
+                .values(available)
+                .sort(sortByName)
+                .forEach(({ json: { meta: { isTesting = false } }, option }) => {
+                if (!isTesting) {
+                    options.account.push(option);
+                }
+                else {
+                    options.testing.push(option);
+                }
+            });
+        }
+        addAddresses(keyring, options) {
+            const available = keyring.addresses.subject.getValue();
+            Object
+                .values(available)
+                .filter(({ json }) => !!json.meta.isRecent)
+                .sort(sortByCreated)
+                .forEach(({ option }) => {
+                options.recent.push(option);
+            });
+            Object
+                .values(available)
+                .filter(({ json }) => !json.meta.isRecent)
+                .sort(sortByName)
+                .forEach(({ option }) => {
+                options.address.push(option);
+            });
+        }
+        addContracts(keyring, options) {
+            const available = keyring.contracts.subject.getValue();
+            Object
+                .values(available)
+                .sort(sortByName)
+                .forEach(({ option }) => {
+                options.contract.push(option);
+            });
+        }
+        emptyOptions() {
+            return {
+                account: [],
+                address: [],
+                all: [],
+                allPlus: [],
+                contract: [],
+                recent: [],
+                testing: []
+            };
+        }
+    }
+
     var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
     var assign = make_assign();
@@ -2208,32 +2334,37 @@
         }
     }
 
+    var _Base_accounts, _Base_addresses, _Base_contracts, _Base_keyring;
     class Base {
-        #accounts;
-        #addresses;
-        #contracts;
-        #keyring;
-        _store;
-        _genesisHash;
-        _genesisHashAdd = [];
         constructor() {
-            this.#accounts = accounts;
-            this.#addresses = addresses;
-            this.#contracts = contracts;
+            _Base_accounts.set(this, void 0);
+            _Base_addresses.set(this, void 0);
+            _Base_contracts.set(this, void 0);
+            _Base_keyring.set(this, void 0);
+            this._genesisHashAdd = [];
+            this.decodeAddress = (key, ignoreChecksum, ss58Format) => {
+                return this.keyring.decodeAddress(key, ignoreChecksum, ss58Format);
+            };
+            this.encodeAddress = (key, ss58Format) => {
+                return this.keyring.encodeAddress(key, ss58Format);
+            };
+            __classPrivateFieldSet(this, _Base_accounts, accounts, "f");
+            __classPrivateFieldSet(this, _Base_addresses, addresses, "f");
+            __classPrivateFieldSet(this, _Base_contracts, contracts, "f");
             this._store = new BrowserStore();
         }
         get accounts() {
-            return this.#accounts;
+            return __classPrivateFieldGet(this, _Base_accounts, "f");
         }
         get addresses() {
-            return this.#addresses;
+            return __classPrivateFieldGet(this, _Base_addresses, "f");
         }
         get contracts() {
-            return this.#contracts;
+            return __classPrivateFieldGet(this, _Base_contracts, "f");
         }
         get keyring() {
-            if (this.#keyring) {
-                return this.#keyring;
+            if (__classPrivateFieldGet(this, _Base_keyring, "f")) {
+                return __classPrivateFieldGet(this, _Base_keyring, "f");
             }
             throw new Error('Keyring should be initialised via \'loadAll\' before use');
         }
@@ -2245,12 +2376,6 @@
                 ? [this._genesisHash, ...this._genesisHashAdd]
                 : [...this._genesisHashAdd];
         }
-        decodeAddress = (key, ignoreChecksum, ss58Format) => {
-            return this.keyring.decodeAddress(key, ignoreChecksum, ss58Format);
-        };
-        encodeAddress = (key, ss58Format) => {
-            return this.keyring.encodeAddress(key, ss58Format);
-        };
         getPair(address) {
             return this.keyring.getPair(address);
         }
@@ -2270,8 +2395,8 @@
             return password.length > 0;
         }
         setSS58Format(ss58Format) {
-            if (this.#keyring && util$7.isNumber(ss58Format)) {
-                this.#keyring.setSS58Format(ss58Format);
+            if (__classPrivateFieldGet(this, _Base_keyring, "f") && util$7.isNumber(ss58Format)) {
+                __classPrivateFieldGet(this, _Base_keyring, "f").setSS58Format(ss58Format);
             }
         }
         setDevMode(isDevelopment) {
@@ -2282,7 +2407,7 @@
             if (util$7.isBoolean(options.isDevelopment)) {
                 this.setDevMode(options.isDevelopment);
             }
-            this.#keyring = keyring;
+            __classPrivateFieldSet(this, _Base_keyring, keyring, "f");
             this._genesisHash = options.genesisHash && (util$7.isString(options.genesisHash)
                 ? options.genesisHash.toString()
                 : options.genesisHash.toHex());
@@ -2303,128 +2428,20 @@
             }
         }
     }
+    _Base_accounts = new WeakMap(), _Base_addresses = new WeakMap(), _Base_contracts = new WeakMap(), _Base_keyring = new WeakMap();
 
-    const obervableAll = combineLatest([
-        accounts.subject,
-        addresses.subject,
-        contracts.subject
-    ]).pipe(map$1(([accounts, addresses, contracts]) => ({
-        accounts,
-        addresses,
-        contracts
-    })));
-
-    let hasCalledInitOptions = false;
-    const sortByName = (a, b) => {
-        const valueA = a.option.name;
-        const valueB = b.option.name;
-        return valueA.localeCompare(valueB);
-    };
-    const sortByCreated = (a, b) => {
-        const valueA = a.json.meta.whenCreated || 0;
-        const valueB = b.json.meta.whenCreated || 0;
-        if (valueA < valueB) {
-            return 1;
-        }
-        if (valueA > valueB) {
-            return -1;
-        }
-        return 0;
-    };
-    class KeyringOption {
-        optionsSubject = new BehaviorSubject(this.emptyOptions());
-        createOptionHeader(name) {
-            return {
-                key: `header-${name.toLowerCase()}`,
-                name,
-                value: null
-            };
-        }
-        init(keyring) {
-            util$7.assert(!hasCalledInitOptions, 'Unable to initialise options more than once');
-            obervableAll.subscribe(() => {
-                const opts = this.emptyOptions();
-                this.addAccounts(keyring, opts);
-                this.addAddresses(keyring, opts);
-                this.addContracts(keyring, opts);
-                opts.address = this.linkItems({ Addresses: opts.address, Recent: opts.recent });
-                opts.account = this.linkItems({ Accounts: opts.account, Development: opts.testing });
-                opts.contract = this.linkItems({ Contracts: opts.contract });
-                opts.all = [].concat(opts.account, opts.address);
-                opts.allPlus = [].concat(opts.account, opts.address, opts.contract);
-                this.optionsSubject.next(opts);
-            });
-            hasCalledInitOptions = true;
-        }
-        linkItems(items) {
-            return Object.keys(items).reduce((result, header) => {
-                const options = items[header];
-                return result.concat(options.length
-                    ? [this.createOptionHeader(header)]
-                    : [], options);
-            }, []);
-        }
-        addAccounts(keyring, options) {
-            const available = keyring.accounts.subject.getValue();
-            Object
-                .values(available)
-                .sort(sortByName)
-                .forEach(({ json: { meta: { isTesting = false } }, option }) => {
-                if (!isTesting) {
-                    options.account.push(option);
-                }
-                else {
-                    options.testing.push(option);
-                }
-            });
-        }
-        addAddresses(keyring, options) {
-            const available = keyring.addresses.subject.getValue();
-            Object
-                .values(available)
-                .filter(({ json }) => !!json.meta.isRecent)
-                .sort(sortByCreated)
-                .forEach(({ option }) => {
-                options.recent.push(option);
-            });
-            Object
-                .values(available)
-                .filter(({ json }) => !json.meta.isRecent)
-                .sort(sortByName)
-                .forEach(({ option }) => {
-                options.address.push(option);
-            });
-        }
-        addContracts(keyring, options) {
-            const available = keyring.contracts.subject.getValue();
-            Object
-                .values(available)
-                .sort(sortByName)
-                .forEach(({ option }) => {
-                options.contract.push(option);
-            });
-        }
-        emptyOptions() {
-            return {
-                account: [],
-                address: [],
-                all: [],
-                allPlus: [],
-                contract: [],
-                recent: [],
-                testing: []
-            };
-        }
-    }
-
+    var _Keyring_stores;
     const RECENT_EXPIRY = 24 * 60 * 60;
     class Keyring extends Base {
-        keyringOption = new KeyringOption();
-        #stores = {
-            account: () => this.accounts,
-            address: () => this.addresses,
-            contract: () => this.contracts
-        };
+        constructor() {
+            super(...arguments);
+            this.keyringOption = new KeyringOption();
+            _Keyring_stores.set(this, {
+                account: () => this.accounts,
+                address: () => this.addresses,
+                contract: () => this.contracts
+            });
+        }
         addExternal(address, meta = {}) {
             const pair = this.keyring.addFromAddress(address, util$7.objectSpread({}, meta, { isExternal: true }), null);
             return {
@@ -2515,8 +2532,8 @@
                 : this.encodeAddress(_address);
             const publicKey = this.decodeAddress(address);
             const stores = type
-                ? [this.#stores[type]]
-                : Object.values(this.#stores);
+                ? [__classPrivateFieldGet(this, _Keyring_stores, "f")[type]]
+                : Object.values(__classPrivateFieldGet(this, _Keyring_stores, "f"));
             const info = stores.reduce((lastInfo, store) => (store().subject.getValue()[address] || lastInfo), undefined);
             return info && {
                 address,
@@ -2674,7 +2691,7 @@
                 json.meta[key] = meta[key];
             });
             delete json.meta.isRecent;
-            this.#stores[type]().add(this._store, address, json);
+            __classPrivateFieldGet(this, _Keyring_stores, "f")[type]().add(this._store, address, json);
             return json;
         }
         saveContract(address, meta) {
@@ -2695,8 +2712,9 @@
             return this.addresses.subject.getValue()[address];
         }
     }
+    _Keyring_stores = new WeakMap();
 
-    const packageInfo = { name: '@polkadot/ui-keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.0.1' };
+    const packageInfo = { name: '@polkadot/ui-keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.0.2' };
 
     const keyring = new Keyring();
 
