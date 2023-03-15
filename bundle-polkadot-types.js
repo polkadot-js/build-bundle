@@ -975,6 +975,7 @@
     const rpc$g = {
         epochAuthorship: {
             description: 'Returns data about which slots (primary or secondary) can be claimed in the current epoch with the keys in the keystore',
+            isUnsafe: true,
             params: [],
             type: 'HashMap<AuthorityId, EpochAuthorship>'
         }
@@ -2373,6 +2374,7 @@
     const rpc$d = {
         getBlockStats: {
             description: 'Reexecute the specified `block_hash` and gather statistics while doing so',
+            isUnsafe: true,
             params: [
                 {
                     isHistoric: true,
@@ -3889,6 +3891,7 @@
         },
         addLogFilter: {
             description: 'Adds the supplied directives to the current log filter',
+            isUnsafe: true,
             params: [
                 {
                     name: 'directives',
@@ -3899,6 +3902,7 @@
         },
         addReservedPeer: {
             description: 'Adds a reserved peer',
+            isUnsafe: true,
             params: [
                 {
                     name: 'peer',
@@ -3920,6 +3924,7 @@
         dryRun: {
             alias: ['system_dryRunAt'],
             description: 'Dry run an extrinsic at a given block',
+            isUnsafe: true,
             params: [
                 {
                     name: 'extrinsic',
@@ -3958,6 +3963,7 @@
         networkState: {
             alias: ['system_unstable_networkState'],
             description: 'Returns current state of the network',
+            isUnsafe: true,
             params: [],
             type: 'NetworkState'
         },
@@ -3968,6 +3974,7 @@
         },
         peers: {
             description: 'Returns the currently connected peers',
+            isUnsafe: true,
             params: [],
             type: 'Vec<PeerInfo>'
         },
@@ -3978,6 +3985,7 @@
         },
         removeReservedPeer: {
             description: 'Remove a reserved peer',
+            isUnsafe: true,
             params: [
                 {
                     name: 'peerId',
@@ -3993,6 +4001,7 @@
         },
         resetLogFilter: {
             description: 'Resets the log filter to Substrate defaults',
+            isUnsafe: true,
             params: [],
             type: 'Null'
         },
@@ -11386,6 +11395,7 @@
     const rpc$5 = {
         hasKey: {
             description: 'Returns true if the keystore has private keys for the given public key and key type.',
+            isUnsafe: true,
             params: [
                 {
                     name: 'publicKey',
@@ -11400,6 +11410,7 @@
         },
         hasSessionKeys: {
             description: 'Returns true if the keystore has private keys for the given session public keys.',
+            isUnsafe: true,
             params: [
                 {
                     name: 'sessionKeys',
@@ -11410,6 +11421,7 @@
         },
         insertKey: {
             description: 'Insert a key into the keystore.',
+            isUnsafe: true,
             params: [
                 {
                     name: 'keyType',
@@ -11433,6 +11445,7 @@
         },
         removeExtrinsic: {
             description: 'Remove given extrinsic from the pool and temporarily ban it to prevent reimporting',
+            isUnsafe: true,
             params: [
                 {
                     name: 'bytesOrHash',
@@ -11443,6 +11456,7 @@
         },
         rotateKeys: {
             description: 'Generate new session keys and returns the corresponding public keys',
+            isUnsafe: true,
             params: [],
             type: 'Bytes'
         },
@@ -11728,6 +11742,7 @@
     const rpc$2 = {
         localStorageGet: {
             description: 'Get offchain local storage under given key and prefix',
+            isUnsafe: true,
             params: [
                 {
                     name: 'kind',
@@ -11742,6 +11757,7 @@
         },
         localStorageSet: {
             description: 'Set offchain local storage under given key and prefix',
+            isUnsafe: true,
             params: [
                 {
                     name: 'kind',
@@ -12234,6 +12250,7 @@
         getPairs: {
             deprecated: 'Use `api.rpc.state.getKeysPaged` to retrieve keys',
             description: 'Returns the keys with prefix, leave empty to get all the keys (deprecated: Use getKeysPaged)',
+            isUnsafe: true,
             params: [
                 {
                     name: 'prefix',
@@ -12330,6 +12347,7 @@
         },
         queryStorage: {
             description: 'Query historical storage entries (by key) starting from a start block',
+            isUnsafe: true,
             params: [
                 {
                     name: 'keys',
@@ -12392,6 +12410,7 @@
         },
         traceBlock: {
             description: 'Provides a way to trace the re-execution of a single block',
+            isUnsafe: true,
             params: [
                 {
                     name: 'block',
@@ -12414,6 +12433,7 @@
         },
         trieMigrationStatus: {
             description: 'Check current migration state',
+            isUnsafe: true,
             params: [
                 {
                     isHistoric: true,
@@ -16800,7 +16820,7 @@
     }
     _TypeRegistry_chainProperties = new WeakMap(), _TypeRegistry_classes = new WeakMap(), _TypeRegistry_definitions = new WeakMap(), _TypeRegistry_firstCallIndex = new WeakMap(), _TypeRegistry_hasher = new WeakMap(), _TypeRegistry_knownTypes = new WeakMap(), _TypeRegistry_lookup = new WeakMap(), _TypeRegistry_metadata = new WeakMap(), _TypeRegistry_metadataVersion = new WeakMap(), _TypeRegistry_signedExtensions = new WeakMap(), _TypeRegistry_unknownTypes = new WeakMap(), _TypeRegistry_userExtensions = new WeakMap(), _TypeRegistry_knownDefaults = new WeakMap(), _TypeRegistry_knownDefinitions = new WeakMap(), _TypeRegistry_metadataCalls = new WeakMap(), _TypeRegistry_metadataErrors = new WeakMap(), _TypeRegistry_metadataEvents = new WeakMap(), _TypeRegistry_moduleMap = new WeakMap(), _TypeRegistry_registerObject = new WeakMap(), _TypeRegistry_registerLookup = new WeakMap();
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.1.2' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.1.3' };
 
     exports.BTreeMap = BTreeMap;
     exports.BTreeSet = BTreeSet;
