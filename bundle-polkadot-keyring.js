@@ -152,16 +152,6 @@
                 return type;
             },
             decodePkcs8,
-            decryptMessage: (encryptedMessageWithNonce, senderPublicKey) => {
-                if (isLocked(secretKey)) {
-                    throw new Error('Cannot encrypt with a locked key pair');
-                }
-                else if (['ecdsa', 'ethereum'].includes(type)) {
-                    throw new Error('Secp256k1 not supported yet');
-                }
-                const messageU8a = util.u8aToU8a(encryptedMessageWithNonce);
-                return utilCrypto.naclOpen(messageU8a.slice(24, messageU8a.length), messageU8a.slice(0, 24), utilCrypto.convertPublicKeyToCurve25519(util.u8aToU8a(senderPublicKey)), utilCrypto.convertSecretKeyToCurve25519(secretKey));
-            },
             derive: (suri, meta) => {
                 if (type === 'ethereum') {
                     throw new Error('Unable to derive on this keypair');
@@ -175,16 +165,6 @@
             },
             encodePkcs8: (passphrase) => {
                 return recode(passphrase);
-            },
-            encryptMessage: (message, recipientPublicKey, nonceIn) => {
-                if (isLocked(secretKey)) {
-                    throw new Error('Cannot encrypt with a locked key pair');
-                }
-                else if (['ecdsa', 'ethereum'].includes(type)) {
-                    throw new Error('Secp256k1 not supported yet');
-                }
-                const { nonce, sealed } = utilCrypto.naclSeal(util.u8aToU8a(message), utilCrypto.convertSecretKeyToCurve25519(secretKey), utilCrypto.convertPublicKeyToCurve25519(util.u8aToU8a(recipientPublicKey)), nonceIn);
-                return util.u8aConcat(nonce, sealed);
             },
             lock: () => {
                 secretKey = new Uint8Array();
@@ -400,7 +380,7 @@
     }
     _Keyring_pairs = new WeakMap(), _Keyring_type = new WeakMap(), _Keyring_ss58 = new WeakMap();
 
-    const packageInfo = { name: '@polkadot/keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.0.2' };
+    const packageInfo = { name: '@polkadot/keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.1.1' };
 
     const PAIRSSR25519 = [
         {
@@ -534,24 +514,22 @@
     const pair = {
         address,
         addressRaw: publicKey,
-        decodePkcs8: (passphrase, encoded) => undefined,
-        decryptMessage: (encryptedMessageWithNonce, senderPublicKey) => null,
-        derive: (suri, meta) => pair,
-        encodePkcs8: (passphrase) => new Uint8Array(0),
-        encryptMessage: (message, recipientPublicKey, _nonce) => new Uint8Array(),
+        decodePkcs8: (_passphrase, _encoded) => undefined,
+        derive: (_suri, _meta) => pair,
+        encodePkcs8: (_passphrase) => new Uint8Array(0),
         isLocked: true,
         lock: () => {
         },
         meta,
         publicKey,
-        setMeta: (meta) => undefined,
-        sign: (message) => new Uint8Array(64),
-        toJson: (passphrase) => json,
+        setMeta: (_meta) => undefined,
+        sign: (_message) => new Uint8Array(64),
+        toJson: (_passphrase) => json,
         type: 'ed25519',
-        unlock: (passphrase) => undefined,
-        verify: (message, signature) => false,
-        vrfSign: (message, context, extra) => new Uint8Array(96),
-        vrfVerify: (message, vrfResult, context, extra) => false
+        unlock: (_passphrase) => undefined,
+        verify: (_message, _signature) => false,
+        vrfSign: (_message, _context, _extra) => new Uint8Array(96),
+        vrfVerify: (_message, _vrfResult, _context, _extra) => false
     };
     function nobody() {
         return pair;
