@@ -16,16 +16,37 @@
         Identity: null
     };
 
+    const META_V1_TO_V2 = {
+        metadata: {
+            description: 'Returns the metadata of a runtime',
+            params: [],
+            type: 'OpaqueMetadata'
+        }
+    };
     const runtime$r = {
         Metadata: [
             {
-                methods: {
-                    metadata: {
-                        description: 'Returns the metadata of a runtime',
+                methods: util.objectSpread({
+                    metadata_at_version: {
+                        description: 'Returns the metadata at a given version.',
+                        params: [
+                            {
+                                name: 'version',
+                                type: 'u32'
+                            }
+                        ],
+                        type: 'Option<OpaqueMetadata>'
+                    },
+                    metadata_versions: {
+                        description: 'Returns the supported metadata versions.',
                         params: [],
-                        type: 'OpaqueMetadata'
+                        type: 'Vec<u32>'
                     }
-                },
+                }, META_V1_TO_V2),
+                version: 2
+            },
+            {
+                methods: util.objectSpread({}, META_V1_TO_V2),
                 version: 1
             }
         ]
@@ -5880,7 +5901,7 @@
                 isNegative: !this.isUnsigned
             });
         }
-        toHuman(isExpanded) {
+        toHuman(_isExpanded) {
             const rawType = this.toRawType();
             if (rawType === 'Balance') {
                 return this.isMax()
@@ -5910,7 +5931,7 @@
         toString(base) {
             return super.toString(base);
         }
-        toU8a(isBare) {
+        toU8a(_isBare) {
             return util.bnToU8a(this, {
                 bitLength: this.bitLength(),
                 isLe: true,
@@ -5961,7 +5982,7 @@
         return false;
     }
 
-    function formatFailure(registry, fn, result, { message }, u8a, i, count, Type, key) {
+    function formatFailure(registry, fn, _result, { message }, u8a, i, count, Type, key) {
         let type = '';
         try {
             type = `: ${new Type(registry).toRawType()}`;
@@ -6378,7 +6399,7 @@
         toString() {
             return __classPrivateFieldGet(this, _Compact_raw, "f").toString();
         }
-        toU8a(isBare) {
+        toU8a(_isBare) {
             return util.compactToU8a(__classPrivateFieldGet(this, _Compact_raw, "f").toBn());
         }
         unwrap() {
@@ -6475,7 +6496,7 @@
         toString() {
             return '';
         }
-        toU8a(isBare) {
+        toU8a(_isBare) {
             return new Uint8Array();
         }
     }
@@ -7137,12 +7158,12 @@
         get Type() {
             return __classPrivateFieldGet(this, _Vec_Type, "f").name;
         }
-        indexOf(_other) {
-            const other = _other instanceof __classPrivateFieldGet(this, _Vec_Type, "f")
-                ? _other
-                : new (__classPrivateFieldGet(this, _Vec_Type, "f"))(this.registry, _other);
+        indexOf(other) {
+            const check = other instanceof __classPrivateFieldGet(this, _Vec_Type, "f")
+                ? other
+                : new (__classPrivateFieldGet(this, _Vec_Type, "f"))(this.registry, other);
             for (let i = 0; i < this.length; i++) {
-                if (other.eq(this[i])) {
+                if (check.eq(this[i])) {
                     return i;
                 }
             }
@@ -7266,7 +7287,7 @@
         toString() {
             return this.toHex();
         }
-        toU8a(isBare) {
+        toU8a(_isBare) {
             return Uint8Array.from(this);
         }
         toUtf8() {
@@ -7383,7 +7404,7 @@
                 try {
                     type = new Type(registry).toRawType();
                 }
-                catch (error) {
+                catch {
                 }
                 throw new Error(`Struct: failed on ${jsonKey}: ${type}:: ${error.message}`);
             }
@@ -7937,7 +7958,7 @@
         toString() {
             return this.toJSON().toString();
         }
-        toU8a(isBare) {
+        toU8a(_isBare) {
             return new Uint8Array([this.valueOf() ? 1 : 0]);
         }
     }
@@ -8364,7 +8385,7 @@
         toString() {
             return util.stringify(this.toJSON());
         }
-        toU8a(isBare) {
+        toU8a(_isBare) {
             throw new Error('Unimplemented');
         }
     }
@@ -8511,7 +8532,7 @@
         toString() {
             return `[${this.strings.join(', ')}]`;
         }
-        toU8a(isBare) {
+        toU8a(_isBare) {
             return util.bnToU8a(this.valueEncoded, {
                 bitLength: __classPrivateFieldGet(this, _CodecSet_byteLength, "f") * 8,
                 isLe: true
@@ -8903,11 +8924,11 @@
         return Clazz.with(getSubType(value));
     }
     const infoMapping = {
-        [exports.TypeDefInfo.BTreeMap]: (registry, value) => createHashMap(BTreeMap, value),
-        [exports.TypeDefInfo.BTreeSet]: (registry, value) => createWithSub(BTreeSet, value),
-        [exports.TypeDefInfo.Compact]: (registry, value) => createWithSub(Compact, value),
-        [exports.TypeDefInfo.DoNotConstruct]: (registry, value) => DoNotConstruct.with(value.displayName || value.type),
-        [exports.TypeDefInfo.Enum]: (registry, value) => {
+        [exports.TypeDefInfo.BTreeMap]: (_registry, value) => createHashMap(BTreeMap, value),
+        [exports.TypeDefInfo.BTreeSet]: (_registry, value) => createWithSub(BTreeSet, value),
+        [exports.TypeDefInfo.Compact]: (_registry, value) => createWithSub(Compact, value),
+        [exports.TypeDefInfo.DoNotConstruct]: (_registry, value) => DoNotConstruct.with(value.displayName || value.type),
+        [exports.TypeDefInfo.Enum]: (_registry, value) => {
             const subs = getSubDefArray(value);
             return Enum.with(subs.every(({ type }) => type === 'Null')
                 ? subs.reduce((out, { index, name }, count) => {
@@ -8916,9 +8937,9 @@
                 }, {})
                 : getTypeClassMap(value));
         },
-        [exports.TypeDefInfo.HashMap]: (registry, value) => createHashMap(HashMap, value),
-        [exports.TypeDefInfo.Int]: (registry, value) => createInt(Int, value),
-        [exports.TypeDefInfo.Linkage]: (registry, value) => {
+        [exports.TypeDefInfo.HashMap]: (_registry, value) => createHashMap(HashMap, value),
+        [exports.TypeDefInfo.Int]: (_registry, value) => createInt(Int, value),
+        [exports.TypeDefInfo.Linkage]: (_registry, value) => {
             const type = `Option<${getSubType(value)}>`;
             const Clazz = Struct.with({ previous: type, next: type });
             Clazz.prototype.toRawType = function () {
@@ -8926,29 +8947,29 @@
             };
             return Clazz;
         },
-        [exports.TypeDefInfo.Null]: (registry, _) => Null,
-        [exports.TypeDefInfo.Option]: (registry, value) => {
+        [exports.TypeDefInfo.Null]: (_registry, _value) => Null,
+        [exports.TypeDefInfo.Option]: (_registry, value) => {
             if (!value.sub || Array.isArray(value.sub)) {
                 throw new Error('Expected type information for Option');
             }
             return createWithSub(Option, value);
         },
         [exports.TypeDefInfo.Plain]: (registry, value) => registry.getOrUnknown(value.type),
-        [exports.TypeDefInfo.Range]: (registry, value) => createWithSub(Range, value),
-        [exports.TypeDefInfo.RangeInclusive]: (registry, value) => createWithSub(RangeInclusive, value),
-        [exports.TypeDefInfo.Result]: (registry, value) => {
+        [exports.TypeDefInfo.Range]: (_registry, value) => createWithSub(Range, value),
+        [exports.TypeDefInfo.RangeInclusive]: (_registry, value) => createWithSub(RangeInclusive, value),
+        [exports.TypeDefInfo.Result]: (_registry, value) => {
             const [Ok, Err] = getTypeClassArray(value);
             return Result.with({ Err, Ok });
         },
-        [exports.TypeDefInfo.Set]: (registry, value) => CodecSet.with(getSubDefArray(value).reduce((result, { index, name }) => {
+        [exports.TypeDefInfo.Set]: (_registry, value) => CodecSet.with(getSubDefArray(value).reduce((result, { index, name }) => {
             result[name] = index;
             return result;
         }, {}), value.length),
         [exports.TypeDefInfo.Si]: (registry, value) => getTypeClass(registry, registry.lookup.getTypeDef(value.type)),
-        [exports.TypeDefInfo.Struct]: (registry, value) => Struct.with(getTypeClassMap(value), value.alias),
-        [exports.TypeDefInfo.Tuple]: (registry, value) => Tuple.with(getTypeClassArray(value)),
-        [exports.TypeDefInfo.UInt]: (registry, value) => createInt(UInt, value),
-        [exports.TypeDefInfo.Vec]: (registry, { sub }) => {
+        [exports.TypeDefInfo.Struct]: (_registry, value) => Struct.with(getTypeClassMap(value), value.alias),
+        [exports.TypeDefInfo.Tuple]: (_registry, value) => Tuple.with(getTypeClassArray(value)),
+        [exports.TypeDefInfo.UInt]: (_registry, value) => createInt(UInt, value),
+        [exports.TypeDefInfo.Vec]: (_registry, { sub }) => {
             if (!sub || Array.isArray(sub)) {
                 throw new Error('Expected type information for vector');
             }
@@ -8956,7 +8977,7 @@
                 ? Bytes
                 : Vec.with(getTypeDefType(sub)));
         },
-        [exports.TypeDefInfo.VecFixed]: (registry, { displayName, length, sub }) => {
+        [exports.TypeDefInfo.VecFixed]: (_registry, { displayName, length, sub }) => {
             if (!util.isNumber(length) || !sub || Array.isArray(sub)) {
                 throw new Error('Expected length & type information for fixed vector');
             }
@@ -8964,8 +8985,8 @@
                 ? U8aFixed.with((length * 8), displayName)
                 : VecFixed.with(getTypeDefType(sub), length));
         },
-        [exports.TypeDefInfo.WrapperKeepOpaque]: (registry, value) => createWithSub(WrapperKeepOpaque, value),
-        [exports.TypeDefInfo.WrapperOpaque]: (registry, value) => createWithSub(WrapperOpaque, value)
+        [exports.TypeDefInfo.WrapperKeepOpaque]: (_registry, value) => createWithSub(WrapperKeepOpaque, value),
+        [exports.TypeDefInfo.WrapperOpaque]: (_registry, value) => createWithSub(WrapperOpaque, value)
     };
     function constructTypeClass(registry, typeDef) {
         try {
@@ -9104,15 +9125,15 @@
                 : encodeSubTypes(registry, sub, true);
         },
         [exports.TypeDefInfo.HashMap]: (registry, typeDef) => encodeWithParams(registry, typeDef, 'HashMap'),
-        [exports.TypeDefInfo.Int]: (registry, { length = 32 }) => `Int<${length}>`,
+        [exports.TypeDefInfo.Int]: (_registry, { length = 32 }) => `Int<${length}>`,
         [exports.TypeDefInfo.Linkage]: (registry, typeDef) => encodeWithParams(registry, typeDef, 'Linkage'),
-        [exports.TypeDefInfo.Null]: (registry, typeDef) => 'Null',
+        [exports.TypeDefInfo.Null]: (_registry, _typeDef) => 'Null',
         [exports.TypeDefInfo.Option]: (registry, typeDef) => encodeWithParams(registry, typeDef, 'Option'),
-        [exports.TypeDefInfo.Plain]: (registry, { displayName, type }) => displayName || type,
+        [exports.TypeDefInfo.Plain]: (_registry, { displayName, type }) => displayName || type,
         [exports.TypeDefInfo.Range]: (registry, typeDef) => encodeWithParams(registry, typeDef, 'Range'),
         [exports.TypeDefInfo.RangeInclusive]: (registry, typeDef) => encodeWithParams(registry, typeDef, 'RangeInclusive'),
         [exports.TypeDefInfo.Result]: (registry, typeDef) => encodeWithParams(registry, typeDef, 'Result'),
-        [exports.TypeDefInfo.Set]: (registry, { length = 8, sub }) => {
+        [exports.TypeDefInfo.Set]: (_registry, { length = 8, sub }) => {
             if (!Array.isArray(sub)) {
                 throw new Error('Unable to encode Set type');
             }
@@ -9120,7 +9141,7 @@
                 _set: sub.reduce((all, { index, name }, count) => util.objectSpread(all, { [`${name || `Unknown${index || count}`}`]: index || count }), { _bitLength: length || 8 })
             });
         },
-        [exports.TypeDefInfo.Si]: (registry, { lookupName, type }) => lookupName || type,
+        [exports.TypeDefInfo.Si]: (_registry, { lookupName, type }) => lookupName || type,
         [exports.TypeDefInfo.Struct]: (registry, { alias, sub }) => {
             if (!Array.isArray(sub)) {
                 throw new Error('Unable to encode Struct type');
@@ -9137,9 +9158,9 @@
             }
             return `(${sub.map((type) => encodeTypeDef(registry, type)).join(',')})`;
         },
-        [exports.TypeDefInfo.UInt]: (registry, { length = 32 }) => `UInt<${length}>`,
+        [exports.TypeDefInfo.UInt]: (_registry, { length = 32 }) => `UInt<${length}>`,
         [exports.TypeDefInfo.Vec]: (registry, typeDef) => encodeWithParams(registry, typeDef, 'Vec'),
-        [exports.TypeDefInfo.VecFixed]: (registry, { length, sub }) => {
+        [exports.TypeDefInfo.VecFixed]: (_registry, { length, sub }) => {
             if (!util.isNumber(length) || !sub || Array.isArray(sub)) {
                 throw new Error('Unable to encode VecFixed type');
             }
@@ -13146,7 +13167,7 @@
         throw new Error('Invalid data passed to Era');
     }
     class ImmortalEra extends Raw {
-        constructor(registry, value) {
+        constructor(registry, _value) {
             super(registry, IMMORTAL_ERA);
         }
     }
@@ -13175,7 +13196,7 @@
         toJSON() {
             return this.toHex();
         }
-        toU8a(isBare) {
+        toU8a(_isBare) {
             const period = this.period.toNumber();
             const encoded = Math.min(15, Math.max(1, getTrailingZeros(period) - 1)) + ((this.phase.toNumber() / Math.max(period >> 12, 1)) << 4);
             return new Uint8Array([
@@ -13297,14 +13318,14 @@
     }
 
     class GenericExtrinsicPayloadUnknown extends Struct {
-        constructor(registry, value, { version = 0 } = {}) {
+        constructor(registry, _value, { version = 0 } = {}) {
             super(registry, {});
             throw new Error(`Unsupported extrinsic payload version ${version}`);
         }
     }
 
     class GenericExtrinsicUnknown extends Struct {
-        constructor(registry, value, { isSigned = false, version = 0 } = {}) {
+        constructor(registry, _value, { isSigned = false, version = 0 } = {}) {
             super(registry, {});
             throw new Error(`Unsupported ${isSigned ? '' : 'un'}signed extrinsic version ${version & UNMASK_VERSION}`);
         }
@@ -13871,7 +13892,7 @@
                     const c = registry.findMetaCall(decoded.callIndex);
                     method = `${c.section}.${c.method}`;
                 }
-                catch (error) {
+                catch {
                 }
                 throw new Error(`Call: failed decoding ${method}:: ${error.message}`);
             }
@@ -13909,7 +13930,7 @@
             try {
                 call = this.registry.findMetaCall(this.callIndex);
             }
-            catch (error) {
+            catch {
             }
             return util.objectSpread({
                 args: this.argsEntries.reduce((args, [n, a]) => util.objectSpread(args, { [n]: a.toHuman(isExpanded) }), {}),
@@ -14619,7 +14640,7 @@
             try {
                 __classPrivateFieldSet(this, _StorageKey_args, decodeArgsFromMeta(this.registry, this.toU8a(true), meta), "f");
             }
-            catch (error) {
+            catch {
             }
             return this;
         }
@@ -15154,7 +15175,7 @@
             }]);
     }
 
-    function toLatest(registry, v14, _metaVersion) {
+    function toLatest(_registry, v14, _metaVersion) {
         return v14;
     }
 
@@ -15255,7 +15276,7 @@
             try {
                 return new MetadataVersioned(registry, u8a);
             }
-            catch (error) {
+            catch {
                 u8a[VERSION_IDX] = 10;
                 return u8a;
             }
@@ -16820,7 +16841,7 @@
     }
     _TypeRegistry_chainProperties = new WeakMap(), _TypeRegistry_classes = new WeakMap(), _TypeRegistry_definitions = new WeakMap(), _TypeRegistry_firstCallIndex = new WeakMap(), _TypeRegistry_hasher = new WeakMap(), _TypeRegistry_knownTypes = new WeakMap(), _TypeRegistry_lookup = new WeakMap(), _TypeRegistry_metadata = new WeakMap(), _TypeRegistry_metadataVersion = new WeakMap(), _TypeRegistry_signedExtensions = new WeakMap(), _TypeRegistry_unknownTypes = new WeakMap(), _TypeRegistry_userExtensions = new WeakMap(), _TypeRegistry_knownDefaults = new WeakMap(), _TypeRegistry_knownDefinitions = new WeakMap(), _TypeRegistry_metadataCalls = new WeakMap(), _TypeRegistry_metadataErrors = new WeakMap(), _TypeRegistry_metadataEvents = new WeakMap(), _TypeRegistry_moduleMap = new WeakMap(), _TypeRegistry_registerObject = new WeakMap(), _TypeRegistry_registerLookup = new WeakMap();
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.1.3' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.1.4' };
 
     exports.BTreeMap = BTreeMap;
     exports.BTreeSet = BTreeSet;

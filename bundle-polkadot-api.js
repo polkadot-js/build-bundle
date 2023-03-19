@@ -127,7 +127,7 @@
     function evaluateThis(fn) {
         return fn('return this');
     }
-    const xglobal = (typeof globalThis !== 'undefined'
+    const xglobal =  (typeof globalThis !== 'undefined'
         ? globalThis
         : typeof global !== 'undefined'
             ? global
@@ -169,6 +169,7 @@
         METHOD_NOT_FOUND: -32601,
         UNKNOWN
     };
+    const RpcError$1 = RpcError;
 
     var _RpcCoder_id;
     function formatErrorData(data) {
@@ -185,7 +186,7 @@
     function checkError(error) {
         if (error) {
             const { code, data, message } = error;
-            throw new RpcError(`${code}: ${message}${formatErrorData(data)}`, code, data);
+            throw new RpcError$1(`${code}: ${message}${formatErrorData(data)}`, code, data);
         }
     }
     class RpcCoder {
@@ -373,7 +374,7 @@
         get isConnected() {
             return true;
         }
-        on(type, sub) {
+        on(_type, _sub) {
             l$7.error('HTTP Provider does not have \'on\' emitters, use WebSockets instead');
             return () => {
             };
@@ -395,11 +396,11 @@
             }
             return resultPromise;
         }
-        async subscribe(types, method, params, cb) {
+        async subscribe(_types, _method, _params, _cb) {
             l$7.error(ERROR_SUBSCRIBE);
             throw new Error(ERROR_SUBSCRIBE);
         }
-        async unsubscribe(type, method, id) {
+        async unsubscribe(_type, _method, _id) {
             l$7.error(ERROR_SUBSCRIBE);
             throw new Error(ERROR_SUBSCRIBE);
         }
@@ -659,7 +660,7 @@
                 try {
                     parsedRequest = JSON.parse(request);
                 }
-                catch (err) {
+                catch {
                     return;
                 }
                 if (parsedRequest.id) {
@@ -673,7 +674,7 @@
                 try {
                     parsedResponse = JSON.parse(jsonRpcResponse);
                 }
-                catch (err) {
+                catch {
                     return jsonRpcResponse;
                 }
                 if (parsedResponse.id && __classPrivateFieldGet(this, _InnerChecker_currentHealthCheckId, "f") === parsedResponse.id) {
@@ -1306,7 +1307,7 @@
             }, "f");
             __classPrivateFieldSet(this, _WsProvider_endpointStats, defaultEndpointStats(), "f");
             __classPrivateFieldSet(this, _WsProvider_timeout, timeout || DEFAULT_TIMEOUT_MS, "f");
-            if (autoConnectMs > 0) {
+            if (autoConnectMs && autoConnectMs > 0) {
                 this.connectWithRetry().catch(() => {
                 });
             }
@@ -1367,7 +1368,7 @@
                 try {
                     await this.connect();
                 }
-                catch (error) {
+                catch {
                     setTimeout(() => {
                         this.connectWithRetry().catch(() => {
                         });
@@ -1442,7 +1443,7 @@
                     ? this.send(method, [id])
                     : true;
             }
-            catch (error) {
+            catch {
                 return false;
             }
         }
@@ -1478,7 +1479,7 @@
         });
     };
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.1.3' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.1.4' };
 
     function isFunction(value) {
         return typeof value === 'function';
@@ -3951,7 +3952,7 @@
                 const accountIndex = api.registry.createType('AccountIndex', decoded);
                 return api.derive.accounts.indexToId(accountIndex.toString()).pipe(map((accountId) => [accountId, accountIndex]));
             }
-            catch (error) {
+            catch {
                 return of([undefined, undefined]);
             }
         });
@@ -19690,7 +19691,7 @@
             try {
                 __classPrivateFieldGet(this, _Combinator_callback, "f").call(this, __classPrivateFieldGet(this, _Combinator_results, "f"));
             }
-            catch (error) {
+            catch {
             }
         }
         unsubscribe() {
@@ -19705,7 +19706,7 @@
                         unsubscribe();
                     }
                 }
-                catch (error) {
+                catch {
                 }
             });
         }
