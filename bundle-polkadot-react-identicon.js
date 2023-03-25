@@ -1035,19 +1035,21 @@
 	    return outer;
 	}
 
-	const blake2 = (value) => utilCrypto.blake2AsU8a(value, 512);
 	const S$1 = 64;
 	const C = S$1 / 2;
 	const Z$1 = S$1 / 64 * 5;
-	const SCHEMA = {
-	    target: { colors: [0, 28, 0, 0, 28, 0, 0, 28, 0, 0, 28, 0, 0, 28, 0, 0, 28, 0, 1], freq: 1 },
-	    cube: { colors: [0, 1, 3, 2, 4, 3, 0, 1, 3, 2, 4, 3, 0, 1, 3, 2, 4, 3, 5], freq: 20 },
-	    quazar: { colors: [1, 2, 3, 1, 2, 4, 5, 5, 4, 1, 2, 3, 1, 2, 4, 5, 5, 4, 0], freq: 16 },
-	    flower: { colors: [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 3], freq: 32 },
-	    cyclic: { colors: [0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 6], freq: 32 },
-	    vmirror: { colors: [0, 1, 2, 3, 4, 5, 3, 4, 2, 0, 1, 6, 7, 8, 9, 7, 8, 6, 10], freq: 128 },
-	    hmirror: { colors: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 8, 6, 7, 5, 3, 4, 2, 11], freq: 128 }
-	};
+	const SCHEMES = [
+	     { colors: [0, 28, 0, 0, 28, 0, 0, 28, 0, 0, 28, 0, 0, 28, 0, 0, 28, 0, 1], freq: 1 },
+	     { colors: [0, 1, 3, 2, 4, 3, 0, 1, 3, 2, 4, 3, 0, 1, 3, 2, 4, 3, 5], freq: 20 },
+	     { colors: [1, 2, 3, 1, 2, 4, 5, 5, 4, 1, 2, 3, 1, 2, 4, 5, 5, 4, 0], freq: 16 },
+	     { colors: [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 3], freq: 32 },
+	     { colors: [0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 6], freq: 32 },
+	     { colors: [0, 1, 2, 3, 4, 5, 3, 4, 2, 0, 1, 6, 7, 8, 9, 7, 8, 6, 10], freq: 128 },
+	     { colors: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 8, 6, 7, 5, 3, 4, 2, 11], freq: 128 }
+	];
+	const SCHEMES_TOTAL = SCHEMES
+	    .map((s) => s.freq)
+	    .reduce((a, b) => a + b);
 	const OUTER_CIRCLE = {
 	    cx: C,
 	    cy: C,
@@ -1092,7 +1094,7 @@
 	}
 	function findScheme(d) {
 	    let cum = 0;
-	    const schema = Object.values(SCHEMA).find((schema) => {
+	    const schema = SCHEMES.find((schema) => {
 	        cum += schema.freq;
 	        return d < cum;
 	    });
@@ -1103,14 +1105,13 @@
 	}
 	function addressToId(address) {
 	    if (!zeroHash.length) {
-	        zeroHash = blake2(new Uint8Array(32));
+	        zeroHash = utilCrypto.blake2AsU8a(new Uint8Array(32), 512);
 	    }
-	    return blake2(utilCrypto.decodeAddress(address)).map((x, i) => (x + 256 - zeroHash[i]) % 256);
+	    return utilCrypto.blake2AsU8a(utilCrypto.decodeAddress(address), 512).map((x, i) => (x + 256 - zeroHash[i]) % 256);
 	}
 	function getColors(address) {
-	    const total = Object.values(SCHEMA).map((s) => s.freq).reduce((a, b) => a + b);
 	    const id = addressToId(address);
-	    const d = Math.floor((id[30] + id[31] * 256) % total);
+	    const d = Math.floor((id[30] + id[31] * 256) % SCHEMES_TOTAL);
 	    const rot = (id[28] % 6) * 3;
 	    const sat = (Math.floor(id[29] * 70 / 256 + 26) % 80) + 30;
 	    const scheme = findScheme(d);
@@ -3365,7 +3366,7 @@
 `;
 	const Identicon = r$1.memo(Icon);
 
-	const packageInfo = { name: '@polkadot/react-identicon', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.1.1' };
+	const packageInfo = { name: '@polkadot/react-identicon', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-identicon.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.1.2' };
 
 	exports.Beachball = Beachball;
 	exports.Empty = Empty;

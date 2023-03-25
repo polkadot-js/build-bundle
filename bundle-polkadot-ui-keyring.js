@@ -1427,6 +1427,7 @@
         contracts
     })));
 
+    var _KeyringOption_allSub;
     let hasCalledInitOptions = false;
     const sortByName = (a, b) => {
         const valueA = a.option.name;
@@ -1446,6 +1447,7 @@
     };
     class KeyringOption {
         constructor() {
+            _KeyringOption_allSub.set(this, null);
             this.optionsSubject = new BehaviorSubject(this.emptyOptions());
         }
         createOptionHeader(name) {
@@ -1456,8 +1458,10 @@
             };
         }
         init(keyring) {
-            util$7.assert(!hasCalledInitOptions, 'Unable to initialise options more than once');
-            obervableAll.subscribe(() => {
+            if (hasCalledInitOptions) {
+                throw new Error('Unable to initialise options more than once');
+            }
+            __classPrivateFieldSet(this, _KeyringOption_allSub, obervableAll.subscribe(() => {
                 const opts = this.emptyOptions();
                 this.addAccounts(keyring, opts);
                 this.addAddresses(keyring, opts);
@@ -1468,8 +1472,13 @@
                 opts.all = [].concat(opts.account, opts.address);
                 opts.allPlus = [].concat(opts.account, opts.address, opts.contract);
                 this.optionsSubject.next(opts);
-            });
+            }), "f");
             hasCalledInitOptions = true;
+        }
+        clear() {
+            if (__classPrivateFieldGet(this, _KeyringOption_allSub, "f")) {
+                __classPrivateFieldGet(this, _KeyringOption_allSub, "f").unsubscribe();
+            }
         }
         linkItems(items) {
             return Object.keys(items).reduce((result, header) => {
@@ -1531,6 +1540,7 @@
             };
         }
     }
+    _KeyringOption_allSub = new WeakMap();
 
     var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -2334,12 +2344,13 @@
         }
     }
 
-    var _Base_accounts, _Base_addresses, _Base_contracts, _Base_keyring;
+    var _Base_accounts, _Base_addresses, _Base_contracts, _Base_isEthereum, _Base_keyring;
     class Base {
         constructor() {
             _Base_accounts.set(this, void 0);
             _Base_addresses.set(this, void 0);
             _Base_contracts.set(this, void 0);
+            _Base_isEthereum.set(this, void 0);
             _Base_keyring.set(this, void 0);
             this._genesisHashAdd = [];
             this.decodeAddress = (key, ignoreChecksum, ss58Format) => {
@@ -2351,6 +2362,7 @@
             __classPrivateFieldSet(this, _Base_accounts, accounts, "f");
             __classPrivateFieldSet(this, _Base_addresses, addresses, "f");
             __classPrivateFieldSet(this, _Base_contracts, contracts, "f");
+            __classPrivateFieldSet(this, _Base_isEthereum, false, "f");
             this._store = new BrowserStore();
         }
         get accounts() {
@@ -2361,6 +2373,9 @@
         }
         get contracts() {
             return __classPrivateFieldGet(this, _Base_contracts, "f");
+        }
+        get isEthereum() {
+            return __classPrivateFieldGet(this, _Base_isEthereum, "f");
         }
         get keyring() {
             if (__classPrivateFieldGet(this, _Base_keyring, "f")) {
@@ -2407,6 +2422,7 @@
             if (util$7.isBoolean(options.isDevelopment)) {
                 this.setDevMode(options.isDevelopment);
             }
+            __classPrivateFieldSet(this, _Base_isEthereum, keyring.type === 'ethereum', "f");
             __classPrivateFieldSet(this, _Base_keyring, keyring, "f");
             this._genesisHash = options.genesisHash && (util$7.isString(options.genesisHash)
                 ? options.genesisHash.toString()
@@ -2428,7 +2444,7 @@
             }
         }
     }
-    _Base_accounts = new WeakMap(), _Base_addresses = new WeakMap(), _Base_contracts = new WeakMap(), _Base_keyring = new WeakMap();
+    _Base_accounts = new WeakMap(), _Base_addresses = new WeakMap(), _Base_contracts = new WeakMap(), _Base_isEthereum = new WeakMap(), _Base_keyring = new WeakMap();
 
     var _Keyring_stores;
     const RECENT_EXPIRY = 24 * 60 * 60;
@@ -2453,7 +2469,10 @@
             return this.addExternal(address, util$7.objectSpread({}, meta, { hardwareType, isHardware: true }));
         }
         addMultisig(addresses, threshold, meta = {}) {
-            const address = utilCrypto.createKeyMulti(addresses, threshold);
+            let address = utilCrypto.createKeyMulti(addresses, threshold);
+            if (this.isEthereum) {
+                address = address.slice(0, 20);
+            }
             const who = util$7.u8aSorted(addresses.map((who) => this.decodeAddress(who))).map((who) => this.encodeAddress(who));
             return this.addExternal(address, util$7.objectSpread({}, meta, { isMultisig: true, threshold: util$7.bnToBn(threshold).toNumber(), who }));
         }
@@ -2714,7 +2733,7 @@
     }
     _Keyring_stores = new WeakMap();
 
-    const packageInfo = { name: '@polkadot/ui-keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.1.1' };
+    const packageInfo = { name: '@polkadot/ui-keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.1.2' };
 
     const keyring = new Keyring();
 
