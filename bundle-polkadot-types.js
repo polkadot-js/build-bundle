@@ -3010,27 +3010,16 @@
     };
 
     const rpc$a = {
-        generateBatchProof: {
-            description: 'Generate MMR proof for the given leaf indices.',
+        generateProof: {
+            description: 'Generate MMR proof for the given block numbers.',
             params: [
                 {
-                    name: 'leafIndices',
+                    name: 'blockNumbers',
                     type: 'Vec<u64>'
                 },
                 {
-                    isHistoric: true,
                     isOptional: true,
-                    name: 'at',
-                    type: 'BlockHash'
-                }
-            ],
-            type: 'MmrLeafProof'
-        },
-        generateProof: {
-            description: 'Generate MMR proof for given leaf index.',
-            params: [
-                {
-                    name: 'leafIndex',
+                    name: 'bestKnownBlockNumber',
                     type: 'u64'
                 },
                 {
@@ -3041,10 +3030,99 @@
                 }
             ],
             type: 'MmrLeafBatchProof'
+        },
+        root: {
+            description: 'Get the MMR root hash for the current best block.',
+            params: [
+                {
+                    isHistoric: true,
+                    isOptional: true,
+                    name: 'at',
+                    type: 'BlockHash'
+                }
+            ],
+            type: 'MmrHash'
+        },
+        verifyProof: {
+            description: 'Verify an MMR proof',
+            params: [
+                {
+                    name: 'proof',
+                    type: 'MmrLeafBatchProof'
+                }
+            ],
+            type: 'bool'
+        },
+        verifyProofStateless: {
+            description: 'Verify an MMR proof statelessly given an mmr_root',
+            params: [
+                {
+                    name: 'root',
+                    type: 'MmrHash'
+                },
+                {
+                    name: 'proof',
+                    type: 'MmrLeafBatchProof'
+                }
+            ],
+            type: 'bool'
         }
     };
 
-    const MMR_V1_V2 = {
+    const MMR_V2 = {
+        generate_proof: {
+            description: 'Generate MMR proof for the given block numbers.',
+            params: [
+                {
+                    name: 'blockNumbers',
+                    type: 'Vec<BlockNumber>'
+                },
+                {
+                    name: 'bestKnownBlockNumber',
+                    type: 'Option<BlockNumber>'
+                }
+            ],
+            type: 'Result<(Vec<MmrEncodableOpaqueLeaf>, MmrBatchProof), MmrError>'
+        },
+        root: {
+            description: 'Return the on-chain MMR root hash.',
+            params: [],
+            type: 'Result<Hash, MmrError>'
+        },
+        verify_proof: {
+            description: 'Verify MMR proof against on-chain MMR.',
+            params: [
+                {
+                    name: 'leaves',
+                    type: 'Vec<MmrEncodableOpaqueLeaf>'
+                },
+                {
+                    name: 'proof',
+                    type: 'MmrBatchProof'
+                }
+            ],
+            type: 'Result<(), MmrError>'
+        },
+        verify_proof_stateless: {
+            description: 'Verify MMR proof against given root hash.',
+            params: [
+                {
+                    name: 'root',
+                    type: 'Hash'
+                },
+                {
+                    name: 'leaves',
+                    type: 'Vec<MmrEncodableOpaqueLeaf>'
+                },
+                {
+                    name: 'proof',
+                    type: 'MmrBatchProof'
+                }
+            ],
+            type: 'Result<(), MmrError>'
+        }
+    };
+    const MMR_V1 = {
         generate_batch_proof: {
             description: 'Generate MMR proof for a series of leaves under given indices.',
             params: [
@@ -3138,11 +3216,11 @@
     const runtime$g = {
         MmrApi: [
             {
-                methods: MMR_V1_V2,
+                methods: MMR_V2,
                 version: 2
             },
             {
-                methods: MMR_V1_V2,
+                methods: MMR_V1,
                 version: 1
             }
         ]
@@ -3161,6 +3239,7 @@
             MmrError: {
                 _enum: ['Push', 'GetRoot', 'Commit', 'GenerateProof', 'Verify', 'LeafNotFound', ' PalletNotIncluded', 'InvalidLeafIndex']
             },
+            MmrHash: 'Hash',
             MmrLeafBatchProof: {
                 blockHash: 'BlockHash',
                 leaves: 'Bytes',
@@ -5014,16 +5093,33 @@
             type: 'Option<ValidationCodeHash>'
         }
     };
+    const PH_V3 = {
+        disputes: {
+            description: 'Returns all onchain disputes.',
+            params: [],
+            type: 'Vec<(SessionIndex, CandidateHash, DisputeState)>'
+        }
+    };
+    const PH_V4 = {
+        session_executor_params: {
+            description: 'Returns execution parameters for the session.',
+            params: [
+                {
+                    name: 'sessionIndex',
+                    type: 'SessionIndex'
+                }
+            ],
+            type: 'Option<ExecutorParams>'
+        }
+    };
     const runtime$6 = {
         ParachainHost: [
             {
-                methods: util.objectSpread({
-                    disputes: {
-                        description: 'Returns all onchain disputes.',
-                        params: [],
-                        type: 'Vec<(SessionIndex, CandidateHash, DisputeState)>'
-                    }
-                }, PH_V1_TO_V2, PH_V2_TO_V3),
+                methods: util.objectSpread({}, PH_V1_TO_V2, PH_V2_TO_V3, PH_V3, PH_V4),
+                version: 4
+            },
+            {
+                methods: util.objectSpread({}, PH_V1_TO_V2, PH_V2_TO_V3, PH_V3),
                 version: 3
             },
             {
@@ -5140,6 +5236,19 @@
             session: 'SessionIndex',
             statements: 'Vec<(DisputeStatement, ParaValidatorIndex, ValidatorSignature)>'
         },
+        ExecutorParam: {
+            _enum: {
+                Phantom: 'Null',
+                MaxMemoryPages: 'u32',
+                StackLogicalMax: 'u32',
+                StackNativeMax: 'u32',
+                PrecheckingMaxMemory: 'u64',
+                PvfPrepTimeout: '(PvfPrepTimeoutKind, u64)',
+                PvfExecTimeout: '(PvfExecTimeoutKind, u64)'
+            }
+        },
+        ExecutorParamsHash: 'Hash',
+        ExecutorParams: 'Vec<ExecutorParam>',
         ExplicitDisputeStatement: {
             valid: 'bool',
             candidateHash: 'CandidateHash',
@@ -5149,6 +5258,12 @@
             _enum: ['Explicit']
         },
         MultiDisputeStatementSet: 'Vec<DisputeStatementSet>',
+        PvfExecTimeoutKind: {
+            _enum: ['Backing', 'Approval']
+        },
+        PvfPrepTimeoutKind: {
+            _enum: ['Precheck', 'Lenient']
+        },
         ValidDisputeStatementKind: {
             _enum: {
                 Explicit: 'Null',
@@ -7344,7 +7459,7 @@
             return 'BitVec';
         }
         toU8a(isBare) {
-            const bitVec = super.toU8a();
+            const bitVec = super.toU8a(isBare);
             return isBare
                 ? bitVec
                 : util.u8aConcatStrict([util.compactToU8a(__classPrivateFieldGet(this, _BitVec_decodedLength, "f")), bitVec]);
@@ -7898,10 +8013,10 @@
         toRawType() {
             return `Linkage<${this.next.toRawType(true)}>`;
         }
-        toU8a() {
+        toU8a(isBare) {
             return this.isEmpty
                 ? EMPTY
-                : super.toU8a();
+                : super.toU8a(isBare);
         }
     }
 
@@ -8320,8 +8435,10 @@
         toRawType() {
             return `f${__classPrivateFieldGet(this, _Float_bitLength, "f")}`;
         }
-        toU8a() {
-            return util.floatToU8a(this, { bitLength: __classPrivateFieldGet(this, _Float_bitLength, "f") });
+        toU8a(_isBare) {
+            return util.floatToU8a(this, {
+                bitLength: __classPrivateFieldGet(this, _Float_bitLength, "f")
+            });
         }
     }
     _Float_bitLength = new WeakMap();
@@ -8594,6 +8711,13 @@
         constructor() {
             super(...arguments);
             this.__IntType = 'i256';
+        }
+    }
+
+    class isize extends i32 {
+        constructor(registry, value) {
+            super(registry, value);
+            throw new Error('The `isize` type should not be used. Since it is platform-specific, it creates incompatibilities between native (generally i64) and WASM (always i32) code. Use one of the `i32` or `i64` types explicitly.');
         }
     }
 
@@ -13598,7 +13722,7 @@
             super(registry, decodeAccountId$1(value), 160);
         }
         eq(other) {
-            return super.eq(decodeAccountId$1(other));
+            return !!other && super.eq(decodeAccountId$1(other));
         }
         toHuman() {
             return this.toJSON();
@@ -14696,6 +14820,7 @@
         I32: i32,
         I64: i64,
         I8: i8,
+        ISize: isize,
         Null: Null,
         OptionBool: OptionBool,
         StorageKey: StorageKey,
@@ -14717,6 +14842,7 @@
         i32: i32,
         i64: i64,
         i8: i8,
+        isize: isize,
         u128: u128,
         u16: u16,
         u256: u256,
@@ -15625,6 +15751,7 @@
         'sp_core::crypto::AccountId32',
         'sp_runtime::generic::era::Era',
         'sp_runtime::multiaddress::MultiAddress',
+        'fp_account::AccountId20',
         'account::AccountId20',
         'polkadot_runtime_common::claims::EthereumAddress',
         'frame_support::weights::weight_v2::Weight',
@@ -16841,7 +16968,7 @@
     }
     _TypeRegistry_chainProperties = new WeakMap(), _TypeRegistry_classes = new WeakMap(), _TypeRegistry_definitions = new WeakMap(), _TypeRegistry_firstCallIndex = new WeakMap(), _TypeRegistry_hasher = new WeakMap(), _TypeRegistry_knownTypes = new WeakMap(), _TypeRegistry_lookup = new WeakMap(), _TypeRegistry_metadata = new WeakMap(), _TypeRegistry_metadataVersion = new WeakMap(), _TypeRegistry_signedExtensions = new WeakMap(), _TypeRegistry_unknownTypes = new WeakMap(), _TypeRegistry_userExtensions = new WeakMap(), _TypeRegistry_knownDefaults = new WeakMap(), _TypeRegistry_knownDefinitions = new WeakMap(), _TypeRegistry_metadataCalls = new WeakMap(), _TypeRegistry_metadataErrors = new WeakMap(), _TypeRegistry_metadataEvents = new WeakMap(), _TypeRegistry_moduleMap = new WeakMap(), _TypeRegistry_registerObject = new WeakMap(), _TypeRegistry_registerLookup = new WeakMap();
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.1.4' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.2.1' };
 
     exports.BTreeMap = BTreeMap;
     exports.BTreeSet = BTreeSet;
@@ -16890,6 +17017,7 @@
     exports.I32 = i32;
     exports.I64 = i64;
     exports.I8 = i8;
+    exports.ISize = isize;
     exports.Int = Int;
     exports.Json = Json;
     exports.Linkage = Linkage;
@@ -16946,6 +17074,7 @@
     exports.i32 = i32;
     exports.i64 = i64;
     exports.i8 = i8;
+    exports.isize = isize;
     exports.lazyVariants = lazyVariants;
     exports.mapXcmTypes = mapXcmTypes;
     exports.packageInfo = packageInfo;
