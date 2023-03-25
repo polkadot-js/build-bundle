@@ -2,7 +2,7 @@
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@polkadot/util')) :
     typeof define === 'function' && define.amd ? define(['exports', '@polkadot/util'], factory) :
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.polkadotHwLedger = {}, global.polkadotUtil));
-})(this, (function (exports, util) { 'use strict';
+})(this, (function (exports, util$1) { 'use strict';
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
@@ -1090,7 +1090,7 @@
     	        name: 'Bittensor',
     	        cla: 0xb4,
     	        slip0044: 0x800003ed,
-    	        ss58_addr_type: 13116
+    	        ss58_addr_type: 42
     	    },
     	    {
     	        name: 'Ternoa',
@@ -5073,6 +5073,24 @@
 
     const require$$2 = /*@__PURE__*/getAugmentedNamespace(TransportWebUSB$1);
 
+    var util = {};
+
+    var hasRequiredUtil;
+    function requireUtil () {
+    	if (hasRequiredUtil) return util;
+    	hasRequiredUtil = 1;
+    	Object.defineProperty(util, "__esModule", { value: true });
+    	util.createDefs = void 0;
+    	function createDefs(...items) {
+    	    return items.map(([type, Clazz]) => ({
+    	        create: () => Clazz.create(),
+    	        type
+    	    }));
+    	}
+    	util.createDefs = createDefs;
+    	return util;
+    }
+
     var packageInfo$1 = {};
 
     var hasRequiredPackageInfo;
@@ -5081,7 +5099,7 @@
     	hasRequiredPackageInfo = 1;
     	Object.defineProperty(packageInfo$1, "__esModule", { value: true });
     	packageInfo$1.packageInfo = void 0;
-    	packageInfo$1.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '11.1.1' };
+    	packageInfo$1.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '11.1.2' };
     	return packageInfo$1;
     }
 
@@ -5091,18 +5109,10 @@
     	const tslib_1 = require$$0;
     	const hw_transport_webhid_1 = tslib_1.__importDefault(require$$1);
     	const hw_transport_webusb_1 = tslib_1.__importDefault(require$$2);
+    	const util_js_1 = requireUtil();
     	var packageInfo_js_1 = requirePackageInfo();
     	Object.defineProperty(exports, "packageInfo", { enumerable: true, get: function () { return packageInfo_js_1.packageInfo; } });
-    	exports.transports = [
-    	    {
-    	        create: () => hw_transport_webusb_1.default.create(),
-    	        type: 'webusb'
-    	    },
-    	    {
-    	        create: () => hw_transport_webhid_1.default.create(),
-    	        type: 'hid'
-    	    }
-    	];
+    	exports.transports = (0, util_js_1.createDefs)(['webusb', hw_transport_webusb_1.default], ['hid', hw_transport_webhid_1.default]);
     } (browser));
     getDefaultExportFromCjs(browser);
 
@@ -5149,9 +5159,9 @@
         xxnetwork: 'XXNetwork'
     };
 
-    const packageInfo = { name: '@polkadot/hw-ledger', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.1.1' };
+    const packageInfo = { name: '@polkadot/hw-ledger', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.1.2' };
 
-    var _Ledger_app, _Ledger_chain, _Ledger_transport;
+    var _Ledger_app, _Ledger_ledgerName, _Ledger_transportDef;
     async function wrapError(promise) {
         const result = await promise;
         if (result.return_code !== LEDGER_SUCCESS_CODE) {
@@ -5162,23 +5172,25 @@
     class Ledger {
         constructor(transport, chain) {
             _Ledger_app.set(this, null);
-            _Ledger_chain.set(this, void 0);
-            _Ledger_transport.set(this, void 0);
-            if (!['hid', 'webusb'].includes(transport)) {
-                throw new Error(`Unsupported transport ${transport}`);
+            _Ledger_ledgerName.set(this, void 0);
+            _Ledger_transportDef.set(this, void 0);
+            const ledgerName = ledgerApps[chain];
+            const transportDef = browser.transports.find(({ type }) => type === transport);
+            if (!ledgerName) {
+                throw new Error(`Unsupported Ledger chain ${chain}`);
             }
-            else if (!Object.keys(ledgerApps).includes(chain)) {
-                throw new Error(`Unsupported chain ${chain}`);
+            else if (!transportDef) {
+                throw new Error(`Unsupported Ledger transport ${transport}`);
             }
-            __classPrivateFieldSet(this, _Ledger_chain, chain, "f");
-            __classPrivateFieldSet(this, _Ledger_transport, transport, "f");
+            __classPrivateFieldSet(this, _Ledger_ledgerName, ledgerName, "f");
+            __classPrivateFieldSet(this, _Ledger_transportDef, transportDef, "f");
         }
         async getAddress(confirm = false, accountOffset = 0, addressOffset = 0, { account = LEDGER_DEFAULT_ACCOUNT, addressIndex = LEDGER_DEFAULT_INDEX, change = LEDGER_DEFAULT_CHANGE } = {}) {
             return this.withApp(async (app) => {
                 const { address, pubKey } = await wrapError(app.getAddress(account + accountOffset, change, addressIndex + addressOffset, confirm));
                 return {
                     address,
-                    publicKey: util.hexAddPrefix(pubKey)
+                    publicKey: util$1.hexAddPrefix(pubKey)
                 };
             });
         }
@@ -5194,28 +5206,20 @@
         }
         async sign(message, accountOffset = 0, addressOffset = 0, { account = LEDGER_DEFAULT_ACCOUNT, addressIndex = LEDGER_DEFAULT_INDEX, change = LEDGER_DEFAULT_CHANGE } = {}) {
             return this.withApp(async (app) => {
-                const buffer = util.u8aToBuffer(message);
+                const buffer = util$1.u8aToBuffer(message);
                 const { signature } = await wrapError(app.sign(account + accountOffset, change, addressIndex + addressOffset, buffer));
                 return {
-                    signature: util.hexAddPrefix(signature.toString('hex'))
+                    signature: util$1.hexAddPrefix(signature.toString('hex'))
                 };
             });
         }
-        async getApp() {
-            if (!__classPrivateFieldGet(this, _Ledger_app, "f")) {
-                const def = browser.transports.find(({ type }) => type === __classPrivateFieldGet(this, _Ledger_transport, "f"));
-                if (!def) {
-                    throw new Error(`Unable to find a transport for ${__classPrivateFieldGet(this, _Ledger_transport, "f")}`);
-                }
-                const transport = await def.create();
-                __classPrivateFieldSet(this, _Ledger_app, dist.newSubstrateApp(transport, ledgerApps[__classPrivateFieldGet(this, _Ledger_chain, "f")]), "f");
-            }
-            return __classPrivateFieldGet(this, _Ledger_app, "f");
-        }
         async withApp(fn) {
             try {
-                const app = await this.getApp();
-                return await fn(app);
+                if (!__classPrivateFieldGet(this, _Ledger_app, "f")) {
+                    const transport = await __classPrivateFieldGet(this, _Ledger_transportDef, "f").create();
+                    __classPrivateFieldSet(this, _Ledger_app, dist.newSubstrateApp(transport, __classPrivateFieldGet(this, _Ledger_ledgerName, "f")), "f");
+                }
+                return await fn(__classPrivateFieldGet(this, _Ledger_app, "f"));
             }
             catch (error) {
                 __classPrivateFieldSet(this, _Ledger_app, null, "f");
@@ -5223,7 +5227,7 @@
             }
         }
     }
-    _Ledger_app = new WeakMap(), _Ledger_chain = new WeakMap(), _Ledger_transport = new WeakMap();
+    _Ledger_app = new WeakMap(), _Ledger_ledgerName = new WeakMap(), _Ledger_transportDef = new WeakMap();
 
     exports.Ledger = Ledger;
     exports.packageInfo = packageInfo;
