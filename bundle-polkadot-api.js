@@ -1479,7 +1479,7 @@
         });
     };
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.2.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.2.2' };
 
     function isFunction(value) {
         return typeof value === 'function';
@@ -4562,24 +4562,32 @@
         return (instanceId, api) => memo(instanceId, () => fn(api).pipe(map(unwrapBlockNumber)));
     }
     function getAuthorDetails(header, queryAt) {
-        if (queryAt.authorMapping && queryAt.authorMapping.mappingWithDeposit) {
-            const mapId = header.digest.logs[0] && ((header.digest.logs[0].isConsensus && header.digest.logs[0].asConsensus[1]) ||
-                (header.digest.logs[0].isPreRuntime && header.digest.logs[0].asPreRuntime[1]));
-            if (mapId) {
+        const validators = queryAt.session
+            ? queryAt.session.validators()
+            : of(null);
+        const { logs: [log] } = header.digest;
+        const loggedAuthor = (log && ((log.isConsensus && log.asConsensus[0].isNimbus && log.asConsensus[1]) ||
+            (log.isPreRuntime && log.asPreRuntime[0].isNimbus && log.asPreRuntime[1])));
+        if (loggedAuthor) {
+            if (queryAt.authorMapping && queryAt.authorMapping.mappingWithDeposit) {
                 return combineLatest([
                     of(header),
-                    queryAt.session
-                        ? queryAt.session.validators()
-                        : of(null),
-                    queryAt.authorMapping.mappingWithDeposit(mapId).pipe(map((opt) => opt.unwrapOr({ account: null }).account))
+                    validators,
+                    queryAt.authorMapping.mappingWithDeposit(loggedAuthor)
+                        .pipe(map((opt) => opt.unwrapOr({ account: null }).account))
+                ]);
+            }
+            if (queryAt.session && queryAt.session.queuedKeys) {
+                return combineLatest([
+                    of(header),
+                    validators,
+                    queryAt.session.queuedKeys().pipe(map((queuedKeys) => queuedKeys.find((sessionKey) => sessionKey[1].nimbus.toHex() === loggedAuthor.toHex())), map((sessionKey) => (sessionKey) ? sessionKey[0] : null))
                 ]);
             }
         }
         return combineLatest([
             of(header),
-            queryAt.session
-                ? queryAt.session.validators()
-                : of(null),
+            validators,
             of(null)
         ]);
     }
@@ -6863,7 +6871,7 @@
         return result;
     }
 
-    const l$3 = util.logger('api/util');
+    const l$3 =  util.logger('api/util');
 
     function filterEvents(txHash, { block: { extrinsics, header } }, allEvents, status) {
         for (const [txIndex, x] of extrinsics.entries()) {

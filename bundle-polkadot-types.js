@@ -14120,10 +14120,11 @@
         }
     }
 
-    const CID_AURA = util.stringToU8a('aura');
-    const CID_BABE = util.stringToU8a('BABE');
-    const CID_GRPA = util.stringToU8a('FRNK');
-    const CID_POW = util.stringToU8a('pow_');
+    const CID_AURA =  util.stringToU8a('aura');
+    const CID_BABE =  util.stringToU8a('BABE');
+    const CID_GRPA =  util.stringToU8a('FRNK');
+    const CID_POW =  util.stringToU8a('pow_');
+    const CID_NMBS =  util.stringToU8a('nmbs');
     function getAuraAuthor(registry, bytes, sessionValidators) {
         return sessionValidators[registry.createTypeUnsafe('RawAuraPreDigest', [bytes.toU8a(true)])
             .slotNumber
@@ -14155,6 +14156,9 @@
         get isPow() {
             return this.eq(CID_POW);
         }
+        get isNimbus() {
+            return this.eq(CID_NMBS);
+        }
         extractAuthor(bytes, sessionValidators) {
             if (sessionValidators?.length) {
                 if (this.isAura) {
@@ -14164,7 +14168,7 @@
                     return getBabeAuthor(this.registry, bytes, sessionValidators);
                 }
             }
-            if (this.isPow || bytes.length === 20) {
+            if (this.isPow || this.isNimbus) {
                 return getBytesAsAuthor(this.registry, bytes);
             }
             return undefined;
@@ -14855,8 +14859,8 @@
     function convert(fn) {
         return ({ name }) => fn(name);
     }
-    const objectNameToCamel = convert(util.stringCamelCase);
-    const objectNameToString = convert((n) => n.toString());
+    const objectNameToCamel =  convert(util.stringCamelCase);
+    const objectNameToString =  convert((n) => n.toString());
 
     function isTx(tx, callIndex) {
         return tx.callIndex[0] === callIndex[0] && tx.callIndex[1] === callIndex[1];
@@ -16968,7 +16972,7 @@
     }
     _TypeRegistry_chainProperties = new WeakMap(), _TypeRegistry_classes = new WeakMap(), _TypeRegistry_definitions = new WeakMap(), _TypeRegistry_firstCallIndex = new WeakMap(), _TypeRegistry_hasher = new WeakMap(), _TypeRegistry_knownTypes = new WeakMap(), _TypeRegistry_lookup = new WeakMap(), _TypeRegistry_metadata = new WeakMap(), _TypeRegistry_metadataVersion = new WeakMap(), _TypeRegistry_signedExtensions = new WeakMap(), _TypeRegistry_unknownTypes = new WeakMap(), _TypeRegistry_userExtensions = new WeakMap(), _TypeRegistry_knownDefaults = new WeakMap(), _TypeRegistry_knownDefinitions = new WeakMap(), _TypeRegistry_metadataCalls = new WeakMap(), _TypeRegistry_metadataErrors = new WeakMap(), _TypeRegistry_metadataEvents = new WeakMap(), _TypeRegistry_moduleMap = new WeakMap(), _TypeRegistry_registerObject = new WeakMap(), _TypeRegistry_registerLookup = new WeakMap();
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.2.1' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.2.2' };
 
     exports.BTreeMap = BTreeMap;
     exports.BTreeSet = BTreeSet;
