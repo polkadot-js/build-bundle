@@ -6,7 +6,7 @@
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
-    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.1.2' };
+    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.1.3' };
 
     function evaluateThis(fn) {
         return fn('return this');
@@ -1715,7 +1715,7 @@
 
     Object.defineProperty(packageInfo$1, "__esModule", { value: true });
     packageInfo$1.packageInfo = void 0;
-    packageInfo$1.packageInfo = { name: '@polkadot/x-randomvalues', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '11.1.2' };
+    packageInfo$1.packageInfo = { name: '@polkadot/x-randomvalues', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '11.1.3' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -2356,8 +2356,8 @@
             ? WA_MHAC[bitLength](u8aKey, data)
             : hmac(JS_HASH[bitLength], u8aKey, data);
     }
-    const hmacSha256AsU8a = createSha(256);
-    const hmacSha512AsU8a = createSha(512);
+    const hmacSha256AsU8a =  createSha(256);
+    const hmacSha512AsU8a =  createSha(512);
 
     const cryptoIsReady = isReady;
     function cryptoWaitReady() {
@@ -2375,7 +2375,7 @@
     cryptoWaitReady().catch(() => {
     });
 
-    const packageInfo = { name: '@polkadot/util-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.1.2' };
+    const packageInfo = { name: '@polkadot/util-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.1.3' };
 
     /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
     function assertNumber(n) {
@@ -2783,10 +2783,10 @@
     }
     function createValidate({ chars, ipfs, type }) {
         return (value, ipfsCompat) => {
-            if (!value || typeof value !== 'string') {
-                throw new Error(`Expected non-null, non-empty ${type} string input`);
+            if (typeof value !== 'string') {
+                throw new Error(`Expected ${type} string input`);
             }
-            if (ipfs && ipfsCompat && value[0] !== ipfs) {
+            else if (ipfs && ipfsCompat && value[0] !== ipfs) {
                 throw new Error(`Expected ipfs-compatible ${type} to start with '${ipfs}'`);
             }
             for (let i = (ipfsCompat ? 1 : 0); i < value.length; i++) {
@@ -3088,7 +3088,7 @@
             ? blake2b$1(u8a, util.u8aToU8a(key), byteLength)
             : blake2b(u8a, { dkLen: byteLength, key: key || undefined });
     }
-    const blake2AsHex = createAsHex(blake2AsU8a);
+    const blake2AsHex =  createAsHex(blake2AsU8a);
 
     const SS58_PREFIX = util.stringToU8a('SS58PRE');
     function sshash(key) {
@@ -4801,6 +4801,9 @@
         'bifrost-kusama': [
             '0x9f28c6a68e0fc9646eff64935684f6eeeece527e37bbe1f213d22caa1d9d6bed'
         ],
+        bittensor: [
+            '0x2f0555cc76fc2840a25a6ea3b9637146806f1f44b090c175ffde2a7e5ab36c03'
+        ],
         centrifuge: [
             '0xb3db41421702df9a7fcac62b53ffeac85f7853cc4e689e0b93aeb3db18c09d82',
             '0x67dddf2673b69e5f875f6f25277495834398eafd67f492e09f3f3345e003d1b5'
@@ -5235,7 +5238,7 @@
         };
     }
 
-    const keyHdkdEcdsa = createSeedDeriveFn(secp256k1PairFromSeed, secp256k1DeriveHard);
+    const keyHdkdEcdsa =  createSeedDeriveFn(secp256k1PairFromSeed, secp256k1DeriveHard);
 
     const HDKD = util.compactAddLength(util.stringToU8a('Ed25519HDKD'));
     function ed25519DeriveHard(seed, chainCode) {
@@ -5248,7 +5251,7 @@
     function randomAsU8a(length = 32) {
         return browser.getRandomValues(new Uint8Array(length));
     }
-    const randomAsHex = createAsHex(randomAsU8a);
+    const randomAsHex =  createAsHex(randomAsU8a);
 
     const BN_53 = new util.BN(0b11111111111111111111111111111111111111111111111111111);
     function randomAsNumber() {
@@ -7375,7 +7378,7 @@
             : nacl.sign.detached.verify(messageU8a, signatureU8a, publicKeyU8a);
     }
 
-    const keyHdkdEd25519 = createSeedDeriveFn(ed25519PairFromSeed, ed25519DeriveHard);
+    const keyHdkdEd25519 =  createSeedDeriveFn(ed25519PairFromSeed, ed25519DeriveHard);
 
     const SEC_LEN = 64;
     const PUB_LEN = 32;
@@ -7404,9 +7407,9 @@
         };
     }
 
-    const sr25519DeriveHard = createDeriveFn(sr25519DeriveKeypairHard);
+    const sr25519DeriveHard =  createDeriveFn(sr25519DeriveKeypairHard);
 
-    const sr25519DeriveSoft = createDeriveFn(sr25519DeriveKeypairSoft);
+    const sr25519DeriveSoft =  createDeriveFn(sr25519DeriveKeypairSoft);
 
     function keyHdkdSr25519(keypair, { chainCode, isSoft }) {
         return isSoft
@@ -7724,7 +7727,7 @@
     const keccakAsU8a =  createDualHasher({ 256: keccak256, 512: keccak512 }, { 256: keccak_256, 512: keccak_512 });
     const keccak256AsU8a =  createBitHasher(256, keccakAsU8a);
     const keccak512AsU8a =  createBitHasher(512, keccakAsU8a);
-    const keccakAsHex = createAsHex(keccakAsU8a);
+    const keccakAsHex =  createAsHex(keccakAsU8a);
 
     function hasher(hashType, data, onlyJs) {
         return hashType === 'keccak'
@@ -8708,7 +8711,7 @@
         }
         return result;
     }
-    const xxhashAsHex = createAsHex(xxhashAsU8a);
+    const xxhashAsHex =  createAsHex(xxhashAsU8a);
 
     exports.addressEq = addressEq;
     exports.addressToEvm = addressToEvm;
