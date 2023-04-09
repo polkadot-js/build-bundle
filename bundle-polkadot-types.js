@@ -7449,6 +7449,29 @@
                 outer: [util.compactToU8a(__classPrivateFieldGet(this, _BitVec_decodedLength, "f")), super.toU8a()]
             };
         }
+        toBoolArray() {
+            const map = [...this.toU8a(true)].map((v) => [
+                !!(v & 128),
+                !!(v & 64),
+                !!(v & 32),
+                !!(v & 16),
+                !!(v & 8),
+                !!(v & 4),
+                !!(v & 2),
+                !!(v & 1)
+            ]);
+            const result = new Array(8 * map.length);
+            for (let i = 0; i < map.length; i++) {
+                const off = i * 8;
+                const v = map[i];
+                for (let j = 0; j < 8; j++) {
+                    result[off + j] = __classPrivateFieldGet(this, _BitVec_isMsb, "f")
+                        ? v[j]
+                        : v[7 - j];
+                }
+            }
+            return result;
+        }
         toHuman() {
             return `0b${[...this.toU8a(true)]
             .map((d) => `00000000${d.toString(2)}`.slice(-8))
@@ -12006,7 +12029,7 @@
         }
     };
 
-    const V1_V2_V3_SHARED_PAY = {
+    const V1_TO_V4_SHARED_PAY = {
         query_fee_details: {
             description: 'The transaction fee details',
             params: [
@@ -12022,7 +12045,7 @@
             type: 'FeeDetails'
         }
     };
-    const V1_V2_V3_SHARED_CALL = {
+    const V1_TO_V3_SHARED_CALL = {
         query_call_fee_details: {
             description: 'The call fee details',
             params: [
@@ -12038,7 +12061,7 @@
             type: 'FeeDetails'
         }
     };
-    const V2_V3_SHARED_PAY = {
+    const V2_TO_V4_SHARED_PAY = {
         query_info: {
             description: 'The transaction info',
             params: [
@@ -12095,11 +12118,15 @@
     const runtime = {
         TransactionPaymentApi: [
             {
-                methods: util.objectSpread({}, V3_SHARED_PAY_CALL, V2_V3_SHARED_PAY, V1_V2_V3_SHARED_PAY),
+                methods: util.objectSpread({}, V3_SHARED_PAY_CALL, V2_TO_V4_SHARED_PAY, V1_TO_V4_SHARED_PAY),
+                version: 4
+            },
+            {
+                methods: util.objectSpread({}, V3_SHARED_PAY_CALL, V2_TO_V4_SHARED_PAY, V1_TO_V4_SHARED_PAY),
                 version: 3
             },
             {
-                methods: util.objectSpread({}, V2_V3_SHARED_PAY, V1_V2_V3_SHARED_PAY),
+                methods: util.objectSpread({}, V2_TO_V4_SHARED_PAY, V1_TO_V4_SHARED_PAY),
                 version: 2
             },
             {
@@ -12118,17 +12145,17 @@
                         ],
                         type: 'RuntimeDispatchInfo'
                     }
-                }, V1_V2_V3_SHARED_PAY),
+                }, V1_TO_V4_SHARED_PAY),
                 version: 1
             }
         ],
         TransactionPaymentCallApi: [
             {
-                methods: util.objectSpread({}, V3_SHARED_PAY_CALL, V2_V3_SHARED_CALL, V1_V2_V3_SHARED_CALL),
+                methods: util.objectSpread({}, V3_SHARED_PAY_CALL, V2_V3_SHARED_CALL, V1_TO_V3_SHARED_CALL),
                 version: 3
             },
             {
-                methods: util.objectSpread({}, V2_V3_SHARED_CALL, V1_V2_V3_SHARED_CALL),
+                methods: util.objectSpread({}, V2_V3_SHARED_CALL, V1_TO_V3_SHARED_CALL),
                 version: 2
             },
             {
@@ -12147,7 +12174,7 @@
                         ],
                         type: 'RuntimeDispatchInfo'
                     }
-                }, V1_V2_V3_SHARED_CALL),
+                }, V1_TO_V3_SHARED_CALL),
                 version: 1
             }
         ]
@@ -16208,11 +16235,15 @@
         const [bitOrder, bitStore] = BITVEC_NS.includes(a.namespace || '')
             ? [a, b]
             : [b, a];
-        if (!BITVEC_NS.includes(bitOrder.namespace || '')) {
+        if (!bitOrder.namespace || !BITVEC_NS.includes(bitOrder.namespace)) {
             throw new Error(`Unexpected bitOrder found as ${bitOrder.namespace || '<unknown>'}`);
         }
         else if (bitStore.info !== exports.TypeDefInfo.Plain || bitStore.type !== 'u8') {
             throw new Error(`Only u8 bitStore is currently supported, found ${bitStore.type}`);
+        }
+        const isLsb = BITVEC_NS_LSB.includes(bitOrder.namespace);
+        if (!isLsb) {
+            throw new Error(`Only LSB BitVec is currently supported, found ${bitOrder.namespace}`);
         }
         return {
             info: exports.TypeDefInfo.Plain,
@@ -16972,7 +17003,7 @@
     }
     _TypeRegistry_chainProperties = new WeakMap(), _TypeRegistry_classes = new WeakMap(), _TypeRegistry_definitions = new WeakMap(), _TypeRegistry_firstCallIndex = new WeakMap(), _TypeRegistry_hasher = new WeakMap(), _TypeRegistry_knownTypes = new WeakMap(), _TypeRegistry_lookup = new WeakMap(), _TypeRegistry_metadata = new WeakMap(), _TypeRegistry_metadataVersion = new WeakMap(), _TypeRegistry_signedExtensions = new WeakMap(), _TypeRegistry_unknownTypes = new WeakMap(), _TypeRegistry_userExtensions = new WeakMap(), _TypeRegistry_knownDefaults = new WeakMap(), _TypeRegistry_knownDefinitions = new WeakMap(), _TypeRegistry_metadataCalls = new WeakMap(), _TypeRegistry_metadataErrors = new WeakMap(), _TypeRegistry_metadataEvents = new WeakMap(), _TypeRegistry_moduleMap = new WeakMap(), _TypeRegistry_registerObject = new WeakMap(), _TypeRegistry_registerLookup = new WeakMap();
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.2.2' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.3.1' };
 
     exports.BTreeMap = BTreeMap;
     exports.BTreeSet = BTreeSet;
