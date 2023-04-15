@@ -435,11 +435,11 @@
         }
     };
 
-    var eventemitter3Exports = {};
-    var eventemitter3 = {
-      get exports(){ return eventemitter3Exports; },
-      set exports(v){ eventemitter3Exports = v; },
-    };
+    function getDefaultExportFromCjs (x) {
+    	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+    }
+
+    var eventemitter3 = {exports: {}};
 
     (function (module) {
     	var has = Object.prototype.hasOwnProperty
@@ -600,6 +600,8 @@
     	  module.exports = EventEmitter;
     	}
     } (eventemitter3));
+    var eventemitter3Exports = eventemitter3.exports;
+    const EventEmitter = getDefaultExportFromCjs(eventemitter3Exports);
 
     var _InnerChecker_healthCallback, _InnerChecker_currentHealthCheckId, _InnerChecker_currentHealthTimeout, _InnerChecker_currentSubunsubRequestId, _InnerChecker_currentSubscriptionId, _InnerChecker_requestToSmoldot, _InnerChecker_isSyncing, _InnerChecker_nextRequestId;
     function healthChecker() {
@@ -821,7 +823,7 @@
             _ScProvider_resubscribeMethods.set(this, new Map());
             _ScProvider_requests.set(this, new Map());
             _ScProvider_wellKnownChains.set(this, void 0);
-            _ScProvider_eventemitter.set(this, new eventemitter3Exports());
+            _ScProvider_eventemitter.set(this, new EventEmitter());
             _ScProvider_chain.set(this, null);
             _ScProvider_isChainReady.set(this, false);
             _ScProvider_resubscribe.set(this, () => {
@@ -1294,7 +1296,7 @@
                     throw new Error(`Endpoint should start with 'ws://', received '${endpoint}'`);
                 }
             });
-            __classPrivateFieldSet(this, _WsProvider_eventemitter, new eventemitter3Exports(), "f");
+            __classPrivateFieldSet(this, _WsProvider_eventemitter, new EventEmitter(), "f");
             __classPrivateFieldSet(this, _WsProvider_autoConnectMs, autoConnectMs || 0, "f");
             __classPrivateFieldSet(this, _WsProvider_coder, new RpcCoder(), "f");
             __classPrivateFieldSet(this, _WsProvider_endpointIndex, -1, "f");
@@ -1479,7 +1481,7 @@
         });
     };
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.3.2' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.3.3' };
 
     function isFunction(value) {
         return typeof value === 'function';
@@ -4577,11 +4579,14 @@
                         .pipe(map((opt) => opt.unwrapOr({ account: null }).account))
                 ]);
             }
-            if (queryAt.session && queryAt.session.queuedKeys) {
+            if (queryAt.parachainStaking && queryAt.parachainStaking.selectedCandidates && queryAt.session && queryAt.session.nextKeys && queryAt.session.nextKeys.multi) {
                 return combineLatest([
                     of(header),
                     validators,
-                    queryAt.session.queuedKeys().pipe(map((queuedKeys) => queuedKeys.find((sessionKey) => sessionKey[1].nimbus.toHex() === loggedAuthor.toHex())), map((sessionKey) => (sessionKey) ? sessionKey[0] : null))
+                    queryAt.parachainStaking.selectedCandidates().pipe(mergeMap((selectedCandidates) => combineLatest([
+                        of(selectedCandidates),
+                        queryAt.session.nextKeys.multi(selectedCandidates).pipe(map((nextKeys) => nextKeys.findIndex((option) => option.unwrapOrDefault().nimbus.toHex() === loggedAuthor.toHex())))
+                    ])), map(([selectedCandidates, index]) => selectedCandidates[index]))
                 ]);
             }
         }
@@ -18733,7 +18738,7 @@
     var _Events_eventemitter;
     class Events {
         constructor() {
-            _Events_eventemitter.set(this, new eventemitter3Exports());
+            _Events_eventemitter.set(this, new EventEmitter());
         }
         emit(type, ...args) {
             return __classPrivateFieldGet(this, _Events_eventemitter, "f").emit(type, ...args);

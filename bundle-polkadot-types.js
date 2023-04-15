@@ -23,7 +23,7 @@
             type: 'OpaqueMetadata'
         }
     };
-    const runtime$r = {
+    const runtime$s = {
         Metadata: [
             {
                 methods: util.objectSpread({
@@ -473,9 +473,9 @@
         StorageHasherV14: 'StorageHasherV13'
     };
 
-    const definitions$15 = {
+    const definitions$16 = {
         rpc: {},
-        runtime: runtime$r,
+        runtime: runtime$s,
         types: util.objectSpread({}, v9, v10, v11, v12, v13, v14, {
             ErrorMetadataLatest: 'ErrorMetadataV14',
             EventMetadataLatest: 'EventMetadataV14',
@@ -549,7 +549,7 @@
             type: 'Null'
         }
     };
-    const runtime$q = {
+    const runtime$r = {
         Core: [
             {
                 methods: util.objectSpread({
@@ -617,9 +617,9 @@
         Authority: 'AuthorityOrigin',
         GeneralCouncil: 'CollectiveOrigin'
     };
-    const definitions$14 = {
+    const definitions$15 = {
         rpc: {},
-        runtime: runtime$q,
+        runtime: runtime$r,
         types: util.objectSpread({}, numberTypes, {
             AccountId: 'AccountId32',
             AccountId20: 'GenericEthereumAccountId',
@@ -862,7 +862,7 @@
         }
     };
 
-    const definitions$13 = {
+    const definitions$14 = {
         rpc: {},
         types: util.objectSpread({}, v0$1, v1$1, {
             SiField: 'Si1Field',
@@ -883,7 +883,7 @@
         })
     };
 
-    const runtime$p = {
+    const runtime$q = {
         AssetsApi: [
             {
                 methods: {
@@ -903,9 +903,9 @@
         ]
     };
 
-    const definitions$12 = {
+    const definitions$13 = {
         rpc: {},
-        runtime: runtime$p,
+        runtime: runtime$q,
         types: {
             AssetApprovalKey: {
                 owner: 'AccountId',
@@ -951,7 +951,7 @@
         }
     };
 
-    const definitions$11 = {
+    const definitions$12 = {
         rpc: {},
         types: {
             UncleEntryItem: {
@@ -963,7 +963,7 @@
         }
     };
 
-    const runtime$o = {
+    const runtime$p = {
         AuraApi: [
             {
                 methods: {
@@ -983,9 +983,9 @@
         ]
     };
 
-    const definitions$10 = {
+    const definitions$11 = {
         rpc: {},
-        runtime: runtime$o,
+        runtime: runtime$p,
         types: {
             RawAuraPreDigest: {
                 slotNumber: 'u64'
@@ -1047,7 +1047,7 @@
             type: 'Option<Null>'
         }
     };
-    const runtime$n = {
+    const runtime$o = {
         BabeApi: [
             {
                 methods: util.objectSpread({
@@ -1072,9 +1072,9 @@
         ]
     };
 
-    const definitions$$ = {
+    const definitions$10 = {
         rpc: rpc$g,
-        runtime: runtime$n,
+        runtime: runtime$o,
         types: {
             AllowedSlots: {
                 _enum: ['PrimarySlots', 'PrimaryAndSecondaryPlainSlots', 'PrimaryAndSecondaryVRFSlots']
@@ -1192,7 +1192,7 @@
         }
     };
 
-    const definitions$_ = {
+    const definitions$$ = {
         rpc: {},
         types: {
             AccountData: {
@@ -1310,7 +1310,7 @@
             type: 'BeefyNextAuthoritySet'
         }
     };
-    const runtime$m = {
+    const runtime$n = {
         BeefyApi: [
             {
                 methods: BEEFY_V1_V2,
@@ -1329,9 +1329,9 @@
         ]
     };
 
-    const definitions$Z = {
+    const definitions$_ = {
         rpc: rpc$f,
-        runtime: runtime$m,
+        runtime: runtime$n,
         types: {
             BeefyAuthoritySet: {
                 id: 'u64',
@@ -1373,7 +1373,7 @@
         }
     };
 
-    const runtime$l = {
+    const runtime$m = {
         Benchmark: [
             {
                 methods: {
@@ -1403,9 +1403,9 @@
         ]
     };
 
-    const definitions$Y = {
+    const definitions$Z = {
         rpc: {},
-        runtime: runtime$l,
+        runtime: runtime$m,
         types: {
             BenchmarkBatch: {
                 pallet: 'Text',
@@ -1498,7 +1498,7 @@
             type: 'Header'
         }
     };
-    const runtime$k = {
+    const runtime$l = {
         BlockBuilder: [
             {
                 methods: util.objectSpread({
@@ -1543,9 +1543,9 @@
         ]
     };
 
-    const definitions$X = {
+    const definitions$Y = {
         rpc: {},
-        runtime: runtime$k,
+        runtime: runtime$l,
         types: {
             CheckInherentsResult: {
                 okay: 'bool',
@@ -1559,7 +1559,7 @@
         }
     };
 
-    const definitions$W = {
+    const definitions$X = {
         rpc: {},
         types: {
             CollectiveOrigin: {
@@ -1586,7 +1586,7 @@
         }
     };
 
-    const definitions$V = {
+    const definitions$W = {
         rpc: {},
         types: {
             AuthorityId: 'AccountId',
@@ -1721,7 +1721,7 @@
             type: 'CodeUploadResult'
         }
     };
-    const runtime$j = {
+    const runtime$k = {
         ContractsApi: [
             {
                 methods: util.objectSpread({
@@ -1864,9 +1864,9 @@
         ]
     };
 
-    const definitions$U = {
+    const definitions$V = {
         rpc: rpc$e,
-        runtime: runtime$j,
+        runtime: runtime$k,
         types: {
             AliveContractInfo: {
                 trieId: 'TrieId',
@@ -2295,7 +2295,7 @@
         'Locked5x',
         'Locked6x'
     ];
-    const definitions$T = {
+    const definitions$U = {
         rpc: {},
         types: {
             AccountVote: {
@@ -2407,7 +2407,7 @@
         }
     };
 
-    const definitions$S = {
+    const definitions$T = {
         rpc: rpc$d,
         types: {
             BlockStats: {
@@ -2419,7 +2419,7 @@
         }
     };
 
-    const runtime$i = {
+    const runtime$j = {
         AuthorityDiscoveryApi: [
             {
                 methods: {
@@ -2434,13 +2434,13 @@
         ]
     };
 
-    const definitions$R = {
+    const definitions$S = {
         rpc: {},
-        runtime: runtime$i,
+        runtime: runtime$j,
         types: {}
     };
 
-    const definitions$Q = {
+    const definitions$R = {
         rpc: {},
         types: {
             ApprovalFlag: 'u32',
@@ -2512,7 +2512,7 @@
         }
     };
 
-    const definitions$P = {
+    const definitions$Q = {
         rpc: rpc$c,
         types: {
             CreatedBlock: {
@@ -2533,7 +2533,7 @@
         }
     };
 
-    const definitions$O = {
+    const definitions$P = {
         rpc: {},
         types: {
             EvmAccount: {
@@ -2604,7 +2604,7 @@
         }
     };
 
-    const definitions$N = {
+    const definitions$O = {
         rpc: {},
         types: {
             Extrinsic: 'GenericExtrinsic',
@@ -2632,6 +2632,36 @@
             EcdsaSignature: '[u8; 65]',
             Ed25519Signature: 'H512',
             Sr25519Signature: 'H512'
+        }
+    };
+
+    const runtime$i = {
+        FungiblesApi: [
+            {
+                methods: {
+                    query_account_balances: {
+                        description: 'Returns the list of all `MultiAsset` that an `AccountId` has',
+                        params: [
+                            {
+                                name: 'account',
+                                type: 'AccountId'
+                            }
+                        ],
+                        type: 'Result<Vec<XcmV3MultiAsset>, FungiblesAccessError>'
+                    }
+                },
+                version: 1
+            }
+        ]
+    };
+
+    const definitions$N = {
+        rpc: {},
+        runtime: runtime$i,
+        types: {
+            FungiblesAccessError: {
+                _enum: ['AssetIdConversionFailed', 'AmountToBalanceConversionFailed']
+            }
         }
     };
 
@@ -12706,42 +12736,43 @@
 
     const definitions = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        assets: definitions$12,
+        assets: definitions$13,
         attestations: definitions$m,
-        aura: definitions$10,
+        aura: definitions$11,
         author: definitions$6,
-        authorship: definitions$11,
-        babe: definitions$$,
-        balances: definitions$_,
-        beefy: definitions$Z,
-        benchmark: definitions$Y,
-        blockbuilder: definitions$X,
+        authorship: definitions$12,
+        babe: definitions$10,
+        balances: definitions$$,
+        beefy: definitions$_,
+        benchmark: definitions$Z,
+        blockbuilder: definitions$Y,
         bridges: definitions$l,
         chain: definitions$5,
         childstate: definitions$4,
         claims: definitions$k,
-        collective: definitions$W,
-        consensus: definitions$V,
-        contracts: definitions$U,
+        collective: definitions$X,
+        consensus: definitions$W,
+        contracts: definitions$V,
         contractsAbi: definitions$c,
         crowdloan: definitions$j,
         cumulus: definitions$i,
-        democracy: definitions$T,
-        dev: definitions$S,
-        discovery: definitions$R,
-        elections: definitions$Q,
-        engine: definitions$P,
+        democracy: definitions$U,
+        dev: definitions$T,
+        discovery: definitions$S,
+        elections: definitions$R,
+        engine: definitions$Q,
         eth: definitions$b,
-        evm: definitions$O,
-        extrinsics: definitions$N,
+        evm: definitions$P,
+        extrinsics: definitions$O,
         finality: definitions$h,
+        fungibles: definitions$N,
         genericAsset: definitions$M,
         gilt: definitions$L,
         grandpa: definitions$K,
         identity: definitions$J,
         imOnline: definitions$I,
         lottery: definitions$H,
-        metadata: definitions$15,
+        metadata: definitions$16,
         mmr: definitions$G,
         nfts: definitions$F,
         nimbus: definitions$a,
@@ -12758,8 +12789,8 @@
         purchase: definitions$e,
         recovery: definitions$A,
         rpc: definitions$7,
-        runtime: definitions$14,
-        scaleInfo: definitions$13,
+        runtime: definitions$15,
+        scaleInfo: definitions$14,
         scheduler: definitions$z,
         session: definitions$y,
         society: definitions$x,
@@ -14645,16 +14676,6 @@
             }]).toJSON();
     }
 
-    var _StorageKey_args, _StorageKey_meta, _StorageKey_outputType, _StorageKey_method, _StorageKey_section;
-    const HASHER_MAP = {
-        Blake2_128: [16, false],
-        Blake2_128Concat: [16, true],
-        Blake2_256: [32, false],
-        Identity: [0, true],
-        Twox128: [16, false],
-        Twox256: [32, false],
-        Twox64Concat: [8, true]
-    };
     function unwrapStorageSi(type) {
         return type.isPlain
             ? type.asPlain
@@ -14666,6 +14687,17 @@
             ? `Option<${outputType}>`
             : outputType;
     }
+
+    var _StorageKey_args, _StorageKey_meta, _StorageKey_outputType, _StorageKey_method, _StorageKey_section;
+    const HASHER_MAP = {
+        Blake2_128: [16, false],
+        Blake2_128Concat: [16, true],
+        Blake2_256: [32, false],
+        Identity: [0, true],
+        Twox128: [16, false],
+        Twox256: [32, false],
+        Twox64Concat: [8, true]
+    };
     function decodeStorageKey(value) {
         if (util.isU8a(value) || !value || util.isString(value)) {
             return { key: value };
@@ -17000,7 +17032,7 @@
     }
     _TypeRegistry_chainProperties = new WeakMap(), _TypeRegistry_classes = new WeakMap(), _TypeRegistry_definitions = new WeakMap(), _TypeRegistry_firstCallIndex = new WeakMap(), _TypeRegistry_hasher = new WeakMap(), _TypeRegistry_knownTypes = new WeakMap(), _TypeRegistry_lookup = new WeakMap(), _TypeRegistry_metadata = new WeakMap(), _TypeRegistry_metadataVersion = new WeakMap(), _TypeRegistry_signedExtensions = new WeakMap(), _TypeRegistry_unknownTypes = new WeakMap(), _TypeRegistry_userExtensions = new WeakMap(), _TypeRegistry_knownDefaults = new WeakMap(), _TypeRegistry_knownDefinitions = new WeakMap(), _TypeRegistry_metadataCalls = new WeakMap(), _TypeRegistry_metadataErrors = new WeakMap(), _TypeRegistry_metadataEvents = new WeakMap(), _TypeRegistry_moduleMap = new WeakMap(), _TypeRegistry_registerObject = new WeakMap(), _TypeRegistry_registerLookup = new WeakMap();
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.3.2' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.3.3' };
 
     exports.BTreeMap = BTreeMap;
     exports.BTreeSet = BTreeSet;
