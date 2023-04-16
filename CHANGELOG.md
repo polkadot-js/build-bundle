@@ -2,6 +2,7 @@
 
 ## master
 
+- api, api-contract, types 10.3.4
 - api, api-contract, types 10.3.3
 - api, api-contract, types 10.3.2
 - api, api-contract, types 10.3.1

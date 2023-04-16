@@ -1481,7 +1481,7 @@
         });
     };
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.3.3' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.3.4' };
 
     function isFunction(value) {
         return typeof value === 'function';
@@ -4563,7 +4563,7 @@
     function createBlockNumberDerive(fn) {
         return (instanceId, api) => memo(instanceId, () => fn(api).pipe(map(unwrapBlockNumber)));
     }
-    function getAuthorDetails(header, queryAt) {
+    function getAuthorDetailsWithAt(header, queryAt) {
         const validators = queryAt.session
             ? queryAt.session.validators()
             : of(null);
@@ -4595,6 +4595,11 @@
             validators,
             of(null)
         ]);
+    }
+    function getAuthorDetails(api, header, blockHash) {
+        return api.queryAt(header.parentHash.isEmpty
+            ? blockHash || header.hash
+            : header.parentHash).pipe(switchMap((queryAt) => getAuthorDetailsWithAt(header, queryAt)));
     }
 
     const bestNumber =  createBlockNumberDerive((api) => api.rpc.chain.subscribeNewHeads());
@@ -4700,10 +4705,7 @@
     }
 
     function getHeader(instanceId, api) {
-        return memo(instanceId, (blockHash) => combineLatest([
-            api.rpc.chain.getHeader(blockHash),
-            api.queryAt(blockHash)
-        ]).pipe(switchMap(([header, queryAt]) => getAuthorDetails(header, queryAt)), map(([header, validators, author]) => createHeaderExtended((validators || header).registry, header, validators, author))));
+        return memo(instanceId, (blockHash) => api.rpc.chain.getHeader(blockHash).pipe(switchMap((header) => getAuthorDetails(api, header, blockHash)), map(([header, validators, author]) => createHeaderExtended((validators || header).registry, header, validators, author))));
     }
 
     function getBlock(instanceId, api) {
@@ -4713,7 +4715,7 @@
         ]).pipe(switchMap(([signedBlock, queryAt]) => combineLatest([
             of(signedBlock),
             queryAt.system.events(),
-            getAuthorDetails(signedBlock.block.header, queryAt)
+            getAuthorDetails(api, signedBlock.block.header, blockHash)
         ])), map(([signedBlock, events, [, validators, author]]) => createSignedBlockExtended(events.registry, signedBlock, events, validators, author))));
     }
 
@@ -4745,10 +4747,7 @@
     }
 
     function subscribeNewHeads(instanceId, api) {
-        return memo(instanceId, () => api.rpc.chain.subscribeNewHeads().pipe(switchMap((header) => combineLatest([
-            of(header),
-            api.queryAt(header.hash)
-        ])), switchMap(([header, queryAt]) => getAuthorDetails(header, queryAt)), map(([header, validators, author]) => {
+        return memo(instanceId, () => api.rpc.chain.subscribeNewHeads().pipe(switchMap((header) => getAuthorDetails(api, header)), map(([header, validators, author]) => {
             header.createdAtHash = header.hash;
             return createHeaderExtended(header.registry, header, validators, author);
         })));
