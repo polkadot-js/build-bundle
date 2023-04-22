@@ -1481,7 +1481,7 @@
         });
     };
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.3.4' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.4.1' };
 
     function isFunction(value) {
         return typeof value === 'function';
@@ -4564,29 +4564,31 @@
         return (instanceId, api) => memo(instanceId, () => fn(api).pipe(map(unwrapBlockNumber)));
     }
     function getAuthorDetailsWithAt(header, queryAt) {
-        const validators = queryAt.session
+        const validators = queryAt.session?.validators
             ? queryAt.session.validators()
             : of(null);
         const { logs: [log] } = header.digest;
         const loggedAuthor = (log && ((log.isConsensus && log.asConsensus[0].isNimbus && log.asConsensus[1]) ||
             (log.isPreRuntime && log.asPreRuntime[0].isNimbus && log.asPreRuntime[1])));
         if (loggedAuthor) {
-            if (queryAt.authorMapping && queryAt.authorMapping.mappingWithDeposit) {
+            if (queryAt.authorMapping?.mappingWithDeposit) {
                 return combineLatest([
                     of(header),
                     validators,
-                    queryAt.authorMapping.mappingWithDeposit(loggedAuthor)
-                        .pipe(map((opt) => opt.unwrapOr({ account: null }).account))
+                    queryAt.authorMapping.mappingWithDeposit(loggedAuthor).pipe(map((o) => o.unwrapOr({ account: null }).account))
                 ]);
             }
-            if (queryAt.parachainStaking && queryAt.parachainStaking.selectedCandidates && queryAt.session && queryAt.session.nextKeys && queryAt.session.nextKeys.multi) {
+            if (queryAt.parachainStaking?.selectedCandidates && queryAt.session?.nextKeys) {
+                const loggedHex = loggedAuthor.toHex();
                 return combineLatest([
                     of(header),
                     validators,
                     queryAt.parachainStaking.selectedCandidates().pipe(mergeMap((selectedCandidates) => combineLatest([
                         of(selectedCandidates),
-                        queryAt.session.nextKeys.multi(selectedCandidates).pipe(map((nextKeys) => nextKeys.findIndex((option) => option.unwrapOrDefault().nimbus.toHex() === loggedAuthor.toHex())))
-                    ])), map(([selectedCandidates, index]) => selectedCandidates[index]))
+                        queryAt.session.nextKeys.multi(selectedCandidates).pipe(map((nextKeys) => nextKeys.findIndex((o) => o.unwrapOrDefault().nimbus.toHex() === loggedHex)))
+                    ])), map(([selectedCandidates, index]) => index === -1
+                        ? null
+                        : selectedCandidates[index]))
                 ]);
             }
         }
@@ -4613,7 +4615,7 @@
         ]).pipe(map(([bestNumber, bestNumberFinalized]) => api.registry.createType('BlockNumber', bestNumber.sub(bestNumberFinalized)))));
     }
 
-    function extractAuthor(digest, sessionValidators = []) {
+    function extractAuthor(digest, sessionValidators) {
         const [citem] = digest.logs.filter((e) => e.isConsensus);
         const [pitem] = digest.logs.filter((e) => e.isPreRuntime);
         const [sitem] = digest.logs.filter((e) => e.isSeal);
@@ -19359,7 +19361,7 @@
             if (registry.knownTypes.typesBundle) {
                 registry.knownTypes.typesAlias = getSpecAlias(registry, chain, version.specName);
             }
-            registry.setMetadata(metadata, undefined, util.objectSpread({}, getSpecExtensions(registry, chain, version.specName), this._options.signedExtensions));
+            registry.setMetadata(metadata, undefined, util.objectSpread({}, getSpecExtensions(registry, chain, version.specName), this._options.signedExtensions), this._options.noInitWarn);
         }
         _getDefaultRegistry() {
             return util.assertReturn(__classPrivateFieldGet(this, _Init_registries, "f").find(({ isDefault }) => isDefault), 'Initialization error, cannot find the default registry');

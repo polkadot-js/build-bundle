@@ -16037,11 +16037,9 @@
                 nsAccountId = lookup.getSiType(idParam.type.unwrap()).path.join('::');
             }
             lookup.registry.register({
-                AccountId: ['sp_core::crypto::AccountId32'].includes(nsAccountId)
-                    ? 'AccountId32'
-                    : ['account::AccountId20', 'primitive_types::H160'].includes(nsAccountId)
-                        ? 'AccountId20'
-                        : 'AccountId32',
+                AccountId: nsAccountId.endsWith('::AccountId20') || nsAccountId.endsWith('::H160')
+                    ? 'AccountId20'
+                    : 'AccountId32',
                 Address: isMultiAddress
                     ? 'MultiAddress'
                     : 'AccountId',
@@ -16997,7 +16995,7 @@
             __classPrivateFieldSet(this, _TypeRegistry_lookup, lookup, "f");
             lookup.register();
         }
-        setMetadata(metadata, signedExtensions, userExtensions) {
+        setMetadata(metadata, signedExtensions, userExtensions, noInitWarn) {
             __classPrivateFieldSet(this, _TypeRegistry_metadata, metadata.asLatest, "f");
             __classPrivateFieldSet(this, _TypeRegistry_metadataVersion, metadata.version, "f");
             __classPrivateFieldSet(this, _TypeRegistry_firstCallIndex, null, "f");
@@ -17018,21 +17016,23 @@
             }
             this.setSignedExtensions(signedExtensions || (__classPrivateFieldGet(this, _TypeRegistry_metadata, "f").extrinsic.version.gt(util.BN_ZERO)
                 ? __classPrivateFieldGet(this, _TypeRegistry_metadata, "f").extrinsic.signedExtensions.map(({ identifier }) => identifier.toString())
-                : fallbackExtensions), userExtensions);
+                : fallbackExtensions), userExtensions, noInitWarn);
             this.setChainProperties(extractProperties(this, metadata));
         }
-        setSignedExtensions(signedExtensions = fallbackExtensions, userExtensions) {
+        setSignedExtensions(signedExtensions = fallbackExtensions, userExtensions, noInitWarn) {
             __classPrivateFieldSet(this, _TypeRegistry_signedExtensions, signedExtensions, "f");
             __classPrivateFieldSet(this, _TypeRegistry_userExtensions, userExtensions, "f");
-            const unknown = findUnknownExtensions(__classPrivateFieldGet(this, _TypeRegistry_signedExtensions, "f"), __classPrivateFieldGet(this, _TypeRegistry_userExtensions, "f"));
-            if (unknown.length) {
-                l.warn(`Unknown signed extensions ${unknown.join(', ')} found, treating them as no-effect`);
+            if (!noInitWarn) {
+                const unknown = findUnknownExtensions(__classPrivateFieldGet(this, _TypeRegistry_signedExtensions, "f"), __classPrivateFieldGet(this, _TypeRegistry_userExtensions, "f"));
+                if (unknown.length) {
+                    l.warn(`Unknown signed extensions ${unknown.join(', ')} found, treating them as no-effect`);
+                }
             }
         }
     }
     _TypeRegistry_chainProperties = new WeakMap(), _TypeRegistry_classes = new WeakMap(), _TypeRegistry_definitions = new WeakMap(), _TypeRegistry_firstCallIndex = new WeakMap(), _TypeRegistry_hasher = new WeakMap(), _TypeRegistry_knownTypes = new WeakMap(), _TypeRegistry_lookup = new WeakMap(), _TypeRegistry_metadata = new WeakMap(), _TypeRegistry_metadataVersion = new WeakMap(), _TypeRegistry_signedExtensions = new WeakMap(), _TypeRegistry_unknownTypes = new WeakMap(), _TypeRegistry_userExtensions = new WeakMap(), _TypeRegistry_knownDefaults = new WeakMap(), _TypeRegistry_knownDefinitions = new WeakMap(), _TypeRegistry_metadataCalls = new WeakMap(), _TypeRegistry_metadataErrors = new WeakMap(), _TypeRegistry_metadataEvents = new WeakMap(), _TypeRegistry_moduleMap = new WeakMap(), _TypeRegistry_registerObject = new WeakMap(), _TypeRegistry_registerLookup = new WeakMap();
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.3.4' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.4.1' };
 
     exports.BTreeMap = BTreeMap;
     exports.BTreeSet = BTreeSet;
