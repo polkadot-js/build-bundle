@@ -361,7 +361,7 @@
     	        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     	    }
     	};
-    	exports.__esModule = true;
+    	Object.defineProperty(exports, "__esModule", { value: true });
     	exports.getVersion = exports.processErrorResponse = exports.errorCodeToString = exports.ERROR_DESCRIPTION = exports.ERROR_CODE = exports.SCHEME = exports.P1_VALUES = exports.PAYLOAD_TYPE = exports.INS = exports.CHUNK_SIZE = void 0;
     	exports.CHUNK_SIZE = 250;
     	exports.INS = {
@@ -371,23 +371,23 @@
     	    ALLOWLIST_GET_PUBKEY: 0x90,
     	    ALLOWLIST_SET_PUBKEY: 0x91,
     	    ALLOWLIST_GET_HASH: 0x92,
-    	    ALLOWLIST_UPLOAD: 0x93
+    	    ALLOWLIST_UPLOAD: 0x93,
     	};
     	exports.PAYLOAD_TYPE = {
     	    INIT: 0x00,
     	    ADD: 0x01,
-    	    LAST: 0x02
+    	    LAST: 0x02,
     	};
     	exports.P1_VALUES = {
     	    ONLY_RETRIEVE: 0x00,
-    	    SHOW_ADDRESS_IN_DEVICE: 0x01
+    	    SHOW_ADDRESS_IN_DEVICE: 0x01,
     	};
     	exports.SCHEME = {
     	    ED25519: 0x00,
-    	    SR25519: 0x01
+    	    SR25519: 0x01,
     	};
     	exports.ERROR_CODE = {
-    	    NoError: 0x9000
+    	    NoError: 0x9000,
     	};
     	exports.ERROR_DESCRIPTION = {
     	    1: 'U2F: Unknown',
@@ -411,7 +411,7 @@
     	    0x6d00: 'Instruction not supported',
     	    0x6e00: 'App does not seem to be open',
     	    0x6f00: 'Unknown error',
-    	    0x6f01: 'Sign/verify error'
+    	    0x6f01: 'Sign/verify error',
     	};
     	function errorCodeToString(statusCode) {
     	    if (statusCode in exports.ERROR_DESCRIPTION)
@@ -428,7 +428,7 @@
     	            if (Object.prototype.hasOwnProperty.call(response, 'statusCode')) {
     	                return {
     	                    return_code: response.statusCode,
-    	                    error_message: errorCodeToString(response.statusCode)
+    	                    error_message: errorCodeToString(response.statusCode),
     	                };
     	            }
     	            if (Object.prototype.hasOwnProperty.call(response, 'return_code') &&
@@ -438,12 +438,12 @@
     	        }
     	        return {
     	            return_code: 0xffff,
-    	            error_message: response.toString()
+    	            error_message: response.toString(),
     	        };
     	    }
     	    return {
     	        return_code: 0xffff,
-    	        error_message: response.toString()
+    	        error_message: response.toString(),
     	    };
     	}
     	exports.processErrorResponse = processErrorResponse;
@@ -456,7 +456,7 @@
     	                    if (response.length !== 14) {
     	                        return {
     	                            return_code: 0x6984,
-    	                            error_message: errorCodeToString(0x6984)
+    	                            error_message: errorCodeToString(0x6984),
     	                        };
     	                    }
     	                    var major = response[1] * 256 + response[2];
@@ -472,7 +472,7 @@
     	                        minor: minor,
     	                        patch: patch,
     	                        deviceLocked: deviceLocked,
-    	                        target_id: targetId.toString(16)
+    	                        target_id: targetId.toString(16),
     	                    };
     	                }, processErrorResponse)];
     	        });
@@ -518,7 +518,7 @@
             if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
         }
     };
-    substrate_app.__esModule = true;
+    Object.defineProperty(substrate_app, "__esModule", { value: true });
     substrate_app.SubstrateApp = void 0;
     var common_1 = common;
     var SubstrateApp =  (function () {
@@ -594,7 +594,7 @@
                             if (response[0] !== 1) {
                                 return {
                                     return_code: 0x9001,
-                                    error_message: 'response format ID not recognized'
+                                    error_message: 'response format ID not recognized',
                                 };
                             }
                             else {
@@ -620,7 +620,7 @@
                                 flag_recovery: (flagsValue & 1) !== 0,
                                 flag_signed_mcu_code: (flagsValue & 2) !== 0,
                                 flag_onboarded: (flagsValue & 4) !== 0,
-                                flag_pin_validated: (flagsValue & 128) !== 0
+                                flag_pin_validated: (flagsValue & 128) !== 0,
                             };
                         }, common_1.processErrorResponse)];
                 });
@@ -646,7 +646,7 @@
                                 pubKey: response.slice(0, 32).toString('hex'),
                                 address: response.slice(32, response.length - 2).toString('ascii'),
                                 return_code: errorCode,
-                                error_message: (0, common_1.errorCodeToString)(errorCode)
+                                error_message: (0, common_1.errorCodeToString)(errorCode),
                             };
                         }, common_1.processErrorResponse)];
                 });
@@ -681,7 +681,7 @@
                             return {
                                 signature: signature,
                                 return_code: returnCode,
-                                error_message: errorMessage
+                                error_message: errorMessage,
                             };
                         }, common_1.processErrorResponse)];
                 });
@@ -716,7 +716,7 @@
                                     case 4: return [2 , {
                                             return_code: result.return_code,
                                             error_message: result.error_message,
-                                            signature: result.signature
+                                            signature: result.signature,
                                         }];
                                 }
                             });
@@ -735,13 +735,13 @@
                             if (response.length !== 34) {
                                 return {
                                     return_code: 0x6984,
-                                    error_message: (0, common_1.errorCodeToString)(0x6984)
+                                    error_message: (0, common_1.errorCodeToString)(0x6984),
                                 };
                             }
                             return {
                                 return_code: returnCode,
                                 error_message: (0, common_1.errorCodeToString)(returnCode),
-                                pubkey: pubkey
+                                pubkey: pubkey,
                             };
                         }, common_1.processErrorResponse)];
                 });
@@ -755,7 +755,7 @@
                             var returnCode = errorCodeData[0] * 256 + errorCodeData[1];
                             return {
                                 return_code: returnCode,
-                                error_message: (0, common_1.errorCodeToString)(returnCode)
+                                error_message: (0, common_1.errorCodeToString)(returnCode),
                             };
                         }, common_1.processErrorResponse)];
                 });
@@ -772,13 +772,13 @@
                             if (response.length !== 34) {
                                 return {
                                     return_code: 0x6984,
-                                    error_message: (0, common_1.errorCodeToString)(0x6984)
+                                    error_message: (0, common_1.errorCodeToString)(0x6984),
                                 };
                             }
                             return {
                                 return_code: returnCode,
                                 error_message: (0, common_1.errorCodeToString)(returnCode),
-                                hash: hash
+                                hash: hash,
                             };
                         }, common_1.processErrorResponse)];
                 });
@@ -801,7 +801,7 @@
                             var errorMessage = (0, common_1.errorCodeToString)(returnCode);
                             return {
                                 return_code: returnCode,
-                                error_message: errorMessage
+                                error_message: errorMessage,
                             };
                         }, common_1.processErrorResponse)];
                 });
@@ -823,7 +823,7 @@
                                         if (result.return_code !== common_1.ERROR_CODE.NoError) {
                                             return [2 , {
                                                     return_code: result.return_code,
-                                                    error_message: result.error_message
+                                                    error_message: result.error_message,
                                                 }];
                                         }
                                         i = 1;
@@ -842,7 +842,7 @@
                                         return [3 , 1];
                                     case 4: return [2 , {
                                             return_code: result.return_code,
-                                            error_message: result.error_message
+                                            error_message: result.error_message,
                                         }];
                                 }
                             });
@@ -855,7 +855,7 @@
     substrate_app.SubstrateApp = SubstrateApp;
 
     (function (exports) {
-    	exports.__esModule = true;
+    	Object.defineProperty(exports, "__esModule", { value: true });
     	exports.supportedApps = exports.getAppParams = exports.newSubstrateApp = void 0;
     	var substrate_app_1 = substrate_app;
     	function newSubstrateApp(transport, chainName) {
@@ -880,235 +880,241 @@
     	        name: 'Polkadot',
     	        cla: 0x90,
     	        slip0044: 0x80000162,
-    	        ss58_addr_type: 0
+    	        ss58_addr_type: 0,
     	    },
     	    {
     	        name: 'Polymesh',
     	        cla: 0x91,
     	        slip0044: 0x80000253,
-    	        ss58_addr_type: 12
+    	        ss58_addr_type: 12,
     	    },
     	    {
     	        name: 'Dock',
     	        cla: 0x92,
     	        slip0044: 0x80000252,
-    	        ss58_addr_type: 22
+    	        ss58_addr_type: 22,
     	    },
     	    {
     	        name: 'Centrifuge',
     	        cla: 0x93,
     	        slip0044: 0x800002eb,
-    	        ss58_addr_type: 36
+    	        ss58_addr_type: 36,
     	    },
     	    {
     	        name: 'Edgeware',
     	        cla: 0x94,
     	        slip0044: 0x8000020b,
-    	        ss58_addr_type: 7
+    	        ss58_addr_type: 7,
     	    },
     	    {
     	        name: 'Equilibrium',
     	        cla: 0x95,
     	        slip0044: 0x85f5e0fd,
-    	        ss58_addr_type: 67
+    	        ss58_addr_type: 67,
     	    },
     	    {
     	        name: 'Statemint',
     	        cla: 0x96,
     	        slip0044: 0x80000162,
-    	        ss58_addr_type: 0
+    	        ss58_addr_type: 0,
     	    },
     	    {
     	        name: 'Statemine',
     	        cla: 0x97,
     	        slip0044: 0x800001b2,
-    	        ss58_addr_type: 2
+    	        ss58_addr_type: 2,
     	    },
     	    {
     	        name: 'Nodle',
     	        cla: 0x98,
     	        slip0044: 0x800003eb,
-    	        ss58_addr_type: 37
+    	        ss58_addr_type: 37,
     	    },
     	    {
     	        name: 'Kusama',
     	        cla: 0x99,
     	        slip0044: 0x800001b2,
-    	        ss58_addr_type: 2
+    	        ss58_addr_type: 2,
     	    },
     	    {
     	        name: 'Karura',
     	        cla: 0x9a,
     	        slip0044: 0x800002ae,
-    	        ss58_addr_type: 8
+    	        ss58_addr_type: 8,
     	    },
     	    {
     	        name: 'Acala',
     	        cla: 0x9b,
     	        slip0044: 0x80000313,
-    	        ss58_addr_type: 10
+    	        ss58_addr_type: 10,
     	    },
     	    {
     	        name: 'VTB',
     	        cla: 0x9c,
     	        slip0044: 0x800002b6,
-    	        ss58_addr_type: 42
+    	        ss58_addr_type: 42,
     	    },
     	    {
     	        name: 'Peer',
     	        cla: 0x9d,
     	        slip0044: 0x800002ce,
-    	        ss58_addr_type: 42
+    	        ss58_addr_type: 42,
     	    },
     	    {
     	        name: 'Genshiro',
     	        cla: 0x9e,
     	        slip0044: 0x85f5e0fc,
-    	        ss58_addr_type: 67
+    	        ss58_addr_type: 67,
     	    },
     	    {
     	        name: 'Sora',
     	        cla: 0x9f,
     	        slip0044: 0x80000269,
-    	        ss58_addr_type: 69
+    	        ss58_addr_type: 69,
     	    },
     	    {
     	        name: 'Polkadex',
     	        cla: 0xa0,
     	        slip0044: 0x8000031f,
-    	        ss58_addr_type: 88
+    	        ss58_addr_type: 88,
     	    },
     	    {
     	        name: 'Bifrost',
     	        cla: 0xa1,
     	        slip0044: 0x80000314,
-    	        ss58_addr_type: 6
+    	        ss58_addr_type: 6,
     	    },
     	    {
     	        name: 'Reef',
     	        cla: 0xa2,
     	        slip0044: 0x80000333,
-    	        ss58_addr_type: 42
+    	        ss58_addr_type: 42,
     	    },
     	    {
     	        name: 'XXNetwork',
     	        cla: 0xa3,
     	        slip0044: 0x800007a3,
-    	        ss58_addr_type: 55
+    	        ss58_addr_type: 55,
     	    },
     	    {
     	        name: 'AlephZero',
     	        cla: 0xa4,
     	        slip0044: 0x80000283,
-    	        ss58_addr_type: 42
+    	        ss58_addr_type: 42,
     	    },
     	    {
     	        name: 'Interlay',
     	        cla: 0xa5,
     	        slip0044: 0x80000162,
-    	        ss58_addr_type: 2032
+    	        ss58_addr_type: 2032,
     	    },
     	    {
     	        name: 'Parallel',
     	        cla: 0xa6,
     	        slip0044: 0x80000162,
-    	        ss58_addr_type: 172
+    	        ss58_addr_type: 172,
     	    },
     	    {
     	        name: 'Picasso',
     	        cla: 0xa7,
     	        slip0044: 0x800001b2,
-    	        ss58_addr_type: 49
+    	        ss58_addr_type: 49,
     	    },
     	    {
     	        name: 'Composable',
     	        cla: 0xa8,
     	        slip0044: 0x80000162,
-    	        ss58_addr_type: 49
+    	        ss58_addr_type: 49,
     	    },
     	    {
     	        name: 'Astar',
     	        cla: 0xa9,
     	        slip0044: 0x8000032a,
-    	        ss58_addr_type: 5
+    	        ss58_addr_type: 5,
     	    },
     	    {
     	        name: 'OriginTrail',
     	        cla: 0xaa,
     	        slip0044: 0x80000162,
-    	        ss58_addr_type: 101
+    	        ss58_addr_type: 101,
     	    },
     	    {
     	        name: 'HydraDX',
     	        cla: 0xab,
     	        slip0044: 0x80000162,
-    	        ss58_addr_type: 63
+    	        ss58_addr_type: 63,
     	    },
     	    {
     	        name: 'Stafi',
     	        cla: 0xac,
     	        slip0044: 0x8000038b,
-    	        ss58_addr_type: 20
+    	        ss58_addr_type: 20,
     	    },
     	    {
     	        name: 'Unique',
     	        cla: 0xad,
     	        slip0044: 0x80000162,
-    	        ss58_addr_type: 7391
+    	        ss58_addr_type: 7391,
     	    },
     	    {
     	        name: 'BifrostKusama',
     	        cla: 0xae,
     	        slip0044: 0x80000314,
-    	        ss58_addr_type: 6
+    	        ss58_addr_type: 6,
     	    },
     	    {
     	        name: 'Phala',
     	        cla: 0xaf,
     	        slip0044: 0x80000162,
-    	        ss58_addr_type: 30
+    	        ss58_addr_type: 30,
     	    },
     	    {
     	        name: 'Khala',
     	        cla: 0xb1,
     	        slip0044: 0x800001b2,
-    	        ss58_addr_type: 30
+    	        ss58_addr_type: 30,
     	    },
     	    {
     	        name: 'Darwinia',
     	        cla: 0xb2,
     	        slip0044: 0x80000162,
-    	        ss58_addr_type: 18
+    	        ss58_addr_type: 18,
     	    },
     	    {
     	        name: 'Ajuna',
     	        cla: 0xb3,
     	        slip0044: 0x80000162,
-    	        ss58_addr_type: 1328
+    	        ss58_addr_type: 1328,
     	    },
     	    {
     	        name: 'Bittensor',
     	        cla: 0xb4,
     	        slip0044: 0x800003ed,
-    	        ss58_addr_type: 42
+    	        ss58_addr_type: 42,
     	    },
     	    {
     	        name: 'Ternoa',
     	        cla: 0xb5,
     	        slip0044: 0x800003e3,
-    	        ss58_addr_type: 42
+    	        ss58_addr_type: 42,
     	    },
     	    {
     	        name: 'Pendulum',
     	        cla: 0xb6,
     	        slip0044: 0x80000162,
-    	        ss58_addr_type: 56
+    	        ss58_addr_type: 56,
+    	    },
+    	    {
+    	        name: 'Zeitgeist',
+    	        cla: 0xb7,
+    	        slip0044: 0x80000162,
+    	        ss58_addr_type: 73,
     	    },
     	];
     } (supported_apps));
     getDefaultExportFromCjs(supported_apps);
 
-    legacy_apps.__esModule = true;
+    Object.defineProperty(legacy_apps, "__esModule", { value: true });
     legacy_apps.newBifrostKusamaApp = legacy_apps.newUniqueApp = legacy_apps.newInterlayApp = legacy_apps.newAlephZeroApp = legacy_apps.newStafiApp = legacy_apps.newComposableApp = legacy_apps.newAstarApp = legacy_apps.newParallelApp = legacy_apps.newXXNetworkApp = legacy_apps.newAcalaApp = legacy_apps.newReefApp = legacy_apps.newKaruraApp = legacy_apps.newBifrostApp = legacy_apps.newPolkadexApp = legacy_apps.newSoraApp = legacy_apps.newNodleApp = legacy_apps.newStatemineApp = legacy_apps.newStatemintApp = legacy_apps.newGenshiroApp = legacy_apps.newEquilibriumApp = legacy_apps.newEdgewareApp = legacy_apps.newCentrifugeApp = legacy_apps.newDockApp = legacy_apps.newPolymeshApp = legacy_apps.newPolkadotApp = legacy_apps.newKusamaApp = void 0;
     var supported_apps_1 = supported_apps;
     function newKusamaApp(transport) {
@@ -1231,14 +1237,14 @@
     	var __exportStar = (commonjsGlobal && commonjsGlobal.__exportStar) || function(m, exports) {
     	    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
     	};
-    	exports.__esModule = true;
+    	Object.defineProperty(exports, "__esModule", { value: true });
     	exports.supportedApps = exports.newSubstrateApp = exports.SubstrateApp = void 0;
     	__exportStar(legacy_apps, exports);
     	var substrate_app_1 = substrate_app;
-    	__createBinding(exports, substrate_app_1, "SubstrateApp");
+    	Object.defineProperty(exports, "SubstrateApp", { enumerable: true, get: function () { return substrate_app_1.SubstrateApp; } });
     	var supported_apps_1 = supported_apps;
-    	__createBinding(exports, supported_apps_1, "newSubstrateApp");
-    	__createBinding(exports, supported_apps_1, "supportedApps");
+    	Object.defineProperty(exports, "newSubstrateApp", { enumerable: true, get: function () { return supported_apps_1.newSubstrateApp; } });
+    	Object.defineProperty(exports, "supportedApps", { enumerable: true, get: function () { return supported_apps_1.supportedApps; } });
     } (dist));
     getDefaultExportFromCjs(dist);
 
@@ -1414,7 +1420,6 @@
     createCustomErrorClass("FeeNotLoaded");
     createCustomErrorClass("FeeRequired");
     createCustomErrorClass("FeeTooHigh");
-    createCustomErrorClass("DustLimit");
     createCustomErrorClass("PendingOperation");
     createCustomErrorClass("SyncError");
     createCustomErrorClass("PairingFailed");
@@ -1422,16 +1427,18 @@
     createCustomErrorClass("LedgerAPI4xx");
     createCustomErrorClass("LedgerAPI5xx");
     createCustomErrorClass("FirmwareOrAppUpdateRequired");
+    createCustomErrorClass("OpReturnSizeLimit");
+    createCustomErrorClass("DustLimit");
     createCustomErrorClass("LanguageNotFound");
     createCustomErrorClass("NoDBPathGiven");
     createCustomErrorClass("DBWrongPassword");
     createCustomErrorClass("DBNotReset");
     var HwTransportErrorType;
     (function (HwTransportErrorType) {
-        HwTransportErrorType[HwTransportErrorType["Unknown"] = 0] = "Unknown";
-        HwTransportErrorType[HwTransportErrorType["BleLocationServicesDisabled"] = 1] = "BleLocationServicesDisabled";
-        HwTransportErrorType[HwTransportErrorType["BleBluetoothUnauthorized"] = 2] = "BleBluetoothUnauthorized";
-        HwTransportErrorType[HwTransportErrorType["BleScanStartFailed"] = 3] = "BleScanStartFailed";
+        HwTransportErrorType["Unknown"] = "Unknown";
+        HwTransportErrorType["LocationServicesDisabled"] = "LocationServicesDisabled";
+        HwTransportErrorType["LocationServicesUnauthorized"] = "LocationServicesUnauthorized";
+        HwTransportErrorType["BluetoothScanStartFailed"] = "BluetoothScanStartFailed";
     })(HwTransportErrorType || (HwTransportErrorType = {}));
     ((function (_super) {
         __extends$2(HwTransportError, _super);
@@ -1479,6 +1486,8 @@
         INCORRECT_LENGTH: 0x6700,
         INCORRECT_P1_P2: 0x6b00,
         INS_NOT_SUPPORTED: 0x6d00,
+        DEVICE_NOT_ONBOARDED: 0x6d07,
+        DEVICE_NOT_ONBOARDED_2: 0x6611,
         INVALID_KCV: 0x9485,
         INVALID_OFFSET: 0x9402,
         LICENSING: 0x6f42,
@@ -1494,7 +1503,8 @@
         SECURITY_STATUS_NOT_SATISFIED: 0x6982,
         TECHNICAL_PROBLEM: 0x6f00,
         UNKNOWN_APDU: 0x6d02,
-        USER_REFUSED_ON_DEVICE: 0x5501
+        USER_REFUSED_ON_DEVICE: 0x5501,
+        NOT_ENOUGH_SPACE: 0x5102
     };
     function getAltStatusMessage(code) {
         switch (code) {
@@ -1918,11 +1928,7 @@
         };
     };
 
-    var reExports = {};
-    var re$3 = {
-      get exports(){ return reExports; },
-      set exports(v){ reExports = v; },
-    };
+    var re$3 = {exports: {}};
 
     const SEMVER_SPEC_VERSION = '2.0.0';
     const MAX_LENGTH$2 = 256;
@@ -1935,6 +1941,7 @@
       MAX_SAFE_INTEGER: MAX_SAFE_INTEGER$1,
       MAX_SAFE_COMPONENT_LENGTH,
     };
+    getDefaultExportFromCjs(constants$1);
 
     const debug$1 = (
       typeof process === 'object' &&
@@ -1944,6 +1951,7 @@
     ) ? (...args) => console.error('SEMVER', ...args)
       : () => {};
     var debug_1 = debug$1;
+    getDefaultExportFromCjs(debug_1);
 
     (function (module, exports) {
     	const { MAX_SAFE_COMPONENT_LENGTH } = constants$1;
@@ -2037,7 +2045,9 @@
     	createToken('STAR', '(<|>)?=?\\s*\\*');
     	createToken('GTE0', '^\\s*>=\\s*0\\.0\\.0\\s*$');
     	createToken('GTE0PRE', '^\\s*>=\\s*0\\.0\\.0-0\\s*$');
-    } (re$3, reExports));
+    } (re$3, re$3.exports));
+    var reExports = re$3.exports;
+    getDefaultExportFromCjs(reExports);
 
     const opts = ['includePrerelease', 'loose', 'rtl'];
     const parseOptions$2 = options =>
@@ -2048,6 +2058,7 @@
         return o
       }, {});
     var parseOptions_1 = parseOptions$2;
+    getDefaultExportFromCjs(parseOptions_1);
 
     const numeric = /^[0-9]+$/;
     const compareIdentifiers$1 = (a, b) => {
@@ -2068,6 +2079,7 @@
       compareIdentifiers: compareIdentifiers$1,
       rcompareIdentifiers,
     };
+    getDefaultExportFromCjs(identifiers$1);
 
     const debug = debug_1;
     const { MAX_LENGTH: MAX_LENGTH$1, MAX_SAFE_INTEGER } = constants$1;
@@ -2297,11 +2309,12 @@
         return this
       }
     };
-    var semver$1 = SemVer$d;
+    var semver$2 = SemVer$d;
+    getDefaultExportFromCjs(semver$2);
 
     const { MAX_LENGTH } = constants$1;
     const { re: re$1, t: t$1 } = reExports;
-    const SemVer$c = semver$1;
+    const SemVer$c = semver$2;
     const parseOptions = parseOptions_1;
     const parse$6 = (version, options) => {
       options = parseOptions(options);
@@ -2325,6 +2338,7 @@
       }
     };
     var parse_1 = parse$6;
+    getDefaultExportFromCjs(parse_1);
 
     const parse$5 = parse_1;
     const valid$2 = (version, options) => {
@@ -2332,6 +2346,7 @@
       return v ? v.version : null
     };
     var valid_1 = valid$2;
+    getDefaultExportFromCjs(valid_1);
 
     const parse$4 = parse_1;
     const clean$1 = (version, options) => {
@@ -2339,8 +2354,9 @@
       return s ? s.version : null
     };
     var clean_1 = clean$1;
+    getDefaultExportFromCjs(clean_1);
 
-    const SemVer$b = semver$1;
+    const SemVer$b = semver$2;
     const inc$1 = (version, release, options, identifier) => {
       if (typeof (options) === 'string') {
         identifier = options;
@@ -2356,15 +2372,18 @@
       }
     };
     var inc_1 = inc$1;
+    getDefaultExportFromCjs(inc_1);
 
-    const SemVer$a = semver$1;
+    const SemVer$a = semver$2;
     const compare$b = (a, b, loose) =>
       new SemVer$a(a, loose).compare(new SemVer$a(b, loose));
     var compare_1 = compare$b;
+    getDefaultExportFromCjs(compare_1);
 
     const compare$a = compare_1;
     const eq$3 = (a, b, loose) => compare$a(a, b, loose) === 0;
     var eq_1 = eq$3;
+    getDefaultExportFromCjs(eq_1);
 
     const parse$3 = parse_1;
     const eq$2 = eq_1;
@@ -2388,18 +2407,22 @@
       }
     };
     var diff_1 = diff$1;
+    getDefaultExportFromCjs(diff_1);
 
-    const SemVer$9 = semver$1;
+    const SemVer$9 = semver$2;
     const major$1 = (a, loose) => new SemVer$9(a, loose).major;
     var major_1 = major$1;
+    getDefaultExportFromCjs(major_1);
 
-    const SemVer$8 = semver$1;
+    const SemVer$8 = semver$2;
     const minor$1 = (a, loose) => new SemVer$8(a, loose).minor;
     var minor_1 = minor$1;
+    getDefaultExportFromCjs(minor_1);
 
-    const SemVer$7 = semver$1;
+    const SemVer$7 = semver$2;
     const patch$1 = (a, loose) => new SemVer$7(a, loose).patch;
     var patch_1 = patch$1;
+    getDefaultExportFromCjs(patch_1);
 
     const parse$2 = parse_1;
     const prerelease$1 = (version, options) => {
@@ -2407,50 +2430,61 @@
       return (parsed && parsed.prerelease.length) ? parsed.prerelease : null
     };
     var prerelease_1 = prerelease$1;
+    getDefaultExportFromCjs(prerelease_1);
 
     const compare$9 = compare_1;
     const rcompare$1 = (a, b, loose) => compare$9(b, a, loose);
     var rcompare_1 = rcompare$1;
+    getDefaultExportFromCjs(rcompare_1);
 
     const compare$8 = compare_1;
     const compareLoose$1 = (a, b) => compare$8(a, b, true);
     var compareLoose_1 = compareLoose$1;
+    getDefaultExportFromCjs(compareLoose_1);
 
-    const SemVer$6 = semver$1;
+    const SemVer$6 = semver$2;
     const compareBuild$3 = (a, b, loose) => {
       const versionA = new SemVer$6(a, loose);
       const versionB = new SemVer$6(b, loose);
       return versionA.compare(versionB) || versionA.compareBuild(versionB)
     };
     var compareBuild_1 = compareBuild$3;
+    getDefaultExportFromCjs(compareBuild_1);
 
     const compareBuild$2 = compareBuild_1;
     const sort$1 = (list, loose) => list.sort((a, b) => compareBuild$2(a, b, loose));
     var sort_1 = sort$1;
+    getDefaultExportFromCjs(sort_1);
 
     const compareBuild$1 = compareBuild_1;
     const rsort$1 = (list, loose) => list.sort((a, b) => compareBuild$1(b, a, loose));
     var rsort_1 = rsort$1;
+    getDefaultExportFromCjs(rsort_1);
 
     const compare$7 = compare_1;
     const gt$4 = (a, b, loose) => compare$7(a, b, loose) > 0;
     var gt_1 = gt$4;
+    getDefaultExportFromCjs(gt_1);
 
     const compare$6 = compare_1;
     const lt$3 = (a, b, loose) => compare$6(a, b, loose) < 0;
     var lt_1 = lt$3;
+    getDefaultExportFromCjs(lt_1);
 
     const compare$5 = compare_1;
     const neq$2 = (a, b, loose) => compare$5(a, b, loose) !== 0;
     var neq_1 = neq$2;
+    getDefaultExportFromCjs(neq_1);
 
     const compare$4 = compare_1;
     const gte$3 = (a, b, loose) => compare$4(a, b, loose) >= 0;
     var gte_1 = gte$3;
+    getDefaultExportFromCjs(gte_1);
 
     const compare$3 = compare_1;
     const lte$3 = (a, b, loose) => compare$3(a, b, loose) <= 0;
     var lte_1 = lte$3;
+    getDefaultExportFromCjs(lte_1);
 
     const eq$1 = eq_1;
     const neq$1 = neq_1;
@@ -2495,8 +2529,9 @@
       }
     };
     var cmp_1 = cmp$1;
+    getDefaultExportFromCjs(cmp_1);
 
-    const SemVer$5 = semver$1;
+    const SemVer$5 = semver$2;
     const parse$1 = parse_1;
     const { re, t } = reExports;
     const coerce$1 = (version, options) => {
@@ -2532,6 +2567,7 @@
       return parse$1(`${match[2]}.${match[3] || '0'}.${match[4] || '0'}`, options)
     };
     var coerce_1 = coerce$1;
+    getDefaultExportFromCjs(coerce_1);
 
     var iterator;
     var hasRequiredIterator;
@@ -3339,7 +3375,7 @@
     	const parseOptions = parseOptions_1;
     	const Comparator = requireComparator();
     	const debug = debug_1;
-    	const SemVer = semver$1;
+    	const SemVer = semver$2;
     	const {
     	  re,
     	  t,
@@ -3699,7 +3735,7 @@
     	const { re, t } = reExports;
     	const cmp = cmp_1;
     	const debug = debug_1;
-    	const SemVer = semver$1;
+    	const SemVer = semver$2;
     	const Range = requireRange();
     	return comparator;
     }
@@ -3714,14 +3750,16 @@
       return range.test(version)
     };
     var satisfies_1 = satisfies$4;
+    getDefaultExportFromCjs(satisfies_1);
 
     const Range$8 = requireRange();
     const toComparators$1 = (range, options) =>
       new Range$8(range, options).set
         .map(comp => comp.map(c => c.value).join(' ').trim().split(' '));
     var toComparators_1 = toComparators$1;
+    getDefaultExportFromCjs(toComparators_1);
 
-    const SemVer$4 = semver$1;
+    const SemVer$4 = semver$2;
     const Range$7 = requireRange();
     const maxSatisfying$1 = (versions, range, options) => {
       let max = null;
@@ -3743,8 +3781,9 @@
       return max
     };
     var maxSatisfying_1 = maxSatisfying$1;
+    getDefaultExportFromCjs(maxSatisfying_1);
 
-    const SemVer$3 = semver$1;
+    const SemVer$3 = semver$2;
     const Range$6 = requireRange();
     const minSatisfying$1 = (versions, range, options) => {
       let min = null;
@@ -3766,8 +3805,9 @@
       return min
     };
     var minSatisfying_1 = minSatisfying$1;
+    getDefaultExportFromCjs(minSatisfying_1);
 
-    const SemVer$2 = semver$1;
+    const SemVer$2 = semver$2;
     const Range$5 = requireRange();
     const gt$2 = gt_1;
     const minVersion$1 = (range, loose) => {
@@ -3817,6 +3857,7 @@
       return null
     };
     var minVersion_1 = minVersion$1;
+    getDefaultExportFromCjs(minVersion_1);
 
     const Range$4 = requireRange();
     const validRange$1 = (range, options) => {
@@ -3827,8 +3868,9 @@
       }
     };
     var valid$1 = validRange$1;
+    getDefaultExportFromCjs(valid$1);
 
-    const SemVer$1 = semver$1;
+    const SemVer$1 = semver$2;
     const Comparator$2 = requireComparator();
     const { ANY: ANY$1 } = Comparator$2;
     const Range$3 = requireRange();
@@ -3891,14 +3933,17 @@
       return true
     };
     var outside_1 = outside$3;
+    getDefaultExportFromCjs(outside_1);
 
     const outside$2 = outside_1;
     const gtr$1 = (version, range, options) => outside$2(version, range, '>', options);
     var gtr_1 = gtr$1;
+    getDefaultExportFromCjs(gtr_1);
 
     const outside$1 = outside_1;
     const ltr$1 = (version, range, options) => outside$1(version, range, '<', options);
     var ltr_1 = ltr$1;
+    getDefaultExportFromCjs(ltr_1);
 
     const Range$2 = requireRange();
     const intersects$1 = (r1, r2, options) => {
@@ -3907,6 +3952,7 @@
       return r1.intersects(r2)
     };
     var intersects_1 = intersects$1;
+    getDefaultExportFromCjs(intersects_1);
 
     const satisfies$2 = satisfies_1;
     const compare$2 = compare_1;
@@ -3951,6 +3997,7 @@
       const original = typeof range.raw === 'string' ? range.raw : String(range);
       return simplified.length < original.length ? simplified : range
     };
+    getDefaultExportFromCjs(simplify);
 
     const Range$1 = requireRange();
     const Comparator$1 = requireComparator();
@@ -4122,10 +4169,11 @@
         : a
     };
     var subset_1 = subset$1;
+    getDefaultExportFromCjs(subset_1);
 
     const internalRe = reExports;
     const constants = constants$1;
-    const SemVer = semver$1;
+    const SemVer = semver$2;
     const identifiers = identifiers$1;
     const parse = parse_1;
     const valid = valid_1;
@@ -4210,6 +4258,7 @@
       compareIdentifiers: identifiers.compareIdentifiers,
       rcompareIdentifiers: identifiers.rcompareIdentifiers,
     };
+    const semver$1 = getDefaultExportFromCjs(semver);
 
     var __assign = (global && global.__assign) || function () {
         __assign = Object.assign || function(t) {
@@ -4252,7 +4301,7 @@
             masks: [0x31100000],
             getBlockSize: function (firmwareVersion) {
                 var _a;
-                return semver.lt((_a = semver.coerce(firmwareVersion)) !== null && _a !== void 0 ? _a : "", "2.0.0")
+                return semver$1.lt((_a = semver$1.coerce(firmwareVersion)) !== null && _a !== void 0 ? _a : "", "2.0.0")
                     ? 4 * 1024
                     : 2 * 1024;
             }
@@ -5099,7 +5148,7 @@
     	hasRequiredPackageInfo = 1;
     	Object.defineProperty(packageInfo$1, "__esModule", { value: true });
     	packageInfo$1.packageInfo = void 0;
-    	packageInfo$1.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '11.1.3' };
+    	packageInfo$1.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.0.1' };
     	return packageInfo$1;
     }
 
@@ -5159,7 +5208,7 @@
         xxnetwork: 'XXNetwork'
     };
 
-    const packageInfo = { name: '@polkadot/hw-ledger', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.1.3' };
+    const packageInfo = { name: '@polkadot/hw-ledger', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.0.1' };
 
     var _Ledger_app, _Ledger_ledgerName, _Ledger_transportDef;
     async function wrapError(promise) {

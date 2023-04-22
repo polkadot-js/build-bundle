@@ -6,7 +6,7 @@
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
-    const packageInfo$3 = { name: '@polkadot/util', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.1.3' };
+    const packageInfo$3 = { name: '@polkadot/util', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.0.1' };
 
     function arrayChunk(array, chunkSize) {
         const outputSize = Math.ceil(array.length / chunkSize);
@@ -109,7 +109,7 @@
         throw new Error(`This codepath should be unreachable. Unhandled input: ${x}`);
     }
 
-    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.1.3' };
+    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.0.1' };
 
     function evaluateThis(fn) {
         return fn('return this');
@@ -142,9 +142,10 @@
         xglobal: xglobal
     });
 
-    const BigInt = typeof xglobal.BigInt === 'function' && typeof xglobal.BigInt.asIntN === 'function'
-        ? xglobal.BigInt
-        : (() => Number.NaN);
+    function invalidFallback() {
+        return Number.NaN;
+    }
+    const BigInt =  extractGlobal('BigInt', invalidFallback);
 
     const _0n =  BigInt(0);
     const _1n =  BigInt(1);
@@ -274,11 +275,7 @@
     	return a;
     }
 
-    var bnExports = {};
-    var bn = {
-      get exports(){ return bnExports; },
-      set exports(v){ bnExports = v; },
-    };
+    var bn = {exports: {}};
 
     const _nodeResolve_empty = {};
 
@@ -289,6 +286,7 @@
 
     const require$$0$1 = /*@__PURE__*/getAugmentedNamespace(_nodeResolve_empty$1);
 
+    bn.exports;
     (function (module) {
     	(function (module, exports) {
     	  function assert (val, msg) {
@@ -2961,7 +2959,8 @@
     	  };
     	})(module, commonjsGlobal);
     } (bn));
-    const BN = bnExports;
+    var bnExports = bn.exports;
+    const BN = getDefaultExportFromCjs(bnExports);
 
     function isBn(value) {
         return BN.isBN(value);
@@ -3089,7 +3088,7 @@
 
     Object.defineProperty(packageInfo$1, "__esModule", { value: true });
     packageInfo$1.packageInfo = void 0;
-    packageInfo$1.packageInfo = { name: '@polkadot/x-textencoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '11.1.3' };
+    packageInfo$1.packageInfo = { name: '@polkadot/x-textencoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.0.1' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -3417,7 +3416,7 @@
 
     Object.defineProperty(packageInfo, "__esModule", { value: true });
     packageInfo.packageInfo = void 0;
-    packageInfo.packageInfo = { name: '@polkadot/x-textdecoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '11.1.3' };
+    packageInfo.packageInfo = { name: '@polkadot/x-textdecoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.0.1' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -3504,7 +3503,7 @@
         return output;
     }
 
-    function nToHex(value, { bitLength, isLe = false, isNegative = false } = {}) {
+    function nToHex(value, { bitLength = -1, isLe = false, isNegative = false } = {}) {
         return u8aToHex(nToU8a(value || 0, { bitLength, isLe, isNegative }));
     }
 
@@ -3884,16 +3883,12 @@
             : true);
     };
     formatBalance.setDefaults = ({ decimals, unit }) => {
-        defaultDecimals = decimals === undefined
-            ? defaultDecimals
-            : Array.isArray(decimals)
-                ? decimals[0]
-                : decimals;
-        defaultUnit = unit === undefined
-            ? defaultUnit
-            : Array.isArray(unit)
-                ? unit[0]
-                : unit;
+        defaultDecimals = (Array.isArray(decimals)
+            ? decimals[0]
+            : decimals) ?? defaultDecimals;
+        defaultUnit = (Array.isArray(unit)
+            ? unit[0]
+            : unit) ?? defaultUnit;
         SI[SI_MID].text = defaultUnit;
     };
 
@@ -4013,7 +4008,7 @@
             : false;
     }
 
-    const checkCodec =  isOnObject('toHex', 'toU8a');
+    const checkCodec =  isOnObject('toHex', 'toHuman', 'toU8a');
     const checkRegistry =  isOnObject('get');
     function isCodec(value) {
         return checkCodec(value) && checkRegistry(value.registry);
