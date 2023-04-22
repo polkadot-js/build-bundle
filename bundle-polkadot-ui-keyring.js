@@ -1351,9 +1351,15 @@
         return util$7.u8aToHex(
         keyring$1.decodeAddress(address, true));
     }
-    const accountKey = (address) => `${ACCOUNT_PREFIX}${toHex(address)}`;
-    const addressKey = (address) => `${ADDRESS_PREFIX}${toHex(address)}`;
-    const contractKey = (address) => `${CONTRACT_PREFIX}${toHex(address)}`;
+    function accountKey(address) {
+        return `${ACCOUNT_PREFIX}${toHex(address)}`;
+    }
+    function addressKey(address) {
+        return `${ADDRESS_PREFIX}${toHex(address)}`;
+    }
+    function contractKey(address) {
+        return `${CONTRACT_PREFIX}${toHex(address)}`;
+    }
     const accountRegex = new RegExp(`^${ACCOUNT_PREFIX}0x[0-9a-f]*`, '');
     const addressRegex = new RegExp(`^${ADDRESS_PREFIX}0x[0-9a-f]*`, '');
     const contractRegex = new RegExp(`^${CONTRACT_PREFIX}0x[0-9a-f]*`, '');
@@ -1411,13 +1417,13 @@
         };
     }
 
-    const accounts = genericSubject(accountKey, true);
+    const accounts =  genericSubject(accountKey, true);
 
-    const addresses = genericSubject(addressKey);
+    const addresses =  genericSubject(addressKey);
 
-    const contracts = genericSubject(contractKey);
+    const contracts =  genericSubject(contractKey);
 
-    const obervableAll = combineLatest([
+    const obervableAll =  combineLatest([
         accounts.subject,
         addresses.subject,
         contracts.subject
@@ -1544,6 +1550,10 @@
 
     var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
+    function getDefaultExportFromCjs (x) {
+    	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+    }
+
     var assign = make_assign();
     var create$1 = make_create();
     var trim$1 = make_trim();
@@ -1650,6 +1660,7 @@
     function isObject$1(val) {
     	return val && {}.toString.call(val) === '[object Object]'
     }
+    getDefaultExportFromCjs(util$6);
 
     var util$5 = util$6;
     var slice = util$5.slice;
@@ -1822,6 +1833,7 @@
     	});
     	return store
     }
+    getDefaultExportFromCjs(storeEngine);
 
     var util$4 = util$6;
     var Global$4 = util$4.Global;
@@ -1854,6 +1866,7 @@
     function clearAll$5() {
     	return localStorage().clear()
     }
+    getDefaultExportFromCjs(localStorage_1);
 
     var util$3 = util$6;
     var Global$3 = util$3.Global;
@@ -1886,6 +1899,7 @@
     		delete globalStorage[key];
     	});
     }
+    getDefaultExportFromCjs(oldFFGlobalStorage);
 
     var util$2 = util$6;
     var Global$2 = util$2.Global;
@@ -1978,6 +1992,7 @@
     		return
     	}
     }
+    getDefaultExportFromCjs(oldIEUserDataStorage);
 
     var util$1 = util$6;
     var Global$1 = util$1.Global;
@@ -2028,6 +2043,7 @@
     function _has(key) {
     	return (new RegExp("(?:^|;\\s*)" + escape(key).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(doc.cookie)
     }
+    getDefaultExportFromCjs(cookieStorage);
 
     var util = util$6;
     var Global = util.Global;
@@ -2060,6 +2076,7 @@
     function clearAll$1() {
     	return sessionStorage().clear()
     }
+    getDefaultExportFromCjs(sessionStorage_1);
 
     var memoryStorage_1 = {
     	name: 'memoryStorage',
@@ -2089,6 +2106,7 @@
     function clearAll(key) {
     	memoryStorage = {};
     }
+    getDefaultExportFromCjs(memoryStorage_1);
 
     var all = [
     	localStorage_1,
@@ -2098,6 +2116,7 @@
     	sessionStorage_1,
     	memoryStorage_1
     ];
+    getDefaultExportFromCjs(all);
 
     var json2$1 = {};
 
@@ -2319,27 +2338,29 @@
     	requireJson2();
     	return {}
     }
+    getDefaultExportFromCjs(json2);
 
     var engine = storeEngine;
     var storages = all;
     var plugins = [json2];
     var store_legacy = engine.createStore(storages, plugins);
+    const store = getDefaultExportFromCjs(store_legacy);
 
     class BrowserStore {
         all(fn) {
-            store_legacy.each((value, key) => {
+            store.each((value, key) => {
                 fn(key, value);
             });
         }
         get(key, fn) {
-            fn(store_legacy.get(key));
+            fn(store.get(key));
         }
         remove(key, fn) {
-            store_legacy.remove(key);
+            store.remove(key);
             fn && fn();
         }
         set(key, value, fn) {
-            store_legacy.set(key, value);
+            store.set(key, value);
             fn && fn();
         }
     }
@@ -2733,7 +2754,7 @@
     }
     _Keyring_stores = new WeakMap();
 
-    const packageInfo = { name: '@polkadot/ui-keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.1.4' };
+    const packageInfo = { name: '@polkadot/ui-keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.2.1' };
 
     const keyring = new Keyring();
 

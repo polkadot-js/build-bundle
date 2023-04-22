@@ -20,11 +20,11 @@
 
     var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
-    var eventemitter3Exports = {};
-    var eventemitter3 = {
-      get exports(){ return eventemitter3Exports; },
-      set exports(v){ eventemitter3Exports = v; },
-    };
+    function getDefaultExportFromCjs (x) {
+    	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+    }
+
+    var eventemitter3 = {exports: {}};
 
     (function (module) {
     	var has = Object.prototype.hasOwnProperty
@@ -185,6 +185,8 @@
     	  module.exports = EventEmitter;
     	}
     } (eventemitter3));
+    var eventemitter3Exports = eventemitter3.exports;
+    const EventEmitter = getDefaultExportFromCjs(eventemitter3Exports);
 
     var assign = make_assign();
     var create$1 = make_create();
@@ -292,6 +294,7 @@
     function isObject$1(val) {
     	return val && {}.toString.call(val) === '[object Object]'
     }
+    getDefaultExportFromCjs(util$6);
 
     var util$5 = util$6;
     var slice = util$5.slice;
@@ -464,6 +467,7 @@
     	});
     	return store
     }
+    getDefaultExportFromCjs(storeEngine);
 
     var util$4 = util$6;
     var Global$4 = util$4.Global;
@@ -496,6 +500,7 @@
     function clearAll$5() {
     	return localStorage().clear()
     }
+    getDefaultExportFromCjs(localStorage_1);
 
     var util$3 = util$6;
     var Global$3 = util$3.Global;
@@ -528,6 +533,7 @@
     		delete globalStorage[key];
     	});
     }
+    getDefaultExportFromCjs(oldFFGlobalStorage);
 
     var util$2 = util$6;
     var Global$2 = util$2.Global;
@@ -620,6 +626,7 @@
     		return
     	}
     }
+    getDefaultExportFromCjs(oldIEUserDataStorage);
 
     var util$1 = util$6;
     var Global$1 = util$1.Global;
@@ -670,6 +677,7 @@
     function _has(key) {
     	return (new RegExp("(?:^|;\\s*)" + escape(key).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(doc.cookie)
     }
+    getDefaultExportFromCjs(cookieStorage);
 
     var util = util$6;
     var Global = util.Global;
@@ -702,6 +710,7 @@
     function clearAll$1() {
     	return sessionStorage().clear()
     }
+    getDefaultExportFromCjs(sessionStorage_1);
 
     var memoryStorage_1 = {
     	name: 'memoryStorage',
@@ -731,6 +740,7 @@
     function clearAll(key) {
     	memoryStorage = {};
     }
+    getDefaultExportFromCjs(memoryStorage_1);
 
     var all = [
     	localStorage_1,
@@ -740,6 +750,7 @@
     	sessionStorage_1,
     	memoryStorage_1
     ];
+    getDefaultExportFromCjs(all);
 
     var json2$1 = {};
 
@@ -961,11 +972,13 @@
     	requireJson2();
     	return {}
     }
+    getDefaultExportFromCjs(json2);
 
     var engine = storeEngine;
     var storages = all;
     var plugins = [json2];
     var store_legacy = engine.createStore(storages, plugins);
+    const store = getDefaultExportFromCjs(store_legacy);
 
     const CRYPTOS = [
         {
@@ -1000,11 +1013,13 @@
         }
     ];
 
-    const ENDPOINTS = [{
+    const ENDPOINTS = [
+        {
             info: 'local',
             text: 'Local Node (Own, 127.0.0.1:9944)',
             value: 'ws://127.0.0.1:9944/'
-        }];
+        }
+    ];
     const ENDPOINT_DEFAULT = ENDPOINTS[0];
 
     const LEDGER_CONN_DEFAULT = 'none';
@@ -1176,8 +1191,8 @@
             _Settings_uiMode.set(this, void 0);
             _Settings_uiTheme.set(this, void 0);
             _Settings_notification.set(this, void 0);
-            const settings = store_legacy.get('settings') || {};
-            __classPrivateFieldSet(this, _Settings_emitter, new eventemitter3Exports(), "f");
+            const settings = store.get('settings') || {};
+            __classPrivateFieldSet(this, _Settings_emitter, new EventEmitter(), "f");
             __classPrivateFieldSet(this, _Settings_apiUrl, (typeof settings.apiUrl === 'string' && settings.apiUrl) || (util$7.hasProcess && process.env && process.env.WS_URL) || ENDPOINT_DEFAULT.value, "f");
             __classPrivateFieldSet(this, _Settings_apiType, { param: __classPrivateFieldGet(this, _Settings_apiUrl, "f"), type: 'json-rpc' }, "f");
             __classPrivateFieldSet(this, _Settings_camera, withDefault(CAMERA, settings.camera, CAMERA_DEFAULT), "f");
@@ -1302,7 +1317,7 @@
             __classPrivateFieldSet(this, _Settings_uiMode, settings.uiMode || __classPrivateFieldGet(this, _Settings_uiMode, "f"), "f");
             __classPrivateFieldSet(this, _Settings_uiTheme, settings.uiTheme || __classPrivateFieldGet(this, _Settings_uiTheme, "f"), "f");
             const newValues = this.get();
-            store_legacy.set('settings', newValues);
+            store.set('settings', newValues);
             __classPrivateFieldGet(this, _Settings_emitter, "f").emit('change', newValues);
         }
         on(type, cb) {
@@ -1312,11 +1327,11 @@
     _Settings_emitter = new WeakMap(), _Settings_apiType = new WeakMap(), _Settings_apiUrl = new WeakMap(), _Settings_camera = new WeakMap(), _Settings_i18nLang = new WeakMap(), _Settings_icon = new WeakMap(), _Settings_ledgerConn = new WeakMap(), _Settings_locking = new WeakMap(), _Settings_metadataUp = new WeakMap(), _Settings_prefix = new WeakMap(), _Settings_storage = new WeakMap(), _Settings_uiMode = new WeakMap(), _Settings_uiTheme = new WeakMap(), _Settings_notification = new WeakMap();
     const settings = new Settings();
 
-    const chains = utilCrypto.selectableNetworks
+    const chains =  utilCrypto.selectableNetworks
         .filter((n) => n.genesisHash.length)
         .reduce((chains, { genesisHash, network }) => util$7.objectSpread(chains, { [network]: genesisHash }), {});
 
-    const packageInfo = { name: '@polkadot/ui-settings', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.1.4' };
+    const packageInfo = { name: '@polkadot/ui-settings', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.2.1' };
 
     exports.ENDPOINT_DEFAULT = ENDPOINT_DEFAULT;
     exports.ICON_DEFAULT = ICON_DEFAULT;
