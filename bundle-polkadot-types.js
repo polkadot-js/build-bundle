@@ -26,7 +26,7 @@
     const runtime$s = {
         Metadata: [
             {
-                methods: util.objectSpread({
+                methods: {
                     metadata_at_version: {
                         description: 'Returns the metadata at a given version.',
                         params: [
@@ -41,12 +41,15 @@
                         description: 'Returns the supported metadata versions.',
                         params: [],
                         type: 'Vec<u32>'
-                    }
-                }, META_V1_TO_V2),
+                    },
+                    ...META_V1_TO_V2
+                },
                 version: 2
             },
             {
-                methods: util.objectSpread({}, META_V1_TO_V2),
+                methods: {
+                    ...META_V1_TO_V2
+                },
                 version: 1
             }
         ]
@@ -400,14 +403,23 @@
             id: 'Si1LookupTypeId',
             type: 'Si1Type'
         },
-        ErrorMetadataV14: util.objectSpread({}, Si1Variant, { args: 'Vec<Type>' }),
-        EventMetadataV14: util.objectSpread({}, Si1Variant, { args: 'Vec<Type>' }),
+        ErrorMetadataV14: {
+            ...Si1Variant,
+            args: 'Vec<Type>'
+        },
+        EventMetadataV14: {
+            ...Si1Variant,
+            args: 'Vec<Type>'
+        },
         FunctionArgumentMetadataV14: {
             name: 'Text',
             type: 'Type',
             typeName: 'Option<Type>'
         },
-        FunctionMetadataV14: util.objectSpread({}, Si1Variant, { args: 'Vec<FunctionArgumentMetadataV14>' }),
+        FunctionMetadataV14: {
+            ...Si1Variant,
+            args: 'Vec<FunctionArgumentMetadataV14>'
+        },
         ExtrinsicMetadataV14: {
             type: 'SiLookupTypeId',
             version: 'u8',
@@ -476,7 +488,13 @@
     const definitions$16 = {
         rpc: {},
         runtime: runtime$s,
-        types: util.objectSpread({}, v9, v10, v11, v12, v13, v14, {
+        types: {
+            ...v9,
+            ...v10,
+            ...v11,
+            ...v12,
+            ...v13,
+            ...v14,
             ErrorMetadataLatest: 'ErrorMetadataV14',
             EventMetadataLatest: 'EventMetadataV14',
             ExtrinsicMetadataLatest: 'ExtrinsicMetadataV14',
@@ -515,7 +533,7 @@
                     V14: 'MetadataV14'
                 }
             }
-        })
+        }
     };
 
     const CORE_V1_TO_V4 = {
@@ -552,31 +570,39 @@
     const runtime$r = {
         Core: [
             {
-                methods: util.objectSpread({
+                methods: {
                     version: {
                         description: 'Returns the version of the runtime.',
                         params: [],
                         type: 'RuntimeVersion'
-                    }
-                }, CORE_V1_TO_V4, CORE_V2_TO_V4),
+                    },
+                    ...CORE_V1_TO_V4,
+                    ...CORE_V2_TO_V4
+                },
                 version: 4
             },
             {
-                methods: util.objectSpread({
+                methods: {
                     version: {
                         description: 'Returns the version of the runtime.',
                         params: [],
                         type: 'RuntimeVersionPre4'
-                    }
-                }, CORE_V1_TO_V4, CORE_V2_TO_V4),
+                    },
+                    ...CORE_V1_TO_V4,
+                    ...CORE_V2_TO_V4
+                },
                 version: 3
             },
             {
-                methods: util.objectSpread({}, CORE_V1_TO_V2, CORE_V1_TO_V4, CORE_V2_TO_V4),
+                methods: {
+                    ...CORE_V1_TO_V2,
+                    ...CORE_V1_TO_V4,
+                    ...CORE_V2_TO_V4
+                },
                 version: 2
             },
             {
-                methods: util.objectSpread({
+                methods: {
                     initialise_block: {
                         description: 'Initialize a block with the given header.',
                         params: [
@@ -586,8 +612,10 @@
                             }
                         ],
                         type: 'Null'
-                    }
-                }, CORE_V1_TO_V2, CORE_V1_TO_V4),
+                    },
+                    ...CORE_V1_TO_V2,
+                    ...CORE_V1_TO_V4
+                },
                 version: 1
             }
         ]
@@ -620,7 +648,8 @@
     const definitions$15 = {
         rpc: {},
         runtime: runtime$r,
-        types: util.objectSpread({}, numberTypes, {
+        types: {
+            ...numberTypes,
             AccountId: 'AccountId32',
             AccountId20: 'GenericEthereumAccountId',
             AccountId32: 'GenericAccountId32',
@@ -794,7 +823,7 @@
             SealV0: '(u64, Signature)',
             Seal: '(ConsensusEngineId, Bytes)',
             Consensus: '(ConsensusEngineId, Bytes)'
-        })
+        }
     };
 
     const v0$1 = {
@@ -864,7 +893,9 @@
 
     const definitions$14 = {
         rpc: {},
-        types: util.objectSpread({}, v0$1, v1$1, {
+        types: {
+            ...v0$1,
+            ...v1$1,
             SiField: 'Si1Field',
             SiLookupTypeId: 'Si1LookupTypeId',
             SiPath: 'Si1Path',
@@ -880,7 +911,7 @@
             SiTypeParameter: 'Si1TypeParameter',
             SiTypeDefVariant: 'Si1TypeDefVariant',
             SiVariant: 'Si1Variant'
-        })
+        }
     };
 
     const runtime$q = {
@@ -951,18 +982,6 @@
         }
     };
 
-    const definitions$12 = {
-        rpc: {},
-        types: {
-            UncleEntryItem: {
-                _enum: {
-                    InclusionHeight: 'BlockNumber',
-                    Uncle: '(Hash, Option<AccountId>)'
-                }
-            }
-        }
-    };
-
     const runtime$p = {
         AuraApi: [
             {
@@ -983,12 +1002,24 @@
         ]
     };
 
-    const definitions$11 = {
+    const definitions$12 = {
         rpc: {},
         runtime: runtime$p,
         types: {
             RawAuraPreDigest: {
                 slotNumber: 'u64'
+            }
+        }
+    };
+
+    const definitions$11 = {
+        rpc: {},
+        types: {
+            UncleEntryItem: {
+                _enum: {
+                    InclusionHeight: 'BlockNumber',
+                    Uncle: '(Hash, Option<AccountId>)'
+                }
             }
         }
     };
@@ -1050,23 +1081,25 @@
     const runtime$o = {
         BabeApi: [
             {
-                methods: util.objectSpread({
+                methods: {
                     configuration: {
                         description: 'Return the genesis configuration for BABE. The configuration is only read on genesis.',
                         params: [],
                         type: 'BabeGenesisConfiguration'
-                    }
-                }, V1_V2_SHARED),
+                    },
+                    ...V1_V2_SHARED
+                },
                 version: 2
             },
             {
-                methods: util.objectSpread({
+                methods: {
                     configuration: {
                         description: 'Return the configuration for BABE. Version 1.',
                         params: [],
                         type: 'BabeGenesisConfigurationV1'
-                    }
-                }, V1_V2_SHARED),
+                    },
+                    ...V1_V2_SHARED
+                },
                 version: 1
             }
         ]
@@ -1501,7 +1534,7 @@
     const runtime$l = {
         BlockBuilder: [
             {
-                methods: util.objectSpread({
+                methods: {
                     apply_extrinsic: {
                         description: 'Apply the given extrinsic.',
                         params: [
@@ -1511,33 +1544,47 @@
                             }
                         ],
                         type: 'ApplyExtrinsicResult'
-                    }
-                }, BB_V2_TO_V6, BB_V3_TO_V6),
+                    },
+                    ...BB_V2_TO_V6,
+                    ...BB_V3_TO_V6
+                },
                 version: 6
             },
             {
-                methods: util.objectSpread({
-                }, BB_V2_TO_V5, BB_V2_TO_V6, BB_V3_TO_V6),
+                methods: {
+                    ...BB_V2_TO_V5,
+                    ...BB_V2_TO_V6,
+                    ...BB_V3_TO_V6
+                },
                 version: 5
             },
             {
-                methods: util.objectSpread({
-                }, BB_V2_TO_V4, BB_V2_TO_V5, BB_V2_TO_V6, BB_V3_TO_V6),
+                methods: {
+                    ...BB_V2_TO_V4,
+                    ...BB_V2_TO_V5,
+                    ...BB_V2_TO_V6,
+                    ...BB_V3_TO_V6
+                },
                 version: 4
             },
             {
-                methods: util.objectSpread({
-                }, BB_V2_TO_V4, BB_V2_TO_V6, BB_V3_TO_V6),
+                methods: {
+                    ...BB_V2_TO_V4,
+                    ...BB_V2_TO_V6,
+                    ...BB_V3_TO_V6
+                },
                 version: 3
             },
             {
-                methods: util.objectSpread({
+                methods: {
                     finalise_block: {
                         description: 'Finish the current block.',
                         params: [],
                         type: 'Header'
-                    }
-                }, BB_V2_TO_V4, BB_V2_TO_V6),
+                    },
+                    ...BB_V2_TO_V4,
+                    ...BB_V2_TO_V6
+                },
                 version: 2
             }
         ]
@@ -1724,7 +1771,7 @@
     const runtime$k = {
         ContractsApi: [
             {
-                methods: util.objectSpread({
+                methods: {
                     call: {
                         description: 'Perform a call from a specified account to a given contract.',
                         params: [
@@ -1788,12 +1835,13 @@
                             }
                         ],
                         type: 'ContractInstantiateResult'
-                    }
-                }, SHARED_V1_V2),
+                    },
+                    ...SHARED_V1_V2
+                },
                 version: 2
             },
             {
-                methods: util.objectSpread({
+                methods: {
                     call: {
                         description: 'Perform a call from a specified account to a given contract.',
                         params: [
@@ -1857,8 +1905,9 @@
                             }
                         ],
                         type: 'ContractInstantiateResultU64'
-                    }
-                }, SHARED_V1_V2),
+                    },
+                    ...SHARED_V1_V2
+                },
                 version: 1
             }
         ]
@@ -2781,13 +2830,14 @@
     const runtime$h = {
         GrandpaApi: [
             {
-                methods: util.objectSpread({
+                methods: {
                     current_set_id: {
                         description: 'Get current GRANDPA authority set id.',
                         params: [],
                         type: 'SetId'
-                    }
-                }, GRANDPA_V2_V3),
+                    },
+                    ...GRANDPA_V2_V3
+                },
                 version: 3
             },
             {
@@ -3625,7 +3675,8 @@
     const definitions$y = {
         rpc: {},
         runtime: runtime$c,
-        types: util.objectSpread({}, keyTypes, {
+        types: {
+            ...keyTypes,
             FullIdentification: 'Exposure',
             IdentificationTuple: '(ValidatorId, FullIdentification)',
             MembershipProof: {
@@ -3635,7 +3686,7 @@
             },
             SessionIndex: 'u32',
             ValidatorCount: 'u32'
-        })
+        }
     };
 
     const definitions$x = {
@@ -3848,7 +3899,9 @@
     const definitions$w = {
         rpc: {},
         runtime: runtime$b,
-        types: util.objectSpread({}, deprecated, phragmen, {
+        types: {
+            ...deprecated,
+            ...phragmen,
             ActiveEraInfo: {
                 index: 'EraIndex',
                 start: 'Option<Moment>'
@@ -3973,7 +4026,7 @@
                 unstakeThreshold: 'Compact<u32>',
                 validatorPayment: 'Compact<Balance>'
             }
-        })
+        }
     };
 
     const definitions$v = {
@@ -5145,19 +5198,31 @@
     const runtime$6 = {
         ParachainHost: [
             {
-                methods: util.objectSpread({}, PH_V1_TO_V2, PH_V2_TO_V3, PH_V3, PH_V4),
+                methods: {
+                    ...PH_V1_TO_V2,
+                    ...PH_V2_TO_V3,
+                    ...PH_V3,
+                    ...PH_V4
+                },
                 version: 4
             },
             {
-                methods: util.objectSpread({}, PH_V1_TO_V2, PH_V2_TO_V3, PH_V3),
+                methods: {
+                    ...PH_V1_TO_V2,
+                    ...PH_V2_TO_V3,
+                    ...PH_V3
+                },
                 version: 3
             },
             {
-                methods: util.objectSpread({}, PH_V1_TO_V2, PH_V2_TO_V3),
+                methods: {
+                    ...PH_V1_TO_V2,
+                    ...PH_V2_TO_V3
+                },
                 version: 2
             },
             {
-                methods: util.objectSpread({
+                methods: {
                     session_info: {
                         description: 'Get the session info for the given session, if stored.',
                         params: [
@@ -5167,8 +5232,9 @@
                             }
                         ],
                         type: 'Option<OldV1SessionInfo>'
-                    }
-                }, PH_V1_TO_V2),
+                    },
+                    ...PH_V1_TO_V2
+                },
                 version: 1
             }
         ]
@@ -5209,7 +5275,8 @@
         },
         SubId: 'u32'
     };
-    const slotTypes = util.objectSpread({}, oldTypes, {
+    const slotTypes = {
+        ...oldTypes,
         AuctionIndex: 'u32',
         LeasePeriod: 'BlockNumber',
         LeasePeriodOf: 'BlockNumber',
@@ -5222,7 +5289,7 @@
         WinnersData: 'Vec<WinnersDataTuple>',
         WinnersDataTuple10: '(AccountId, ParaId, BalanceOf, SlotRange10)',
         WinnersDataTuple: '(AccountId, ParaId, BalanceOf, SlotRange)'
-    });
+    };
 
     const proposeTypes = {
         ParachainProposal: {
@@ -5306,7 +5373,12 @@
     const definitions$g = {
         rpc: {},
         runtime: runtime$6,
-        types: util.objectSpread({}, cumulusTypes, disputeTypes, hrmpTypes, proposeTypes, slotTypes, {
+        types: {
+            ...cumulusTypes,
+            ...disputeTypes,
+            ...hrmpTypes,
+            ...proposeTypes,
+            ...slotTypes,
             AbridgedCandidateReceipt: {
                 parachainIndex: 'ParaId',
                 relayParent: 'Hash',
@@ -5717,7 +5789,7 @@
             MessagingStateSnapshotEgressEntry: '(ParaId, AbridgedHrmpChannel)',
             SystemInherentData: 'ParachainInherentData',
             VecInboundHrmpMessage: 'Vec<InboundHrmpMessage>'
-        })
+        }
     };
 
     const definitions$f = {
@@ -5792,8 +5864,9 @@
             this.registry = registry;
         }
         get encodedLength() {
-            let total = util.compactToU8a(this.length).length;
-            for (let i = 0; i < this.length; i++) {
+            const count = this.length;
+            let total = util.compactToU8a(count).length;
+            for (let i = 0; i < count; i++) {
                 total += this[i].encodedLength;
             }
             return total;
@@ -5817,8 +5890,9 @@
             };
         }
         inspectInner() {
-            const inner = new Array(this.length);
-            for (let i = 0; i < this.length; i++) {
+            const count = this.length;
+            const inner = new Array(count);
+            for (let i = 0; i < count; i++) {
                 inner[i] = this[i].inspect();
             }
             return inner;
@@ -5830,29 +5904,33 @@
             return util.u8aToHex(this.toU8a());
         }
         toHuman(isExtended) {
-            const result = new Array(this.length);
-            for (let i = 0; i < this.length; i++) {
+            const count = this.length;
+            const result = new Array(count);
+            for (let i = 0; i < count; i++) {
                 result[i] = this[i] && this[i].toHuman(isExtended);
             }
             return result;
         }
         toJSON() {
-            const result = new Array(this.length);
-            for (let i = 0; i < this.length; i++) {
+            const count = this.length;
+            const result = new Array(count);
+            for (let i = 0; i < count; i++) {
                 result[i] = this[i] && this[i].toJSON();
             }
             return result;
         }
         toPrimitive() {
-            const result = new Array(this.length);
-            for (let i = 0; i < this.length; i++) {
+            const count = this.length;
+            const result = new Array(count);
+            for (let i = 0; i < count; i++) {
                 result[i] = this[i] && this[i].toPrimitive();
             }
             return result;
         }
         toString() {
-            const result = new Array(this.length);
-            for (let i = 0; i < this.length; i++) {
+            const count = this.length;
+            const result = new Array(count);
+            for (let i = 0; i < count; i++) {
                 result[i] = this[i].toString();
             }
             return `[${result.join(', ')}]`;
@@ -5864,32 +5942,19 @@
                 : util.u8aConcatStrict([util.compactToU8a(this.length), ...encoded]);
         }
         toU8aInner(isBare) {
-            const encoded = new Array(this.length);
-            for (let i = 0; i < this.length; i++) {
+            const count = this.length;
+            const encoded = new Array(count);
+            for (let i = 0; i < count; i++) {
                 encoded[i] = this[i].toU8a(isBare);
             }
             return encoded;
         }
     }
 
-    function __classPrivateFieldGet(receiver, state, kind, f) {
-        if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-        return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-    }
-    function __classPrivateFieldSet(receiver, state, value, kind, f) {
-        if (kind === "m") throw new TypeError("Private method is not writable");
-        if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-        return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-    }
-
-    var _AbstractBase_raw;
     class AbstractBase {
         constructor(registry, value, initialU8aLength) {
-            _AbstractBase_raw.set(this, void 0);
             this.initialU8aLength = initialU8aLength;
-            __classPrivateFieldSet(this, _AbstractBase_raw, value, "f");
+            this.__internal__raw = value;
             this.registry = registry;
         }
         get encodedLength() {
@@ -5899,45 +5964,43 @@
             return this.registry.hash(this.toU8a());
         }
         get inner() {
-            return __classPrivateFieldGet(this, _AbstractBase_raw, "f");
+            return this.__internal__raw;
         }
         get isEmpty() {
-            return __classPrivateFieldGet(this, _AbstractBase_raw, "f").isEmpty;
+            return this.__internal__raw.isEmpty;
         }
         eq(other) {
-            return __classPrivateFieldGet(this, _AbstractBase_raw, "f").eq(other);
+            return this.__internal__raw.eq(other);
         }
         inspect() {
-            return __classPrivateFieldGet(this, _AbstractBase_raw, "f").inspect();
+            return this.__internal__raw.inspect();
         }
         toHex(isLe) {
-            return __classPrivateFieldGet(this, _AbstractBase_raw, "f").toHex(isLe);
+            return this.__internal__raw.toHex(isLe);
         }
         toHuman(isExtended) {
-            return __classPrivateFieldGet(this, _AbstractBase_raw, "f").toHuman(isExtended);
+            return this.__internal__raw.toHuman(isExtended);
         }
         toJSON() {
-            return __classPrivateFieldGet(this, _AbstractBase_raw, "f").toJSON();
+            return this.__internal__raw.toJSON();
         }
         toPrimitive() {
-            return __classPrivateFieldGet(this, _AbstractBase_raw, "f").toPrimitive();
+            return this.__internal__raw.toPrimitive();
         }
         toString() {
-            return __classPrivateFieldGet(this, _AbstractBase_raw, "f").toString();
+            return this.__internal__raw.toString();
         }
         toU8a(isBare) {
-            return __classPrivateFieldGet(this, _AbstractBase_raw, "f").toU8a(isBare);
+            return this.__internal__raw.toU8a(isBare);
         }
         unwrap() {
-            return __classPrivateFieldGet(this, _AbstractBase_raw, "f");
+            return this.__internal__raw;
         }
         valueOf() {
-            return __classPrivateFieldGet(this, _AbstractBase_raw, "f");
+            return this.__internal__raw;
         }
     }
-    _AbstractBase_raw = new WeakMap();
 
-    var _AbstractInt_bitLength;
     const DEFAULT_UINT_BITS = 64;
     const MAX_NUMBER_BITS = 52;
     const MUL_P = new util.BN(10000);
@@ -5995,11 +6058,10 @@
                     ? util.u8aToNumber(value.subarray(0, bitLength / 8), { isNegative: isSigned })
                     : util.u8aToBn(value.subarray(0, bitLength / 8), { isLe: true, isNegative: isSigned }).toString()
                 : decodeAbstractInt(value, isSigned));
-            _AbstractInt_bitLength.set(this, void 0);
             this.registry = registry;
-            __classPrivateFieldSet(this, _AbstractInt_bitLength, bitLength, "f");
-            this.encodedLength = __classPrivateFieldGet(this, _AbstractInt_bitLength, "f") / 8;
-            this.initialU8aLength = __classPrivateFieldGet(this, _AbstractInt_bitLength, "f") / 8;
+            this.__internal__bitLength = bitLength;
+            this.encodedLength = this.__internal__bitLength / 8;
+            this.initialU8aLength = this.__internal__bitLength / 8;
             this.isUnsigned = !isSigned;
             const isNegative = this.isNeg();
             const maxBits = bitLength - (isSigned && !isNegative ? 1 : 0);
@@ -6017,7 +6079,7 @@
             return this.isZero();
         }
         bitLength() {
-            return __classPrivateFieldGet(this, _AbstractInt_bitLength, "f");
+            return this.__internal__bitLength;
         }
         eq(other) {
             return super.eq(util.isHex(other)
@@ -6031,7 +6093,7 @@
         }
         isMax() {
             const u8a = this.toU8a().filter((b) => b === 0xff);
-            return u8a.length === (__classPrivateFieldGet(this, _AbstractInt_bitLength, "f") / 8);
+            return u8a.length === (this.__internal__bitLength / 8);
         }
         toBigInt() {
             return BigInt(this.toString());
@@ -6059,7 +6121,7 @@
                 : util.formatNumber(this);
         }
         toJSON(onlyHex = false) {
-            return onlyHex || (super.bitLength() > MAX_NUMBER_BITS)
+            return onlyHex || (this.__internal__bitLength > 128) || (super.bitLength() > MAX_NUMBER_BITS)
                 ? this.toHex()
                 : this.toNumber();
         }
@@ -6084,7 +6146,6 @@
             });
         }
     }
-    _AbstractInt_bitLength = new WeakMap();
 
     function hasMismatch(a, b) {
         return util.isUndefined(a) || (hasEq(a)
@@ -6188,23 +6249,6 @@
         return [offset, offset - startAt];
     }
 
-    function typeToConstructor(registry, type) {
-        return (util.isString(type)
-            ? registry.createClassUnsafe(type)
-            : type);
-    }
-
-    function mapToTypeMap(registry, input) {
-        const entries = Object.entries(input);
-        const count = entries.length;
-        const output = [new Array(count), new Array(count)];
-        for (let i = 0; i < count; i++) {
-            output[1][i] = entries[i][0];
-            output[0][i] = typeToConstructor(registry, entries[i][1]);
-        }
-        return output;
-    }
-
     const BOUNDED = ['BTreeMap', 'BTreeSet', 'HashMap', 'Vec'];
     const ALLOWED_BOXES = BOUNDED.concat(['Compact', 'DoNotConstruct', 'Int', 'Linkage', 'Range', 'RangeInclusive', 'Result', 'Opaque', 'Option', 'UInt', 'WrapperKeepOpaque', 'WrapperOpaque']);
     const BOX_PRECEDING = ['<', '(', '[', '"', ',', ' '];
@@ -6235,14 +6279,14 @@
     }
     function findClosing(value, start) {
         let depth = 0;
-        for (let index = start; index < value.length; index++) {
-            if (value[index] === '>') {
+        for (let i = start, count = value.length; i < count; i++) {
+            if (value[i] === '>') {
                 if (!depth) {
-                    return index;
+                    return i;
                 }
                 depth--;
             }
-            else if (value[index] === '<') {
+            else if (value[i] === '<') {
                 depth++;
             }
         }
@@ -6261,11 +6305,11 @@
     function cleanupCompact() {
         return (value) => {
             if (value.includes(' as HasCompact')) {
-                for (let index = 0; index < value.length; index++) {
-                    if (value[index] === '<') {
-                        const end = findClosing(value, index + 1) - 14;
+                for (let i = 0, count = value.length; i < count; i++) {
+                    if (value[i] === '<') {
+                        const end = findClosing(value, i + 1) - 14;
                         if (value.substring(end, end + 14) === ' as HasCompact') {
-                            value = `Compact<${value.substring(index + 1, end)}>`;
+                            value = `Compact<${value.substring(i + 1, end)}>`;
                         }
                     }
                 }
@@ -6297,7 +6341,7 @@
     }
     function removeExtensions(type, isSized) {
         return (value) => {
-            for (let i = 0; i < BOUNDED.length; i++) {
+            for (let i = 0, count = BOUNDED.length; i < count; i++) {
                 const tag = BOUNDED[i];
                 value = replaceTagWith(value, `${type}${tag}<`, (v) => {
                     const parts = v
@@ -6334,18 +6378,18 @@
     }
     function removeGenerics() {
         return (value) => {
-            for (let index = 0; index < value.length; index++) {
-                if (value[index] === '<') {
+            for (let i = 0, count = value.length; i < count; i++) {
+                if (value[i] === '<') {
                     const box = ALLOWED_BOXES.find((box) => {
-                        const start = index - box.length;
+                        const start = i - box.length;
                         return ((start >= 0 &&
-                            value.substring(start, index) === box) && (
+                            value.substring(start, i) === box) && (
                         start === 0 ||
                             BOX_PRECEDING.includes(value[start - 1])));
                     });
                     if (!box) {
-                        const end = findClosing(value, index + 1);
-                        value = `${value.substring(0, index)}${value.substring(end + 1)}`;
+                        const end = findClosing(value, i + 1);
+                        value = `${value.substring(0, i)}${value.substring(end + 1)}`;
                     }
                 }
             }
@@ -6391,7 +6435,7 @@
             return memoized;
         }
         let result = startValue;
-        for (let i = 0; i < mappings.length; i++) {
+        for (let i = 0, count = mappings.length; i < count; i++) {
             result = mappings[i](result);
         }
         sanitizeMap.set(startValue, result);
@@ -6401,11 +6445,8 @@
     function isArrayLike(arg) {
         return arg instanceof Uint8Array || Array.isArray(arg);
     }
-    function isCodec(arg) {
-        return util.isFunction(arg && arg.toU8a);
-    }
     function isEnum(arg) {
-        return isCodec(arg) && util.isNumber(arg.index) && isCodec(arg.value);
+        return util.isCodec(arg) && util.isNumber(arg.index) && util.isCodec(arg.value);
     }
     function isNumberLike(arg) {
         return util.isNumber(arg) || util.isBn(arg) || util.isBigInt(arg);
@@ -6434,7 +6475,7 @@
         else if (isArrayLike(a) && isArrayLike(b)) {
             return sortArray(a, b);
         }
-        else if (isCodec(a) && isCodec(b)) {
+        else if (util.isCodec(a) && util.isCodec(b)) {
             return sortAsc(a.toU8a(true), b.toU8a(true));
         }
         throw new Error(`Attempting to sort unrecognized values: ${util.stringify(a)} (typeof ${typeof a}) <-> ${util.stringify(b)} (typeof ${typeof b})`);
@@ -6446,18 +6487,38 @@
         return new Map(Array.from(map.entries()).sort(([keyA], [keyB]) => sortAsc(keyA, keyB)));
     }
 
+    function typeToConstructor(registry, type) {
+        return typeof type === 'function'
+            ? type
+            : registry.createClassUnsafe(type);
+    }
+    function typesToConstructors(registry, types) {
+        const count = types.length;
+        const result = new Array(count);
+        for (let i = 0; i < count; i++) {
+            result[i] = typeToConstructor(registry, types[i]);
+        }
+        return result;
+    }
+    function mapToTypeMap(registry, input) {
+        const entries = Object.entries(input);
+        const count = entries.length;
+        const output = [new Array(count), new Array(count)];
+        for (let i = 0; i < count; i++) {
+            output[1][i] = entries[i][0];
+            output[0][i] = typeToConstructor(registry, entries[i][1]);
+        }
+        return output;
+    }
+
     function typesToMap(registry, [Types, keys]) {
         const result = {};
-        for (let i = 0; i < keys.length; i++) {
+        for (let i = 0, count = keys.length; i < count; i++) {
             result[keys[i]] = registry.getClassName(Types[i]) || new Types[i](registry).toRawType();
         }
         return result;
     }
 
-    var _Compact_Type, _Compact_raw;
-    function noopSetDefinition$6(d) {
-        return d;
-    }
     function decodeCompact(registry, Type, value) {
         if (util.isU8a(value)) {
             const [decodedLength, bn] = (value[0] & 0b11) < 0b11
@@ -6477,14 +6538,12 @@
         return [new Type(registry, value), 0];
     }
     class Compact {
-        constructor(registry, Type, value = 0, { definition, setDefinition = noopSetDefinition$6 } = {}) {
-            _Compact_Type.set(this, void 0);
-            _Compact_raw.set(this, void 0);
+        constructor(registry, Type, value = 0, { definition, setDefinition = util.identity } = {}) {
             this.registry = registry;
-            __classPrivateFieldSet(this, _Compact_Type, definition || setDefinition(typeToConstructor(registry, Type)), "f");
-            const [raw, decodedLength] = decodeCompact(registry, __classPrivateFieldGet(this, _Compact_Type, "f"), value);
+            this.__internal__Type = definition || setDefinition(typeToConstructor(registry, Type));
+            const [raw, decodedLength] = decodeCompact(registry, this.__internal__Type, value);
             this.initialU8aLength = decodedLength;
-            __classPrivateFieldSet(this, _Compact_raw, raw, "f");
+            this.__internal__raw = raw;
         }
         static with(Type) {
             let definition;
@@ -6502,14 +6561,14 @@
             return this.registry.hash(this.toU8a());
         }
         get isEmpty() {
-            return __classPrivateFieldGet(this, _Compact_raw, "f").isEmpty;
+            return this.__internal__raw.isEmpty;
         }
         bitLength() {
-            return __classPrivateFieldGet(this, _Compact_raw, "f").bitLength();
+            return this.__internal__raw.bitLength();
         }
         eq(other) {
-            return __classPrivateFieldGet(this, _Compact_raw, "f").eq(other instanceof Compact
-                ? __classPrivateFieldGet(other, _Compact_raw, "f")
+            return this.__internal__raw.eq(other instanceof Compact
+                ? other.__internal__raw
                 : other);
         }
         inspect() {
@@ -6518,48 +6577,45 @@
             };
         }
         toBigInt() {
-            return __classPrivateFieldGet(this, _Compact_raw, "f").toBigInt();
+            return this.__internal__raw.toBigInt();
         }
         toBn() {
-            return __classPrivateFieldGet(this, _Compact_raw, "f").toBn();
+            return this.__internal__raw.toBn();
         }
         toHex(isLe) {
-            return __classPrivateFieldGet(this, _Compact_raw, "f").toHex(isLe);
+            return this.__internal__raw.toHex(isLe);
         }
         toHuman(isExtended) {
-            return __classPrivateFieldGet(this, _Compact_raw, "f").toHuman(isExtended);
+            return this.__internal__raw.toHuman(isExtended);
         }
         toJSON() {
-            return __classPrivateFieldGet(this, _Compact_raw, "f").toJSON();
+            return this.__internal__raw.toJSON();
         }
         toNumber() {
-            return __classPrivateFieldGet(this, _Compact_raw, "f").toNumber();
+            return this.__internal__raw.toNumber();
         }
         toPrimitive() {
-            return __classPrivateFieldGet(this, _Compact_raw, "f").toPrimitive();
+            return this.__internal__raw.toPrimitive();
         }
         toRawType() {
-            return `Compact<${this.registry.getClassName(__classPrivateFieldGet(this, _Compact_Type, "f")) || __classPrivateFieldGet(this, _Compact_raw, "f").toRawType()}>`;
+            return `Compact<${this.registry.getClassName(this.__internal__Type) || this.__internal__raw.toRawType()}>`;
         }
         toString() {
-            return __classPrivateFieldGet(this, _Compact_raw, "f").toString();
+            return this.__internal__raw.toString();
         }
         toU8a(_isBare) {
-            return util.compactToU8a(__classPrivateFieldGet(this, _Compact_raw, "f").toBn());
+            return util.compactToU8a(this.__internal__raw.toBn());
         }
         unwrap() {
-            return __classPrivateFieldGet(this, _Compact_raw, "f");
+            return this.__internal__raw;
         }
     }
-    _Compact_Type = new WeakMap(), _Compact_raw = new WeakMap();
 
-    var _DoNotConstruct_neverError;
     class DoNotConstruct {
         constructor(registry, typeName = 'DoNotConstruct') {
-            _DoNotConstruct_neverError.set(this, void 0);
             this.registry = registry;
-            __classPrivateFieldSet(this, _DoNotConstruct_neverError, new Error(`DoNotConstruct: Cannot construct unknown type ${typeName}`), "f");
-            throw __classPrivateFieldGet(this, _DoNotConstruct_neverError, "f");
+            this.__internal__neverError = new Error(`DoNotConstruct: Cannot construct unknown type ${typeName}`);
+            throw this.__internal__neverError;
         }
         static with(typeName) {
             return class extends DoNotConstruct {
@@ -6569,43 +6625,42 @@
             };
         }
         get encodedLength() {
-            throw __classPrivateFieldGet(this, _DoNotConstruct_neverError, "f");
+            throw this.__internal__neverError;
         }
         get hash() {
-            throw __classPrivateFieldGet(this, _DoNotConstruct_neverError, "f");
+            throw this.__internal__neverError;
         }
         get isEmpty() {
-            throw __classPrivateFieldGet(this, _DoNotConstruct_neverError, "f");
+            throw this.__internal__neverError;
         }
         eq() {
-            throw __classPrivateFieldGet(this, _DoNotConstruct_neverError, "f");
+            throw this.__internal__neverError;
         }
         inspect() {
-            throw __classPrivateFieldGet(this, _DoNotConstruct_neverError, "f");
+            throw this.__internal__neverError;
         }
         toHex() {
-            throw __classPrivateFieldGet(this, _DoNotConstruct_neverError, "f");
+            throw this.__internal__neverError;
         }
         toHuman() {
-            throw __classPrivateFieldGet(this, _DoNotConstruct_neverError, "f");
+            throw this.__internal__neverError;
         }
         toJSON() {
-            throw __classPrivateFieldGet(this, _DoNotConstruct_neverError, "f");
+            throw this.__internal__neverError;
         }
         toPrimitive() {
-            throw __classPrivateFieldGet(this, _DoNotConstruct_neverError, "f");
+            throw this.__internal__neverError;
         }
         toRawType() {
-            throw __classPrivateFieldGet(this, _DoNotConstruct_neverError, "f");
+            throw this.__internal__neverError;
         }
         toString() {
-            throw __classPrivateFieldGet(this, _DoNotConstruct_neverError, "f");
+            throw this.__internal__neverError;
         }
         toU8a() {
-            throw __classPrivateFieldGet(this, _DoNotConstruct_neverError, "f");
+            throw this.__internal__neverError;
         }
     }
-    _DoNotConstruct_neverError = new WeakMap();
 
     class Null {
         constructor(registry) {
@@ -6646,10 +6701,6 @@
         }
     }
 
-    var _Enum_def, _Enum_entryIndex, _Enum_indexes, _Enum_isBasic, _Enum_isIndexed, _Enum_raw;
-    function noopSetDefinition$5(d) {
-        return d;
-    }
     function isRustEnum$1(def) {
         const defValues = Object.values(def);
         if (defValues.some((v) => util.isNumber(v))) {
@@ -6665,7 +6716,7 @@
         let isBasic;
         let isIndexed;
         if (Array.isArray(_def)) {
-            for (let i = 0; i < _def.length; i++) {
+            for (let i = 0, count = _def.length; i < count; i++) {
                 def[_def[i]] = { Type: Null, index: i };
             }
             isBasic = true;
@@ -6673,7 +6724,7 @@
         }
         else if (isRustEnum$1(_def)) {
             const [Types, keys] = mapToTypeMap(registry, _def);
-            for (let i = 0; i < keys.length; i++) {
+            for (let i = 0, count = keys.length; i < count; i++) {
                 def[keys[i]] = { Type: Types[i], index: i };
             }
             isBasic = !Object.values(def).some(({ Type }) => Type !== Null);
@@ -6681,7 +6732,7 @@
         }
         else {
             const entries = Object.entries(_def);
-            for (let i = 0; i < entries.length; i++) {
+            for (let i = 0, count = entries.length; i < count; i++) {
                 const [key, index] = entries[i];
                 def[key] = { Type: Null, index };
             }
@@ -6760,26 +6811,20 @@
         return createFromValue(registry, def, Object.values(def)[0].index);
     }
     class Enum {
-        constructor(registry, Types, value, index, { definition, setDefinition = noopSetDefinition$5 } = {}) {
-            _Enum_def.set(this, void 0);
-            _Enum_entryIndex.set(this, void 0);
-            _Enum_indexes.set(this, void 0);
-            _Enum_isBasic.set(this, void 0);
-            _Enum_isIndexed.set(this, void 0);
-            _Enum_raw.set(this, void 0);
+        constructor(registry, Types, value, index, { definition, setDefinition = util.identity } = {}) {
             const { def, isBasic, isIndexed } = definition || setDefinition(extractDef(registry, Types));
             const decoded = util.isU8a(value) && value.length && !util.isNumber(index)
                 ? createFromU8a(registry, def, value[0], value.subarray(1))
                 : decodeEnum(registry, def, value, index);
             this.registry = registry;
-            __classPrivateFieldSet(this, _Enum_def, def, "f");
-            __classPrivateFieldSet(this, _Enum_isBasic, isBasic, "f");
-            __classPrivateFieldSet(this, _Enum_isIndexed, isIndexed, "f");
-            __classPrivateFieldSet(this, _Enum_indexes, Object.values(def).map(({ index }) => index), "f");
-            __classPrivateFieldSet(this, _Enum_entryIndex, __classPrivateFieldGet(this, _Enum_indexes, "f").indexOf(decoded.index), "f");
-            __classPrivateFieldSet(this, _Enum_raw, decoded.value, "f");
-            if (__classPrivateFieldGet(this, _Enum_raw, "f").initialU8aLength) {
-                this.initialU8aLength = 1 + __classPrivateFieldGet(this, _Enum_raw, "f").initialU8aLength;
+            this.__internal__def = def;
+            this.__internal__isBasic = isBasic;
+            this.__internal__isIndexed = isIndexed;
+            this.__internal__indexes = Object.values(def).map(({ index }) => index);
+            this.__internal__entryIndex = this.__internal__indexes.indexOf(decoded.index);
+            this.__internal__raw = decoded.value;
+            if (this.__internal__raw.initialU8aLength) {
+                this.initialU8aLength = 1 + this.__internal__raw.initialU8aLength;
             }
         }
         static with(Types) {
@@ -6795,9 +6840,10 @@
                     const keys = Array.isArray(Types)
                         ? Types
                         : Object.keys(Types);
-                    const asKeys = new Array(keys.length);
-                    const isKeys = new Array(keys.length);
-                    for (let i = 0; i < keys.length; i++) {
+                    const count = keys.length;
+                    const asKeys = new Array(count);
+                    const isKeys = new Array(count);
+                    for (let i = 0; i < count; i++) {
                         const name = util.stringPascalCase(keys[i]);
                         asKeys[i] = `as${name}`;
                         isKeys[i] = `is${name}`;
@@ -6813,37 +6859,37 @@
                 _a;
         }
         get encodedLength() {
-            return 1 + __classPrivateFieldGet(this, _Enum_raw, "f").encodedLength;
+            return 1 + this.__internal__raw.encodedLength;
         }
         get hash() {
             return this.registry.hash(this.toU8a());
         }
         get index() {
-            return __classPrivateFieldGet(this, _Enum_indexes, "f")[__classPrivateFieldGet(this, _Enum_entryIndex, "f")];
+            return this.__internal__indexes[this.__internal__entryIndex];
         }
         get inner() {
-            return __classPrivateFieldGet(this, _Enum_raw, "f");
+            return this.__internal__raw;
         }
         get isBasic() {
-            return __classPrivateFieldGet(this, _Enum_isBasic, "f");
+            return this.__internal__isBasic;
         }
         get isEmpty() {
-            return __classPrivateFieldGet(this, _Enum_raw, "f").isEmpty;
+            return this.__internal__raw.isEmpty;
         }
         get isNone() {
-            return __classPrivateFieldGet(this, _Enum_raw, "f") instanceof Null;
+            return this.__internal__raw instanceof Null;
         }
         get defIndexes() {
-            return __classPrivateFieldGet(this, _Enum_indexes, "f");
+            return this.__internal__indexes;
         }
         get defKeys() {
-            return Object.keys(__classPrivateFieldGet(this, _Enum_def, "f"));
+            return Object.keys(this.__internal__def);
         }
         get type() {
-            return this.defKeys[__classPrivateFieldGet(this, _Enum_entryIndex, "f")];
+            return this.defKeys[this.__internal__entryIndex];
         }
         get value() {
-            return __classPrivateFieldGet(this, _Enum_raw, "f");
+            return this.__internal__raw;
         }
         eq(other) {
             if (util.isU8a(other)) {
@@ -6852,7 +6898,7 @@
             else if (util.isNumber(other)) {
                 return this.toNumber() === other;
             }
-            else if (__classPrivateFieldGet(this, _Enum_isBasic, "f") && util.isString(other)) {
+            else if (this.__internal__isBasic && util.isString(other)) {
                 return this.type === other;
             }
             else if (util.isHex(other)) {
@@ -6867,10 +6913,10 @@
             return this.value.eq(other);
         }
         inspect() {
-            if (__classPrivateFieldGet(this, _Enum_isBasic, "f")) {
+            if (this.__internal__isBasic) {
                 return { outer: [new Uint8Array([this.index])] };
             }
-            const { inner, outer = [] } = __classPrivateFieldGet(this, _Enum_raw, "f").inspect();
+            const { inner, outer = [] } = this.__internal__raw.inspect();
             return {
                 inner,
                 outer: [new Uint8Array([this.index]), ...outer]
@@ -6880,33 +6926,33 @@
             return util.u8aToHex(this.toU8a());
         }
         toHuman(isExtended) {
-            return __classPrivateFieldGet(this, _Enum_isBasic, "f") || this.isNone
+            return this.__internal__isBasic || this.isNone
                 ? this.type
-                : { [this.type]: __classPrivateFieldGet(this, _Enum_raw, "f").toHuman(isExtended) };
+                : { [this.type]: this.__internal__raw.toHuman(isExtended) };
         }
         toJSON() {
-            return __classPrivateFieldGet(this, _Enum_isBasic, "f")
+            return this.__internal__isBasic
                 ? this.type
-                : { [util.stringCamelCase(this.type)]: __classPrivateFieldGet(this, _Enum_raw, "f").toJSON() };
+                : { [util.stringCamelCase(this.type)]: this.__internal__raw.toJSON() };
         }
         toNumber() {
             return this.index;
         }
         toPrimitive() {
-            return __classPrivateFieldGet(this, _Enum_isBasic, "f")
+            return this.__internal__isBasic
                 ? this.type
-                : { [util.stringCamelCase(this.type)]: __classPrivateFieldGet(this, _Enum_raw, "f").toPrimitive() };
+                : { [util.stringCamelCase(this.type)]: this.__internal__raw.toPrimitive() };
         }
         _toRawStruct() {
-            if (__classPrivateFieldGet(this, _Enum_isBasic, "f")) {
-                return __classPrivateFieldGet(this, _Enum_isIndexed, "f")
+            if (this.__internal__isBasic) {
+                return this.__internal__isIndexed
                     ? this.defKeys.reduce((out, key, index) => {
-                        out[key] = __classPrivateFieldGet(this, _Enum_indexes, "f")[index];
+                        out[key] = this.__internal__indexes[index];
                         return out;
                     }, {})
                     : this.defKeys;
             }
-            const entries = Object.entries(__classPrivateFieldGet(this, _Enum_def, "f"));
+            const entries = Object.entries(this.__internal__def);
             return typesToMap(this.registry, entries.reduce((out, [key, { Type }], i) => {
                 out[0][i] = Type;
                 out[1][i] = key;
@@ -6923,14 +6969,13 @@
         }
         toU8a(isBare) {
             return isBare
-                ? __classPrivateFieldGet(this, _Enum_raw, "f").toU8a(isBare)
+                ? this.__internal__raw.toU8a(isBare)
                 : util.u8aConcatStrict([
                     new Uint8Array([this.index]),
-                    __classPrivateFieldGet(this, _Enum_raw, "f").toU8a(isBare)
+                    this.__internal__raw.toU8a(isBare)
                 ]);
         }
     }
-    _Enum_def = new WeakMap(), _Enum_entryIndex = new WeakMap(), _Enum_indexes = new WeakMap(), _Enum_isBasic = new WeakMap(), _Enum_isIndexed = new WeakMap(), _Enum_raw = new WeakMap();
 
     class Int extends AbstractInt {
         constructor(registry, value = 0, bitLength) {
@@ -6948,10 +6993,6 @@
         }
     }
 
-    var _Option_Type, _Option_raw;
-    function noopSetDefinition$4(d) {
-        return d;
-    }
     class None extends Null {
         toRawType() {
             return 'None';
@@ -6981,9 +7022,7 @@
         return new Type(registry, value);
     }
     class Option {
-        constructor(registry, typeName, value, { definition, setDefinition = noopSetDefinition$4 } = {}) {
-            _Option_Type.set(this, void 0);
-            _Option_raw.set(this, void 0);
+        constructor(registry, typeName, value, { definition, setDefinition = util.identity } = {}) {
             const Type = definition || setDefinition(typeToConstructor(registry, typeName));
             const decoded = util.isU8a(value) && value.length && !util.isCodec(value)
                 ? value[0] === 0
@@ -6991,8 +7030,8 @@
                     : new Type(registry, value.subarray(1))
                 : decodeOption(registry, Type, value);
             this.registry = registry;
-            __classPrivateFieldSet(this, _Option_Type, Type, "f");
-            __classPrivateFieldSet(this, _Option_raw, decoded, "f");
+            this.__internal__Type = Type;
+            this.__internal__raw = decoded;
             if (decoded?.initialU8aLength) {
                 this.initialU8aLength = 1 + decoded.initialU8aLength;
             }
@@ -7010,7 +7049,7 @@
             };
         }
         get encodedLength() {
-            return 1 + __classPrivateFieldGet(this, _Option_raw, "f").encodedLength;
+            return 1 + this.__internal__raw.encodedLength;
         }
         get hash() {
             return this.registry.hash(this.toU8a());
@@ -7019,13 +7058,13 @@
             return this.isNone;
         }
         get isNone() {
-            return __classPrivateFieldGet(this, _Option_raw, "f") instanceof None;
+            return this.__internal__raw instanceof None;
         }
         get isSome() {
             return !this.isNone;
         }
         get value() {
-            return __classPrivateFieldGet(this, _Option_raw, "f");
+            return this.__internal__raw;
         }
         eq(other) {
             if (other instanceof Option) {
@@ -7037,7 +7076,7 @@
             if (this.isNone) {
                 return { outer: [new Uint8Array([0])] };
             }
-            const { inner, outer = [] } = __classPrivateFieldGet(this, _Option_raw, "f").inspect();
+            const { inner, outer = [] } = this.__internal__raw.inspect();
             return {
                 inner,
                 outer: [new Uint8Array([1]), ...outer]
@@ -7049,35 +7088,35 @@
                 : util.u8aToHex(this.toU8a().subarray(1));
         }
         toHuman(isExtended) {
-            return __classPrivateFieldGet(this, _Option_raw, "f").toHuman(isExtended);
+            return this.__internal__raw.toHuman(isExtended);
         }
         toJSON() {
             return this.isNone
                 ? null
-                : __classPrivateFieldGet(this, _Option_raw, "f").toJSON();
+                : this.__internal__raw.toJSON();
         }
         toPrimitive() {
             return this.isNone
                 ? null
-                : __classPrivateFieldGet(this, _Option_raw, "f").toPrimitive();
+                : this.__internal__raw.toPrimitive();
         }
         toRawType(isBare) {
-            const wrapped = this.registry.getClassName(__classPrivateFieldGet(this, _Option_Type, "f")) || new (__classPrivateFieldGet(this, _Option_Type, "f"))(this.registry).toRawType();
+            const wrapped = this.registry.getClassName(this.__internal__Type) || new this.__internal__Type(this.registry).toRawType();
             return isBare
                 ? wrapped
                 : `Option<${wrapped}>`;
         }
         toString() {
-            return __classPrivateFieldGet(this, _Option_raw, "f").toString();
+            return this.__internal__raw.toString();
         }
         toU8a(isBare) {
             if (isBare) {
-                return __classPrivateFieldGet(this, _Option_raw, "f").toU8a(true);
+                return this.__internal__raw.toU8a(true);
             }
             const u8a = new Uint8Array(this.encodedLength);
             if (this.isSome) {
                 u8a.set([1]);
-                u8a.set(__classPrivateFieldGet(this, _Option_raw, "f").toU8a(), 1);
+                u8a.set(this.__internal__raw.toU8a(), 1);
             }
             return u8a;
         }
@@ -7085,7 +7124,7 @@
             if (this.isNone) {
                 throw new Error('Option: unwrapping a None value');
             }
-            return __classPrivateFieldGet(this, _Option_raw, "f");
+            return this.__internal__raw;
         }
         unwrapOr(defaultValue) {
             return this.isSome
@@ -7095,10 +7134,9 @@
         unwrapOrDefault() {
             return this.isSome
                 ? this.unwrap()
-                : new (__classPrivateFieldGet(this, _Option_Type, "f"))(this.registry);
+                : new this.__internal__Type(this.registry);
         }
     }
-    _Option_Type = new WeakMap(), _Option_raw = new WeakMap();
 
     class Result extends Enum {
         constructor(registry, Ok, Err, value) {
@@ -7138,14 +7176,10 @@
         }
     }
 
-    var _Tuple_Types;
-    function noopSetDefinition$3(d) {
-        return d;
-    }
     function decodeTuple(registry, result, value, Classes) {
         if (Array.isArray(value)) {
             const Types = Classes[0];
-            for (let i = 0; i < Types.length; i++) {
+            for (let i = 0, count = Types.length; i < count; i++) {
                 try {
                     const entry = value?.[i];
                     result[i] = entry instanceof Types[i]
@@ -7163,7 +7197,7 @@
         }
         else if (!value || !result.length) {
             const Types = Classes[0];
-            for (let i = 0; i < Types.length; i++) {
+            for (let i = 0, count = Types.length; i < count; i++) {
                 result[i] = new Types[i](registry);
             }
             return [result, 0];
@@ -7171,18 +7205,17 @@
         throw new Error(`Expected array input to Tuple decoding, found ${typeof value}: ${util.stringify(value)}`);
     }
     class Tuple extends AbstractArray {
-        constructor(registry, Types, value, { definition, setDefinition = noopSetDefinition$3 } = {}) {
+        constructor(registry, Types, value, { definition, setDefinition = util.identity } = {}) {
             const Classes = definition || setDefinition(Array.isArray(Types)
-                ? [Types.map((t) => typeToConstructor(registry, t)), []]
+                ? [typesToConstructors(registry, Types), []]
                 : util.isFunction(Types) || util.isString(Types)
                     ? [[typeToConstructor(registry, Types)], []]
                     : mapToTypeMap(registry, Types));
             super(registry, Classes[0].length);
-            _Tuple_Types.set(this, void 0);
             this.initialU8aLength = (util.isU8a(value)
                 ? decodeU8a$6(registry, this, value, Classes)
                 : decodeTuple(registry, this, value, Classes))[1];
-            __classPrivateFieldSet(this, _Tuple_Types, Classes, "f");
+            this.__internal__Types = Classes;
         }
         static with(Types) {
             let definition;
@@ -7195,15 +7228,15 @@
         }
         get encodedLength() {
             let total = 0;
-            for (let i = 0; i < this.length; i++) {
+            for (let i = 0, count = this.length; i < count; i++) {
                 total += this[i].encodedLength;
             }
             return total;
         }
         get Types() {
-            return __classPrivateFieldGet(this, _Tuple_Types, "f")[1].length
-                ? __classPrivateFieldGet(this, _Tuple_Types, "f")[1]
-                : __classPrivateFieldGet(this, _Tuple_Types, "f")[0].map((T) => new T(this.registry).toRawType());
+            return this.__internal__Types[1].length
+                ? this.__internal__Types[1]
+                : this.__internal__Types[0].map((T) => new T(this.registry).toRawType());
         }
         inspect() {
             return {
@@ -7211,7 +7244,7 @@
             };
         }
         toRawType() {
-            const types = __classPrivateFieldGet(this, _Tuple_Types, "f")[0].map((T) => this.registry.getClassName(T) || new T(this.registry).toRawType());
+            const types = this.__internal__Types[0].map((T) => this.registry.getClassName(T) || new T(this.registry).toRawType());
             return `(${types.join(',')})`;
         }
         toString() {
@@ -7221,7 +7254,6 @@
             return util.u8aConcatStrict(this.toU8aInner(isBare));
         }
     }
-    _Tuple_Types = new WeakMap();
 
     class UInt extends AbstractInt {
         static with(bitLength, typeName) {
@@ -7236,12 +7268,8 @@
         }
     }
 
-    var _Vec_Type;
     const MAX_LENGTH$2 = 64 * 1024;
     const l$5 = util.logger('Vec');
-    function noopSetDefinition$2(d) {
-        return d;
-    }
     function decodeVecLength(value) {
         if (Array.isArray(value)) {
             return [value, value.length, 0];
@@ -7282,14 +7310,13 @@
         return decodeU8aVec(registry, result, util.u8aToU8a(value), startAt, Type);
     }
     class Vec extends AbstractArray {
-        constructor(registry, Type, value = [], { definition, setDefinition = noopSetDefinition$2 } = {}) {
+        constructor(registry, Type, value = [], { definition, setDefinition = util.identity } = {}) {
             const [decodeFrom, length, startAt] = decodeVecLength(value);
             super(registry, length);
-            _Vec_Type.set(this, void 0);
-            __classPrivateFieldSet(this, _Vec_Type, definition || setDefinition(typeToConstructor(registry, Type)), "f");
+            this.__internal__Type = definition || setDefinition(typeToConstructor(registry, Type));
             this.initialU8aLength = (util.isU8a(decodeFrom)
-                ? decodeU8aVec(registry, this, decodeFrom, startAt, __classPrivateFieldGet(this, _Vec_Type, "f"))
-                : decodeVec(registry, this, decodeFrom, startAt, __classPrivateFieldGet(this, _Vec_Type, "f")))[0];
+                ? decodeU8aVec(registry, this, decodeFrom, startAt, this.__internal__Type)
+                : decodeVec(registry, this, decodeFrom, startAt, this.__internal__Type))[0];
         }
         static with(Type) {
             let definition;
@@ -7301,13 +7328,13 @@
             };
         }
         get Type() {
-            return __classPrivateFieldGet(this, _Vec_Type, "f").name;
+            return this.__internal__Type.name;
         }
         indexOf(other) {
-            const check = other instanceof __classPrivateFieldGet(this, _Vec_Type, "f")
+            const check = other instanceof this.__internal__Type
                 ? other
-                : new (__classPrivateFieldGet(this, _Vec_Type, "f"))(this.registry, other);
-            for (let i = 0; i < this.length; i++) {
+                : new this.__internal__Type(this.registry, other);
+            for (let i = 0, count = this.length; i < count; i++) {
                 if (check.eq(this[i])) {
                     return i;
                 }
@@ -7315,23 +7342,17 @@
             return -1;
         }
         toRawType() {
-            return `Vec<${this.registry.getClassName(__classPrivateFieldGet(this, _Vec_Type, "f")) || new (__classPrivateFieldGet(this, _Vec_Type, "f"))(this.registry).toRawType()}>`;
+            return `Vec<${this.registry.getClassName(this.__internal__Type) || new this.__internal__Type(this.registry).toRawType()}>`;
         }
     }
-    _Vec_Type = new WeakMap();
 
-    var _VecFixed_Type;
-    function noopSetDefinition$1(d) {
-        return d;
-    }
     class VecFixed extends AbstractArray {
-        constructor(registry, Type, length, value = [], { definition, setDefinition = noopSetDefinition$1 } = {}) {
+        constructor(registry, Type, length, value = [], { definition, setDefinition = util.identity } = {}) {
             super(registry, length);
-            _VecFixed_Type.set(this, void 0);
-            __classPrivateFieldSet(this, _VecFixed_Type, definition || setDefinition(typeToConstructor(registry, Type)), "f");
+            this.__internal__Type = definition || setDefinition(typeToConstructor(registry, Type));
             this.initialU8aLength = (util.isU8a(value)
-                ? decodeU8aVec(registry, this, value, 0, __classPrivateFieldGet(this, _VecFixed_Type, "f"))
-                : decodeVec(registry, this, value, 0, __classPrivateFieldGet(this, _VecFixed_Type, "f")))[1];
+                ? decodeU8aVec(registry, this, value, 0, this.__internal__Type)
+                : decodeVec(registry, this, value, 0, this.__internal__Type))[1];
         }
         static with(Type, length) {
             let definition;
@@ -7343,11 +7364,11 @@
             };
         }
         get Type() {
-            return new (__classPrivateFieldGet(this, _VecFixed_Type, "f"))(this.registry).toRawType();
+            return new this.__internal__Type(this.registry).toRawType();
         }
         get encodedLength() {
             let total = 0;
-            for (let i = 0; i < this.length; i++) {
+            for (let i = 0, count = this.length; i < count; i++) {
                 total += this[i].encodedLength;
             }
             return total;
@@ -7367,7 +7388,6 @@
             return `[${this.Type};${this.length}]`;
         }
     }
-    _VecFixed_Type = new WeakMap();
 
     class Raw extends Uint8Array {
         static get [Symbol.species]() {
@@ -7443,7 +7463,6 @@
         }
     }
 
-    var _BitVec_decodedLength, _BitVec_isMsb;
     function decodeBitVecU8a(value) {
         if (!value || !value.length) {
             return [0, new Uint8Array()];
@@ -7466,17 +7485,15 @@
         constructor(registry, value, isMsb = false) {
             const [decodedLength, u8a] = decodeBitVec(value);
             super(registry, u8a);
-            _BitVec_decodedLength.set(this, void 0);
-            _BitVec_isMsb.set(this, void 0);
-            __classPrivateFieldSet(this, _BitVec_decodedLength, decodedLength, "f");
-            __classPrivateFieldSet(this, _BitVec_isMsb, isMsb, "f");
+            this.__internal__decodedLength = decodedLength;
+            this.__internal__isMsb = isMsb;
         }
         get encodedLength() {
-            return this.length + util.compactToU8a(__classPrivateFieldGet(this, _BitVec_decodedLength, "f")).length;
+            return this.length + util.compactToU8a(this.__internal__decodedLength).length;
         }
         inspect() {
             return {
-                outer: [util.compactToU8a(__classPrivateFieldGet(this, _BitVec_decodedLength, "f")), super.toU8a()]
+                outer: [util.compactToU8a(this.__internal__decodedLength), super.toU8a()]
             };
         }
         toBoolArray() {
@@ -7490,12 +7507,13 @@
                 !!(v & 2),
                 !!(v & 1)
             ]);
-            const result = new Array(8 * map.length);
-            for (let i = 0; i < map.length; i++) {
+            const count = map.length;
+            const result = new Array(8 * count);
+            for (let i = 0; i < count; i++) {
                 const off = i * 8;
                 const v = map[i];
                 for (let j = 0; j < 8; j++) {
-                    result[off + j] = __classPrivateFieldGet(this, _BitVec_isMsb, "f")
+                    result[off + j] = this.__internal__isMsb
                         ? v[j]
                         : v[7 - j];
                 }
@@ -7505,7 +7523,7 @@
         toHuman() {
             return `0b${[...this.toU8a(true)]
             .map((d) => `00000000${d.toString(2)}`.slice(-8))
-            .map((s) => __classPrivateFieldGet(this, _BitVec_isMsb, "f") ? s : s.split('').reverse().join(''))
+            .map((s) => this.__internal__isMsb ? s : s.split('').reverse().join(''))
             .join('_')}`;
         }
         toRawType() {
@@ -7515,12 +7533,10 @@
             const bitVec = super.toU8a(isBare);
             return isBare
                 ? bitVec
-                : util.u8aConcatStrict([util.compactToU8a(__classPrivateFieldGet(this, _BitVec_decodedLength, "f")), bitVec]);
+                : util.u8aConcatStrict([util.compactToU8a(this.__internal__decodedLength), bitVec]);
         }
     }
-    _BitVec_decodedLength = new WeakMap(), _BitVec_isMsb = new WeakMap();
 
-    var _Struct_jsonMap, _Struct_Types;
     function noopSetDefinition(d) {
         return d;
     }
@@ -7528,14 +7544,15 @@
         let jsonObj;
         const typeofArray = Array.isArray(value);
         const typeofMap = value instanceof Map;
+        const count = keys.length;
         if (!typeofArray && !typeofMap && !util.isObject(value)) {
             throw new Error(`Struct: Cannot decode value ${util.stringify(value)} (typeof ${typeof value}), expected an input object, map or array`);
         }
-        else if (typeofArray && value.length !== keys.length) {
+        else if (typeofArray && value.length !== count) {
             throw new Error(`Struct: Unable to map ${util.stringify(value)} array to object with known keys ${keys.join(', ')}`);
         }
-        const raw = new Array(keys.length);
-        for (let i = 0; i < keys.length; i++) {
+        const raw = new Array(count);
+        for (let i = 0; i < count; i++) {
             const key = keys[i];
             const jsonKey = jsonMap.get(key) || key;
             const Type = Types[i];
@@ -7553,7 +7570,7 @@
                         if (util.isUndefined(jsonObj)) {
                             const entries = Object.entries(value);
                             jsonObj = {};
-                            for (let e = 0; e < entries.length; e++) {
+                            for (let e = 0, ecount = entries.length; e < ecount; e++) {
                                 jsonObj[util.stringCamelCase(entries[e][0])] = entries[e][1];
                             }
                         }
@@ -7588,12 +7605,10 @@
                     ? [value, 0]
                     : decodeStructFromObject(registry, typeMap, value || {}, jsonMap);
             super(decoded);
-            _Struct_jsonMap.set(this, void 0);
-            _Struct_Types.set(this, void 0);
             this.initialU8aLength = decodedLength;
             this.registry = registry;
-            __classPrivateFieldSet(this, _Struct_jsonMap, jsonMap, "f");
-            __classPrivateFieldSet(this, _Struct_Types, typeMap, "f");
+            this.__internal__jsonMap = jsonMap;
+            this.__internal__Types = typeMap;
         }
         static with(Types, jsonMap) {
             var _a;
@@ -7611,7 +7626,7 @@
                 _a;
         }
         get defKeys() {
-            return __classPrivateFieldGet(this, _Struct_Types, "f")[1];
+            return this.__internal__Types[1];
         }
         get isEmpty() {
             for (const v of this.values()) {
@@ -7633,8 +7648,8 @@
         }
         get Type() {
             const result = {};
-            const [Types, keys] = __classPrivateFieldGet(this, _Struct_Types, "f");
-            for (let i = 0; i < keys.length; i++) {
+            const [Types, keys] = this.__internal__Types;
+            for (let i = 0, count = keys.length; i < count; i++) {
                 result[keys[i]] = new Types[i](this.registry).toRawType();
             }
             return result;
@@ -7681,7 +7696,7 @@
         toJSON() {
             const json = {};
             for (const [k, v] of this.entries()) {
-                json[(__classPrivateFieldGet(this, _Struct_jsonMap, "f").get(k) || k)] = v.toJSON();
+                json[(this.__internal__jsonMap.get(k) || k)] = v.toJSON();
             }
             return json;
         }
@@ -7693,7 +7708,7 @@
             return json;
         }
         toRawType() {
-            return util.stringify(typesToMap(this.registry, __classPrivateFieldGet(this, _Struct_Types, "f")));
+            return util.stringify(typesToMap(this.registry, this.__internal__Types));
         }
         toString() {
             return util.stringify(this.toJSON());
@@ -7708,9 +7723,7 @@
             return util.u8aConcatStrict(encoded);
         }
     }
-    _Struct_jsonMap = new WeakMap(), _Struct_Types = new WeakMap();
 
-    var _CodecMap_KeyClass, _CodecMap_ValClass, _CodecMap_type;
     const l$4 = util.logger('Map');
     function decodeMapFromU8a(registry, KeyClass, ValClass, u8a) {
         const output = new Map();
@@ -7720,7 +7733,7 @@
             types.push(KeyClass, ValClass);
         }
         const [values, decodedLength] = decodeU8a$6(registry, new Array(types.length), u8a.subarray(offset), [types, []]);
-        for (let i = 0; i < values.length; i += 2) {
+        for (let i = 0, count = values.length; i < count; i += 2) {
             output.set(values[i], values[i + 1]);
         }
         return [KeyClass, ValClass, output, offset + decodedLength];
@@ -7766,14 +7779,11 @@
         constructor(registry, keyType, valType, rawValue, type = 'HashMap') {
             const [KeyClass, ValClass, decoded, decodedLength] = decodeMap(registry, keyType, valType, rawValue);
             super(type === 'BTreeMap' ? sortMap(decoded) : decoded);
-            _CodecMap_KeyClass.set(this, void 0);
-            _CodecMap_ValClass.set(this, void 0);
-            _CodecMap_type.set(this, void 0);
             this.registry = registry;
             this.initialU8aLength = decodedLength;
-            __classPrivateFieldSet(this, _CodecMap_KeyClass, KeyClass, "f");
-            __classPrivateFieldSet(this, _CodecMap_ValClass, ValClass, "f");
-            __classPrivateFieldSet(this, _CodecMap_type, type, "f");
+            this.__internal__KeyClass = KeyClass;
+            this.__internal__ValClass = ValClass;
+            this.__internal__type = type;
         }
         get encodedLength() {
             let len = util.compactToU8a(this.size).length;
@@ -7831,7 +7841,7 @@
             return json;
         }
         toRawType() {
-            return `${__classPrivateFieldGet(this, _CodecMap_type, "f")}<${this.registry.getClassName(__classPrivateFieldGet(this, _CodecMap_KeyClass, "f")) || new (__classPrivateFieldGet(this, _CodecMap_KeyClass, "f"))(this.registry).toRawType()},${this.registry.getClassName(__classPrivateFieldGet(this, _CodecMap_ValClass, "f")) || new (__classPrivateFieldGet(this, _CodecMap_ValClass, "f"))(this.registry).toRawType()}>`;
+            return `${this.__internal__type}<${this.registry.getClassName(this.__internal__KeyClass) || new this.__internal__KeyClass(this.registry).toRawType()},${this.registry.getClassName(this.__internal__ValClass) || new this.__internal__ValClass(this.registry).toRawType()}>`;
         }
         toString() {
             return util.stringify(this.toJSON());
@@ -7847,7 +7857,6 @@
             return util.u8aConcatStrict(encoded);
         }
     }
-    _CodecMap_KeyClass = new WeakMap(), _CodecMap_ValClass = new WeakMap(), _CodecMap_type = new WeakMap();
 
     class BTreeMap extends CodecMap {
         static with(keyType, valType) {
@@ -7859,7 +7868,6 @@
         }
     }
 
-    var _BTreeSet_ValClass;
     const l$3 = util.logger('BTreeSet');
     function decodeSetFromU8a(registry, ValClass, u8a) {
         const output = new Set();
@@ -7901,10 +7909,9 @@
         constructor(registry, valType, rawValue) {
             const [ValClass, values, decodedLength] = decodeSet$1(registry, valType, rawValue);
             super(sortSet(values));
-            _BTreeSet_ValClass.set(this, void 0);
             this.registry = registry;
             this.initialU8aLength = decodedLength;
-            __classPrivateFieldSet(this, _BTreeSet_ValClass, ValClass, "f");
+            this.__internal__ValClass = ValClass;
         }
         static with(valType) {
             return class extends BTreeSet {
@@ -7960,7 +7967,7 @@
             return json;
         }
         toRawType() {
-            return `BTreeSet<${this.registry.getClassName(__classPrivateFieldGet(this, _BTreeSet_ValClass, "f")) || new (__classPrivateFieldGet(this, _BTreeSet_ValClass, "f"))(this.registry).toRawType()}>`;
+            return `BTreeSet<${this.registry.getClassName(this.__internal__ValClass) || new this.__internal__ValClass(this.registry).toRawType()}>`;
         }
         toPrimitive() {
             const json = [];
@@ -7983,7 +7990,6 @@
             return util.u8aConcatStrict(encoded);
         }
     }
-    _BTreeSet_ValClass = new WeakMap();
 
     const MAX_LENGTH$1 = 10 * 1024 * 1024;
     function decodeBytesU8a(value) {
@@ -8174,12 +8180,10 @@
         }
     }
 
-    var _Range_rangeName;
     class Range extends Tuple {
         constructor(registry, Type, value, { rangeName = 'Range' } = {}) {
             super(registry, [Type, Type], value);
-            _Range_rangeName.set(this, void 0);
-            __classPrivateFieldSet(this, _Range_rangeName, rangeName, "f");
+            this.__internal__rangeName = rangeName;
         }
         static with(Type) {
             return class extends Range {
@@ -8195,10 +8199,9 @@
             return this[1];
         }
         toRawType() {
-            return `${__classPrivateFieldGet(this, _Range_rangeName, "f")}<${this.start.toRawType()}>`;
+            return `${this.__internal__rangeName}<${this.start.toRawType()}>`;
         }
     }
-    _Range_rangeName = new WeakMap();
 
     class RangeInclusive extends Range {
         constructor(registry, Type, value) {
@@ -8213,7 +8216,6 @@
         }
     }
 
-    var _Text_override;
     const MAX_LENGTH = 128 * 1024;
     function decodeText(value) {
         if (util.isU8a(value)) {
@@ -8242,7 +8244,7 @@
         constructor(registry, value) {
             const [str, decodedLength] = decodeText(value);
             super(str);
-            _Text_override.set(this, null);
+            this.__internal__override = null;
             this.registry = registry;
             this.initialU8aLength = decodedLength;
         }
@@ -8272,7 +8274,7 @@
             };
         }
         setOverride(override) {
-            __classPrivateFieldSet(this, _Text_override, override, "f");
+            this.__internal__override = override;
         }
         toHex() {
             return util.u8aToHex(this.toU8a(true));
@@ -8290,7 +8292,7 @@
             return 'Text';
         }
         toString() {
-            return __classPrivateFieldGet(this, _Text_override, "f") || super.toString();
+            return this.__internal__override || super.toString();
         }
         toU8a(isBare) {
             const encoded = util.stringToU8a(super.toString());
@@ -8299,7 +8301,6 @@
                 : util.compactAddLength(encoded);
         }
     }
-    _Text_override = new WeakMap();
 
     class Type extends Text {
         constructor(registry, value = '') {
@@ -8342,7 +8343,6 @@
         }
     }
 
-    var _WrapperKeepOpaque_Type, _WrapperKeepOpaque_decoded, _WrapperKeepOpaque_opaqueName;
     function decodeRaw(registry, typeName, value) {
         const Type = typeToConstructor(registry, typeName);
         if (util.isU8a(value) || util.isHex(value)) {
@@ -8365,12 +8365,9 @@
         constructor(registry, typeName, value, { opaqueName = 'WrapperKeepOpaque' } = {}) {
             const [Type, decoded, u8a] = decodeRaw(registry, typeName, value);
             super(registry, u8a);
-            _WrapperKeepOpaque_Type.set(this, void 0);
-            _WrapperKeepOpaque_decoded.set(this, void 0);
-            _WrapperKeepOpaque_opaqueName.set(this, void 0);
-            __classPrivateFieldSet(this, _WrapperKeepOpaque_Type, Type, "f");
-            __classPrivateFieldSet(this, _WrapperKeepOpaque_decoded, decoded, "f");
-            __classPrivateFieldSet(this, _WrapperKeepOpaque_opaqueName, opaqueName, "f");
+            this.__internal__Type = Type;
+            this.__internal__decoded = decoded;
+            this.__internal__opaqueName = opaqueName;
         }
         static with(Type) {
             return class extends WrapperKeepOpaque {
@@ -8380,12 +8377,12 @@
             };
         }
         get isDecoded() {
-            return !!__classPrivateFieldGet(this, _WrapperKeepOpaque_decoded, "f");
+            return !!this.__internal__decoded;
         }
         inspect() {
-            return __classPrivateFieldGet(this, _WrapperKeepOpaque_decoded, "f")
+            return this.__internal__decoded
                 ? {
-                    inner: [__classPrivateFieldGet(this, _WrapperKeepOpaque_decoded, "f").inspect()],
+                    inner: [this.__internal__decoded.inspect()],
                     outer: [util.compactToU8a(this.length)]
                 }
                 : {
@@ -8393,31 +8390,30 @@
                 };
         }
         toHuman(isExtended) {
-            return __classPrivateFieldGet(this, _WrapperKeepOpaque_decoded, "f")
-                ? __classPrivateFieldGet(this, _WrapperKeepOpaque_decoded, "f").toHuman(isExtended)
+            return this.__internal__decoded
+                ? this.__internal__decoded.toHuman(isExtended)
                 : super.toHuman();
         }
         toPrimitive() {
-            return __classPrivateFieldGet(this, _WrapperKeepOpaque_decoded, "f")
-                ? __classPrivateFieldGet(this, _WrapperKeepOpaque_decoded, "f").toPrimitive()
+            return this.__internal__decoded
+                ? this.__internal__decoded.toPrimitive()
                 : super.toPrimitive();
         }
         toRawType() {
-            return `${__classPrivateFieldGet(this, _WrapperKeepOpaque_opaqueName, "f")}<${this.registry.getClassName(__classPrivateFieldGet(this, _WrapperKeepOpaque_Type, "f")) || (__classPrivateFieldGet(this, _WrapperKeepOpaque_decoded, "f") ? __classPrivateFieldGet(this, _WrapperKeepOpaque_decoded, "f").toRawType() : new (__classPrivateFieldGet(this, _WrapperKeepOpaque_Type, "f"))(this.registry).toRawType())}>`;
+            return `${this.__internal__opaqueName}<${this.registry.getClassName(this.__internal__Type) || (this.__internal__decoded ? this.__internal__decoded.toRawType() : new this.__internal__Type(this.registry).toRawType())}>`;
         }
         toString() {
-            return __classPrivateFieldGet(this, _WrapperKeepOpaque_decoded, "f")
-                ? __classPrivateFieldGet(this, _WrapperKeepOpaque_decoded, "f").toString()
+            return this.__internal__decoded
+                ? this.__internal__decoded.toString()
                 : super.toString();
         }
         unwrap() {
-            if (!__classPrivateFieldGet(this, _WrapperKeepOpaque_decoded, "f")) {
-                throw new Error(`${__classPrivateFieldGet(this, _WrapperKeepOpaque_opaqueName, "f")}: unwrapping an undecodable value`);
+            if (!this.__internal__decoded) {
+                throw new Error(`${this.__internal__opaqueName}: unwrapping an undecodable value`);
             }
-            return __classPrivateFieldGet(this, _WrapperKeepOpaque_decoded, "f");
+            return this.__internal__decoded;
         }
     }
-    _WrapperKeepOpaque_Type = new WeakMap(), _WrapperKeepOpaque_decoded = new WeakMap(), _WrapperKeepOpaque_opaqueName = new WeakMap();
 
     class WrapperOpaque extends WrapperKeepOpaque {
         constructor(registry, typeName, value) {
@@ -8435,7 +8431,6 @@
         }
     }
 
-    var _Float_bitLength;
     class Float extends Number {
         constructor(registry, value, { bitLength = 32 } = {}) {
             super(util.isU8a(value) || util.isHex(value)
@@ -8443,8 +8438,7 @@
                     ? 0
                     : util.u8aToFloat(util.u8aToU8a(value), { bitLength })
                 : (value || 0));
-            _Float_bitLength.set(this, void 0);
-            __classPrivateFieldSet(this, _Float_bitLength, bitLength, "f");
+            this.__internal__bitLength = bitLength;
             this.encodedLength = bitLength / 8;
             this.initialU8aLength = this.encodedLength;
             this.registry = registry;
@@ -8486,15 +8480,14 @@
             return this.toNumber();
         }
         toRawType() {
-            return `f${__classPrivateFieldGet(this, _Float_bitLength, "f")}`;
+            return `f${this.__internal__bitLength}`;
         }
         toU8a(_isBare) {
             return util.floatToU8a(this, {
-                bitLength: __classPrivateFieldGet(this, _Float_bitLength, "f")
+                bitLength: this.__internal__bitLength
             });
         }
     }
-    _Float_bitLength = new WeakMap();
 
     function decodeJson(value) {
         return Object.entries(value || {});
@@ -8560,17 +8553,17 @@
         }
     }
 
-    var _CodecSet_allowed, _CodecSet_byteLength;
     function encodeSet(setValues, values) {
         const encoded = new util.BN(0);
-        for (let i = 0; i < values.length; i++) {
+        for (let i = 0, count = values.length; i < count; i++) {
             encoded.ior(util.bnToBn(setValues[values[i]] || 0));
         }
         return encoded;
     }
     function decodeSetArray(setValues, values) {
-        const result = new Array(values.length);
-        for (let i = 0; i < values.length; i++) {
+        const count = values.length;
+        const result = new Array(count);
+        for (let i = 0; i < count; i++) {
             const key = values[i];
             if (util.isUndefined(setValues[key])) {
                 throw new Error(`Set: Invalid key '${key}' passed to Set, allowed ${Object.keys(setValues).join(', ')}`);
@@ -8583,7 +8576,7 @@
         const bn = util.bnToBn(_value);
         const keys = Object.keys(setValues);
         const result = [];
-        for (let i = 0; i < keys.length; i++) {
+        for (let i = 0, count = keys.length; i < count; i++) {
             const key = keys[i];
             if (bn.and(util.bnToBn(setValues[key])).eq(util.bnToBn(setValues[key]))) {
                 result.push(key);
@@ -8619,18 +8612,16 @@
     class CodecSet extends Set {
         constructor(registry, setValues, value, bitLength = 8) {
             super(decodeSet(setValues, value, bitLength));
-            _CodecSet_allowed.set(this, void 0);
-            _CodecSet_byteLength.set(this, void 0);
             this.add = (key) => {
-                if (__classPrivateFieldGet(this, _CodecSet_allowed, "f") && util.isUndefined(__classPrivateFieldGet(this, _CodecSet_allowed, "f")[key])) {
+                if (this.__internal__allowed && util.isUndefined(this.__internal__allowed[key])) {
                     throw new Error(`Set: Invalid key '${key}' on add`);
                 }
                 super.add(key);
                 return this;
             };
             this.registry = registry;
-            __classPrivateFieldSet(this, _CodecSet_allowed, setValues, "f");
-            __classPrivateFieldSet(this, _CodecSet_byteLength, bitLength / 8, "f");
+            this.__internal__allowed = setValues;
+            this.__internal__byteLength = bitLength / 8;
         }
         static with(values, bitLength) {
             var _a;
@@ -8641,8 +8632,9 @@
                 },
                 (() => {
                     const keys = Object.keys(values);
-                    const isKeys = new Array(keys.length);
-                    for (let i = 0; i < keys.length; i++) {
+                    const count = keys.length;
+                    const isKeys = new Array(count);
+                    for (let i = 0; i < count; i++) {
                         isKeys[i] = `is${util.stringPascalCase(keys[i])}`;
                     }
                     util.objectProperties(_a.prototype, isKeys, (_, i, self) => self.strings.includes(keys[i]));
@@ -8650,7 +8642,7 @@
                 _a;
         }
         get encodedLength() {
-            return __classPrivateFieldGet(this, _CodecSet_byteLength, "f");
+            return this.__internal__byteLength;
         }
         get hash() {
             return this.registry.hash(this.toU8a());
@@ -8662,7 +8654,7 @@
             return [...super.values()];
         }
         get valueEncoded() {
-            return encodeSet(__classPrivateFieldGet(this, _CodecSet_allowed, "f"), this.strings);
+            return encodeSet(this.__internal__allowed, this.strings);
         }
         eq(other) {
             if (Array.isArray(other)) {
@@ -8697,19 +8689,18 @@
             return this.toJSON();
         }
         toRawType() {
-            return util.stringify({ _set: __classPrivateFieldGet(this, _CodecSet_allowed, "f") });
+            return util.stringify({ _set: this.__internal__allowed });
         }
         toString() {
             return `[${this.strings.join(', ')}]`;
         }
         toU8a(_isBare) {
             return util.bnToU8a(this.valueEncoded, {
-                bitLength: __classPrivateFieldGet(this, _CodecSet_byteLength, "f") * 8,
+                bitLength: this.__internal__byteLength * 8,
                 isLe: true
             });
         }
     }
-    _CodecSet_allowed = new WeakMap(), _CodecSet_byteLength = new WeakMap();
 
     class f32 extends Float.with(32) {
         constructor() {
@@ -8830,7 +8821,7 @@
         let s = 0;
         let t = 0;
         let start = 0;
-        for (let i = 0; i < type.length; i++) {
+        for (let i = 0, count = type.length; i < count; i++) {
             switch (type[i]) {
                 case ',': {
                     if (!(c || f || s || t)) {
@@ -9079,7 +9070,7 @@
     function getTypeClassMap(value) {
         const subs = getSubDefArray(value);
         const map = {};
-        for (let i = 0; i < subs.length; i++) {
+        for (let i = 0, count = subs.length; i < count; i++) {
             map[subs[i].name] = getTypeDefType(subs[i]);
         }
         return map;
@@ -9280,7 +9271,7 @@
             throw new Error(`Subtypes does not have consistent names, ${names.join(', ')}`);
         }
         const inner = util.objectSpread({}, extra);
-        for (let i = 0; i < sub.length; i++) {
+        for (let i = 0, count = sub.length; i < count; i++) {
             const def = sub[i];
             inner[def.name] = encodeTypeDef(registry, def);
         }
@@ -10027,7 +10018,13 @@
     };
     const definitions$d = {
         rpc: {},
-        types: util.objectSpread({}, location, xcm, v0, v1, v2, mapXcmTypes(XCM_LATEST), {
+        types: {
+            ...location,
+            ...xcm,
+            ...v0,
+            ...v1,
+            ...v2,
+            ...mapXcmTypes(XCM_LATEST),
             DoubleEncodedCall: {
                 encoded: 'Vec<u8>'
             },
@@ -10104,7 +10101,7 @@
                 }
             },
             XcmVersion: 'u32'
-        })
+        }
     };
 
     const layout = {
@@ -10274,28 +10271,6 @@
             displayName: 'ContractDisplayName'
         }
     };
-    const ContractMetadataV0 = {
-        metadataVersion: 'Text',
-        types: 'Vec<Si0Type>',
-        spec: 'ContractContractSpecV0'
-    };
-    const ContractMetadataV1 = {
-        types: 'Vec<PortableType>',
-        spec: 'ContractContractSpecV1'
-    };
-    const ContractMetadataV2 = {
-        types: 'Vec<PortableType>',
-        spec: 'ContractContractSpecV2'
-    };
-    const ContractMetadataV3 = {
-        types: 'Vec<PortableType>',
-        spec: 'ContractContractSpecV3'
-    };
-    const ContractMetadataV4 = ContractMetadataV3;
-    const ContractProjectInfo = {
-        source: 'ContractProjectSource',
-        contract: 'ContractProjectContract'
-    };
     const latest = {
         ContractConstructorSpecLatest: 'ContractConstructorSpecV3',
         ContractEventSpecLatest: 'ContractEventSpecV2',
@@ -10306,13 +10281,32 @@
     };
     const definitions$c = {
         rpc: {},
-        types: util.objectSpread({}, layout, spec, latest, {
-            ContractProjectInfo,
-            ContractMetadataV0,
-            ContractMetadataV1,
-            ContractMetadataV2,
-            ContractMetadataV3,
-            ContractMetadataV4,
+        types: {
+            ...layout,
+            ...spec,
+            ...latest,
+            ContractProjectInfo: {
+                source: 'ContractProjectSource',
+                contract: 'ContractProjectContract'
+            },
+            ContractMetadataV0: {
+                metadataVersion: 'Text',
+                types: 'Vec<Si0Type>',
+                spec: 'ContractContractSpecV0'
+            },
+            ContractMetadataV1: {
+                types: 'Vec<PortableType>',
+                spec: 'ContractContractSpecV1'
+            },
+            ContractMetadataV2: {
+                types: 'Vec<PortableType>',
+                spec: 'ContractContractSpecV2'
+            },
+            ContractMetadataV3: {
+                types: 'Vec<PortableType>',
+                spec: 'ContractContractSpecV3'
+            },
+            ContractMetadataV4: 'ContractMetadataV3',
             ContractMetadata: {
                 _enum: {
                     V0: 'ContractMetadataV0',
@@ -10322,7 +10316,13 @@
                     V4: 'ContractMetadataV4'
                 }
             },
-            ContractProjectV0: util.objectSpread({ metadataVersion: 'Text' }, ContractProjectInfo, ContractMetadataV0),
+            ContractProjectV0: {
+                metadataVersion: 'Text',
+                source: 'ContractProjectSource',
+                contract: 'ContractProjectContract',
+                types: 'Vec<Si0Type>',
+                spec: 'ContractContractSpecV0'
+            },
             ContractProject: '(ContractProjectInfo, ContractMetadata)',
             ContractProjectContract: {
                 _alias: {
@@ -10346,7 +10346,7 @@
                 compiler: 'Text',
                 wasm: 'Raw'
             }
-        })
+        }
     };
 
     const netRpc = {
@@ -10383,7 +10383,9 @@
             type: 'H256'
         }
     };
-    const rpc$7 = util.objectSpread({}, netRpc, web3Rpc, {
+    const rpc$7 = {
+        ...netRpc,
+        ...web3Rpc,
         accounts: {
             description: 'Returns accounts list.',
             params: [],
@@ -10845,7 +10847,7 @@
             ],
             type: 'bool'
         }
-    });
+    };
 
     const runtime$5 = {
         ConvertTransactionRuntimeApi: [
@@ -11152,7 +11154,10 @@
             }
         }
     };
-    const types = util.objectSpread({}, V0, V1, V2, {
+    const types = {
+        ...V0,
+        ...V1,
+        ...V2,
         EthereumAccountId: 'GenericEthereumAccountId',
         EthereumAddress: 'GenericEthereumAccountId',
         EthereumLookupSource: 'GenericEthereumLookupSource',
@@ -11425,7 +11430,7 @@
             target: 'H256',
             number: 'Option<u64>'
         }
-    });
+    };
     const definitions$b = { rpc: rpc$7, runtime: runtime$5, types };
 
     const runtime$4 = {
@@ -12148,19 +12153,30 @@
     const runtime = {
         TransactionPaymentApi: [
             {
-                methods: util.objectSpread({}, V3_SHARED_PAY_CALL, V2_TO_V4_SHARED_PAY, V1_TO_V4_SHARED_PAY),
+                methods: {
+                    ...V3_SHARED_PAY_CALL,
+                    ...V2_TO_V4_SHARED_PAY,
+                    ...V1_TO_V4_SHARED_PAY
+                },
                 version: 4
             },
             {
-                methods: util.objectSpread({}, V3_SHARED_PAY_CALL, V2_TO_V4_SHARED_PAY, V1_TO_V4_SHARED_PAY),
+                methods: {
+                    ...V3_SHARED_PAY_CALL,
+                    ...V2_TO_V4_SHARED_PAY,
+                    ...V1_TO_V4_SHARED_PAY
+                },
                 version: 3
             },
             {
-                methods: util.objectSpread({}, V2_TO_V4_SHARED_PAY, V1_TO_V4_SHARED_PAY),
+                methods: {
+                    ...V2_TO_V4_SHARED_PAY,
+                    ...V1_TO_V4_SHARED_PAY
+                },
                 version: 2
             },
             {
-                methods: util.objectSpread({
+                methods: {
                     query_info: {
                         description: 'The transaction info',
                         params: [
@@ -12174,22 +12190,30 @@
                             }
                         ],
                         type: 'RuntimeDispatchInfo'
-                    }
-                }, V1_TO_V4_SHARED_PAY),
+                    },
+                    ...V1_TO_V4_SHARED_PAY
+                },
                 version: 1
             }
         ],
         TransactionPaymentCallApi: [
             {
-                methods: util.objectSpread({}, V3_SHARED_PAY_CALL, V2_V3_SHARED_CALL, V1_TO_V3_SHARED_CALL),
+                methods: {
+                    ...V3_SHARED_PAY_CALL,
+                    ...V2_V3_SHARED_CALL,
+                    ...V1_TO_V3_SHARED_CALL
+                },
                 version: 3
             },
             {
-                methods: util.objectSpread({}, V2_V3_SHARED_CALL, V1_TO_V3_SHARED_CALL),
+                methods: {
+                    ...V2_V3_SHARED_CALL,
+                    ...V1_TO_V3_SHARED_CALL
+                },
                 version: 2
             },
             {
-                methods: util.objectSpread({
+                methods: {
                     CALL: {
                         description: 'The call info',
                         params: [
@@ -12203,8 +12227,9 @@
                             }
                         ],
                         type: 'RuntimeDispatchInfo'
-                    }
-                }, V1_TO_V3_SHARED_CALL),
+                    },
+                    ...V1_TO_V3_SHARED_CALL
+                },
                 version: 1
             }
         ]
@@ -12738,9 +12763,9 @@
         __proto__: null,
         assets: definitions$13,
         attestations: definitions$m,
-        aura: definitions$11,
+        aura: definitions$12,
         author: definitions$6,
-        authorship: definitions$12,
+        authorship: definitions$11,
         babe: definitions$10,
         balances: definitions$$,
         beefy: definitions$_,
@@ -12823,6 +12848,1009 @@
     }));
     const jsonrpc$1 = jsonrpc;
 
+    const l$2 = util.logger('PortableRegistry');
+    const TYPE_UNWRAP = { toNumber: () => -1 };
+    const PRIMITIVE_ALIAS = {
+        Char: 'u32',
+        Str: 'Text'
+    };
+    const PATHS_ALIAS = splitNamespace([
+        'sp_core::crypto::AccountId32',
+        'sp_runtime::generic::era::Era',
+        'sp_runtime::multiaddress::MultiAddress',
+        'fp_account::AccountId20',
+        'account::AccountId20',
+        'polkadot_runtime_common::claims::EthereumAddress',
+        'frame_support::weights::weight_v2::Weight',
+        'sp_weights::weight_v2::Weight',
+        '*_democracy::vote::Vote',
+        '*_conviction_voting::vote::Vote',
+        '*_identity::types::Data',
+        'sp_core::OpaqueMetadata',
+        'sp_core::OpaquePeerId',
+        'sp_core::offchain::OpaqueMultiaddr',
+        'primitive_types::*',
+        'sp_arithmetic::per_things::*',
+        '*_runtime::RuntimeCall',
+        '*_runtime::RuntimeEvent',
+        'ink::env::types::*',
+        'ink::primitives::types::*',
+        'ink_env::types::*',
+        'ink_primitives::types::*'
+    ]);
+    const PATHS_SET = splitNamespace([
+        'pallet_identity::types::BitFlags'
+    ]);
+    const BITVEC_NS_LSB = ['bitvec::order::Lsb0', 'BitOrderLsb0'];
+    const BITVEC_NS_MSB = ['bitvec::order::Msb0', 'BitOrderMsb0'];
+    const BITVEC_NS = [...BITVEC_NS_LSB, ...BITVEC_NS_MSB];
+    const WRAPPERS = ['BoundedBTreeMap', 'BoundedBTreeSet', 'BoundedVec', 'Box', 'BTreeMap', 'BTreeSet', 'Cow', 'Option', 'Range', 'RangeInclusive', 'Result', 'WeakBoundedVec', 'WrapperKeepOpaque', 'WrapperOpaque'];
+    const RESERVED = [
+        'entries', 'keys', 'new', 'size',
+        'hash', 'registry'
+    ];
+    const PATH_RM_INDEX_1 = ['generic', 'misc', 'pallet', 'traits', 'types'];
+    function sanitizeDocs(docs) {
+        const count = docs.length;
+        const result = new Array(count);
+        for (let i = 0; i < count; i++) {
+            result[i] = docs[i].toString();
+        }
+        return result;
+    }
+    function splitNamespace(values) {
+        const count = values.length;
+        const result = new Array(count);
+        for (let i = 0; i < count; i++) {
+            result[i] = values[i].split('::');
+        }
+        return result;
+    }
+    function matchParts(first, second) {
+        return first.length === second.length && first.every((a, index) => {
+            const b = second[index].toString();
+            if ((a === '*') || (a === b)) {
+                return true;
+            }
+            if (a.includes('*') && a.includes('_') && b.includes('_')) {
+                let suba = a.split('_');
+                let subb = b.split('_');
+                if (suba[0] === '*') {
+                    const indexOf = subb.indexOf(suba[1]);
+                    if (indexOf !== -1) {
+                        suba = suba.slice(1);
+                        subb = subb.slice(indexOf);
+                    }
+                }
+                if ((suba.length === 2) && (suba[1] === '*') && (suba[0] === subb[0])) {
+                    return true;
+                }
+                return matchParts(suba, subb);
+            }
+            return false;
+        });
+    }
+    function getAliasPath({ def, path }) {
+        if (['frame_support::weights::weight_v2::Weight', 'sp_weights::weight_v2::Weight'].includes(path.join('::'))) {
+            return !def.isComposite || def.asComposite.fields.length === 1
+                ? 'WeightV1'
+                : null;
+        }
+        return path.length && PATHS_ALIAS.some((a) => matchParts(a, path))
+            ? path[path.length - 1].toString()
+            : null;
+    }
+    function extractNameFlat(portable, lookupIndex, params, path, isInternal = false) {
+        const count = path.length;
+        if (count === 0 || WRAPPERS.includes(path[count - 1].toString())) {
+            return null;
+        }
+        const camels = new Array(count);
+        const lowers = new Array(count);
+        for (let i = 0; i < count; i++) {
+            const c = util.stringPascalCase(isInternal
+                ? path[i].replace('pallet_', '')
+                : path[i]);
+            const l = c.toLowerCase();
+            camels[i] = c;
+            lowers[i] = l;
+        }
+        let name = '';
+        for (let i = 0; i < count; i++) {
+            const l = lowers[i];
+            if (i !== 1 || !PATH_RM_INDEX_1.includes(l)) {
+                if (l !== lowers[i + 1]) {
+                    name += camels[i];
+                }
+            }
+        }
+        if (camels[1] === 'RawOrigin' && count === 2 && params.length === 2 && params[1].type.isSome) {
+            const instanceType = portable[params[1].type.unwrap().toNumber()];
+            if (instanceType.type.path.length === 2) {
+                name = `${name}${instanceType.type.path[1].toString()}`;
+            }
+        }
+        return { lookupIndex, name, params };
+    }
+    function extractName(portable, lookupIndex, { type: { params, path } }) {
+        return extractNameFlat(portable, lookupIndex, params, path);
+    }
+    function nextDupeMatches(name, startAt, names) {
+        const result = [names[startAt]];
+        for (let i = startAt + 1, count = names.length; i < count; i++) {
+            const v = names[i];
+            if (v.name === name) {
+                result.push(v);
+            }
+        }
+        return result;
+    }
+    function rewriteDupes(input, rewrite) {
+        const count = input.length;
+        for (let i = 0; i < count; i++) {
+            const a = input[i];
+            for (let j = i + 1; j < count; j++) {
+                const b = input[j];
+                if (a.lookupIndex !== b.lookupIndex && a.name === b.name) {
+                    return false;
+                }
+            }
+        }
+        for (let i = 0; i < count; i++) {
+            const p = input[i];
+            rewrite[p.lookupIndex] = p.name;
+        }
+        return true;
+    }
+    function removeDupeNames(lookup, portable, names) {
+        const rewrite = {};
+        return names
+            .map((original, startAt) => {
+            const { lookupIndex, name, params } = original;
+            if (!name) {
+                return null;
+            }
+            else if (rewrite[lookupIndex]) {
+                return original;
+            }
+            const allSame = nextDupeMatches(name, startAt, names);
+            if (allSame.length === 1) {
+                return original;
+            }
+            const anyDiff = allSame.some((o) => params.length !== o.params.length ||
+                params.some((p, index) => !p.name.eq(o.params[index].name) ||
+                    p.type.unwrapOr(TYPE_UNWRAP).toNumber() !== o.params[index].type.unwrapOr(TYPE_UNWRAP).toNumber()));
+            if (!anyDiff) {
+                return original;
+            }
+            const paramIdx = params.findIndex(({ type }, index) => allSame.every(({ params }, aIndex) => params[index].type.isSome && (aIndex === 0 ||
+                !params[index].type.eq(type))));
+            if (paramIdx === -1) {
+                return original;
+            }
+            const sameCount = allSame.length;
+            const adjusted = new Array(sameCount);
+            for (let i = 0; i < sameCount; i++) {
+                const { lookupIndex, name, params } = allSame[i];
+                const { def, path } = lookup.getSiType(params[paramIdx].type.unwrap());
+                if (!def.isPrimitive && !path.length) {
+                    return null;
+                }
+                adjusted[i] = {
+                    lookupIndex,
+                    name: def.isPrimitive
+                        ? `${name}${def.asPrimitive.toString()}`
+                        : `${name}${path[path.length - 1].toString()}`
+                };
+            }
+            if (rewriteDupes(adjusted, rewrite)) {
+                return original;
+            }
+            for (let i = 0; i < sameCount; i++) {
+                const { lookupIndex, name, params } = allSame[i];
+                const { def, path } = lookup.getSiType(params[paramIdx].type.unwrap());
+                const flat = extractNameFlat(portable, lookupIndex, params, path, true);
+                if (def.isPrimitive || !flat) {
+                    return null;
+                }
+                adjusted[i] = {
+                    lookupIndex,
+                    name: `${name}${flat.name}`
+                };
+            }
+            if (rewriteDupes(adjusted, rewrite)) {
+                return original;
+            }
+            return null;
+        })
+            .filter((n) => !!n)
+            .map(({ lookupIndex, name, params }) => ({
+            lookupIndex,
+            name: rewrite[lookupIndex] || name,
+            params
+        }));
+    }
+    function registerTypes(lookup, lookups, names, params) {
+        lookup.registry.register(lookups);
+        if (params.SpRuntimeUncheckedExtrinsic) {
+            const [addrParam, , sigParam] = params.SpRuntimeUncheckedExtrinsic;
+            const siAddress = lookup.getSiType(addrParam.type.unwrap());
+            const siSignature = lookup.getSiType(sigParam.type.unwrap());
+            const nsSignature = siSignature.path.join('::');
+            let nsAccountId = siAddress.path.join('::');
+            const isMultiAddress = nsAccountId === 'sp_runtime::multiaddress::MultiAddress';
+            if (isMultiAddress) {
+                const [idParam] = siAddress.params;
+                nsAccountId = lookup.getSiType(idParam.type.unwrap()).path.join('::');
+            }
+            lookup.registry.register({
+                AccountId: nsAccountId.endsWith('::AccountId20') || nsAccountId.endsWith('::H160')
+                    ? 'AccountId20'
+                    : 'AccountId32',
+                Address: isMultiAddress
+                    ? 'MultiAddress'
+                    : 'AccountId',
+                ExtrinsicSignature: ['sp_runtime::MultiSignature'].includes(nsSignature)
+                    ? 'MultiSignature'
+                    : names[sigParam.type.unwrap().toNumber()] || 'MultiSignature'
+            });
+        }
+    }
+    function extractAliases(params, isContract) {
+        const hasParams = Object.keys(params).some((k) => !k.startsWith('Pallet'));
+        const alias = {};
+        if (params.SpRuntimeUncheckedExtrinsic) {
+            const [, { type }] = params.SpRuntimeUncheckedExtrinsic;
+            alias[type.unwrap().toNumber()] = 'Call';
+        }
+        else if (hasParams && !isContract) {
+            l$2.warn('Unable to determine runtime Call type, cannot inspect sp_runtime::generic::unchecked_extrinsic::UncheckedExtrinsic');
+        }
+        if (params.FrameSystemEventRecord) {
+            const [{ type }] = params.FrameSystemEventRecord;
+            alias[type.unwrap().toNumber()] = 'Event';
+        }
+        else if (hasParams && !isContract) {
+            l$2.warn('Unable to determine runtime Event type, cannot inspect frame_system::EventRecord');
+        }
+        return alias;
+    }
+    function extractTypeInfo(lookup, portable) {
+        const nameInfo = [];
+        const types = {};
+        for (let i = 0, count = portable.length; i < count; i++) {
+            const type = portable[i];
+            const lookupIndex = type.id.toNumber();
+            const extracted = extractName(portable, lookupIndex, portable[i]);
+            if (extracted) {
+                nameInfo.push(extracted);
+            }
+            types[lookupIndex] = type;
+        }
+        const lookups = {};
+        const names = {};
+        const params = {};
+        const dedup = removeDupeNames(lookup, portable, nameInfo);
+        for (let i = 0, count = dedup.length; i < count; i++) {
+            const { lookupIndex, name, params: p } = dedup[i];
+            names[lookupIndex] = name;
+            lookups[name] = lookup.registry.createLookupType(lookupIndex);
+            params[name] = p;
+        }
+        return { lookups, names, params, types };
+    }
+    class PortableRegistry extends Struct {
+        constructor(registry, value, isContract) {
+            super(registry, {
+                types: 'Vec<PortableType>'
+            }, value);
+            this.__internal__typeDefs = {};
+            const { lookups, names, params, types } = extractTypeInfo(this, this.types);
+            this.__internal__alias = extractAliases(params, isContract);
+            this.__internal__lookups = lookups;
+            this.__internal__names = names;
+            this.__internal__params = params;
+            this.__internal__types = types;
+        }
+        get names() {
+            return Object.values(this.__internal__names).sort();
+        }
+        get types() {
+            return this.getT('types');
+        }
+        register() {
+            registerTypes(this, this.__internal__lookups, this.__internal__names, this.__internal__params);
+        }
+        getName(lookupId) {
+            return this.__internal__names[this.__internal__getLookupId(lookupId)];
+        }
+        getSiType(lookupId) {
+            const found = (this.__internal__types || this.types)[this.__internal__getLookupId(lookupId)];
+            if (!found) {
+                throw new Error(`PortableRegistry: Unable to find type with lookupId ${lookupId.toString()}`);
+            }
+            return found.type;
+        }
+        getTypeDef(lookupId) {
+            const lookupIndex = this.__internal__getLookupId(lookupId);
+            if (!this.__internal__typeDefs[lookupIndex]) {
+                const lookupName = this.__internal__names[lookupIndex];
+                const empty = {
+                    info: exports.TypeDefInfo.DoNotConstruct,
+                    lookupIndex,
+                    lookupName,
+                    type: this.registry.createLookupType(lookupIndex)
+                };
+                if (lookupName) {
+                    this.__internal__typeDefs[lookupIndex] = empty;
+                }
+                const extracted = this.__internal__extract(this.getSiType(lookupId), lookupIndex);
+                if (!lookupName) {
+                    this.__internal__typeDefs[lookupIndex] = empty;
+                }
+                Object.keys(extracted).forEach((k) => {
+                    if (k !== 'lookupName' || extracted[k]) {
+                        this.__internal__typeDefs[lookupIndex][k] = extracted[k];
+                    }
+                });
+                if (extracted.info === exports.TypeDefInfo.Plain) {
+                    this.__internal__typeDefs[lookupIndex].lookupNameRoot = this.__internal__typeDefs[lookupIndex].lookupName;
+                    delete this.__internal__typeDefs[lookupIndex].lookupName;
+                }
+            }
+            return this.__internal__typeDefs[lookupIndex];
+        }
+        sanitizeField(name) {
+            let nameField = null;
+            let nameOrig = null;
+            if (name.isSome) {
+                nameField = util.stringCamelCase(name.unwrap());
+                if (nameField.includes('#')) {
+                    nameOrig = nameField;
+                    nameField = nameOrig.replace(/#/g, '_');
+                }
+                else if (RESERVED.includes(nameField)) {
+                    nameOrig = nameField;
+                    nameField = `${nameField}_`;
+                }
+            }
+            return [nameField, nameOrig];
+        }
+        __internal__createSiDef(lookupId) {
+            const typeDef = this.getTypeDef(lookupId);
+            const lookupIndex = lookupId.toNumber();
+            return [exports.TypeDefInfo.DoNotConstruct, exports.TypeDefInfo.Enum, exports.TypeDefInfo.Struct].includes(typeDef.info) && typeDef.lookupName
+                ? {
+                    docs: typeDef.docs,
+                    info: exports.TypeDefInfo.Si,
+                    lookupIndex,
+                    lookupName: this.__internal__names[lookupIndex],
+                    type: this.registry.createLookupType(lookupId)
+                }
+                : typeDef;
+        }
+        __internal__getLookupId(lookupId) {
+            if (util.isString(lookupId)) {
+                if (!this.registry.isLookupType(lookupId)) {
+                    throw new Error(`PortableRegistry: Expected a lookup string type, found ${lookupId}`);
+                }
+                return parseInt(lookupId.replace('Lookup', ''), 10);
+            }
+            else if (util.isNumber(lookupId)) {
+                return lookupId;
+            }
+            return lookupId.toNumber();
+        }
+        __internal__extract(type, lookupIndex) {
+            const namespace = type.path.join('::');
+            let typeDef;
+            const aliasType = this.__internal__alias[lookupIndex] || getAliasPath(type);
+            try {
+                if (aliasType) {
+                    typeDef = this.__internal__extractAliasPath(lookupIndex, aliasType);
+                }
+                else {
+                    switch (type.def.type) {
+                        case 'Array':
+                            typeDef = this.__internal__extractArray(lookupIndex, type.def.asArray);
+                            break;
+                        case 'BitSequence':
+                            typeDef = this.__internal__extractBitSequence(lookupIndex, type.def.asBitSequence);
+                            break;
+                        case 'Compact':
+                            typeDef = this.__internal__extractCompact(lookupIndex, type.def.asCompact);
+                            break;
+                        case 'Composite':
+                            typeDef = this.__internal__extractComposite(lookupIndex, type, type.def.asComposite);
+                            break;
+                        case 'HistoricMetaCompat':
+                            typeDef = this.__internal__extractHistoric(lookupIndex, type.def.asHistoricMetaCompat);
+                            break;
+                        case 'Primitive':
+                            typeDef = this.__internal__extractPrimitive(lookupIndex, type);
+                            break;
+                        case 'Sequence':
+                            typeDef = this.__internal__extractSequence(lookupIndex, type.def.asSequence);
+                            break;
+                        case 'Tuple':
+                            typeDef = this.__internal__extractTuple(lookupIndex, type.def.asTuple);
+                            break;
+                        case 'Variant':
+                            typeDef = this.__internal__extractVariant(lookupIndex, type, type.def.asVariant);
+                            break;
+                        default: util.assertUnreachable(type.def.type);
+                    }
+                }
+            }
+            catch (error) {
+                throw new Error(`PortableRegistry: ${lookupIndex}${namespace ? ` (${namespace})` : ''}: Error extracting ${util.stringify(type)}: ${error.message}`);
+            }
+            return util.objectSpread({
+                docs: sanitizeDocs(type.docs),
+                namespace
+            }, typeDef);
+        }
+        __internal__extractArray(_, { len, type }) {
+            const length = len.toNumber();
+            if (length > 2048) {
+                throw new Error('Only support for [Type; <length>], where length <= 2048');
+            }
+            return withTypeString(this.registry, {
+                info: exports.TypeDefInfo.VecFixed,
+                length,
+                sub: this.__internal__createSiDef(type)
+            });
+        }
+        __internal__extractBitSequence(_, { bitOrderType, bitStoreType }) {
+            const a = this.__internal__createSiDef(bitOrderType);
+            const b = this.__internal__createSiDef(bitStoreType);
+            const [bitOrder, bitStore] = BITVEC_NS.includes(a.namespace || '')
+                ? [a, b]
+                : [b, a];
+            if (!bitOrder.namespace || !BITVEC_NS.includes(bitOrder.namespace)) {
+                throw new Error(`Unexpected bitOrder found as ${bitOrder.namespace || '<unknown>'}`);
+            }
+            else if (bitStore.info !== exports.TypeDefInfo.Plain || bitStore.type !== 'u8') {
+                throw new Error(`Only u8 bitStore is currently supported, found ${bitStore.type}`);
+            }
+            BITVEC_NS_LSB.includes(bitOrder.namespace);
+            return {
+                info: exports.TypeDefInfo.Plain,
+                type: 'BitVec'
+            };
+        }
+        __internal__extractCompact(_, { type }) {
+            return withTypeString(this.registry, {
+                info: exports.TypeDefInfo.Compact,
+                sub: this.__internal__createSiDef(type)
+            });
+        }
+        __internal__extractComposite(lookupIndex, { params, path }, { fields }) {
+            if (path.length) {
+                const pathFirst = path[0].toString();
+                const pathLast = path[path.length - 1].toString();
+                if (path.length === 1 && pathFirst === 'BTreeMap') {
+                    if (params.length !== 2) {
+                        throw new Error(`BTreeMap requires 2 parameters, found ${params.length}`);
+                    }
+                    return withTypeString(this.registry, {
+                        info: exports.TypeDefInfo.BTreeMap,
+                        sub: params.map(({ type }) => this.__internal__createSiDef(type.unwrap()))
+                    });
+                }
+                else if (path.length === 1 && pathFirst === 'BTreeSet') {
+                    if (params.length !== 1) {
+                        throw new Error(`BTreeSet requires 1 parameter, found ${params.length}`);
+                    }
+                    return withTypeString(this.registry, {
+                        info: exports.TypeDefInfo.BTreeSet,
+                        sub: this.__internal__createSiDef(params[0].type.unwrap())
+                    });
+                }
+                else if (['Range', 'RangeInclusive'].includes(pathFirst)) {
+                    if (params.length !== 1) {
+                        throw new Error(`Range requires 1 parameter, found ${params.length}`);
+                    }
+                    return withTypeString(this.registry, {
+                        info: pathFirst === 'Range'
+                            ? exports.TypeDefInfo.Range
+                            : exports.TypeDefInfo.RangeInclusive,
+                        sub: this.__internal__createSiDef(params[0].type.unwrap()),
+                        type: pathFirst
+                    });
+                }
+                else if (['WrapperKeepOpaque', 'WrapperOpaque'].includes(pathLast)) {
+                    if (params.length !== 1) {
+                        throw new Error(`WrapperOpaque requires 1 parameter, found ${params.length}`);
+                    }
+                    return withTypeString(this.registry, {
+                        info: pathLast === 'WrapperKeepOpaque'
+                            ? exports.TypeDefInfo.WrapperKeepOpaque
+                            : exports.TypeDefInfo.WrapperOpaque,
+                        sub: this.__internal__createSiDef(params[0].type.unwrap()),
+                        type: pathLast
+                    });
+                }
+            }
+            return PATHS_SET.some((p) => matchParts(p, path))
+                ? this.__internal__extractCompositeSet(lookupIndex, params, fields)
+                : this.__internal__extractFields(lookupIndex, fields);
+        }
+        __internal__extractCompositeSet(_, params, fields) {
+            if (params.length !== 1 || fields.length !== 1) {
+                throw new Error('Set handling expects param/field as single entries');
+            }
+            return withTypeString(this.registry, {
+                info: exports.TypeDefInfo.Set,
+                length: this.registry.createTypeUnsafe(this.registry.createLookupType(fields[0].type), []).bitLength(),
+                sub: this.getSiType(params[0].type.unwrap()).def.asVariant.variants.map(({ index, name }) => ({
+                    index: index.toNumber(),
+                    info: exports.TypeDefInfo.Plain,
+                    name: name.toString(),
+                    type: 'Null'
+                }))
+            });
+        }
+        __internal__extractFields(lookupIndex, fields) {
+            let isStruct = true;
+            let isTuple = true;
+            const count = fields.length;
+            for (let f = 0; f < count; f++) {
+                const { name } = fields[f];
+                isStruct = isStruct && name.isSome;
+                isTuple = isTuple && name.isNone;
+            }
+            if (!isTuple && !isStruct) {
+                throw new Error('Invalid fields type detected, expected either Tuple (all unnamed) or Struct (all named)');
+            }
+            if (count === 0) {
+                return {
+                    info: exports.TypeDefInfo.Null,
+                    type: 'Null'
+                };
+            }
+            else if (isTuple && count === 1) {
+                const typeDef = this.__internal__createSiDef(fields[0].type);
+                return util.objectSpread({}, typeDef, lookupIndex === -1
+                    ? null
+                    : {
+                        lookupIndex,
+                        lookupName: this.__internal__names[lookupIndex],
+                        lookupNameRoot: typeDef.lookupName
+                    }, fields[0].typeName.isSome
+                    ? { typeName: sanitize(fields[0].typeName.unwrap()) }
+                    : null);
+            }
+            const [sub, alias] = this.__internal__extractFieldsAlias(fields);
+            return withTypeString(this.registry, util.objectSpread({
+                info: isTuple
+                    ? exports.TypeDefInfo.Tuple
+                    : exports.TypeDefInfo.Struct,
+                sub
+            }, alias.size
+                ? { alias }
+                : null, lookupIndex === -1
+                ? null
+                : {
+                    lookupIndex,
+                    lookupName: this.__internal__names[lookupIndex]
+                }));
+        }
+        __internal__extractFieldsAlias(fields) {
+            const alias = new Map();
+            const count = fields.length;
+            const sub = new Array(count);
+            for (let i = 0; i < count; i++) {
+                const { docs, name, type, typeName } = fields[i];
+                const typeDef = this.__internal__createSiDef(type);
+                if (name.isNone) {
+                    sub[i] = typeDef;
+                }
+                else {
+                    const [nameField, nameOrig] = this.sanitizeField(name);
+                    if (nameField && nameOrig) {
+                        alias.set(nameField, nameOrig);
+                    }
+                    sub[i] = util.objectSpread({
+                        docs: sanitizeDocs(docs),
+                        name: nameField
+                    }, typeDef, typeName.isSome
+                        ? { typeName: sanitize(typeName.unwrap()) }
+                        : null);
+                }
+            }
+            return [sub, alias];
+        }
+        __internal__extractHistoric(_, type) {
+            return util.objectSpread({
+                displayName: type.toString(),
+                isFromSi: true
+            }, getTypeDef(type));
+        }
+        __internal__extractPrimitive(_, type) {
+            const typeStr = type.def.asPrimitive.type.toString();
+            return {
+                info: exports.TypeDefInfo.Plain,
+                type: PRIMITIVE_ALIAS[typeStr] || typeStr.toLowerCase()
+            };
+        }
+        __internal__extractAliasPath(_, type) {
+            return {
+                info: exports.TypeDefInfo.Plain,
+                type
+            };
+        }
+        __internal__extractSequence(lookupIndex, { type }) {
+            const sub = this.__internal__createSiDef(type);
+            if (sub.type === 'u8') {
+                return {
+                    info: exports.TypeDefInfo.Plain,
+                    type: 'Bytes'
+                };
+            }
+            return withTypeString(this.registry, {
+                info: exports.TypeDefInfo.Vec,
+                lookupIndex,
+                lookupName: this.__internal__names[lookupIndex],
+                sub
+            });
+        }
+        __internal__extractTuple(lookupIndex, ids) {
+            if (ids.length === 0) {
+                return {
+                    info: exports.TypeDefInfo.Null,
+                    type: 'Null'
+                };
+            }
+            else if (ids.length === 1) {
+                return this.getTypeDef(ids[0]);
+            }
+            const sub = ids.map((t) => this.__internal__createSiDef(t));
+            return withTypeString(this.registry, {
+                info: exports.TypeDefInfo.Tuple,
+                lookupIndex,
+                lookupName: this.__internal__names[lookupIndex],
+                sub
+            });
+        }
+        __internal__extractVariant(lookupIndex, { params, path }, { variants }) {
+            if (path.length) {
+                const specialVariant = path[0].toString();
+                if (specialVariant === 'Option') {
+                    if (params.length !== 1) {
+                        throw new Error(`Option requires 1 parameter, found ${params.length}`);
+                    }
+                    return withTypeString(this.registry, {
+                        info: exports.TypeDefInfo.Option,
+                        sub: this.__internal__createSiDef(params[0].type.unwrap())
+                    });
+                }
+                else if (specialVariant === 'Result') {
+                    if (params.length !== 2) {
+                        throw new Error(`Result requires 2 parameters, found ${params.length}`);
+                    }
+                    return withTypeString(this.registry, {
+                        info: exports.TypeDefInfo.Result,
+                        sub: params.map(({ type }, index) => util.objectSpread({
+                            name: ['Ok', 'Error'][index]
+                        }, this.__internal__createSiDef(type.unwrap())))
+                    });
+                }
+            }
+            if (variants.length === 0) {
+                return {
+                    info: exports.TypeDefInfo.Null,
+                    type: 'Null'
+                };
+            }
+            return this.__internal__extractVariantEnum(lookupIndex, variants);
+        }
+        __internal__extractVariantEnum(lookupIndex, variants) {
+            const sub = [];
+            variants
+                .slice()
+                .sort((a, b) => a.index.cmp(b.index))
+                .forEach(({ fields, index: bnIndex, name }) => {
+                const index = bnIndex.toNumber();
+                while (sub.length !== index) {
+                    sub.push({
+                        index: sub.length,
+                        info: exports.TypeDefInfo.Null,
+                        name: `__Unused${sub.length}`,
+                        type: 'Null'
+                    });
+                }
+                sub.push(util.objectSpread(this.__internal__extractFields(-1, fields), {
+                    index,
+                    name: name.toString()
+                }));
+            });
+            return withTypeString(this.registry, {
+                info: exports.TypeDefInfo.Enum,
+                lookupIndex,
+                lookupName: this.__internal__names[lookupIndex],
+                sub
+            });
+        }
+    }
+
+    function convertType(key) {
+        return (registry, { type }) => registry.createType('Si1TypeDef', {
+            [key]: {
+                type: type.toNumber()
+            }
+        });
+    }
+    function convertArray(registry, { len, type }) {
+        return registry.createType('Si1TypeDef', {
+            Array: {
+                len,
+                type: type.toNumber()
+            }
+        });
+    }
+    function convertBitSequence(registry, { bitOrderType, bitStoreType }) {
+        return registry.createType('Si1TypeDef', {
+            BitSequence: {
+                bitOrderType: bitOrderType.toNumber(),
+                bitStoreType: bitStoreType.toNumber()
+            }
+        });
+    }
+    const convertCompact = convertType('Compact');
+    function convertComposite(registry, { fields }) {
+        return registry.createType('Si1TypeDef', {
+            Composite: {
+                fields: convertFields(registry, fields)
+            }
+        });
+    }
+    function convertFields(registry, fields) {
+        return fields.map(({ docs, name, type, typeName }) => registry.createType('Si1Field', {
+            docs,
+            name,
+            type: type.toNumber(),
+            typeName
+        }));
+    }
+    function convertPhantom(registry, path) {
+        console.warn(`Converting phantom type ${path.map((p) => p.toString()).join('::')} to empty tuple`);
+        return registry.createType('Si1TypeDef', {
+            Tuple: []
+        });
+    }
+    function convertPrimitive(registry, prim) {
+        return registry.createType('Si1TypeDef', {
+            Primitive: prim.toString()
+        });
+    }
+    const convertSequence = convertType('Sequence');
+    function convertTuple(registry, types) {
+        return registry.createType('Si1TypeDef', {
+            Tuple: types.map((t) => t.toNumber())
+        });
+    }
+    function convertVariant(registry, { variants }) {
+        return registry.createType('Si1TypeDef', {
+            Variant: {
+                variants: variants.map(({ discriminant, docs, fields, name }, index) => registry.createType('Si1Variant', {
+                    docs,
+                    fields: convertFields(registry, fields),
+                    index: discriminant.isSome
+                        ? discriminant.unwrap().toNumber()
+                        : index,
+                    name
+                }))
+            }
+        });
+    }
+    function convertDef(registry, { def, path }) {
+        let result;
+        switch (def.type) {
+            case 'Array':
+                result = convertArray(registry, def.asArray);
+                break;
+            case 'BitSequence':
+                result = convertBitSequence(registry, def.asBitSequence);
+                break;
+            case 'Compact':
+                result = convertCompact(registry, def.asCompact);
+                break;
+            case 'Composite':
+                result = convertComposite(registry, def.asComposite);
+                break;
+            case 'Phantom':
+                result = convertPhantom(registry, path);
+                break;
+            case 'Primitive':
+                result = convertPrimitive(registry, def.asPrimitive);
+                break;
+            case 'Sequence':
+                result = convertSequence(registry, def.asSequence);
+                break;
+            case 'Tuple':
+                result = convertTuple(registry, def.asTuple);
+                break;
+            case 'Variant':
+                result = convertVariant(registry, def.asVariant);
+                break;
+            default: util.assertUnreachable(def.type);
+        }
+        return result;
+    }
+    function toV1(registry, types) {
+        return types.map((t, index) => registry.createType('PortableType', {
+            id: index + 1,
+            type: {
+                def: convertDef(registry, t),
+                docs: [],
+                params: t.params.map((p) => registry.createType('Si1TypeParameter', {
+                    type: p.toNumber()
+                })),
+                path: t.path.map((p) => p.toString())
+            }
+        }));
+    }
+
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.5.1' };
+
+    function flattenUniq(list, result = []) {
+        for (let i = 0, count = list.length; i < count; i++) {
+            const entry = list[i];
+            if (Array.isArray(entry)) {
+                flattenUniq(entry, result);
+            }
+            else {
+                result.push(entry);
+            }
+        }
+        return [...new Set(result)];
+    }
+
+    function getSiName(lookup, type) {
+        const typeDef = lookup.getTypeDef(type);
+        return typeDef.lookupName || typeDef.type;
+    }
+
+    function extractSubSingle(_, { sub }) {
+        const { lookupName, type } = sub;
+        return extractTypes$1([lookupName || type]);
+    }
+    function extractSubArray(_, { sub }) {
+        return extractTypes$1(sub.map(({ lookupName, type }) => lookupName || type));
+    }
+    function unhandled(type, { info }) {
+        throw new Error(`Unhandled: Unable to create and validate type from ${type} (info=${exports.TypeDefInfo[info]})`);
+    }
+    const mapping = {
+        [exports.TypeDefInfo.BTreeMap]: extractSubArray,
+        [exports.TypeDefInfo.BTreeSet]: extractSubSingle,
+        [exports.TypeDefInfo.Compact]: extractSubSingle,
+        [exports.TypeDefInfo.DoNotConstruct]: unhandled,
+        [exports.TypeDefInfo.Enum]: extractSubArray,
+        [exports.TypeDefInfo.HashMap]: extractSubArray,
+        [exports.TypeDefInfo.Int]: unhandled,
+        [exports.TypeDefInfo.Linkage]: extractSubSingle,
+        [exports.TypeDefInfo.Null]: unhandled,
+        [exports.TypeDefInfo.Option]: extractSubSingle,
+        [exports.TypeDefInfo.Plain]: (_, typeDef) => typeDef.lookupName || typeDef.type,
+        [exports.TypeDefInfo.Range]: extractSubSingle,
+        [exports.TypeDefInfo.RangeInclusive]: extractSubSingle,
+        [exports.TypeDefInfo.Result]: extractSubArray,
+        [exports.TypeDefInfo.Set]: extractSubArray,
+        [exports.TypeDefInfo.Si]: unhandled,
+        [exports.TypeDefInfo.Struct]: extractSubArray,
+        [exports.TypeDefInfo.Tuple]: extractSubArray,
+        [exports.TypeDefInfo.UInt]: unhandled,
+        [exports.TypeDefInfo.Vec]: extractSubSingle,
+        [exports.TypeDefInfo.VecFixed]: extractSubSingle,
+        [exports.TypeDefInfo.WrapperKeepOpaque]: extractSubSingle,
+        [exports.TypeDefInfo.WrapperOpaque]: extractSubSingle
+    };
+    function extractTypes$1(types) {
+        const count = types.length;
+        const result = new Array(count);
+        for (let i = 0; i < count; i++) {
+            const type = types[i];
+            const typeDef = getTypeDef(type);
+            result[i] = mapping[typeDef.info](type, typeDef);
+        }
+        return result;
+    }
+
+    const l$1 = util.logger('metadata');
+    function validateTypes(registry, throwError, types) {
+        const missing = flattenUniq(extractTypes$1(types))
+            .filter((type) => !registry.hasType(type) &&
+            !registry.isLookupType(type))
+            .sort();
+        if (missing.length !== 0) {
+            const message = `Unknown types found, no types for ${missing.join(', ')}`;
+            if (throwError) {
+                throw new Error(message);
+            }
+            else {
+                l$1.warn(message);
+            }
+        }
+        return types;
+    }
+
+    function extractTypes(lookup, types) {
+        return types.map(({ type }) => lookup.getTypeDef(type).type);
+    }
+    function extractFieldTypes(lookup, type) {
+        return lookup.getSiType(type).def.asVariant.variants.map(({ fields }) => extractTypes(lookup, fields));
+    }
+    function getPalletNames({ lookup, pallets }) {
+        return pallets.reduce((all, { calls, constants, events, storage }) => {
+            all.push([extractTypes(lookup, constants)]);
+            if (calls.isSome) {
+                all.push(extractFieldTypes(lookup, calls.unwrap().type));
+            }
+            if (events.isSome) {
+                all.push(extractFieldTypes(lookup, events.unwrap().type));
+            }
+            if (storage.isSome) {
+                all.push(storage.unwrap().items.map(({ type }) => {
+                    if (type.isPlain) {
+                        return [lookup.getTypeDef(type.asPlain).type];
+                    }
+                    const { hashers, key, value } = type.asMap;
+                    return hashers.length === 1
+                        ? [
+                            lookup.getTypeDef(value).type,
+                            lookup.getTypeDef(key).type
+                        ]
+                        : [
+                            lookup.getTypeDef(value).type,
+                            ...lookup.getSiType(key).def.asTuple.map((t) => lookup.getTypeDef(t).type)
+                        ];
+                }));
+            }
+            return all;
+        }, []);
+    }
+    function getUniqTypes(registry, meta, throwError) {
+        return validateTypes(registry, throwError, flattenUniq(getPalletNames(meta)));
+    }
+
+    function trimDocs(docs) {
+        const strings = docs.map((d) => d.toString().trim());
+        const firstEmpty = strings.findIndex((d) => !d.length);
+        return firstEmpty === -1
+            ? strings
+            : strings.slice(0, firstEmpty);
+    }
+    function toCallsOnly(registry, { extrinsic, lookup, pallets }) {
+        return registry.createTypeUnsafe('MetadataLatest', [{
+                extrinsic,
+                lookup: {
+                    types: lookup.types.map(({ id, type }) => registry.createTypeUnsafe('PortableType', [{
+                            id,
+                            type: util.objectSpread({}, type, { docs: trimDocs(type.docs) })
+                        }]))
+                },
+                pallets: pallets.map(({ calls, index, name }) => ({
+                    calls: registry.createTypeUnsafe('Option<PalletCallMetadataLatest>', [calls.unwrapOr(null)]),
+                    index,
+                    name
+                }))
+            }]).toJSON();
+    }
+
+    function unwrapStorageSi(type) {
+        return type.isPlain
+            ? type.asPlain
+            : type.asMap.value;
+    }
+    function unwrapStorageType(registry, type, isOptional) {
+        const outputType = getSiName(registry.lookup, unwrapStorageSi(type));
+        return isOptional
+            ? `Option<${outputType}>`
+            : outputType;
+    }
+
     function createClass(registry, type) {
         return createClassUnsafe(registry, type);
     }
@@ -12834,7 +13862,7 @@
     function lazyVariants(lookup, { type }, getName, creator) {
         const result = {};
         const variants = lookup.getSiType(type).def.asVariant.variants;
-        for (let i = 0; i < variants.length; i++) {
+        for (let i = 0, count = variants.length; i < count; i++) {
             util.lazyMethod(result, variants[i], creator, getName, i);
         }
         return result;
@@ -12943,7 +13971,6 @@
             .reduce((result, info) => util.objectSpread(result, info[type]), {});
     }
 
-    var _GenericEventData_meta, _GenericEventData_method, _GenericEventData_names, _GenericEventData_section, _GenericEventData_typeDef;
     function decodeEvent(registry, value) {
         if (!value || !value.length) {
             return { DataType: Null };
@@ -12961,50 +13988,45 @@
         constructor(registry, value, meta, section = '<unknown>', method = '<unknown>') {
             const fields = meta?.fields || [];
             super(registry, fields.map(({ type }) => registry.createLookupType(type)), value);
-            _GenericEventData_meta.set(this, void 0);
-            _GenericEventData_method.set(this, void 0);
-            _GenericEventData_names.set(this, null);
-            _GenericEventData_section.set(this, void 0);
-            _GenericEventData_typeDef.set(this, void 0);
-            __classPrivateFieldSet(this, _GenericEventData_meta, meta, "f");
-            __classPrivateFieldSet(this, _GenericEventData_method, method, "f");
-            __classPrivateFieldSet(this, _GenericEventData_section, section, "f");
-            __classPrivateFieldSet(this, _GenericEventData_typeDef, fields.map(({ type }) => registry.lookup.getTypeDef(type)), "f");
+            this.__internal__names = null;
+            this.__internal__meta = meta;
+            this.__internal__method = method;
+            this.__internal__section = section;
+            this.__internal__typeDef = fields.map(({ type }) => registry.lookup.getTypeDef(type));
             const names = fields
                 .map(({ name }) => registry.lookup.sanitizeField(name)[0])
                 .filter((n) => !!n);
             if (names.length === fields.length) {
-                __classPrivateFieldSet(this, _GenericEventData_names, names, "f");
+                this.__internal__names = names;
                 util.objectProperties(this, names, (_, i) => this[i]);
             }
         }
         get meta() {
-            return __classPrivateFieldGet(this, _GenericEventData_meta, "f");
+            return this.__internal__meta;
         }
         get method() {
-            return __classPrivateFieldGet(this, _GenericEventData_method, "f");
+            return this.__internal__method;
         }
         get names() {
-            return __classPrivateFieldGet(this, _GenericEventData_names, "f");
+            return this.__internal__names;
         }
         get section() {
-            return __classPrivateFieldGet(this, _GenericEventData_section, "f");
+            return this.__internal__section;
         }
         get typeDef() {
-            return __classPrivateFieldGet(this, _GenericEventData_typeDef, "f");
+            return this.__internal__typeDef;
         }
         toHuman(isExtended) {
-            if (__classPrivateFieldGet(this, _GenericEventData_names, "f") !== null) {
+            if (this.__internal__names !== null) {
                 const json = {};
-                for (let i = 0; i < __classPrivateFieldGet(this, _GenericEventData_names, "f").length; i++) {
-                    json[__classPrivateFieldGet(this, _GenericEventData_names, "f")[i]] = this[i].toHuman(isExtended);
+                for (let i = 0, count = this.__internal__names.length; i < count; i++) {
+                    json[this.__internal__names[i]] = this[i].toHuman(isExtended);
                 }
                 return json;
             }
             return super.toHuman(isExtended);
         }
     }
-    _GenericEventData_meta = new WeakMap(), _GenericEventData_method = new WeakMap(), _GenericEventData_names = new WeakMap(), _GenericEventData_section = new WeakMap(), _GenericEventData_typeDef = new WeakMap();
     class GenericEvent extends Struct {
         constructor(registry, _value) {
             const { DataType, value } = decodeEvent(registry, _value);
@@ -13099,7 +14121,6 @@
     const IMMORTAL_ERA = new Uint8Array([0]);
     const UNMASK_VERSION = 0b01111111;
 
-    var _GenericExtrinsic_hashCache;
     const VERSIONS$1 = [
         'ExtrinsicUnknown',
         'ExtrinsicUnknown',
@@ -13141,7 +14162,7 @@
             super(registry, value, initialU8aLength);
             const signKeys = Object.keys(registry.getSignedExtensionTypes());
             const getter = (key) => this.inner.signature[key];
-            for (let i = 0; i < signKeys.length; i++) {
+            for (let i = 0, count = signKeys.length; i < count; i++) {
                 util.objectProperty(this, signKeys[i], getter);
             }
         }
@@ -13206,17 +14227,16 @@
     class GenericExtrinsic extends ExtrinsicBase {
         constructor(registry, value, { version } = {}) {
             super(registry, decodeExtrinsic(registry, value, version));
-            _GenericExtrinsic_hashCache.set(this, void 0);
         }
         get hash() {
-            if (!__classPrivateFieldGet(this, _GenericExtrinsic_hashCache, "f")) {
-                __classPrivateFieldSet(this, _GenericExtrinsic_hashCache, super.hash, "f");
+            if (!this.__internal__hashCache) {
+                this.__internal__hashCache = super.hash;
             }
-            return __classPrivateFieldGet(this, _GenericExtrinsic_hashCache, "f");
+            return this.__internal__hashCache;
         }
         addSignature(signer, signature, payload) {
             this.inner.addSignature(signer, signature, payload);
-            __classPrivateFieldSet(this, _GenericExtrinsic_hashCache, undefined, "f");
+            this.__internal__hashCache = undefined;
             return this;
         }
         inspect() {
@@ -13230,12 +14250,12 @@
         }
         sign(account, options) {
             this.inner.sign(account, options);
-            __classPrivateFieldSet(this, _GenericExtrinsic_hashCache, undefined, "f");
+            this.__internal__hashCache = undefined;
             return this;
         }
         signFake(signer, options) {
             this.inner.signFake(signer, options);
-            __classPrivateFieldSet(this, _GenericExtrinsic_hashCache, undefined, "f");
+            this.__internal__hashCache = undefined;
             return this;
         }
         toHex(isBare) {
@@ -13274,7 +14294,6 @@
             ];
         }
     }
-    _GenericExtrinsic_hashCache = new WeakMap();
     GenericExtrinsic.LATEST_EXTRINSIC_VERSION = EXTRINSIC_VERSION;
 
     function getTrailingZeros(period) {
@@ -13513,7 +14532,6 @@
         }
     }
 
-    var _GenericSignerPayload_extraTypes;
     const knownTypes = {
         address: 'Address',
         blockHash: 'Hash',
@@ -13531,12 +14549,11 @@
         constructor(registry, value) {
             const extensionTypes = util.objectSpread({}, registry.getSignedExtensionTypes(), registry.getSignedExtensionExtra());
             super(registry, util.objectSpread({}, extensionTypes, knownTypes), value);
-            _GenericSignerPayload_extraTypes.set(this, void 0);
-            __classPrivateFieldSet(this, _GenericSignerPayload_extraTypes, {}, "f");
+            this.__internal__extraTypes = {};
             const getter = (key) => this.get(key);
             for (const [key, type] of Object.entries(extensionTypes)) {
                 if (!knownTypes[key]) {
-                    __classPrivateFieldGet(this, _GenericSignerPayload_extraTypes, "f")[key] = type;
+                    this.__internal__extraTypes[key] = type;
                 }
                 util.objectProperty(this, key, getter);
             }
@@ -13576,8 +14593,8 @@
         }
         toPayload() {
             const result = {};
-            const keys = Object.keys(__classPrivateFieldGet(this, _GenericSignerPayload_extraTypes, "f"));
-            for (let i = 0; i < keys.length; i++) {
+            const keys = Object.keys(this.__internal__extraTypes);
+            for (let i = 0, count = keys.length; i < count; i++) {
                 const key = keys[i];
                 const value = this.get(key);
                 const isOption = value instanceof Option;
@@ -13612,7 +14629,6 @@
             };
         }
     }
-    _GenericSignerPayload_extraTypes = new WeakMap();
 
     function sign(registry, signerPair, u8a, options) {
         const encoded = u8a.length > 256
@@ -13621,14 +14637,12 @@
         return signerPair.sign(encoded, options);
     }
 
-    var _GenericExtrinsicPayloadV4_signOptions;
     class GenericExtrinsicPayloadV4 extends Struct {
         constructor(registry, value) {
             super(registry, util.objectSpread({ method: 'Bytes' }, registry.getSignedExtensionTypes(), registry.getSignedExtensionExtra()), value);
-            _GenericExtrinsicPayloadV4_signOptions.set(this, void 0);
-            __classPrivateFieldSet(this, _GenericExtrinsicPayloadV4_signOptions, {
+            this.__internal__signOptions = {
                 withType: registry.createTypeUnsafe('ExtrinsicSignature', []) instanceof Enum
-            }, "f");
+            };
         }
         inspect() {
             return super.inspect({ method: true });
@@ -13661,12 +14675,10 @@
             return this.getT('assetId');
         }
         sign(signerPair) {
-            return sign(this.registry, signerPair, this.toU8a({ method: true }), __classPrivateFieldGet(this, _GenericExtrinsicPayloadV4_signOptions, "f"));
+            return sign(this.registry, signerPair, this.toU8a({ method: true }), this.__internal__signOptions);
         }
     }
-    _GenericExtrinsicPayloadV4_signOptions = new WeakMap();
 
-    var _GenericExtrinsicSignatureV4_signKeys;
     const FAKE_SIGNATURE = new Uint8Array(256).fill(1);
     function toAddress(registry, address) {
         return registry.createTypeUnsafe('Address', [util.isU8a(address) ? util.u8aToHex(address) : address]);
@@ -13676,9 +14688,8 @@
             const signTypes = registry.getSignedExtensionTypes();
             super(registry, util.objectSpread(
             { signer: 'Address', signature: 'ExtrinsicSignature' }, signTypes), GenericExtrinsicSignatureV4.decodeExtrinsicSignature(value, isSigned));
-            _GenericExtrinsicSignatureV4_signKeys.set(this, void 0);
-            __classPrivateFieldSet(this, _GenericExtrinsicSignatureV4_signKeys, Object.keys(signTypes), "f");
-            util.objectProperties(this, __classPrivateFieldGet(this, _GenericExtrinsicSignatureV4_signKeys, "f"), (k) => this.get(k));
+            this.__internal__signKeys = Object.keys(signTypes);
+            util.objectProperties(this, this.__internal__signKeys, (k) => this.get(k));
         }
         static decodeExtrinsicSignature(value, isSigned = false) {
             if (!value) {
@@ -13718,8 +14729,8 @@
             return this.getT('tip');
         }
         _injectSignature(signer, signature, payload) {
-            for (let i = 0; i < __classPrivateFieldGet(this, _GenericExtrinsicSignatureV4_signKeys, "f").length; i++) {
-                const k = __classPrivateFieldGet(this, _GenericExtrinsicSignatureV4_signKeys, "f")[i];
+            for (let i = 0, count = this.__internal__signKeys.length; i < count; i++) {
+                const k = this.__internal__signKeys[i];
                 const v = payload.get(k);
                 if (!util.isUndefined(v)) {
                     this.set(k, v);
@@ -13761,26 +14772,33 @@
                 : EMPTY_U8A;
         }
     }
-    _GenericExtrinsicSignatureV4_signKeys = new WeakMap();
 
     function decodeAccountId$1(value) {
         if (util.isU8a(value) || Array.isArray(value)) {
             return util.u8aToU8a(value);
         }
-        else if (util.isHex(value) || utilCrypto.isEthereumAddress(value.toString())) {
-            return util.hexToU8a(value.toString());
+        else if (!value) {
+            return new Uint8Array();
+        }
+        else if (util.isHex(value)) {
+            return util.hexToU8a(value);
         }
         else if (util.isString(value)) {
-            return util.u8aToU8a(value);
+            return utilCrypto.decodeAddress(value.toString());
         }
-        return value;
+        throw new Error(`Unknown type passed to AccountId constructor, found typeof ${typeof value}`);
     }
-    class GenericEthereumAccountId extends U8aFixed {
-        constructor(registry, value = new Uint8Array()) {
-            super(registry, decodeAccountId$1(value), 160);
+    class BaseAccountId extends U8aFixed {
+        constructor(registry, allowedBits = 256 | 264, value) {
+            const decoded = decodeAccountId$1(value);
+            const decodedBits = decoded.length * 8;
+            if (decodedBits < allowedBits && decoded.some((b) => b)) {
+                throw new Error(`Invalid AccountId provided, expected ${allowedBits >> 3} bytes, found ${decoded.length}`);
+            }
+            super(registry, decoded, allowedBits);
         }
         eq(other) {
-            return !!other && super.eq(decodeAccountId$1(other));
+            return super.eq(decodeAccountId$1(other));
         }
         toHuman() {
             return this.toJSON();
@@ -13792,10 +14810,20 @@
             return this.toJSON();
         }
         toString() {
-            return utilCrypto.ethereumEncode(this);
+            return utilCrypto.encodeAddress(this, this.registry.chainSS58);
         }
         toRawType() {
             return 'AccountId';
+        }
+    }
+    class GenericAccountId extends BaseAccountId {
+        constructor(registry, value) {
+            super(registry, 256, value);
+        }
+    }
+    class GenericAccountId33 extends BaseAccountId {
+        constructor(registry, value) {
+            super(registry, 264, value);
         }
     }
 
@@ -13874,120 +14902,6 @@
         }
         toRawType() {
             return 'AccountIndex';
-        }
-    }
-
-    const ACCOUNT_ID_PREFIX$1 = new Uint8Array([0xff]);
-    function decodeString$1(registry, value) {
-        const decoded = utilCrypto.decodeAddress(value);
-        return decoded.length === 20
-            ? registry.createTypeUnsafe('EthereumAccountId', [decoded])
-            : registry.createTypeUnsafe('AccountIndex', [util.u8aToBn(decoded)]);
-    }
-    function decodeU8a$3(registry, value) {
-        if (value.length === 20) {
-            return registry.createTypeUnsafe('EthereumAccountId', [value]);
-        }
-        else if (value[0] === 0xff) {
-            return registry.createTypeUnsafe('EthereumAccountId', [value.subarray(1)]);
-        }
-        const [offset, length] = GenericAccountIndex.readLength(value);
-        return registry.createTypeUnsafe('AccountIndex', [util.u8aToBn(value.subarray(offset, offset + length))]);
-    }
-    function decodeAddressOrIndex$1(registry, value) {
-        return value instanceof GenericEthereumLookupSource
-            ? value.inner
-            : value instanceof GenericEthereumAccountId || value instanceof GenericAccountIndex
-                ? value
-                : util.isU8a(value) || Array.isArray(value) || util.isHex(value)
-                    ? decodeU8a$3(registry, util.u8aToU8a(value))
-                    : util.isBn(value) || util.isNumber(value) || util.isBigInt(value)
-                        ? registry.createTypeUnsafe('AccountIndex', [value])
-                        : decodeString$1(registry, value);
-    }
-    class GenericEthereumLookupSource extends AbstractBase {
-        constructor(registry, value = new Uint8Array()) {
-            super(registry, decodeAddressOrIndex$1(registry, value));
-        }
-        get encodedLength() {
-            const rawLength = this._rawLength;
-            return rawLength + (
-            rawLength > 1
-                ? 1
-                : 0);
-        }
-        get _rawLength() {
-            return this.inner instanceof GenericAccountIndex
-                ? GenericAccountIndex.calcLength(this.inner)
-                : this.inner.encodedLength;
-        }
-        toHex() {
-            return util.u8aToHex(this.toU8a());
-        }
-        toRawType() {
-            return 'Address';
-        }
-        toU8a(isBare) {
-            const encoded = this.inner.toU8a().subarray(0, this._rawLength);
-            return isBare
-                ? encoded
-                : util.u8aConcat(this.inner instanceof GenericAccountIndex
-                    ? GenericAccountIndex.writeLength(encoded)
-                    : ACCOUNT_ID_PREFIX$1, encoded);
-        }
-    }
-
-    function decodeAccountId(value) {
-        if (util.isU8a(value) || Array.isArray(value)) {
-            return util.u8aToU8a(value);
-        }
-        else if (!value) {
-            return new Uint8Array();
-        }
-        else if (util.isHex(value)) {
-            return util.hexToU8a(value);
-        }
-        else if (util.isString(value)) {
-            return utilCrypto.decodeAddress(value.toString());
-        }
-        throw new Error(`Unknown type passed to AccountId constructor, found typeof ${typeof value}`);
-    }
-    class BaseAccountId extends U8aFixed {
-        constructor(registry, allowedBits = 256 | 264, value) {
-            const decoded = decodeAccountId(value);
-            const decodedBits = decoded.length * 8;
-            if (decodedBits < allowedBits && decoded.some((b) => b)) {
-                throw new Error(`Invalid AccountId provided, expected ${allowedBits >> 3} bytes, found ${decoded.length}`);
-            }
-            super(registry, decoded, allowedBits);
-        }
-        eq(other) {
-            return super.eq(decodeAccountId(other));
-        }
-        toHuman() {
-            return this.toJSON();
-        }
-        toJSON() {
-            return this.toString();
-        }
-        toPrimitive() {
-            return this.toJSON();
-        }
-        toString() {
-            return utilCrypto.encodeAddress(this, this.registry.chainSS58);
-        }
-        toRawType() {
-            return 'AccountId';
-        }
-    }
-    class GenericAccountId extends BaseAccountId {
-        constructor(registry, value) {
-            super(registry, 256, value);
-        }
-    }
-    class GenericAccountId33 extends BaseAccountId {
-        constructor(registry, value) {
-            super(registry, 264, value);
         }
     }
 
@@ -14244,14 +15158,14 @@
         }
     }
 
-    const ACCOUNT_ID_PREFIX = new Uint8Array([0xff]);
-    function decodeString(registry, value) {
+    const ACCOUNT_ID_PREFIX$1 = new Uint8Array([0xff]);
+    function decodeString$1(registry, value) {
         const decoded = utilCrypto.decodeAddress(value);
         return decoded.length === 32
             ? registry.createTypeUnsafe('AccountId', [decoded])
             : registry.createTypeUnsafe('AccountIndex', [util.u8aToBn(decoded)]);
     }
-    function decodeU8a$2(registry, value) {
+    function decodeU8a$3(registry, value) {
         if (value.length === 32) {
             return registry.createTypeUnsafe('AccountId', [value]);
         }
@@ -14261,7 +15175,7 @@
         const [offset, length] = GenericAccountIndex.readLength(value);
         return registry.createTypeUnsafe('AccountIndex', [util.u8aToBn(value.subarray(offset, offset + length))]);
     }
-    function decodeAddressOrIndex(registry, value) {
+    function decodeAddressOrIndex$1(registry, value) {
         return value instanceof GenericLookupSource
             ? value.inner
             : value instanceof GenericAccountId || value instanceof GenericAccountIndex
@@ -14269,12 +15183,12 @@
                 : util.isBn(value) || util.isNumber(value) || util.isBigInt(value)
                     ? registry.createTypeUnsafe('AccountIndex', [value])
                     : Array.isArray(value) || util.isHex(value) || util.isU8a(value)
-                        ? decodeU8a$2(registry, util.u8aToU8a(value))
-                        : decodeString(registry, value);
+                        ? decodeU8a$3(registry, util.u8aToU8a(value))
+                        : decodeString$1(registry, value);
     }
     class GenericLookupSource extends AbstractBase {
         constructor(registry, value = new Uint8Array()) {
-            super(registry, decodeAddressOrIndex(registry, value));
+            super(registry, decodeAddressOrIndex$1(registry, value));
         }
         get encodedLength() {
             const rawLength = this._rawLength;
@@ -14294,7 +15208,7 @@
                 outer: [
                     new Uint8Array(this.inner instanceof GenericAccountIndex
                         ? GenericAccountIndex.writeLength(value)
-                        : ACCOUNT_ID_PREFIX),
+                        : ACCOUNT_ID_PREFIX$1),
                     value
                 ]
             };
@@ -14311,11 +15225,11 @@
                 ? encoded
                 : util.u8aConcat(this.inner instanceof GenericAccountIndex
                     ? GenericAccountIndex.writeLength(encoded)
-                    : ACCOUNT_ID_PREFIX, encoded);
+                    : ACCOUNT_ID_PREFIX$1, encoded);
         }
     }
 
-    function decodeU8a$1(registry, u8a) {
+    function decodeU8a$2(registry, u8a) {
         if ([0, 32].includes(u8a.length)) {
             return { Id: u8a };
         }
@@ -14332,7 +15246,7 @@
             return { Id: value };
         }
         else if (util.isU8a(value)) {
-            return decodeU8a$1(registry, value);
+            return decodeU8a$2(registry, value);
         }
         else if (value instanceof GenericMultiAddress) {
             return value;
@@ -14341,7 +15255,7 @@
             return { Index: util.isNumber(value) ? value : value.toNumber() };
         }
         else if (util.isString(value)) {
-            return decodeU8a$1(registry, utilCrypto.decodeAddress(value.toString()));
+            return decodeU8a$2(registry, utilCrypto.decodeAddress(value.toString()));
         }
         return value;
     }
@@ -14367,7 +15281,6 @@
         }
     }
 
-    var _GenericVote_aye, _GenericVote_conviction;
     const AYE_BITS = 0b10000000;
     const NAY_BITS = 0b00000000;
     const CON_MASK = 0b01111111;
@@ -14406,16 +15319,14 @@
         constructor(registry, value) {
             const decoded = decodeVote(registry, value);
             super(registry, decoded, 8);
-            _GenericVote_aye.set(this, void 0);
-            _GenericVote_conviction.set(this, void 0);
-            __classPrivateFieldSet(this, _GenericVote_aye, (decoded[0] & AYE_BITS) === AYE_BITS, "f");
-            __classPrivateFieldSet(this, _GenericVote_conviction, this.registry.createTypeUnsafe('Conviction', [decoded[0] & CON_MASK]), "f");
+            this.__internal__aye = (decoded[0] & AYE_BITS) === AYE_BITS;
+            this.__internal__conviction = this.registry.createTypeUnsafe('Conviction', [decoded[0] & CON_MASK]);
         }
         get conviction() {
-            return __classPrivateFieldGet(this, _GenericVote_conviction, "f");
+            return this.__internal__conviction;
         }
         get isAye() {
-            return __classPrivateFieldGet(this, _GenericVote_aye, "f");
+            return this.__internal__aye;
         }
         get isNay() {
             return !this.isAye;
@@ -14436,7 +15347,102 @@
             return 'Vote';
         }
     }
-    _GenericVote_aye = new WeakMap(), _GenericVote_conviction = new WeakMap();
+
+    function decodeAccountId(value) {
+        if (util.isU8a(value) || Array.isArray(value)) {
+            return util.u8aToU8a(value);
+        }
+        else if (util.isHex(value) || utilCrypto.isEthereumAddress(value.toString())) {
+            return util.hexToU8a(value.toString());
+        }
+        else if (util.isString(value)) {
+            return util.u8aToU8a(value);
+        }
+        return value;
+    }
+    class GenericEthereumAccountId extends U8aFixed {
+        constructor(registry, value = new Uint8Array()) {
+            super(registry, decodeAccountId(value), 160);
+        }
+        eq(other) {
+            return !!other && super.eq(decodeAccountId(other));
+        }
+        toHuman() {
+            return this.toJSON();
+        }
+        toJSON() {
+            return this.toString();
+        }
+        toPrimitive() {
+            return this.toJSON();
+        }
+        toString() {
+            return utilCrypto.ethereumEncode(this);
+        }
+        toRawType() {
+            return 'AccountId';
+        }
+    }
+
+    const ACCOUNT_ID_PREFIX = new Uint8Array([0xff]);
+    function decodeString(registry, value) {
+        const decoded = utilCrypto.decodeAddress(value);
+        return decoded.length === 20
+            ? registry.createTypeUnsafe('EthereumAccountId', [decoded])
+            : registry.createTypeUnsafe('AccountIndex', [util.u8aToBn(decoded)]);
+    }
+    function decodeU8a$1(registry, value) {
+        if (value.length === 20) {
+            return registry.createTypeUnsafe('EthereumAccountId', [value]);
+        }
+        else if (value[0] === 0xff) {
+            return registry.createTypeUnsafe('EthereumAccountId', [value.subarray(1)]);
+        }
+        const [offset, length] = GenericAccountIndex.readLength(value);
+        return registry.createTypeUnsafe('AccountIndex', [util.u8aToBn(value.subarray(offset, offset + length))]);
+    }
+    function decodeAddressOrIndex(registry, value) {
+        return value instanceof GenericEthereumLookupSource
+            ? value.inner
+            : value instanceof GenericEthereumAccountId || value instanceof GenericAccountIndex
+                ? value
+                : util.isU8a(value) || Array.isArray(value) || util.isHex(value)
+                    ? decodeU8a$1(registry, util.u8aToU8a(value))
+                    : util.isBn(value) || util.isNumber(value) || util.isBigInt(value)
+                        ? registry.createTypeUnsafe('AccountIndex', [value])
+                        : decodeString(registry, value);
+    }
+    class GenericEthereumLookupSource extends AbstractBase {
+        constructor(registry, value = new Uint8Array()) {
+            super(registry, decodeAddressOrIndex(registry, value));
+        }
+        get encodedLength() {
+            const rawLength = this._rawLength;
+            return rawLength + (
+            rawLength > 1
+                ? 1
+                : 0);
+        }
+        get _rawLength() {
+            return this.inner instanceof GenericAccountIndex
+                ? GenericAccountIndex.calcLength(this.inner)
+                : this.inner.encodedLength;
+        }
+        toHex() {
+            return util.u8aToHex(this.toU8a());
+        }
+        toRawType() {
+            return 'Address';
+        }
+        toU8a(isBare) {
+            const encoded = this.inner.toU8a().subarray(0, this._rawLength);
+            return isBare
+                ? encoded
+                : util.u8aConcat(this.inner instanceof GenericAccountIndex
+                    ? GenericAccountIndex.writeLength(encoded)
+                    : ACCOUNT_ID_PREFIX, encoded);
+        }
+    }
 
     function decodeDataU8a(registry, value) {
         const indicator = value[0];
@@ -14531,164 +15537,6 @@
         }
     }
 
-    function flattenUniq(list, result = []) {
-        for (let i = 0; i < list.length; i++) {
-            const entry = list[i];
-            if (Array.isArray(entry)) {
-                flattenUniq(entry, result);
-            }
-            else {
-                result.push(entry);
-            }
-        }
-        return [...new Set(result)];
-    }
-
-    function getSiName(lookup, type) {
-        const typeDef = lookup.getTypeDef(type);
-        return typeDef.lookupName || typeDef.type;
-    }
-
-    function extractSubSingle(_, { sub }) {
-        const { lookupName, type } = sub;
-        return extractTypes$1([lookupName || type]);
-    }
-    function extractSubArray(_, { sub }) {
-        return extractTypes$1(sub.map(({ lookupName, type }) => lookupName || type));
-    }
-    function unhandled(type, { info }) {
-        throw new Error(`Unhandled: Unable to create and validate type from ${type} (info=${exports.TypeDefInfo[info]})`);
-    }
-    const mapping = {
-        [exports.TypeDefInfo.BTreeMap]: extractSubArray,
-        [exports.TypeDefInfo.BTreeSet]: extractSubSingle,
-        [exports.TypeDefInfo.Compact]: extractSubSingle,
-        [exports.TypeDefInfo.DoNotConstruct]: unhandled,
-        [exports.TypeDefInfo.Enum]: extractSubArray,
-        [exports.TypeDefInfo.HashMap]: extractSubArray,
-        [exports.TypeDefInfo.Int]: unhandled,
-        [exports.TypeDefInfo.Linkage]: extractSubSingle,
-        [exports.TypeDefInfo.Null]: unhandled,
-        [exports.TypeDefInfo.Option]: extractSubSingle,
-        [exports.TypeDefInfo.Plain]: (_, typeDef) => typeDef.lookupName || typeDef.type,
-        [exports.TypeDefInfo.Range]: extractSubSingle,
-        [exports.TypeDefInfo.RangeInclusive]: extractSubSingle,
-        [exports.TypeDefInfo.Result]: extractSubArray,
-        [exports.TypeDefInfo.Set]: extractSubArray,
-        [exports.TypeDefInfo.Si]: unhandled,
-        [exports.TypeDefInfo.Struct]: extractSubArray,
-        [exports.TypeDefInfo.Tuple]: extractSubArray,
-        [exports.TypeDefInfo.UInt]: unhandled,
-        [exports.TypeDefInfo.Vec]: extractSubSingle,
-        [exports.TypeDefInfo.VecFixed]: extractSubSingle,
-        [exports.TypeDefInfo.WrapperKeepOpaque]: extractSubSingle,
-        [exports.TypeDefInfo.WrapperOpaque]: extractSubSingle
-    };
-    function extractTypes$1(types) {
-        const count = types.length;
-        const result = new Array(count);
-        for (let i = 0; i < count; i++) {
-            const type = types[i];
-            const typeDef = getTypeDef(type);
-            result[i] = mapping[typeDef.info](type, typeDef);
-        }
-        return result;
-    }
-
-    const l$2 = util.logger('metadata');
-    function validateTypes(registry, throwError, types) {
-        const missing = flattenUniq(extractTypes$1(types))
-            .filter((type) => !registry.hasType(type) &&
-            !registry.isLookupType(type))
-            .sort();
-        if (missing.length !== 0) {
-            const message = `Unknown types found, no types for ${missing.join(', ')}`;
-            if (throwError) {
-                throw new Error(message);
-            }
-            else {
-                l$2.warn(message);
-            }
-        }
-        return types;
-    }
-
-    function extractTypes(lookup, types) {
-        return types.map(({ type }) => lookup.getTypeDef(type).type);
-    }
-    function extractFieldTypes(lookup, type) {
-        return lookup.getSiType(type).def.asVariant.variants.map(({ fields }) => extractTypes(lookup, fields));
-    }
-    function getPalletNames({ lookup, pallets }) {
-        return pallets.reduce((all, { calls, constants, events, storage }) => {
-            all.push([extractTypes(lookup, constants)]);
-            if (calls.isSome) {
-                all.push(extractFieldTypes(lookup, calls.unwrap().type));
-            }
-            if (events.isSome) {
-                all.push(extractFieldTypes(lookup, events.unwrap().type));
-            }
-            if (storage.isSome) {
-                all.push(storage.unwrap().items.map(({ type }) => {
-                    if (type.isPlain) {
-                        return [lookup.getTypeDef(type.asPlain).type];
-                    }
-                    const { hashers, key, value } = type.asMap;
-                    return hashers.length === 1
-                        ? [
-                            lookup.getTypeDef(value).type,
-                            lookup.getTypeDef(key).type
-                        ]
-                        : [
-                            lookup.getTypeDef(value).type,
-                            ...lookup.getSiType(key).def.asTuple.map((t) => lookup.getTypeDef(t).type)
-                        ];
-                }));
-            }
-            return all;
-        }, []);
-    }
-    function getUniqTypes(registry, meta, throwError) {
-        return validateTypes(registry, throwError, flattenUniq(getPalletNames(meta)));
-    }
-
-    function trimDocs(docs) {
-        const strings = docs.map((d) => d.toString().trim());
-        const firstEmpty = strings.findIndex((d) => !d.length);
-        return firstEmpty === -1
-            ? strings
-            : strings.slice(0, firstEmpty);
-    }
-    function toCallsOnly(registry, { extrinsic, lookup, pallets }) {
-        return registry.createTypeUnsafe('MetadataLatest', [{
-                extrinsic,
-                lookup: {
-                    types: lookup.types.map(({ id, type }) => registry.createTypeUnsafe('PortableType', [{
-                            id,
-                            type: util.objectSpread({}, type, { docs: trimDocs(type.docs) })
-                        }]))
-                },
-                pallets: pallets.map(({ calls, index, name }) => ({
-                    calls: registry.createTypeUnsafe('Option<PalletCallMetadataLatest>', [calls.unwrapOr(null)]),
-                    index,
-                    name
-                }))
-            }]).toJSON();
-    }
-
-    function unwrapStorageSi(type) {
-        return type.isPlain
-            ? type.asPlain
-            : type.asMap.value;
-    }
-    function unwrapStorageType(registry, type, isOptional) {
-        const outputType = getSiName(registry.lookup, unwrapStorageSi(type));
-        return isOptional
-            ? `Option<${outputType}>`
-            : outputType;
-    }
-
-    var _StorageKey_args, _StorageKey_meta, _StorageKey_outputType, _StorageKey_method, _StorageKey_section;
     const HASHER_MAP = {
         Blake2_128: [16, false],
         Blake2_128Concat: [16, true],
@@ -14737,8 +15585,9 @@
     }
     function decodeHashers(registry, value, hashers) {
         let offset = 32;
-        const result = new Array(hashers.length);
-        for (let i = 0; i < hashers.length; i++) {
+        const count = hashers.length;
+        const result = new Array(count);
+        for (let i = 0; i < count; i++) {
             const [hasher, type] = hashers[i];
             const [hashLen, canDecode] = HASHER_MAP[hasher.type];
             const decoded = canDecode
@@ -14791,56 +15640,50 @@
         constructor(registry, value, override = {}) {
             const { key, method, section } = decodeStorageKey(value);
             super(registry, key);
-            _StorageKey_args.set(this, void 0);
-            _StorageKey_meta.set(this, void 0);
-            _StorageKey_outputType.set(this, void 0);
-            _StorageKey_method.set(this, void 0);
-            _StorageKey_section.set(this, void 0);
-            __classPrivateFieldSet(this, _StorageKey_outputType, getType(registry, value), "f");
+            this.__internal__outputType = getType(registry, value);
             this.setMeta(getMeta(value), override.section || section, override.method || method);
         }
         get args() {
-            return __classPrivateFieldGet(this, _StorageKey_args, "f");
+            return this.__internal__args;
         }
         get meta() {
-            return __classPrivateFieldGet(this, _StorageKey_meta, "f");
+            return this.__internal__meta;
         }
         get method() {
-            return __classPrivateFieldGet(this, _StorageKey_method, "f");
+            return this.__internal__method;
         }
         get outputType() {
-            return __classPrivateFieldGet(this, _StorageKey_outputType, "f");
+            return this.__internal__outputType;
         }
         get section() {
-            return __classPrivateFieldGet(this, _StorageKey_section, "f");
+            return this.__internal__section;
         }
         is(key) {
             return key.section === this.section && key.method === this.method;
         }
         setMeta(meta, section, method) {
-            __classPrivateFieldSet(this, _StorageKey_meta, meta, "f");
-            __classPrivateFieldSet(this, _StorageKey_method, method || __classPrivateFieldGet(this, _StorageKey_method, "f"), "f");
-            __classPrivateFieldSet(this, _StorageKey_section, section || __classPrivateFieldGet(this, _StorageKey_section, "f"), "f");
+            this.__internal__meta = meta;
+            this.__internal__method = method || this.__internal__method;
+            this.__internal__section = section || this.__internal__section;
             if (meta) {
-                __classPrivateFieldSet(this, _StorageKey_outputType, unwrapStorageType(this.registry, meta.type), "f");
+                this.__internal__outputType = unwrapStorageType(this.registry, meta.type);
             }
             try {
-                __classPrivateFieldSet(this, _StorageKey_args, decodeArgsFromMeta(this.registry, this.toU8a(true), meta), "f");
+                this.__internal__args = decodeArgsFromMeta(this.registry, this.toU8a(true), meta);
             }
             catch {
             }
             return this;
         }
         toHuman() {
-            return __classPrivateFieldGet(this, _StorageKey_args, "f").length
-                ? __classPrivateFieldGet(this, _StorageKey_args, "f").map((a) => a.toHuman())
+            return this.__internal__args.length
+                ? this.__internal__args.map((a) => a.toHuman())
                 : super.toHuman();
         }
         toRawType() {
             return 'StorageKey';
         }
     }
-    _StorageKey_args = new WeakMap(), _StorageKey_meta = new WeakMap(), _StorageKey_outputType = new WeakMap(), _StorageKey_method = new WeakMap(), _StorageKey_section = new WeakMap();
 
     const baseTypes = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -14947,11 +15790,12 @@
     }
     function createCallFunction(registry, lookup, variant, sectionName, sectionIndex) {
         const { fields, index } = variant;
-        const args = new Array(fields.length);
-        for (let a = 0; a < fields.length; a++) {
-            const { name, type, typeName } = fields[a];
-            args[a] = util.objectSpread({
-                name: util.stringCamelCase(name.unwrapOr(`param${a}`)),
+        const count = fields.length;
+        const args = new Array(count);
+        for (let i = 0; i < count; i++) {
+            const { name, type, typeName } = fields[i];
+            args[i] = util.objectSpread({
+                name: util.stringCamelCase(name.unwrapOr(`param${i}`)),
                 type: getSiName(lookup, type)
             }, typeName.isSome
                 ? { typeName: typeName.unwrap() }
@@ -14962,7 +15806,7 @@
     function decorateExtrinsics(registry, { lookup, pallets }, version) {
         const result = {};
         const filtered = pallets.filter(filterCallsSome);
-        for (let i = 0; i < filtered.length; i++) {
+        for (let i = 0, count = filtered.length; i < count; i++) {
             const { calls, index, name } = filtered[i];
             const sectionName = util.stringCamelCase(name);
             const sectionIndex = version >= 12 ? index.toNumber() : i;
@@ -15131,7 +15975,10 @@
         }
     };
     function getAliasTypes({ knownTypes }, section) {
-        return util.objectSpread({}, typesAlias[section], knownTypes.typesAlias?.[section]);
+        return {
+            ...(typesAlias[section] ?? {}),
+            ...(knownTypes.typesAlias?.[section] ?? {})
+        };
     }
 
     const BOXES = [['<', '>'], ['<', ','], [',', '>'], ['(', ')'], ['(', ','], [',', ','], [',', ')']];
@@ -15148,7 +15995,7 @@
         }) - 1;
     }
     function compatTypes(specs, ...types) {
-        for (let i = 0; i < types.length; i++) {
+        for (let i = 0, count = types.length; i < count; i++) {
             compatType(specs, types[i]);
         }
     }
@@ -15378,7 +16225,6 @@
         }
     }
 
-    var _MetadataVersioned_converted, _MetadataVersioned_assertVersion, _MetadataVersioned_getVersion, _MetadataVersioned_metadata;
     const KNOWN_VERSIONS = [14, 13, 12, 11, 10, 9];
     const LATEST_VERSION = KNOWN_VERSIONS[0];
     class MetadataVersioned extends Struct {
@@ -15387,29 +16233,29 @@
                 magicNumber: MagicNumber,
                 metadata: 'MetadataAll'
             }, value);
-            _MetadataVersioned_converted.set(this, new Map());
-            _MetadataVersioned_assertVersion.set(this, (version) => {
+            this.__internal__converted = new Map();
+            this.__internal__assertVersion = (version) => {
                 if (this.version > version) {
                     throw new Error(`Cannot convert metadata from version ${this.version} to ${version}`);
                 }
                 return this.version === version;
-            });
-            _MetadataVersioned_getVersion.set(this, (version, fromPrev) => {
+            };
+            this.__internal__getVersion = (version, fromPrev) => {
                 const asCurr = `asV${version}`;
                 const asPrev = version === 'latest'
                     ? `asV${LATEST_VERSION}`
                     : `asV${version - 1}`;
-                if (version !== 'latest' && __classPrivateFieldGet(this, _MetadataVersioned_assertVersion, "f").call(this, version)) {
-                    return __classPrivateFieldGet(this, _MetadataVersioned_metadata, "f").call(this)[asCurr];
+                if (version !== 'latest' && this.__internal__assertVersion(version)) {
+                    return this.__internal__metadata()[asCurr];
                 }
-                if (!__classPrivateFieldGet(this, _MetadataVersioned_converted, "f").has(version)) {
-                    __classPrivateFieldGet(this, _MetadataVersioned_converted, "f").set(version, fromPrev(this.registry, this[asPrev], this.version));
+                if (!this.__internal__converted.has(version)) {
+                    this.__internal__converted.set(version, fromPrev(this.registry, this[asPrev], this.version));
                 }
-                return __classPrivateFieldGet(this, _MetadataVersioned_converted, "f").get(version);
-            });
-            _MetadataVersioned_metadata.set(this, () => {
+                return this.__internal__converted.get(version);
+            };
+            this.__internal__metadata = () => {
                 return this.getT('metadata');
-            });
+            };
         }
         get asCallsOnly() {
             return new MetadataVersioned(this.registry, {
@@ -15418,32 +16264,32 @@
             });
         }
         get asV9() {
-            __classPrivateFieldGet(this, _MetadataVersioned_assertVersion, "f").call(this, 9);
-            return __classPrivateFieldGet(this, _MetadataVersioned_metadata, "f").call(this).asV9;
+            this.__internal__assertVersion(9);
+            return this.__internal__metadata().asV9;
         }
         get asV10() {
-            return __classPrivateFieldGet(this, _MetadataVersioned_getVersion, "f").call(this, 10, toV10);
+            return this.__internal__getVersion(10, toV10);
         }
         get asV11() {
-            return __classPrivateFieldGet(this, _MetadataVersioned_getVersion, "f").call(this, 11, toV11);
+            return this.__internal__getVersion(11, toV11);
         }
         get asV12() {
-            return __classPrivateFieldGet(this, _MetadataVersioned_getVersion, "f").call(this, 12, toV12);
+            return this.__internal__getVersion(12, toV12);
         }
         get asV13() {
-            return __classPrivateFieldGet(this, _MetadataVersioned_getVersion, "f").call(this, 13, toV13);
+            return this.__internal__getVersion(13, toV13);
         }
         get asV14() {
-            return __classPrivateFieldGet(this, _MetadataVersioned_getVersion, "f").call(this, 14, toV14);
+            return this.__internal__getVersion(14, toV14);
         }
         get asLatest() {
-            return __classPrivateFieldGet(this, _MetadataVersioned_getVersion, "f").call(this, 'latest', toLatest);
+            return this.__internal__getVersion('latest', toLatest);
         }
         get magicNumber() {
             return this.getT('magicNumber');
         }
         get version() {
-            return __classPrivateFieldGet(this, _MetadataVersioned_metadata, "f").call(this).index;
+            return this.__internal__metadata().index;
         }
         getUniqTypes(throwError) {
             return getUniqTypes(this.registry, this.asLatest, throwError);
@@ -15453,7 +16299,6 @@
             return super.toJSON();
         }
     }
-    _MetadataVersioned_converted = new WeakMap(), _MetadataVersioned_assertVersion = new WeakMap(), _MetadataVersioned_getVersion = new WeakMap(), _MetadataVersioned_metadata = new WeakMap();
 
     const EMPTY_METADATA = new Uint8Array([0x6d, 0x65, 0x74, 0x61, 9]);
     const VERSION_IDX = EMPTY_METADATA.length - 1;
@@ -15482,7 +16327,7 @@
 
     function decorateConstants(registry, { pallets }, _version) {
         const result = {};
-        for (let i = 0; i < pallets.length; i++) {
+        for (let i = 0, count = pallets.length; i < count; i++) {
             const { constants, name } = pallets[i];
             if (!constants.isEmpty) {
                 util.lazyMethod(result, util.stringCamelCase(name), () => util.lazyMethods({}, constants, (constant) => {
@@ -15500,7 +16345,7 @@
     }
     function decorateErrors(registry, { lookup, pallets }, version) {
         const result = {};
-        for (let i = 0; i < pallets.length; i++) {
+        for (let i = 0, count = pallets.length; i < count; i++) {
             const { errors, index, name } = pallets[i];
             if (errors.isSome) {
                 const sectionIndex = version >= 12 ? index.toNumber() : i;
@@ -15523,7 +16368,7 @@
     function decorateEvents(registry, { lookup, pallets }, version) {
         const result = {};
         const filtered = pallets.filter(filterEventsSome);
-        for (let i = 0; i < filtered.length; i++) {
+        for (let i = 0, count = filtered.length; i < count; i++) {
             const { events, index, name } = filtered[i];
             const sectionIndex = version >= 12 ? index.toNumber() : i;
             util.lazyMethod(result, util.stringCamelCase(name), () => lazyVariants(lookup, events.unwrap(), objectNameToString, (variant) => ({
@@ -15571,8 +16416,9 @@
         }
     }
     function createKeyRawParts(registry, itemFn, { args, hashers, keys }) {
-        const extra = new Array(keys.length);
-        for (let i = 0; i < keys.length; i++) {
+        const count = keys.length;
+        const extra = new Array(count);
+        for (let i = 0; i < count; i++) {
             extra[i] = getHasher(hashers[i])(registry.createTypeUnsafe(registry.createLookupType(keys[i]), [args[i]]).toU8a());
         }
         return [
@@ -15762,7 +16608,7 @@
     function getStorage(registry) {
         const storage = {};
         const entries = Object.entries(substrate);
-        for (let e = 0; e < entries.length; e++) {
+        for (let e = 0, count = entries.length; e < count; e++) {
             storage[entries[e][0]] = entries[e][1](registry);
         }
         return { substrate: storage };
@@ -15773,7 +16619,7 @@
     const VERSION_DOCS = { docs: 'Returns the current pallet version from storage', type: 'u16' };
     function decorateStorage(registry, { pallets }, _metaVersion) {
         const result = getStorage(registry);
-        for (let i = 0; i < pallets.length; i++) {
+        for (let i = 0, count = pallets.length; i < count; i++) {
             const { name, storage } = pallets[i];
             if (storage.isSome) {
                 const section = util.stringCamelCase(name);
@@ -15803,839 +16649,6 @@
         };
     }
 
-    var _PortableRegistry_instances, _PortableRegistry_alias, _PortableRegistry_lookups, _PortableRegistry_names, _PortableRegistry_params, _PortableRegistry_typeDefs, _PortableRegistry_types, _PortableRegistry_createSiDef, _PortableRegistry_getLookupId, _PortableRegistry_extract, _PortableRegistry_extractArray, _PortableRegistry_extractBitSequence, _PortableRegistry_extractCompact, _PortableRegistry_extractComposite, _PortableRegistry_extractCompositeSet, _PortableRegistry_extractFields, _PortableRegistry_extractFieldsAlias, _PortableRegistry_extractHistoric, _PortableRegistry_extractPrimitive, _PortableRegistry_extractAliasPath, _PortableRegistry_extractSequence, _PortableRegistry_extractTuple, _PortableRegistry_extractVariant, _PortableRegistry_extractVariantEnum;
-    const l$1 = util.logger('PortableRegistry');
-    const TYPE_UNWRAP = { toNumber: () => -1 };
-    const PRIMITIVE_ALIAS = {
-        Char: 'u32',
-        Str: 'Text'
-    };
-    const PATHS_ALIAS = splitNamespace([
-        'sp_core::crypto::AccountId32',
-        'sp_runtime::generic::era::Era',
-        'sp_runtime::multiaddress::MultiAddress',
-        'fp_account::AccountId20',
-        'account::AccountId20',
-        'polkadot_runtime_common::claims::EthereumAddress',
-        'frame_support::weights::weight_v2::Weight',
-        'sp_weights::weight_v2::Weight',
-        '*_democracy::vote::Vote',
-        '*_conviction_voting::vote::Vote',
-        '*_identity::types::Data',
-        'sp_core::OpaqueMetadata',
-        'sp_core::OpaquePeerId',
-        'sp_core::offchain::OpaqueMultiaddr',
-        'primitive_types::*',
-        'sp_arithmetic::per_things::*',
-        '*_runtime::RuntimeCall',
-        '*_runtime::RuntimeEvent',
-        'ink::env::types::*',
-        'ink::primitives::types::*',
-        'ink_env::types::*',
-        'ink_primitives::types::*'
-    ]);
-    const PATHS_SET = splitNamespace([
-        'pallet_identity::types::BitFlags'
-    ]);
-    const BITVEC_NS_LSB = ['bitvec::order::Lsb0', 'BitOrderLsb0'];
-    const BITVEC_NS_MSB = ['bitvec::order::Msb0', 'BitOrderMsb0'];
-    const BITVEC_NS = [...BITVEC_NS_LSB, ...BITVEC_NS_MSB];
-    const WRAPPERS = ['BoundedBTreeMap', 'BoundedBTreeSet', 'BoundedVec', 'Box', 'BTreeMap', 'BTreeSet', 'Cow', 'Option', 'Range', 'RangeInclusive', 'Result', 'WeakBoundedVec', 'WrapperKeepOpaque', 'WrapperOpaque'];
-    const RESERVED = [
-        'entries', 'keys', 'new', 'size',
-        'hash', 'registry'
-    ];
-    const PATH_RM_INDEX_1 = ['generic', 'misc', 'pallet', 'traits', 'types'];
-    function sanitizeDocs(docs) {
-        const result = new Array(docs.length);
-        for (let i = 0; i < docs.length; i++) {
-            result[i] = docs[i].toString();
-        }
-        return result;
-    }
-    function splitNamespace(values) {
-        const result = new Array(values.length);
-        for (let i = 0; i < values.length; i++) {
-            result[i] = values[i].split('::');
-        }
-        return result;
-    }
-    function matchParts(first, second) {
-        return first.length === second.length && first.every((a, index) => {
-            const b = second[index].toString();
-            if ((a === '*') || (a === b)) {
-                return true;
-            }
-            if (a.includes('*') && a.includes('_') && b.includes('_')) {
-                let suba = a.split('_');
-                let subb = b.split('_');
-                if (suba[0] === '*') {
-                    const indexOf = subb.indexOf(suba[1]);
-                    if (indexOf !== -1) {
-                        suba = suba.slice(1);
-                        subb = subb.slice(indexOf);
-                    }
-                }
-                if ((suba.length === 2) && (suba[1] === '*') && (suba[0] === subb[0])) {
-                    return true;
-                }
-                return matchParts(suba, subb);
-            }
-            return false;
-        });
-    }
-    function getAliasPath({ def, path }) {
-        if (['frame_support::weights::weight_v2::Weight', 'sp_weights::weight_v2::Weight'].includes(path.join('::'))) {
-            return !def.isComposite || def.asComposite.fields.length === 1
-                ? 'WeightV1'
-                : null;
-        }
-        return path.length && PATHS_ALIAS.some((a) => matchParts(a, path))
-            ? path[path.length - 1].toString()
-            : null;
-    }
-    function extractNameFlat(portable, lookupIndex, params, path, isInternal = false) {
-        const count = path.length;
-        if (count === 0 || WRAPPERS.includes(path[count - 1].toString())) {
-            return null;
-        }
-        const camels = new Array(count);
-        const lowers = new Array(count);
-        for (let i = 0; i < count; i++) {
-            const c = util.stringPascalCase(isInternal
-                ? path[i].replace('pallet_', '')
-                : path[i]);
-            const l = c.toLowerCase();
-            camels[i] = c;
-            lowers[i] = l;
-        }
-        let name = '';
-        for (let i = 0; i < count; i++) {
-            const l = lowers[i];
-            if (i !== 1 || !PATH_RM_INDEX_1.includes(l)) {
-                if (l !== lowers[i + 1]) {
-                    name += camels[i];
-                }
-            }
-        }
-        if (camels[1] === 'RawOrigin' && count === 2 && params.length === 2 && params[1].type.isSome) {
-            const instanceType = portable[params[1].type.unwrap().toNumber()];
-            if (instanceType.type.path.length === 2) {
-                name = `${name}${instanceType.type.path[1].toString()}`;
-            }
-        }
-        return { lookupIndex, name, params };
-    }
-    function extractName(portable, lookupIndex, { type: { params, path } }) {
-        return extractNameFlat(portable, lookupIndex, params, path);
-    }
-    function nextDupeMatches(name, startAt, names) {
-        const result = [names[startAt]];
-        for (let i = startAt + 1; i < names.length; i++) {
-            const v = names[i];
-            if (v.name === name) {
-                result.push(v);
-            }
-        }
-        return result;
-    }
-    function rewriteDupes(input, rewrite) {
-        const count = input.length;
-        for (let i = 0; i < count; i++) {
-            const a = input[i];
-            for (let j = i + 1; j < count; j++) {
-                const b = input[j];
-                if (a.lookupIndex !== b.lookupIndex && a.name === b.name) {
-                    return false;
-                }
-            }
-        }
-        for (let i = 0; i < count; i++) {
-            const p = input[i];
-            rewrite[p.lookupIndex] = p.name;
-        }
-        return true;
-    }
-    function removeDupeNames(lookup, portable, names) {
-        const rewrite = {};
-        return names
-            .map((original, startAt) => {
-            const { lookupIndex, name, params } = original;
-            if (!name) {
-                return null;
-            }
-            else if (rewrite[lookupIndex]) {
-                return original;
-            }
-            const allSame = nextDupeMatches(name, startAt, names);
-            if (allSame.length === 1) {
-                return original;
-            }
-            const anyDiff = allSame.some((o) => params.length !== o.params.length ||
-                params.some((p, index) => !p.name.eq(o.params[index].name) ||
-                    p.type.unwrapOr(TYPE_UNWRAP).toNumber() !== o.params[index].type.unwrapOr(TYPE_UNWRAP).toNumber()));
-            if (!anyDiff) {
-                return original;
-            }
-            const paramIdx = params.findIndex(({ type }, index) => allSame.every(({ params }, aIndex) => params[index].type.isSome && (aIndex === 0 ||
-                !params[index].type.eq(type))));
-            if (paramIdx === -1) {
-                return original;
-            }
-            const adjusted = new Array(allSame.length);
-            for (let i = 0; i < allSame.length; i++) {
-                const { lookupIndex, name, params } = allSame[i];
-                const { def, path } = lookup.getSiType(params[paramIdx].type.unwrap());
-                if (!def.isPrimitive && !path.length) {
-                    return null;
-                }
-                adjusted[i] = {
-                    lookupIndex,
-                    name: def.isPrimitive
-                        ? `${name}${def.asPrimitive.toString()}`
-                        : `${name}${path[path.length - 1].toString()}`
-                };
-            }
-            if (rewriteDupes(adjusted, rewrite)) {
-                return original;
-            }
-            for (let i = 0; i < allSame.length; i++) {
-                const { lookupIndex, name, params } = allSame[i];
-                const { def, path } = lookup.getSiType(params[paramIdx].type.unwrap());
-                const flat = extractNameFlat(portable, lookupIndex, params, path, true);
-                if (def.isPrimitive || !flat) {
-                    return null;
-                }
-                adjusted[i] = {
-                    lookupIndex,
-                    name: `${name}${flat.name}`
-                };
-            }
-            if (rewriteDupes(adjusted, rewrite)) {
-                return original;
-            }
-            return null;
-        })
-            .filter((n) => !!n)
-            .map(({ lookupIndex, name, params }) => ({
-            lookupIndex,
-            name: rewrite[lookupIndex] || name,
-            params
-        }));
-    }
-    function registerTypes(lookup, lookups, names, params) {
-        lookup.registry.register(lookups);
-        if (params.SpRuntimeUncheckedExtrinsic) {
-            const [addrParam, , sigParam] = params.SpRuntimeUncheckedExtrinsic;
-            const siAddress = lookup.getSiType(addrParam.type.unwrap());
-            const siSignature = lookup.getSiType(sigParam.type.unwrap());
-            const nsSignature = siSignature.path.join('::');
-            let nsAccountId = siAddress.path.join('::');
-            const isMultiAddress = nsAccountId === 'sp_runtime::multiaddress::MultiAddress';
-            if (isMultiAddress) {
-                const [idParam] = siAddress.params;
-                nsAccountId = lookup.getSiType(idParam.type.unwrap()).path.join('::');
-            }
-            lookup.registry.register({
-                AccountId: nsAccountId.endsWith('::AccountId20') || nsAccountId.endsWith('::H160')
-                    ? 'AccountId20'
-                    : 'AccountId32',
-                Address: isMultiAddress
-                    ? 'MultiAddress'
-                    : 'AccountId',
-                ExtrinsicSignature: ['sp_runtime::MultiSignature'].includes(nsSignature)
-                    ? 'MultiSignature'
-                    : names[sigParam.type.unwrap().toNumber()] || 'MultiSignature'
-            });
-        }
-    }
-    function extractAliases(params, isContract) {
-        const hasParams = Object.keys(params).some((k) => !k.startsWith('Pallet'));
-        const alias = {};
-        if (params.SpRuntimeUncheckedExtrinsic) {
-            const [, { type }] = params.SpRuntimeUncheckedExtrinsic;
-            alias[type.unwrap().toNumber()] = 'Call';
-        }
-        else if (hasParams && !isContract) {
-            l$1.warn('Unable to determine runtime Call type, cannot inspect sp_runtime::generic::unchecked_extrinsic::UncheckedExtrinsic');
-        }
-        if (params.FrameSystemEventRecord) {
-            const [{ type }] = params.FrameSystemEventRecord;
-            alias[type.unwrap().toNumber()] = 'Event';
-        }
-        else if (hasParams && !isContract) {
-            l$1.warn('Unable to determine runtime Event type, cannot inspect frame_system::EventRecord');
-        }
-        return alias;
-    }
-    function extractTypeInfo(lookup, portable) {
-        const nameInfo = [];
-        const types = {};
-        const porCount = portable.length;
-        for (let i = 0; i < porCount; i++) {
-            const type = portable[i];
-            const lookupIndex = type.id.toNumber();
-            const extracted = extractName(portable, lookupIndex, portable[i]);
-            if (extracted) {
-                nameInfo.push(extracted);
-            }
-            types[lookupIndex] = type;
-        }
-        const lookups = {};
-        const names = {};
-        const params = {};
-        const dedup = removeDupeNames(lookup, portable, nameInfo);
-        const dedupCount = dedup.length;
-        for (let i = 0; i < dedupCount; i++) {
-            const { lookupIndex, name, params: p } = dedup[i];
-            names[lookupIndex] = name;
-            lookups[name] = lookup.registry.createLookupType(lookupIndex);
-            params[name] = p;
-        }
-        return { lookups, names, params, types };
-    }
-    class PortableRegistry extends Struct {
-        constructor(registry, value, isContract) {
-            super(registry, {
-                types: 'Vec<PortableType>'
-            }, value);
-            _PortableRegistry_instances.add(this);
-            _PortableRegistry_alias.set(this, void 0);
-            _PortableRegistry_lookups.set(this, void 0);
-            _PortableRegistry_names.set(this, void 0);
-            _PortableRegistry_params.set(this, void 0);
-            _PortableRegistry_typeDefs.set(this, {});
-            _PortableRegistry_types.set(this, void 0);
-            const { lookups, names, params, types } = extractTypeInfo(this, this.types);
-            __classPrivateFieldSet(this, _PortableRegistry_alias, extractAliases(params, isContract), "f");
-            __classPrivateFieldSet(this, _PortableRegistry_lookups, lookups, "f");
-            __classPrivateFieldSet(this, _PortableRegistry_names, names, "f");
-            __classPrivateFieldSet(this, _PortableRegistry_params, params, "f");
-            __classPrivateFieldSet(this, _PortableRegistry_types, types, "f");
-        }
-        get names() {
-            return Object.values(__classPrivateFieldGet(this, _PortableRegistry_names, "f")).sort();
-        }
-        get types() {
-            return this.getT('types');
-        }
-        register() {
-            registerTypes(this, __classPrivateFieldGet(this, _PortableRegistry_lookups, "f"), __classPrivateFieldGet(this, _PortableRegistry_names, "f"), __classPrivateFieldGet(this, _PortableRegistry_params, "f"));
-        }
-        getName(lookupId) {
-            return __classPrivateFieldGet(this, _PortableRegistry_names, "f")[__classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_getLookupId).call(this, lookupId)];
-        }
-        getSiType(lookupId) {
-            const found = (__classPrivateFieldGet(this, _PortableRegistry_types, "f") || this.types)[__classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_getLookupId).call(this, lookupId)];
-            if (!found) {
-                throw new Error(`PortableRegistry: Unable to find type with lookupId ${lookupId.toString()}`);
-            }
-            return found.type;
-        }
-        getTypeDef(lookupId) {
-            const lookupIndex = __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_getLookupId).call(this, lookupId);
-            if (!__classPrivateFieldGet(this, _PortableRegistry_typeDefs, "f")[lookupIndex]) {
-                const lookupName = __classPrivateFieldGet(this, _PortableRegistry_names, "f")[lookupIndex];
-                const empty = {
-                    info: exports.TypeDefInfo.DoNotConstruct,
-                    lookupIndex,
-                    lookupName,
-                    type: this.registry.createLookupType(lookupIndex)
-                };
-                if (lookupName) {
-                    __classPrivateFieldGet(this, _PortableRegistry_typeDefs, "f")[lookupIndex] = empty;
-                }
-                const extracted = __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_extract).call(this, this.getSiType(lookupId), lookupIndex);
-                if (!lookupName) {
-                    __classPrivateFieldGet(this, _PortableRegistry_typeDefs, "f")[lookupIndex] = empty;
-                }
-                Object.keys(extracted).forEach((k) => {
-                    if (k !== 'lookupName' || extracted[k]) {
-                        __classPrivateFieldGet(this, _PortableRegistry_typeDefs, "f")[lookupIndex][k] = extracted[k];
-                    }
-                });
-                if (extracted.info === exports.TypeDefInfo.Plain) {
-                    __classPrivateFieldGet(this, _PortableRegistry_typeDefs, "f")[lookupIndex].lookupNameRoot = __classPrivateFieldGet(this, _PortableRegistry_typeDefs, "f")[lookupIndex].lookupName;
-                    delete __classPrivateFieldGet(this, _PortableRegistry_typeDefs, "f")[lookupIndex].lookupName;
-                }
-            }
-            return __classPrivateFieldGet(this, _PortableRegistry_typeDefs, "f")[lookupIndex];
-        }
-        sanitizeField(name) {
-            let nameField = null;
-            let nameOrig = null;
-            if (name.isSome) {
-                nameField = util.stringCamelCase(name.unwrap());
-                if (nameField.includes('#')) {
-                    nameOrig = nameField;
-                    nameField = nameOrig.replace(/#/g, '_');
-                }
-                else if (RESERVED.includes(nameField)) {
-                    nameOrig = nameField;
-                    nameField = `${nameField}_`;
-                }
-            }
-            return [nameField, nameOrig];
-        }
-    }
-    _PortableRegistry_alias = new WeakMap(), _PortableRegistry_lookups = new WeakMap(), _PortableRegistry_names = new WeakMap(), _PortableRegistry_params = new WeakMap(), _PortableRegistry_typeDefs = new WeakMap(), _PortableRegistry_types = new WeakMap(), _PortableRegistry_instances = new WeakSet(), _PortableRegistry_createSiDef = function _PortableRegistry_createSiDef(lookupId) {
-        const typeDef = this.getTypeDef(lookupId);
-        const lookupIndex = lookupId.toNumber();
-        return [exports.TypeDefInfo.DoNotConstruct, exports.TypeDefInfo.Enum, exports.TypeDefInfo.Struct].includes(typeDef.info) && typeDef.lookupName
-            ? {
-                docs: typeDef.docs,
-                info: exports.TypeDefInfo.Si,
-                lookupIndex,
-                lookupName: __classPrivateFieldGet(this, _PortableRegistry_names, "f")[lookupIndex],
-                type: this.registry.createLookupType(lookupId)
-            }
-            : typeDef;
-    }, _PortableRegistry_getLookupId = function _PortableRegistry_getLookupId(lookupId) {
-        if (util.isString(lookupId)) {
-            if (!this.registry.isLookupType(lookupId)) {
-                throw new Error(`PortableRegistry: Expected a lookup string type, found ${lookupId}`);
-            }
-            return parseInt(lookupId.replace('Lookup', ''), 10);
-        }
-        else if (util.isNumber(lookupId)) {
-            return lookupId;
-        }
-        return lookupId.toNumber();
-    }, _PortableRegistry_extract = function _PortableRegistry_extract(type, lookupIndex) {
-        const namespace = type.path.join('::');
-        let typeDef;
-        const aliasType = __classPrivateFieldGet(this, _PortableRegistry_alias, "f")[lookupIndex] || getAliasPath(type);
-        try {
-            if (aliasType) {
-                typeDef = __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_extractAliasPath).call(this, lookupIndex, aliasType);
-            }
-            else {
-                switch (type.def.type) {
-                    case 'Array':
-                        typeDef = __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_extractArray).call(this, lookupIndex, type.def.asArray);
-                        break;
-                    case 'BitSequence':
-                        typeDef = __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_extractBitSequence).call(this, lookupIndex, type.def.asBitSequence);
-                        break;
-                    case 'Compact':
-                        typeDef = __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_extractCompact).call(this, lookupIndex, type.def.asCompact);
-                        break;
-                    case 'Composite':
-                        typeDef = __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_extractComposite).call(this, lookupIndex, type, type.def.asComposite);
-                        break;
-                    case 'HistoricMetaCompat':
-                        typeDef = __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_extractHistoric).call(this, lookupIndex, type.def.asHistoricMetaCompat);
-                        break;
-                    case 'Primitive':
-                        typeDef = __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_extractPrimitive).call(this, lookupIndex, type);
-                        break;
-                    case 'Sequence':
-                        typeDef = __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_extractSequence).call(this, lookupIndex, type.def.asSequence);
-                        break;
-                    case 'Tuple':
-                        typeDef = __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_extractTuple).call(this, lookupIndex, type.def.asTuple);
-                        break;
-                    case 'Variant':
-                        typeDef = __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_extractVariant).call(this, lookupIndex, type, type.def.asVariant);
-                        break;
-                    default: util.assertUnreachable(type.def.type);
-                }
-            }
-        }
-        catch (error) {
-            throw new Error(`PortableRegistry: ${lookupIndex}${namespace ? ` (${namespace})` : ''}: Error extracting ${util.stringify(type)}: ${error.message}`);
-        }
-        return util.objectSpread({
-            docs: sanitizeDocs(type.docs),
-            namespace
-        }, typeDef);
-    }, _PortableRegistry_extractArray = function _PortableRegistry_extractArray(_, { len, type }) {
-        const length = len.toNumber();
-        if (length > 2048) {
-            throw new Error('Only support for [Type; <length>], where length <= 2048');
-        }
-        return withTypeString(this.registry, {
-            info: exports.TypeDefInfo.VecFixed,
-            length,
-            sub: __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_createSiDef).call(this, type)
-        });
-    }, _PortableRegistry_extractBitSequence = function _PortableRegistry_extractBitSequence(_, { bitOrderType, bitStoreType }) {
-        const a = __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_createSiDef).call(this, bitOrderType);
-        const b = __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_createSiDef).call(this, bitStoreType);
-        const [bitOrder, bitStore] = BITVEC_NS.includes(a.namespace || '')
-            ? [a, b]
-            : [b, a];
-        if (!bitOrder.namespace || !BITVEC_NS.includes(bitOrder.namespace)) {
-            throw new Error(`Unexpected bitOrder found as ${bitOrder.namespace || '<unknown>'}`);
-        }
-        else if (bitStore.info !== exports.TypeDefInfo.Plain || bitStore.type !== 'u8') {
-            throw new Error(`Only u8 bitStore is currently supported, found ${bitStore.type}`);
-        }
-        BITVEC_NS_LSB.includes(bitOrder.namespace);
-        return {
-            info: exports.TypeDefInfo.Plain,
-            type: 'BitVec'
-        };
-    }, _PortableRegistry_extractCompact = function _PortableRegistry_extractCompact(_, { type }) {
-        return withTypeString(this.registry, {
-            info: exports.TypeDefInfo.Compact,
-            sub: __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_createSiDef).call(this, type)
-        });
-    }, _PortableRegistry_extractComposite = function _PortableRegistry_extractComposite(lookupIndex, { params, path }, { fields }) {
-        if (path.length) {
-            const pathFirst = path[0].toString();
-            const pathLast = path[path.length - 1].toString();
-            if (path.length === 1 && pathFirst === 'BTreeMap') {
-                if (params.length !== 2) {
-                    throw new Error(`BTreeMap requires 2 parameters, found ${params.length}`);
-                }
-                return withTypeString(this.registry, {
-                    info: exports.TypeDefInfo.BTreeMap,
-                    sub: params.map(({ type }) => __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_createSiDef).call(this, type.unwrap()))
-                });
-            }
-            else if (path.length === 1 && pathFirst === 'BTreeSet') {
-                if (params.length !== 1) {
-                    throw new Error(`BTreeSet requires 1 parameter, found ${params.length}`);
-                }
-                return withTypeString(this.registry, {
-                    info: exports.TypeDefInfo.BTreeSet,
-                    sub: __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_createSiDef).call(this, params[0].type.unwrap())
-                });
-            }
-            else if (['Range', 'RangeInclusive'].includes(pathFirst)) {
-                if (params.length !== 1) {
-                    throw new Error(`Range requires 1 parameter, found ${params.length}`);
-                }
-                return withTypeString(this.registry, {
-                    info: pathFirst === 'Range'
-                        ? exports.TypeDefInfo.Range
-                        : exports.TypeDefInfo.RangeInclusive,
-                    sub: __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_createSiDef).call(this, params[0].type.unwrap()),
-                    type: pathFirst
-                });
-            }
-            else if (['WrapperKeepOpaque', 'WrapperOpaque'].includes(pathLast)) {
-                if (params.length !== 1) {
-                    throw new Error(`WrapperOpaque requires 1 parameter, found ${params.length}`);
-                }
-                return withTypeString(this.registry, {
-                    info: pathLast === 'WrapperKeepOpaque'
-                        ? exports.TypeDefInfo.WrapperKeepOpaque
-                        : exports.TypeDefInfo.WrapperOpaque,
-                    sub: __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_createSiDef).call(this, params[0].type.unwrap()),
-                    type: pathLast
-                });
-            }
-        }
-        return PATHS_SET.some((p) => matchParts(p, path))
-            ? __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_extractCompositeSet).call(this, lookupIndex, params, fields)
-            : __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_extractFields).call(this, lookupIndex, fields);
-    }, _PortableRegistry_extractCompositeSet = function _PortableRegistry_extractCompositeSet(_, params, fields) {
-        if (params.length !== 1 || fields.length !== 1) {
-            throw new Error('Set handling expects param/field as single entries');
-        }
-        return withTypeString(this.registry, {
-            info: exports.TypeDefInfo.Set,
-            length: this.registry.createTypeUnsafe(this.registry.createLookupType(fields[0].type), []).bitLength(),
-            sub: this.getSiType(params[0].type.unwrap()).def.asVariant.variants.map(({ index, name }) => ({
-                index: index.toNumber(),
-                info: exports.TypeDefInfo.Plain,
-                name: name.toString(),
-                type: 'Null'
-            }))
-        });
-    }, _PortableRegistry_extractFields = function _PortableRegistry_extractFields(lookupIndex, fields) {
-        let isStruct = true;
-        let isTuple = true;
-        for (let f = 0; f < fields.length; f++) {
-            const { name } = fields[f];
-            isStruct = isStruct && name.isSome;
-            isTuple = isTuple && name.isNone;
-        }
-        if (!isTuple && !isStruct) {
-            throw new Error('Invalid fields type detected, expected either Tuple (all unnamed) or Struct (all named)');
-        }
-        if (fields.length === 0) {
-            return {
-                info: exports.TypeDefInfo.Null,
-                type: 'Null'
-            };
-        }
-        else if (isTuple && fields.length === 1) {
-            const typeDef = __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_createSiDef).call(this, fields[0].type);
-            return util.objectSpread({}, typeDef, lookupIndex === -1
-                ? null
-                : {
-                    lookupIndex,
-                    lookupName: __classPrivateFieldGet(this, _PortableRegistry_names, "f")[lookupIndex],
-                    lookupNameRoot: typeDef.lookupName
-                }, fields[0].typeName.isSome
-                ? { typeName: sanitize(fields[0].typeName.unwrap()) }
-                : null);
-        }
-        const [sub, alias] = __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_extractFieldsAlias).call(this, fields);
-        return withTypeString(this.registry, util.objectSpread({
-            info: isTuple
-                ? exports.TypeDefInfo.Tuple
-                : exports.TypeDefInfo.Struct,
-            sub
-        }, alias.size
-            ? { alias }
-            : null, lookupIndex === -1
-            ? null
-            : {
-                lookupIndex,
-                lookupName: __classPrivateFieldGet(this, _PortableRegistry_names, "f")[lookupIndex]
-            }));
-    }, _PortableRegistry_extractFieldsAlias = function _PortableRegistry_extractFieldsAlias(fields) {
-        const alias = new Map();
-        const sub = new Array(fields.length);
-        for (let i = 0; i < fields.length; i++) {
-            const { docs, name, type, typeName } = fields[i];
-            const typeDef = __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_createSiDef).call(this, type);
-            if (name.isNone) {
-                sub[i] = typeDef;
-            }
-            else {
-                const [nameField, nameOrig] = this.sanitizeField(name);
-                if (nameField && nameOrig) {
-                    alias.set(nameField, nameOrig);
-                }
-                sub[i] = util.objectSpread({
-                    docs: sanitizeDocs(docs),
-                    name: nameField
-                }, typeDef, typeName.isSome
-                    ? { typeName: sanitize(typeName.unwrap()) }
-                    : null);
-            }
-        }
-        return [sub, alias];
-    }, _PortableRegistry_extractHistoric = function _PortableRegistry_extractHistoric(_, type) {
-        return util.objectSpread({
-            displayName: type.toString(),
-            isFromSi: true
-        }, getTypeDef(type));
-    }, _PortableRegistry_extractPrimitive = function _PortableRegistry_extractPrimitive(_, type) {
-        const typeStr = type.def.asPrimitive.type.toString();
-        return {
-            info: exports.TypeDefInfo.Plain,
-            type: PRIMITIVE_ALIAS[typeStr] || typeStr.toLowerCase()
-        };
-    }, _PortableRegistry_extractAliasPath = function _PortableRegistry_extractAliasPath(_, type) {
-        return {
-            info: exports.TypeDefInfo.Plain,
-            type
-        };
-    }, _PortableRegistry_extractSequence = function _PortableRegistry_extractSequence(lookupIndex, { type }) {
-        const sub = __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_createSiDef).call(this, type);
-        if (sub.type === 'u8') {
-            return {
-                info: exports.TypeDefInfo.Plain,
-                type: 'Bytes'
-            };
-        }
-        return withTypeString(this.registry, {
-            info: exports.TypeDefInfo.Vec,
-            lookupIndex,
-            lookupName: __classPrivateFieldGet(this, _PortableRegistry_names, "f")[lookupIndex],
-            sub
-        });
-    }, _PortableRegistry_extractTuple = function _PortableRegistry_extractTuple(lookupIndex, ids) {
-        if (ids.length === 0) {
-            return {
-                info: exports.TypeDefInfo.Null,
-                type: 'Null'
-            };
-        }
-        else if (ids.length === 1) {
-            return this.getTypeDef(ids[0]);
-        }
-        const sub = ids.map((t) => __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_createSiDef).call(this, t));
-        return withTypeString(this.registry, {
-            info: exports.TypeDefInfo.Tuple,
-            lookupIndex,
-            lookupName: __classPrivateFieldGet(this, _PortableRegistry_names, "f")[lookupIndex],
-            sub
-        });
-    }, _PortableRegistry_extractVariant = function _PortableRegistry_extractVariant(lookupIndex, { params, path }, { variants }) {
-        if (path.length) {
-            const specialVariant = path[0].toString();
-            if (specialVariant === 'Option') {
-                if (params.length !== 1) {
-                    throw new Error(`Option requires 1 parameter, found ${params.length}`);
-                }
-                return withTypeString(this.registry, {
-                    info: exports.TypeDefInfo.Option,
-                    sub: __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_createSiDef).call(this, params[0].type.unwrap())
-                });
-            }
-            else if (specialVariant === 'Result') {
-                if (params.length !== 2) {
-                    throw new Error(`Result requires 2 parameters, found ${params.length}`);
-                }
-                return withTypeString(this.registry, {
-                    info: exports.TypeDefInfo.Result,
-                    sub: params.map(({ type }, index) => util.objectSpread({
-                        name: ['Ok', 'Error'][index]
-                    }, __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_createSiDef).call(this, type.unwrap())))
-                });
-            }
-        }
-        if (variants.length === 0) {
-            return {
-                info: exports.TypeDefInfo.Null,
-                type: 'Null'
-            };
-        }
-        return __classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_extractVariantEnum).call(this, lookupIndex, variants);
-    }, _PortableRegistry_extractVariantEnum = function _PortableRegistry_extractVariantEnum(lookupIndex, variants) {
-        const sub = [];
-        variants
-            .slice()
-            .sort((a, b) => a.index.cmp(b.index))
-            .forEach(({ fields, index: bnIndex, name }) => {
-            const index = bnIndex.toNumber();
-            while (sub.length !== index) {
-                sub.push({
-                    index: sub.length,
-                    info: exports.TypeDefInfo.Null,
-                    name: `__Unused${sub.length}`,
-                    type: 'Null'
-                });
-            }
-            sub.push(util.objectSpread(__classPrivateFieldGet(this, _PortableRegistry_instances, "m", _PortableRegistry_extractFields).call(this, -1, fields), {
-                index,
-                name: name.toString()
-            }));
-        });
-        return withTypeString(this.registry, {
-            info: exports.TypeDefInfo.Enum,
-            lookupIndex,
-            lookupName: __classPrivateFieldGet(this, _PortableRegistry_names, "f")[lookupIndex],
-            sub
-        });
-    };
-
-    function convertType(key) {
-        return (registry, { type }) => registry.createType('Si1TypeDef', {
-            [key]: {
-                type: type.toNumber()
-            }
-        });
-    }
-    function convertArray(registry, { len, type }) {
-        return registry.createType('Si1TypeDef', {
-            Array: {
-                len,
-                type: type.toNumber()
-            }
-        });
-    }
-    function convertBitSequence(registry, { bitOrderType, bitStoreType }) {
-        return registry.createType('Si1TypeDef', {
-            BitSequence: {
-                bitOrderType: bitOrderType.toNumber(),
-                bitStoreType: bitStoreType.toNumber()
-            }
-        });
-    }
-    const convertCompact = convertType('Compact');
-    function convertComposite(registry, { fields }) {
-        return registry.createType('Si1TypeDef', {
-            Composite: {
-                fields: convertFields(registry, fields)
-            }
-        });
-    }
-    function convertFields(registry, fields) {
-        return fields.map(({ docs, name, type, typeName }) => registry.createType('Si1Field', {
-            docs,
-            name,
-            type: type.toNumber(),
-            typeName
-        }));
-    }
-    function convertPhantom(registry, path) {
-        console.warn(`Converting phantom type ${path.map((p) => p.toString()).join('::')} to empty tuple`);
-        return registry.createType('Si1TypeDef', {
-            Tuple: []
-        });
-    }
-    function convertPrimitive(registry, prim) {
-        return registry.createType('Si1TypeDef', {
-            Primitive: prim.toString()
-        });
-    }
-    const convertSequence = convertType('Sequence');
-    function convertTuple(registry, types) {
-        return registry.createType('Si1TypeDef', {
-            Tuple: types.map((t) => t.toNumber())
-        });
-    }
-    function convertVariant(registry, { variants }) {
-        return registry.createType('Si1TypeDef', {
-            Variant: {
-                variants: variants.map(({ discriminant, docs, fields, name }, index) => registry.createType('Si1Variant', {
-                    docs,
-                    fields: convertFields(registry, fields),
-                    index: discriminant.isSome
-                        ? discriminant.unwrap().toNumber()
-                        : index,
-                    name
-                }))
-            }
-        });
-    }
-    function convertDef(registry, { def, path }) {
-        let result;
-        switch (def.type) {
-            case 'Array':
-                result = convertArray(registry, def.asArray);
-                break;
-            case 'BitSequence':
-                result = convertBitSequence(registry, def.asBitSequence);
-                break;
-            case 'Compact':
-                result = convertCompact(registry, def.asCompact);
-                break;
-            case 'Composite':
-                result = convertComposite(registry, def.asComposite);
-                break;
-            case 'Phantom':
-                result = convertPhantom(registry, path);
-                break;
-            case 'Primitive':
-                result = convertPrimitive(registry, def.asPrimitive);
-                break;
-            case 'Sequence':
-                result = convertSequence(registry, def.asSequence);
-                break;
-            case 'Tuple':
-                result = convertTuple(registry, def.asTuple);
-                break;
-            case 'Variant':
-                result = convertVariant(registry, def.asVariant);
-                break;
-            default: util.assertUnreachable(def.type);
-        }
-        return result;
-    }
-    function toV1(registry, types) {
-        return types.map((t, index) => registry.createType('PortableType', {
-            id: index + 1,
-            type: {
-                def: convertDef(registry, t),
-                docs: [],
-                params: t.params.map((p) => registry.createType('Si1TypeParameter', {
-                    type: p.toNumber()
-                })),
-                path: t.path.map((p) => p.toString())
-            }
-        }));
-    }
-
-    var _TypeRegistry_chainProperties, _TypeRegistry_classes, _TypeRegistry_definitions, _TypeRegistry_firstCallIndex, _TypeRegistry_hasher, _TypeRegistry_knownTypes, _TypeRegistry_lookup, _TypeRegistry_metadata, _TypeRegistry_metadataVersion, _TypeRegistry_signedExtensions, _TypeRegistry_unknownTypes, _TypeRegistry_userExtensions, _TypeRegistry_knownDefaults, _TypeRegistry_knownDefinitions, _TypeRegistry_metadataCalls, _TypeRegistry_metadataErrors, _TypeRegistry_metadataEvents, _TypeRegistry_moduleMap, _TypeRegistry_registerObject, _TypeRegistry_registerLookup;
     const DEFAULT_FIRST_CALL_IDX = new Uint8Array(2);
     const l = util.logger('registry');
     function sortDecimalStrings(a, b) {
@@ -16645,15 +16658,16 @@
         return v.toString();
     }
     function getFieldArgs(lookup, fields) {
-        const args = new Array(fields.length);
-        for (let i = 0; i < fields.length; i++) {
+        const count = fields.length;
+        const args = new Array(count);
+        for (let i = 0; i < count; i++) {
             args[i] = lookup.getTypeDef(fields[i].type).type;
         }
         return args;
     }
     function clearRecord(record) {
         const keys = Object.keys(record);
-        for (let i = 0; i < keys.length; i++) {
+        for (let i = 0, count = keys.length; i < count; i++) {
             delete record[keys[i]];
         }
     }
@@ -16662,7 +16676,7 @@
     }
     function injectErrors(_, { lookup, pallets }, version, result) {
         clearRecord(result);
-        for (let i = 0; i < pallets.length; i++) {
+        for (let i = 0, count = pallets.length; i < count; i++) {
             const { errors, index, name } = pallets[i];
             if (errors.isSome) {
                 const sectionName = util.stringCamelCase(name);
@@ -16681,7 +16695,7 @@
     function injectEvents(registry, { lookup, pallets }, version, result) {
         const filtered = pallets.filter(filterEventsSome);
         clearRecord(result);
-        for (let i = 0; i < filtered.length; i++) {
+        for (let i = 0, count = filtered.length; i < count; i++) {
             const { events, index, name } = filtered[i];
             util.lazyMethod(result, version >= 12 ? index.toNumber() : i, () => lazyVariants(lookup, events.unwrap(), getVariantStringIdx, (variant) => {
                 const meta = registry.createType('EventMetadataLatest', util.objectSpread({}, variant, { args: getFieldArgs(lookup, variant.fields) }));
@@ -16697,7 +16711,7 @@
         const filtered = pallets.filter(filterCallsSome);
         clearRecord(result);
         clearRecord(mapping);
-        for (let i = 0; i < filtered.length; i++) {
+        for (let i = 0, count = filtered.length; i < count; i++) {
             const { calls, index, name } = filtered[i];
             const sectionIndex = version >= 12 ? index.toNumber() : i;
             const sectionName = util.stringCamelCase(name);
@@ -16733,30 +16747,24 @@
     }
     class TypeRegistry {
         constructor(createdAtHash) {
-            _TypeRegistry_chainProperties.set(this, void 0);
-            _TypeRegistry_classes.set(this, new Map());
-            _TypeRegistry_definitions.set(this, new Map());
-            _TypeRegistry_firstCallIndex.set(this, null);
-            _TypeRegistry_hasher.set(this, utilCrypto.blake2AsU8a);
-            _TypeRegistry_knownTypes.set(this, {});
-            _TypeRegistry_lookup.set(this, void 0);
-            _TypeRegistry_metadata.set(this, void 0);
-            _TypeRegistry_metadataVersion.set(this, 0);
-            _TypeRegistry_signedExtensions.set(this, fallbackExtensions);
-            _TypeRegistry_unknownTypes.set(this, new Map());
-            _TypeRegistry_userExtensions.set(this, void 0);
-            _TypeRegistry_knownDefaults.set(this, void 0);
-            _TypeRegistry_knownDefinitions.set(this, void 0);
-            _TypeRegistry_metadataCalls.set(this, {});
-            _TypeRegistry_metadataErrors.set(this, {});
-            _TypeRegistry_metadataEvents.set(this, {});
-            _TypeRegistry_moduleMap.set(this, {});
-            _TypeRegistry_registerObject.set(this, (obj) => {
+            this.__internal__classes = new Map();
+            this.__internal__definitions = new Map();
+            this.__internal__firstCallIndex = null;
+            this.__internal__hasher = utilCrypto.blake2AsU8a;
+            this.__internal__knownTypes = {};
+            this.__internal__metadataVersion = 0;
+            this.__internal__signedExtensions = fallbackExtensions;
+            this.__internal__unknownTypes = new Map();
+            this.__internal__metadataCalls = {};
+            this.__internal__metadataErrors = {};
+            this.__internal__metadataEvents = {};
+            this.__internal__moduleMap = {};
+            this.__internal__registerObject = (obj) => {
                 const entries = Object.entries(obj);
-                for (let e = 0; e < entries.length; e++) {
+                for (let e = 0, count = entries.length; e < count; e++) {
                     const [name, type] = entries[e];
                     if (util.isFunction(type)) {
-                        __classPrivateFieldGet(this, _TypeRegistry_classes, "f").set(name, type);
+                        this.__internal__classes.set(name, type);
                     }
                     else {
                         const def = util.isString(type)
@@ -16765,14 +16773,14 @@
                         if (name === def) {
                             throw new Error(`Unable to register circular ${name} === ${def}`);
                         }
-                        if (__classPrivateFieldGet(this, _TypeRegistry_classes, "f").has(name)) {
-                            __classPrivateFieldGet(this, _TypeRegistry_classes, "f").delete(name);
+                        if (this.__internal__classes.has(name)) {
+                            this.__internal__classes.delete(name);
                         }
-                        __classPrivateFieldGet(this, _TypeRegistry_definitions, "f").set(name, def);
+                        this.__internal__definitions.set(name, def);
                     }
                 }
-            });
-            _TypeRegistry_registerLookup.set(this, (lookup) => {
+            };
+            this.__internal__registerLookup = (lookup) => {
                 this.setLookup(lookup);
                 let Weight = null;
                 if (this.hasType('SpWeightsWeightV2Weight')) {
@@ -16787,11 +16795,12 @@
                 if (Weight) {
                     this.register({ Weight });
                 }
-            });
-            __classPrivateFieldSet(this, _TypeRegistry_knownDefaults, util.objectSpread({ Json, Metadata, PortableRegistry, Raw }, baseTypes), "f");
-            __classPrivateFieldSet(this, _TypeRegistry_knownDefinitions, definitions, "f");
-            const allKnown = Object.values(__classPrivateFieldGet(this, _TypeRegistry_knownDefinitions, "f"));
-            for (let i = 0; i < allKnown.length; i++) {
+            };
+            this.__internal__knownDefaults = util.objectSpread({ Json, Metadata, PortableRegistry, Raw }, baseTypes);
+            this.__internal__knownDefaultsEntries = Object.entries(this.__internal__knownDefaults);
+            this.__internal__knownDefinitions = definitions;
+            const allKnown = Object.values(this.__internal__knownDefinitions);
+            for (let i = 0, count = allKnown.length; i < count; i++) {
                 this.register(allKnown[i].types);
             }
             if (createdAtHash) {
@@ -16799,8 +16808,8 @@
             }
         }
         get chainDecimals() {
-            if (__classPrivateFieldGet(this, _TypeRegistry_chainProperties, "f")?.tokenDecimals.isSome) {
-                const allDecimals = __classPrivateFieldGet(this, _TypeRegistry_chainProperties, "f").tokenDecimals.unwrap();
+            if (this.__internal__chainProperties?.tokenDecimals.isSome) {
+                const allDecimals = this.__internal__chainProperties.tokenDecimals.unwrap();
                 if (allDecimals.length) {
                     return allDecimals.map((b) => b.toNumber());
                 }
@@ -16808,13 +16817,13 @@
             return [12];
         }
         get chainSS58() {
-            return __classPrivateFieldGet(this, _TypeRegistry_chainProperties, "f")?.ss58Format.isSome
-                ? __classPrivateFieldGet(this, _TypeRegistry_chainProperties, "f").ss58Format.unwrap().toNumber()
+            return this.__internal__chainProperties?.ss58Format.isSome
+                ? this.__internal__chainProperties.ss58Format.unwrap().toNumber()
                 : undefined;
         }
         get chainTokens() {
-            if (__classPrivateFieldGet(this, _TypeRegistry_chainProperties, "f")?.tokenSymbol.isSome) {
-                const allTokens = __classPrivateFieldGet(this, _TypeRegistry_chainProperties, "f").tokenSymbol.unwrap();
+            if (this.__internal__chainProperties?.tokenSymbol.isSome) {
+                const allTokens = this.__internal__chainProperties.tokenSymbol.unwrap();
                 if (allTokens.length) {
                     return allTokens.map(valueToString);
                 }
@@ -16822,7 +16831,7 @@
             return [util.formatBalance.getDefaults().unit];
         }
         get firstCallIndex() {
-            return __classPrivateFieldGet(this, _TypeRegistry_firstCallIndex, "f") || DEFAULT_FIRST_CALL_IDX;
+            return this.__internal__firstCallIndex || DEFAULT_FIRST_CALL_IDX;
         }
         isLookupType(value) {
             return /Lookup\d+$/.test(value);
@@ -16831,22 +16840,22 @@
             return `Lookup${typeof lookupId === 'number' ? lookupId : lookupId.toNumber()}`;
         }
         get knownTypes() {
-            return __classPrivateFieldGet(this, _TypeRegistry_knownTypes, "f");
+            return this.__internal__knownTypes;
         }
         get lookup() {
-            return util.assertReturn(__classPrivateFieldGet(this, _TypeRegistry_lookup, "f"), 'PortableRegistry has not been set on this registry');
+            return util.assertReturn(this.__internal__lookup, 'PortableRegistry has not been set on this registry');
         }
         get metadata() {
-            return util.assertReturn(__classPrivateFieldGet(this, _TypeRegistry_metadata, "f"), 'Metadata has not been set on this registry');
+            return util.assertReturn(this.__internal__metadata, 'Metadata has not been set on this registry');
         }
         get unknownTypes() {
-            return [...__classPrivateFieldGet(this, _TypeRegistry_unknownTypes, "f").keys()];
+            return [...this.__internal__unknownTypes.keys()];
         }
         get signedExtensions() {
-            return __classPrivateFieldGet(this, _TypeRegistry_signedExtensions, "f");
+            return this.__internal__signedExtensions;
         }
         clearCache() {
-            __classPrivateFieldSet(this, _TypeRegistry_classes, new Map(), "f");
+            this.__internal__classes = new Map();
         }
         createClass(type) {
             return createClassUnsafe(this, type);
@@ -16862,7 +16871,7 @@
         }
         findMetaCall(callIndex) {
             const [section, method] = [callIndex[0], callIndex[1]];
-            return util.assertReturn(__classPrivateFieldGet(this, _TypeRegistry_metadataCalls, "f")[`${section}`] && __classPrivateFieldGet(this, _TypeRegistry_metadataCalls, "f")[`${section}`][`${method}`], () => `findMetaCall: Unable to find Call with index [${section}, ${method}]/[${callIndex.toString()}]`);
+            return util.assertReturn(this.__internal__metadataCalls[`${section}`] && this.__internal__metadataCalls[`${section}`][`${method}`], () => `findMetaCall: Unable to find Call with index [${section}, ${method}]/[${callIndex.toString()}]`);
         }
         findMetaError(errorIndex) {
             const [section, method] = util.isU8a(errorIndex)
@@ -16873,19 +16882,19 @@
                         ? errorIndex.error[0]
                         : errorIndex.error.toNumber()
                 ];
-            return util.assertReturn(__classPrivateFieldGet(this, _TypeRegistry_metadataErrors, "f")[`${section}`] && __classPrivateFieldGet(this, _TypeRegistry_metadataErrors, "f")[`${section}`][`${method}`], () => `findMetaError: Unable to find Error with index [${section}, ${method}]/[${errorIndex.toString()}]`);
+            return util.assertReturn(this.__internal__metadataErrors[`${section}`] && this.__internal__metadataErrors[`${section}`][`${method}`], () => `findMetaError: Unable to find Error with index [${section}, ${method}]/[${errorIndex.toString()}]`);
         }
         findMetaEvent(eventIndex) {
             const [section, method] = [eventIndex[0], eventIndex[1]];
-            return util.assertReturn(__classPrivateFieldGet(this, _TypeRegistry_metadataEvents, "f")[`${section}`] && __classPrivateFieldGet(this, _TypeRegistry_metadataEvents, "f")[`${section}`][`${method}`], () => `findMetaEvent: Unable to find Event with index [${section}, ${method}]/[${eventIndex.toString()}]`);
+            return util.assertReturn(this.__internal__metadataEvents[`${section}`] && this.__internal__metadataEvents[`${section}`][`${method}`], () => `findMetaEvent: Unable to find Event with index [${section}, ${method}]/[${eventIndex.toString()}]`);
         }
         get(name, withUnknown, knownTypeDef) {
             return this.getUnsafe(name, withUnknown, knownTypeDef);
         }
         getUnsafe(name, withUnknown, knownTypeDef) {
-            let Type = __classPrivateFieldGet(this, _TypeRegistry_classes, "f").get(name) || __classPrivateFieldGet(this, _TypeRegistry_knownDefaults, "f")[name];
+            let Type = this.__internal__classes.get(name) || this.__internal__knownDefaults[name];
             if (!Type) {
-                const definition = __classPrivateFieldGet(this, _TypeRegistry_definitions, "f").get(name);
+                const definition = this.__internal__definitions.get(name);
                 let BaseType;
                 if (definition) {
                     BaseType = createClassUnsafe(this, definition);
@@ -16895,45 +16904,44 @@
                 }
                 else if (withUnknown) {
                     l.warn(`Unable to resolve type ${name}, it will fail on construction`);
-                    __classPrivateFieldGet(this, _TypeRegistry_unknownTypes, "f").set(name, true);
+                    this.__internal__unknownTypes.set(name, true);
                     BaseType = DoNotConstruct.with(name);
                 }
                 if (BaseType) {
                     Type = class extends BaseType {
                     };
-                    __classPrivateFieldGet(this, _TypeRegistry_classes, "f").set(name, Type);
+                    this.__internal__classes.set(name, Type);
                     if (knownTypeDef && util.isNumber(knownTypeDef.lookupIndex)) {
-                        __classPrivateFieldGet(this, _TypeRegistry_classes, "f").set(this.createLookupType(knownTypeDef.lookupIndex), Type);
+                        this.__internal__classes.set(this.createLookupType(knownTypeDef.lookupIndex), Type);
                     }
                 }
             }
             return Type;
         }
         getChainProperties() {
-            return __classPrivateFieldGet(this, _TypeRegistry_chainProperties, "f");
+            return this.__internal__chainProperties;
         }
         getClassName(Type) {
             const names = [];
-            for (const [name, Clazz] of Object.entries(__classPrivateFieldGet(this, _TypeRegistry_knownDefaults, "f"))) {
+            for (const [name, Clazz] of this.__internal__knownDefaultsEntries) {
                 if (Type === Clazz) {
                     names.push(name);
                 }
             }
-            for (const [name, Clazz] of __classPrivateFieldGet(this, _TypeRegistry_classes, "f").entries()) {
+            for (const [name, Clazz] of this.__internal__classes.entries()) {
                 if (Type === Clazz) {
                     names.push(name);
                 }
             }
-            names.sort().reverse();
             return names.length
-                ? names[0]
+                ? names.sort().reverse()[0]
                 : undefined;
         }
         getDefinition(typeName) {
-            return __classPrivateFieldGet(this, _TypeRegistry_definitions, "f").get(typeName);
+            return this.__internal__definitions.get(typeName);
         }
         getModuleInstances(specName, moduleName) {
-            return __classPrivateFieldGet(this, _TypeRegistry_knownTypes, "f")?.typesBundle?.spec?.[specName.toString()]?.instances?.[moduleName] || __classPrivateFieldGet(this, _TypeRegistry_moduleMap, "f")[moduleName];
+            return this.__internal__knownTypes?.typesBundle?.spec?.[specName.toString()]?.instances?.[moduleName] || this.__internal__moduleMap[moduleName];
         }
         getOrThrow(name) {
             const Clazz = this.get(name);
@@ -16946,26 +16954,26 @@
             return this.get(name, true);
         }
         getSignedExtensionExtra() {
-            return expandExtensionTypes(__classPrivateFieldGet(this, _TypeRegistry_signedExtensions, "f"), 'payload', __classPrivateFieldGet(this, _TypeRegistry_userExtensions, "f"));
+            return expandExtensionTypes(this.__internal__signedExtensions, 'payload', this.__internal__userExtensions);
         }
         getSignedExtensionTypes() {
-            return expandExtensionTypes(__classPrivateFieldGet(this, _TypeRegistry_signedExtensions, "f"), 'extrinsic', __classPrivateFieldGet(this, _TypeRegistry_userExtensions, "f"));
+            return expandExtensionTypes(this.__internal__signedExtensions, 'extrinsic', this.__internal__userExtensions);
         }
         hasClass(name) {
-            return __classPrivateFieldGet(this, _TypeRegistry_classes, "f").has(name) || !!__classPrivateFieldGet(this, _TypeRegistry_knownDefaults, "f")[name];
+            return this.__internal__classes.has(name) || !!this.__internal__knownDefaults[name];
         }
         hasDef(name) {
-            return __classPrivateFieldGet(this, _TypeRegistry_definitions, "f").has(name);
+            return this.__internal__definitions.has(name);
         }
         hasType(name) {
-            return !__classPrivateFieldGet(this, _TypeRegistry_unknownTypes, "f").get(name) && (this.hasClass(name) || this.hasDef(name));
+            return !this.__internal__unknownTypes.get(name) && (this.hasClass(name) || this.hasDef(name));
         }
         hash(data) {
-            return this.createType('CodecHash', __classPrivateFieldGet(this, _TypeRegistry_hasher, "f").call(this, data));
+            return this.createType('CodecHash', this.__internal__hasher(data));
         }
         register(arg1, arg2) {
             if (util.isFunction(arg1)) {
-                __classPrivateFieldGet(this, _TypeRegistry_classes, "f").set(arg1.name, arg1);
+                this.__internal__classes.set(arg1.name, arg1);
             }
             else if (util.isString(arg1)) {
                 if (!util.isFunction(arg2)) {
@@ -16974,65 +16982,62 @@
                 else if (arg1 === arg2.toString()) {
                     throw new Error(`Unable to register circular ${arg1} === ${arg1}`);
                 }
-                __classPrivateFieldGet(this, _TypeRegistry_classes, "f").set(arg1, arg2);
+                this.__internal__classes.set(arg1, arg2);
             }
             else {
-                __classPrivateFieldGet(this, _TypeRegistry_registerObject, "f").call(this, arg1);
+                this.__internal__registerObject(arg1);
             }
         }
         setChainProperties(properties) {
             if (properties) {
-                __classPrivateFieldSet(this, _TypeRegistry_chainProperties, properties, "f");
+                this.__internal__chainProperties = properties;
             }
         }
         setHasher(hasher) {
-            __classPrivateFieldSet(this, _TypeRegistry_hasher, hasher || utilCrypto.blake2AsU8a, "f");
+            this.__internal__hasher = hasher || utilCrypto.blake2AsU8a;
         }
         setKnownTypes(knownTypes) {
-            __classPrivateFieldSet(this, _TypeRegistry_knownTypes, knownTypes, "f");
+            this.__internal__knownTypes = knownTypes;
         }
         setLookup(lookup) {
-            __classPrivateFieldSet(this, _TypeRegistry_lookup, lookup, "f");
+            this.__internal__lookup = lookup;
             lookup.register();
         }
         setMetadata(metadata, signedExtensions, userExtensions, noInitWarn) {
-            __classPrivateFieldSet(this, _TypeRegistry_metadata, metadata.asLatest, "f");
-            __classPrivateFieldSet(this, _TypeRegistry_metadataVersion, metadata.version, "f");
-            __classPrivateFieldSet(this, _TypeRegistry_firstCallIndex, null, "f");
-            __classPrivateFieldGet(this, _TypeRegistry_registerLookup, "f").call(this, __classPrivateFieldGet(this, _TypeRegistry_metadata, "f").lookup);
-            injectExtrinsics(this, __classPrivateFieldGet(this, _TypeRegistry_metadata, "f"), __classPrivateFieldGet(this, _TypeRegistry_metadataVersion, "f"), __classPrivateFieldGet(this, _TypeRegistry_metadataCalls, "f"), __classPrivateFieldGet(this, _TypeRegistry_moduleMap, "f"));
-            injectErrors(this, __classPrivateFieldGet(this, _TypeRegistry_metadata, "f"), __classPrivateFieldGet(this, _TypeRegistry_metadataVersion, "f"), __classPrivateFieldGet(this, _TypeRegistry_metadataErrors, "f"));
-            injectEvents(this, __classPrivateFieldGet(this, _TypeRegistry_metadata, "f"), __classPrivateFieldGet(this, _TypeRegistry_metadataVersion, "f"), __classPrivateFieldGet(this, _TypeRegistry_metadataEvents, "f"));
+            this.__internal__metadata = metadata.asLatest;
+            this.__internal__metadataVersion = metadata.version;
+            this.__internal__firstCallIndex = null;
+            this.__internal__registerLookup(this.__internal__metadata.lookup);
+            injectExtrinsics(this, this.__internal__metadata, this.__internal__metadataVersion, this.__internal__metadataCalls, this.__internal__moduleMap);
+            injectErrors(this, this.__internal__metadata, this.__internal__metadataVersion, this.__internal__metadataErrors);
+            injectEvents(this, this.__internal__metadata, this.__internal__metadataVersion, this.__internal__metadataEvents);
             const [defSection] = Object
-                .keys(__classPrivateFieldGet(this, _TypeRegistry_metadataCalls, "f"))
+                .keys(this.__internal__metadataCalls)
                 .sort(sortDecimalStrings);
             if (defSection) {
                 const [defMethod] = Object
-                    .keys(__classPrivateFieldGet(this, _TypeRegistry_metadataCalls, "f")[defSection])
+                    .keys(this.__internal__metadataCalls[defSection])
                     .sort(sortDecimalStrings);
                 if (defMethod) {
-                    __classPrivateFieldSet(this, _TypeRegistry_firstCallIndex, new Uint8Array([parseInt(defSection, 10), parseInt(defMethod, 10)]), "f");
+                    this.__internal__firstCallIndex = new Uint8Array([parseInt(defSection, 10), parseInt(defMethod, 10)]);
                 }
             }
-            this.setSignedExtensions(signedExtensions || (__classPrivateFieldGet(this, _TypeRegistry_metadata, "f").extrinsic.version.gt(util.BN_ZERO)
-                ? __classPrivateFieldGet(this, _TypeRegistry_metadata, "f").extrinsic.signedExtensions.map(({ identifier }) => identifier.toString())
+            this.setSignedExtensions(signedExtensions || (this.__internal__metadata.extrinsic.version.gt(util.BN_ZERO)
+                ? this.__internal__metadata.extrinsic.signedExtensions.map(({ identifier }) => identifier.toString())
                 : fallbackExtensions), userExtensions, noInitWarn);
             this.setChainProperties(extractProperties(this, metadata));
         }
         setSignedExtensions(signedExtensions = fallbackExtensions, userExtensions, noInitWarn) {
-            __classPrivateFieldSet(this, _TypeRegistry_signedExtensions, signedExtensions, "f");
-            __classPrivateFieldSet(this, _TypeRegistry_userExtensions, userExtensions, "f");
+            this.__internal__signedExtensions = signedExtensions;
+            this.__internal__userExtensions = userExtensions;
             if (!noInitWarn) {
-                const unknown = findUnknownExtensions(__classPrivateFieldGet(this, _TypeRegistry_signedExtensions, "f"), __classPrivateFieldGet(this, _TypeRegistry_userExtensions, "f"));
+                const unknown = findUnknownExtensions(this.__internal__signedExtensions, this.__internal__userExtensions);
                 if (unknown.length) {
                     l.warn(`Unknown signed extensions ${unknown.join(', ')} found, treating them as no-effect`);
                 }
             }
         }
     }
-    _TypeRegistry_chainProperties = new WeakMap(), _TypeRegistry_classes = new WeakMap(), _TypeRegistry_definitions = new WeakMap(), _TypeRegistry_firstCallIndex = new WeakMap(), _TypeRegistry_hasher = new WeakMap(), _TypeRegistry_knownTypes = new WeakMap(), _TypeRegistry_lookup = new WeakMap(), _TypeRegistry_metadata = new WeakMap(), _TypeRegistry_metadataVersion = new WeakMap(), _TypeRegistry_signedExtensions = new WeakMap(), _TypeRegistry_unknownTypes = new WeakMap(), _TypeRegistry_userExtensions = new WeakMap(), _TypeRegistry_knownDefaults = new WeakMap(), _TypeRegistry_knownDefinitions = new WeakMap(), _TypeRegistry_metadataCalls = new WeakMap(), _TypeRegistry_metadataErrors = new WeakMap(), _TypeRegistry_metadataEvents = new WeakMap(), _TypeRegistry_moduleMap = new WeakMap(), _TypeRegistry_registerObject = new WeakMap(), _TypeRegistry_registerLookup = new WeakMap();
-
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.4.1' };
 
     exports.BTreeMap = BTreeMap;
     exports.BTreeSet = BTreeSet;

@@ -6,124 +6,6 @@
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
-    var extendStatics = function(d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    function __extends(d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    }
-    function __awaiter(thisArg, _arguments, P, generator) {
-        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-        return new (P || (P = Promise))(function (resolve, reject) {
-            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-            step((generator = generator.apply(thisArg, _arguments || [])).next());
-        });
-    }
-    function __generator(thisArg, body) {
-        var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-        function verb(n) { return function (v) { return step([n, v]); }; }
-        function step(op) {
-            if (f) throw new TypeError("Generator is already executing.");
-            while (g && (g = 0, op[0] && (_ = 0)), _) try {
-                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-                if (y = 0, t) op = [op[0] & 2, t.value];
-                switch (op[0]) {
-                    case 0: case 1: t = op; break;
-                    case 4: _.label++; return { value: op[1], done: false };
-                    case 5: _.label++; y = op[1]; op = [0]; continue;
-                    case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                    default:
-                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                        if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                        if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                        if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                        if (t[2]) _.ops.pop();
-                        _.trys.pop(); continue;
-                }
-                op = body.call(thisArg, _);
-            } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-            if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-        }
-    }
-    function __values(o) {
-        var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-        if (m) return m.call(o);
-        if (o && typeof o.length === "number") return {
-            next: function () {
-                if (o && i >= o.length) o = void 0;
-                return { value: o && o[i++], done: !o };
-            }
-        };
-        throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-    }
-    function __read(o, n) {
-        var m = typeof Symbol === "function" && o[Symbol.iterator];
-        if (!m) return o;
-        var i = m.call(o), r, ar = [], e;
-        try {
-            while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-        }
-        catch (error) { e = { error: error }; }
-        finally {
-            try {
-                if (r && !r.done && (m = i["return"])) m.call(i);
-            }
-            finally { if (e) throw e.error; }
-        }
-        return ar;
-    }
-    function __spreadArray(to, from, pack) {
-        if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-            if (ar || !(i in from)) {
-                if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-                ar[i] = from[i];
-            }
-        }
-        return to.concat(ar || Array.prototype.slice.call(from));
-    }
-    function __await(v) {
-        return this instanceof __await ? (this.v = v, this) : new __await(v);
-    }
-    function __asyncGenerator(thisArg, _arguments, generator) {
-        if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-        var g = generator.apply(thisArg, _arguments || []), i, q = [];
-        return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
-        function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
-        function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
-        function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
-        function fulfill(value) { resume("next", value); }
-        function reject(value) { resume("throw", value); }
-        function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
-    }
-    function __asyncValues(o) {
-        if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-        var m = o[Symbol.asyncIterator], i;
-        return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-        function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-        function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
-    }
-    function __classPrivateFieldGet(receiver, state, kind, f) {
-        if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-        return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-    }
-    function __classPrivateFieldSet(receiver, state, value, kind, f) {
-        if (kind === "m") throw new TypeError("Private method is not writable");
-        if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-        return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-    }
-
     function evaluateThis(fn) {
         return fn('return this');
     }
@@ -171,7 +53,6 @@
     };
     const RpcError$1 = RpcError;
 
-    var _RpcCoder_id;
     function formatErrorData(data) {
         if (util.isUndefined(data)) {
             return '';
@@ -191,7 +72,7 @@
     }
     class RpcCoder {
         constructor() {
-            _RpcCoder_id.set(this, 0);
+            this.__internal__id = 0;
         }
         decodeResponse(response) {
             if (!response || response.jsonrpc !== '2.0') {
@@ -218,8 +99,7 @@
             return [id, util.stringify(data)];
         }
         encodeObject(method, params) {
-            var _a;
-            const id = __classPrivateFieldSet(this, _RpcCoder_id, (_a = __classPrivateFieldGet(this, _RpcCoder_id, "f"), ++_a), "f");
+            const id = ++this.__internal__id;
             return [id, {
                     id,
                     jsonrpc: '2.0',
@@ -228,7 +108,6 @@
                 }];
         }
     }
-    _RpcCoder_id = new WeakMap();
 
     const HTTP_URL = 'http://127.0.0.1:9933';
     const WS_URL = 'ws://127.0.0.1:9944';
@@ -237,7 +116,6 @@
         WS_URL
     };
 
-    var _LRUCache_instances, _LRUCache_data, _LRUCache_refs, _LRUCache_length, _LRUCache_head, _LRUCache_tail, _LRUCache_toHead;
     const DEFAULT_CAPACITY = 128;
     class LRUNode {
         constructor(key) {
@@ -247,38 +125,36 @@
     }
     class LRUCache {
         constructor(capacity = DEFAULT_CAPACITY) {
-            _LRUCache_instances.add(this);
-            _LRUCache_data.set(this, new Map());
-            _LRUCache_refs.set(this, new Map());
-            _LRUCache_length.set(this, 0);
-            _LRUCache_head.set(this, void 0);
-            _LRUCache_tail.set(this, void 0);
+            this.__internal__data = new Map();
+            this.__internal__refs = new Map();
+            this.__internal__length = 0;
             this.capacity = capacity;
-            __classPrivateFieldSet(this, _LRUCache_head, __classPrivateFieldSet(this, _LRUCache_tail, new LRUNode('<empty>'), "f"), "f");
+            this.__internal__head = this.__internal__tail = new LRUNode('<empty>');
         }
         get length() {
-            return __classPrivateFieldGet(this, _LRUCache_length, "f");
+            return this.__internal__length;
         }
         get lengthData() {
-            return __classPrivateFieldGet(this, _LRUCache_data, "f").size;
+            return this.__internal__data.size;
         }
         get lengthRefs() {
-            return __classPrivateFieldGet(this, _LRUCache_refs, "f").size;
+            return this.__internal__refs.size;
         }
         entries() {
             const keys = this.keys();
-            const entries = new Array(keys.length);
-            for (let i = 0; i < keys.length; i++) {
+            const count = keys.length;
+            const entries = new Array(count);
+            for (let i = 0; i < count; i++) {
                 const key = keys[i];
-                entries[i] = [key, __classPrivateFieldGet(this, _LRUCache_data, "f").get(key)];
+                entries[i] = [key, this.__internal__data.get(key)];
             }
             return entries;
         }
         keys() {
             const keys = [];
-            if (__classPrivateFieldGet(this, _LRUCache_length, "f")) {
-                let curr = __classPrivateFieldGet(this, _LRUCache_head, "f");
-                while (curr !== __classPrivateFieldGet(this, _LRUCache_tail, "f")) {
+            if (this.__internal__length) {
+                let curr = this.__internal__head;
+                while (curr !== this.__internal__tail) {
                     keys.push(curr.key);
                     curr = curr.next;
                 }
@@ -287,86 +163,80 @@
             return keys;
         }
         get(key) {
-            const data = __classPrivateFieldGet(this, _LRUCache_data, "f").get(key);
+            const data = this.__internal__data.get(key);
             if (data) {
-                __classPrivateFieldGet(this, _LRUCache_instances, "m", _LRUCache_toHead).call(this, key);
+                this.__internal__toHead(key);
                 return data;
             }
             return null;
         }
         set(key, value) {
-            if (__classPrivateFieldGet(this, _LRUCache_data, "f").has(key)) {
-                __classPrivateFieldGet(this, _LRUCache_instances, "m", _LRUCache_toHead).call(this, key);
+            if (this.__internal__data.has(key)) {
+                this.__internal__toHead(key);
             }
             else {
                 const node = new LRUNode(key);
-                __classPrivateFieldGet(this, _LRUCache_refs, "f").set(node.key, node);
+                this.__internal__refs.set(node.key, node);
                 if (this.length === 0) {
-                    __classPrivateFieldSet(this, _LRUCache_head, __classPrivateFieldSet(this, _LRUCache_tail, node, "f"), "f");
+                    this.__internal__head = this.__internal__tail = node;
                 }
                 else {
-                    __classPrivateFieldGet(this, _LRUCache_head, "f").prev = node;
-                    node.next = __classPrivateFieldGet(this, _LRUCache_head, "f");
-                    __classPrivateFieldSet(this, _LRUCache_head, node, "f");
+                    this.__internal__head.prev = node;
+                    node.next = this.__internal__head;
+                    this.__internal__head = node;
                 }
-                if (__classPrivateFieldGet(this, _LRUCache_length, "f") === this.capacity) {
-                    __classPrivateFieldGet(this, _LRUCache_data, "f").delete(__classPrivateFieldGet(this, _LRUCache_tail, "f").key);
-                    __classPrivateFieldGet(this, _LRUCache_refs, "f").delete(__classPrivateFieldGet(this, _LRUCache_tail, "f").key);
-                    __classPrivateFieldSet(this, _LRUCache_tail, __classPrivateFieldGet(this, _LRUCache_tail, "f").prev, "f");
-                    __classPrivateFieldGet(this, _LRUCache_tail, "f").next = __classPrivateFieldGet(this, _LRUCache_head, "f");
+                if (this.__internal__length === this.capacity) {
+                    this.__internal__data.delete(this.__internal__tail.key);
+                    this.__internal__refs.delete(this.__internal__tail.key);
+                    this.__internal__tail = this.__internal__tail.prev;
+                    this.__internal__tail.next = this.__internal__head;
                 }
                 else {
-                    __classPrivateFieldSet(this, _LRUCache_length, __classPrivateFieldGet(this, _LRUCache_length, "f") + 1, "f");
+                    this.__internal__length += 1;
                 }
             }
-            __classPrivateFieldGet(this, _LRUCache_data, "f").set(key, value);
+            this.__internal__data.set(key, value);
+        }
+        __internal__toHead(key) {
+            const ref = this.__internal__refs.get(key);
+            if (ref && ref !== this.__internal__head) {
+                ref.prev.next = ref.next;
+                ref.next.prev = ref.prev;
+                ref.next = this.__internal__head;
+                this.__internal__head.prev = ref;
+                this.__internal__head = ref;
+            }
         }
     }
-    _LRUCache_data = new WeakMap(), _LRUCache_refs = new WeakMap(), _LRUCache_length = new WeakMap(), _LRUCache_head = new WeakMap(), _LRUCache_tail = new WeakMap(), _LRUCache_instances = new WeakSet(), _LRUCache_toHead = function _LRUCache_toHead(key) {
-        const ref = __classPrivateFieldGet(this, _LRUCache_refs, "f").get(key);
-        if (ref && ref !== __classPrivateFieldGet(this, _LRUCache_head, "f")) {
-            ref.prev.next = ref.next;
-            ref.next.prev = ref.prev;
-            ref.next = __classPrivateFieldGet(this, _LRUCache_head, "f");
-            __classPrivateFieldGet(this, _LRUCache_head, "f").prev = ref;
-            __classPrivateFieldSet(this, _LRUCache_head, ref, "f");
-        }
-    };
 
-    var _HttpProvider_instances, _HttpProvider_callCache, _HttpProvider_coder, _HttpProvider_endpoint, _HttpProvider_headers, _HttpProvider_stats, _HttpProvider_send;
     const ERROR_SUBSCRIBE = 'HTTP Provider does not have subscriptions, use WebSockets instead';
     const l$7 = util.logger('api-http');
     class HttpProvider {
         constructor(endpoint = defaults.HTTP_URL, headers = {}) {
-            _HttpProvider_instances.add(this);
-            _HttpProvider_callCache.set(this, new LRUCache());
-            _HttpProvider_coder.set(this, void 0);
-            _HttpProvider_endpoint.set(this, void 0);
-            _HttpProvider_headers.set(this, void 0);
-            _HttpProvider_stats.set(this, void 0);
+            this.__internal__callCache = new LRUCache();
             if (!/^(https|http):\/\//.test(endpoint)) {
                 throw new Error(`Endpoint should start with 'http://' or 'https://', received '${endpoint}'`);
             }
-            __classPrivateFieldSet(this, _HttpProvider_coder, new RpcCoder(), "f");
-            __classPrivateFieldSet(this, _HttpProvider_endpoint, endpoint, "f");
-            __classPrivateFieldSet(this, _HttpProvider_headers, headers, "f");
-            __classPrivateFieldSet(this, _HttpProvider_stats, {
+            this.__internal__coder = new RpcCoder();
+            this.__internal__endpoint = endpoint;
+            this.__internal__headers = headers;
+            this.__internal__stats = {
                 active: { requests: 0, subscriptions: 0 },
                 total: { bytesRecv: 0, bytesSent: 0, cached: 0, errors: 0, requests: 0, subscriptions: 0, timeout: 0 }
-            }, "f");
+            };
         }
         get hasSubscriptions() {
             return false;
         }
         clone() {
-            return new HttpProvider(__classPrivateFieldGet(this, _HttpProvider_endpoint, "f"), __classPrivateFieldGet(this, _HttpProvider_headers, "f"));
+            return new HttpProvider(this.__internal__endpoint, this.__internal__headers);
         }
         async connect() {
         }
         async disconnect() {
         }
         get stats() {
-            return __classPrivateFieldGet(this, _HttpProvider_stats, "f");
+            return this.__internal__stats;
         }
         get isClonable() {
             return true;
@@ -376,25 +246,53 @@
         }
         on(_type, _sub) {
             l$7.error('HTTP Provider does not have \'on\' emitters, use WebSockets instead');
-            return () => {
-            };
+            return util.noop;
         }
         async send(method, params, isCacheable) {
-            __classPrivateFieldGet(this, _HttpProvider_stats, "f").total.requests++;
-            const [, body] = __classPrivateFieldGet(this, _HttpProvider_coder, "f").encodeJson(method, params);
+            this.__internal__stats.total.requests++;
+            const [, body] = this.__internal__coder.encodeJson(method, params);
             let resultPromise = isCacheable
-                ? __classPrivateFieldGet(this, _HttpProvider_callCache, "f").get(body)
+                ? this.__internal__callCache.get(body)
                 : null;
             if (!resultPromise) {
-                resultPromise = __classPrivateFieldGet(this, _HttpProvider_instances, "m", _HttpProvider_send).call(this, body);
+                resultPromise = this.__internal__send(body);
                 if (isCacheable) {
-                    __classPrivateFieldGet(this, _HttpProvider_callCache, "f").set(body, resultPromise);
+                    this.__internal__callCache.set(body, resultPromise);
                 }
             }
             else {
-                __classPrivateFieldGet(this, _HttpProvider_stats, "f").total.cached++;
+                this.__internal__stats.total.cached++;
             }
             return resultPromise;
+        }
+        async __internal__send(body) {
+            this.__internal__stats.active.requests++;
+            this.__internal__stats.total.bytesSent += body.length;
+            try {
+                const response = await fetch(this.__internal__endpoint, {
+                    body,
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Length': `${body.length}`,
+                        'Content-Type': 'application/json',
+                        ...this.__internal__headers
+                    },
+                    method: 'POST'
+                });
+                if (!response.ok) {
+                    throw new Error(`[${response.status}]: ${response.statusText}`);
+                }
+                const result = await response.text();
+                this.__internal__stats.total.bytesRecv += result.length;
+                const decoded = this.__internal__coder.decodeResponse(JSON.parse(result));
+                this.__internal__stats.active.requests--;
+                return decoded;
+            }
+            catch (e) {
+                this.__internal__stats.active.requests--;
+                this.__internal__stats.total.errors++;
+                throw e;
+            }
         }
         async subscribe(_types, _method, _params, _cb) {
             l$7.error(ERROR_SUBSCRIBE);
@@ -405,35 +303,6 @@
             throw new Error(ERROR_SUBSCRIBE);
         }
     }
-    _HttpProvider_callCache = new WeakMap(), _HttpProvider_coder = new WeakMap(), _HttpProvider_endpoint = new WeakMap(), _HttpProvider_headers = new WeakMap(), _HttpProvider_stats = new WeakMap(), _HttpProvider_instances = new WeakSet(), _HttpProvider_send = async function _HttpProvider_send(body) {
-        __classPrivateFieldGet(this, _HttpProvider_stats, "f").active.requests++;
-        __classPrivateFieldGet(this, _HttpProvider_stats, "f").total.bytesSent += body.length;
-        try {
-            const response = await fetch(__classPrivateFieldGet(this, _HttpProvider_endpoint, "f"), {
-                body,
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Length': `${body.length}`,
-                    'Content-Type': 'application/json',
-                    ...__classPrivateFieldGet(this, _HttpProvider_headers, "f")
-                },
-                method: 'POST'
-            });
-            if (!response.ok) {
-                throw new Error(`[${response.status}]: ${response.statusText}`);
-            }
-            const result = await response.text();
-            __classPrivateFieldGet(this, _HttpProvider_stats, "f").total.bytesRecv += result.length;
-            const decoded = __classPrivateFieldGet(this, _HttpProvider_coder, "f").decodeResponse(JSON.parse(result));
-            __classPrivateFieldGet(this, _HttpProvider_stats, "f").active.requests--;
-            return decoded;
-        }
-        catch (e) {
-            __classPrivateFieldGet(this, _HttpProvider_stats, "f").active.requests--;
-            __classPrivateFieldGet(this, _HttpProvider_stats, "f").total.errors++;
-            throw e;
-        }
-    };
 
     function getDefaultExportFromCjs (x) {
     	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
@@ -603,7 +472,6 @@
     var eventemitter3Exports = eventemitter3.exports;
     const EventEmitter = getDefaultExportFromCjs(eventemitter3Exports);
 
-    var _InnerChecker_healthCallback, _InnerChecker_currentHealthCheckId, _InnerChecker_currentHealthTimeout, _InnerChecker_currentSubunsubRequestId, _InnerChecker_currentSubscriptionId, _InnerChecker_requestToSmoldot, _InnerChecker_isSyncing, _InnerChecker_nextRequestId;
     function healthChecker() {
         let checker = null;
         let sendJsonRpc = null;
@@ -649,14 +517,12 @@
     }
     class InnerChecker {
         constructor(healthCallback, requestToSmoldot) {
-            _InnerChecker_healthCallback.set(this, void 0);
-            _InnerChecker_currentHealthCheckId.set(this, null);
-            _InnerChecker_currentHealthTimeout.set(this, null);
-            _InnerChecker_currentSubunsubRequestId.set(this, null);
-            _InnerChecker_currentSubscriptionId.set(this, null);
-            _InnerChecker_requestToSmoldot.set(this, void 0);
-            _InnerChecker_isSyncing.set(this, false);
-            _InnerChecker_nextRequestId.set(this, 0);
+            this.__internal__currentHealthCheckId = null;
+            this.__internal__currentHealthTimeout = null;
+            this.__internal__currentSubunsubRequestId = null;
+            this.__internal__currentSubscriptionId = null;
+            this.__internal__isSyncing = false;
+            this.__internal__nextRequestId = 0;
             this.sendJsonRpc = (request) => {
                 let parsedRequest;
                 try {
@@ -669,7 +535,7 @@
                     const newId = 'extern:' + util.stringify(parsedRequest.id);
                     parsedRequest.id = newId;
                 }
-                __classPrivateFieldGet(this, _InnerChecker_requestToSmoldot, "f").call(this, parsedRequest);
+                this.__internal__requestToSmoldot(parsedRequest);
             };
             this.responsePassThrough = (jsonRpcResponse) => {
                 let parsedResponse;
@@ -679,36 +545,36 @@
                 catch {
                     return jsonRpcResponse;
                 }
-                if (parsedResponse.id && __classPrivateFieldGet(this, _InnerChecker_currentHealthCheckId, "f") === parsedResponse.id) {
-                    __classPrivateFieldSet(this, _InnerChecker_currentHealthCheckId, null, "f");
+                if (parsedResponse.id && this.__internal__currentHealthCheckId === parsedResponse.id) {
+                    this.__internal__currentHealthCheckId = null;
                     if (!parsedResponse.result) {
                         this.update(false);
                         return null;
                     }
-                    __classPrivateFieldGet(this, _InnerChecker_healthCallback, "f").call(this, parsedResponse.result);
-                    __classPrivateFieldSet(this, _InnerChecker_isSyncing, parsedResponse.result.isSyncing, "f");
+                    this.__internal__healthCallback(parsedResponse.result);
+                    this.__internal__isSyncing = parsedResponse.result.isSyncing;
                     this.update(false);
                     return null;
                 }
                 if (parsedResponse.id &&
-                    __classPrivateFieldGet(this, _InnerChecker_currentSubunsubRequestId, "f") === parsedResponse.id) {
-                    __classPrivateFieldSet(this, _InnerChecker_currentSubunsubRequestId, null, "f");
+                    this.__internal__currentSubunsubRequestId === parsedResponse.id) {
+                    this.__internal__currentSubunsubRequestId = null;
                     if (!parsedResponse.result) {
                         this.update(false);
                         return null;
                     }
-                    if (__classPrivateFieldGet(this, _InnerChecker_currentSubscriptionId, "f")) {
-                        __classPrivateFieldSet(this, _InnerChecker_currentSubscriptionId, null, "f");
+                    if (this.__internal__currentSubscriptionId) {
+                        this.__internal__currentSubscriptionId = null;
                     }
                     else {
-                        __classPrivateFieldSet(this, _InnerChecker_currentSubscriptionId, parsedResponse.result, "f");
+                        this.__internal__currentSubscriptionId = parsedResponse.result;
                     }
                     this.update(false);
                     return null;
                 }
                 if (parsedResponse.params &&
-                    __classPrivateFieldGet(this, _InnerChecker_currentSubscriptionId, "f") &&
-                    parsedResponse.params.subscription === __classPrivateFieldGet(this, _InnerChecker_currentSubscriptionId, "f")) {
+                    this.__internal__currentSubscriptionId &&
+                    parsedResponse.params.subscription === this.__internal__currentSubscriptionId) {
                     this.update(true);
                     return null;
                 }
@@ -723,20 +589,20 @@
                 return util.stringify(parsedResponse);
             };
             this.update = (startNow) => {
-                if (startNow && __classPrivateFieldGet(this, _InnerChecker_currentHealthTimeout, "f")) {
-                    clearTimeout(__classPrivateFieldGet(this, _InnerChecker_currentHealthTimeout, "f"));
-                    __classPrivateFieldSet(this, _InnerChecker_currentHealthTimeout, null, "f");
+                if (startNow && this.__internal__currentHealthTimeout) {
+                    clearTimeout(this.__internal__currentHealthTimeout);
+                    this.__internal__currentHealthTimeout = null;
                 }
-                if (!__classPrivateFieldGet(this, _InnerChecker_currentHealthTimeout, "f")) {
+                if (!this.__internal__currentHealthTimeout) {
                     const startHealthRequest = () => {
-                        __classPrivateFieldSet(this, _InnerChecker_currentHealthTimeout, null, "f");
-                        if (__classPrivateFieldGet(this, _InnerChecker_currentHealthCheckId, "f")) {
+                        this.__internal__currentHealthTimeout = null;
+                        if (this.__internal__currentHealthCheckId) {
                             return;
                         }
-                        __classPrivateFieldSet(this, _InnerChecker_currentHealthCheckId, `health-checker:${__classPrivateFieldGet(this, _InnerChecker_nextRequestId, "f")}`, "f");
-                        __classPrivateFieldSet(this, _InnerChecker_nextRequestId, __classPrivateFieldGet(this, _InnerChecker_nextRequestId, "f") + 1, "f");
-                        __classPrivateFieldGet(this, _InnerChecker_requestToSmoldot, "f").call(this, {
-                            id: __classPrivateFieldGet(this, _InnerChecker_currentHealthCheckId, "f"),
+                        this.__internal__currentHealthCheckId = `health-checker:${this.__internal__nextRequestId}`;
+                        this.__internal__nextRequestId += 1;
+                        this.__internal__requestToSmoldot({
+                            id: this.__internal__currentHealthCheckId,
                             jsonrpc: '2.0',
                             method: 'system_health',
                             params: []
@@ -746,59 +612,57 @@
                         startHealthRequest();
                     }
                     else {
-                        __classPrivateFieldSet(this, _InnerChecker_currentHealthTimeout, setTimeout(startHealthRequest, 1000), "f");
+                        this.__internal__currentHealthTimeout = setTimeout(startHealthRequest, 1000);
                     }
                 }
-                if (__classPrivateFieldGet(this, _InnerChecker_isSyncing, "f") &&
-                    !__classPrivateFieldGet(this, _InnerChecker_currentSubscriptionId, "f") &&
-                    !__classPrivateFieldGet(this, _InnerChecker_currentSubunsubRequestId, "f")) {
+                if (this.__internal__isSyncing &&
+                    !this.__internal__currentSubscriptionId &&
+                    !this.__internal__currentSubunsubRequestId) {
                     this.startSubscription();
                 }
-                if (!__classPrivateFieldGet(this, _InnerChecker_isSyncing, "f") &&
-                    __classPrivateFieldGet(this, _InnerChecker_currentSubscriptionId, "f") &&
-                    !__classPrivateFieldGet(this, _InnerChecker_currentSubunsubRequestId, "f")) {
+                if (!this.__internal__isSyncing &&
+                    this.__internal__currentSubscriptionId &&
+                    !this.__internal__currentSubunsubRequestId) {
                     this.endSubscription();
                 }
             };
             this.startSubscription = () => {
-                if (__classPrivateFieldGet(this, _InnerChecker_currentSubunsubRequestId, "f") || __classPrivateFieldGet(this, _InnerChecker_currentSubscriptionId, "f")) {
+                if (this.__internal__currentSubunsubRequestId || this.__internal__currentSubscriptionId) {
                     throw new Error('Internal error in health checker');
                 }
-                __classPrivateFieldSet(this, _InnerChecker_currentSubunsubRequestId, `health-checker:${__classPrivateFieldGet(this, _InnerChecker_nextRequestId, "f")}`, "f");
-                __classPrivateFieldSet(this, _InnerChecker_nextRequestId, __classPrivateFieldGet(this, _InnerChecker_nextRequestId, "f") + 1, "f");
-                __classPrivateFieldGet(this, _InnerChecker_requestToSmoldot, "f").call(this, {
-                    id: __classPrivateFieldGet(this, _InnerChecker_currentSubunsubRequestId, "f"),
+                this.__internal__currentSubunsubRequestId = `health-checker:${this.__internal__nextRequestId}`;
+                this.__internal__nextRequestId += 1;
+                this.__internal__requestToSmoldot({
+                    id: this.__internal__currentSubunsubRequestId,
                     jsonrpc: '2.0',
                     method: 'chain_subscribeNewHeads',
                     params: []
                 });
             };
             this.endSubscription = () => {
-                if (__classPrivateFieldGet(this, _InnerChecker_currentSubunsubRequestId, "f") || !__classPrivateFieldGet(this, _InnerChecker_currentSubscriptionId, "f")) {
+                if (this.__internal__currentSubunsubRequestId || !this.__internal__currentSubscriptionId) {
                     throw new Error('Internal error in health checker');
                 }
-                __classPrivateFieldSet(this, _InnerChecker_currentSubunsubRequestId, `health-checker:${__classPrivateFieldGet(this, _InnerChecker_nextRequestId, "f")}`, "f");
-                __classPrivateFieldSet(this, _InnerChecker_nextRequestId, __classPrivateFieldGet(this, _InnerChecker_nextRequestId, "f") + 1, "f");
-                __classPrivateFieldGet(this, _InnerChecker_requestToSmoldot, "f").call(this, {
-                    id: __classPrivateFieldGet(this, _InnerChecker_currentSubunsubRequestId, "f"),
+                this.__internal__currentSubunsubRequestId = `health-checker:${this.__internal__nextRequestId}`;
+                this.__internal__nextRequestId += 1;
+                this.__internal__requestToSmoldot({
+                    id: this.__internal__currentSubunsubRequestId,
                     jsonrpc: '2.0',
                     method: 'chain_unsubscribeNewHeads',
-                    params: [__classPrivateFieldGet(this, _InnerChecker_currentSubscriptionId, "f")]
+                    params: [this.__internal__currentSubscriptionId]
                 });
             };
             this.destroy = () => {
-                if (__classPrivateFieldGet(this, _InnerChecker_currentHealthTimeout, "f")) {
-                    clearTimeout(__classPrivateFieldGet(this, _InnerChecker_currentHealthTimeout, "f"));
-                    __classPrivateFieldSet(this, _InnerChecker_currentHealthTimeout, null, "f");
+                if (this.__internal__currentHealthTimeout) {
+                    clearTimeout(this.__internal__currentHealthTimeout);
+                    this.__internal__currentHealthTimeout = null;
                 }
             };
-            __classPrivateFieldSet(this, _InnerChecker_healthCallback, healthCallback, "f");
-            __classPrivateFieldSet(this, _InnerChecker_requestToSmoldot, (request) => requestToSmoldot(util.stringify(request)), "f");
+            this.__internal__healthCallback = healthCallback;
+            this.__internal__requestToSmoldot = (request) => requestToSmoldot(util.stringify(request));
         }
     }
-    _InnerChecker_healthCallback = new WeakMap(), _InnerChecker_currentHealthCheckId = new WeakMap(), _InnerChecker_currentHealthTimeout = new WeakMap(), _InnerChecker_currentSubunsubRequestId = new WeakMap(), _InnerChecker_currentSubscriptionId = new WeakMap(), _InnerChecker_requestToSmoldot = new WeakMap(), _InnerChecker_isSyncing = new WeakMap(), _InnerChecker_nextRequestId = new WeakMap();
 
-    var _ScProvider_Sc, _ScProvider_coder, _ScProvider_spec, _ScProvider_sharedSandbox, _ScProvider_subscriptions, _ScProvider_resubscribeMethods, _ScProvider_requests, _ScProvider_wellKnownChains, _ScProvider_eventemitter, _ScProvider_chain, _ScProvider_isChainReady, _ScProvider_resubscribe;
     const l$6 = util.logger('api-substrate-connect');
     const subscriptionUnsubscriptionMethods = new Map([
         ['author_submitAndWatchExtrinsic', 'author_unwatchExtrinsic'],
@@ -815,20 +679,16 @@
     const scClients = new WeakMap();
     class ScProvider {
         constructor(Sc, spec, sharedSandbox) {
-            _ScProvider_Sc.set(this, void 0);
-            _ScProvider_coder.set(this, new RpcCoder());
-            _ScProvider_spec.set(this, void 0);
-            _ScProvider_sharedSandbox.set(this, void 0);
-            _ScProvider_subscriptions.set(this, new Map());
-            _ScProvider_resubscribeMethods.set(this, new Map());
-            _ScProvider_requests.set(this, new Map());
-            _ScProvider_wellKnownChains.set(this, void 0);
-            _ScProvider_eventemitter.set(this, new EventEmitter());
-            _ScProvider_chain.set(this, null);
-            _ScProvider_isChainReady.set(this, false);
-            _ScProvider_resubscribe.set(this, () => {
+            this.__internal__coder = new RpcCoder();
+            this.__internal__subscriptions = new Map();
+            this.__internal__resubscribeMethods = new Map();
+            this.__internal__requests = new Map();
+            this.__internal__eventemitter = new EventEmitter();
+            this.__internal__chain = null;
+            this.__internal__isChainReady = false;
+            this.__internal__resubscribe = () => {
                 const promises = [];
-                __classPrivateFieldGet(this, _ScProvider_resubscribeMethods, "f").forEach((subDetails) => {
+                this.__internal__resubscribeMethods.forEach((subDetails) => {
                     if (subDetails.type.startsWith('author_')) {
                         return;
                     }
@@ -844,14 +704,14 @@
                     }
                 });
                 Promise.all(promises).catch((err) => l$6.log(err));
-            });
+            };
             if (!util.isObject(Sc) || !util.isObject(Sc.WellKnownChain) || !util.isFunction(Sc.createScClient)) {
                 throw new Error('Expected an @substrate/connect interface as first parameter to ScProvider');
             }
-            __classPrivateFieldSet(this, _ScProvider_Sc, Sc, "f");
-            __classPrivateFieldSet(this, _ScProvider_spec, spec, "f");
-            __classPrivateFieldSet(this, _ScProvider_sharedSandbox, sharedSandbox, "f");
-            __classPrivateFieldSet(this, _ScProvider_wellKnownChains, new Set(Object.values(Sc.WellKnownChain)), "f");
+            this.__internal__Sc = Sc;
+            this.__internal__spec = spec;
+            this.__internal__sharedSandbox = sharedSandbox;
+            this.__internal__wellKnownChains = new Set(Object.values(Sc.WellKnownChain));
         }
         get hasSubscriptions() {
             return true;
@@ -860,7 +720,7 @@
             return false;
         }
         get isConnected() {
-            return !!__classPrivateFieldGet(this, _ScProvider_chain, "f") && __classPrivateFieldGet(this, _ScProvider_isChainReady, "f");
+            return !!this.__internal__chain && this.__internal__isChainReady;
         }
         clone() {
             throw new Error('clone() is not supported.');
@@ -869,16 +729,16 @@
             if (this.isConnected) {
                 throw new Error('Already connected!');
             }
-            if (__classPrivateFieldGet(this, _ScProvider_chain, "f")) {
-                await __classPrivateFieldGet(this, _ScProvider_chain, "f");
+            if (this.__internal__chain) {
+                await this.__internal__chain;
                 return;
             }
-            if (__classPrivateFieldGet(this, _ScProvider_sharedSandbox, "f") && !__classPrivateFieldGet(this, _ScProvider_sharedSandbox, "f").isConnected) {
-                await __classPrivateFieldGet(this, _ScProvider_sharedSandbox, "f").connect();
+            if (this.__internal__sharedSandbox && !this.__internal__sharedSandbox.isConnected) {
+                await this.__internal__sharedSandbox.connect();
             }
-            const client = __classPrivateFieldGet(this, _ScProvider_sharedSandbox, "f")
-                ? scClients.get(__classPrivateFieldGet(this, _ScProvider_sharedSandbox, "f"))
-                : __classPrivateFieldGet(this, _ScProvider_Sc, "f").createScClient(config);
+            const client = this.__internal__sharedSandbox
+                ? scClients.get(this.__internal__sharedSandbox)
+                : this.__internal__Sc.createScClient(config);
             if (!client) {
                 throw new Error('Unkown ScProvider!');
             }
@@ -892,29 +752,29 @@
                 const response = JSON.parse(hcRes);
                 let decodedResponse;
                 try {
-                    decodedResponse = __classPrivateFieldGet(this, _ScProvider_coder, "f").decodeResponse(response);
+                    decodedResponse = this.__internal__coder.decodeResponse(response);
                 }
                 catch (e) {
                     decodedResponse = e;
                 }
                 if (response.params?.subscription === undefined || !response.method) {
-                    return __classPrivateFieldGet(this, _ScProvider_requests, "f").get(response.id)?.(decodedResponse);
+                    return this.__internal__requests.get(response.id)?.(decodedResponse);
                 }
                 const subscriptionId = `${response.method}::${response.params.subscription}`;
-                const callback = __classPrivateFieldGet(this, _ScProvider_subscriptions, "f").get(subscriptionId)?.[0];
+                const callback = this.__internal__subscriptions.get(subscriptionId)?.[0];
                 callback?.(decodedResponse);
             };
-            const addChain = __classPrivateFieldGet(this, _ScProvider_wellKnownChains, "f").has(__classPrivateFieldGet(this, _ScProvider_spec, "f"))
+            const addChain = this.__internal__wellKnownChains.has(this.__internal__spec)
                 ? client.addWellKnownChain
                 : client.addChain;
-            __classPrivateFieldSet(this, _ScProvider_chain, addChain(__classPrivateFieldGet(this, _ScProvider_spec, "f"), onResponse).then((chain) => {
+            this.__internal__chain = addChain(this.__internal__spec, onResponse).then((chain) => {
                 hc.setSendJsonRpc(chain.sendJsonRpc);
-                __classPrivateFieldSet(this, _ScProvider_isChainReady, false, "f");
+                this.__internal__isChainReady = false;
                 const cleanup = () => {
                     const disconnectionError = new Error('Disconnected');
-                    __classPrivateFieldGet(this, _ScProvider_requests, "f").forEach((cb) => cb(disconnectionError));
-                    __classPrivateFieldGet(this, _ScProvider_subscriptions, "f").forEach(([cb]) => cb(disconnectionError));
-                    __classPrivateFieldGet(this, _ScProvider_subscriptions, "f").clear();
+                    this.__internal__requests.forEach((cb) => cb(disconnectionError));
+                    this.__internal__subscriptions.forEach(([cb]) => cb(disconnectionError));
+                    this.__internal__subscriptions.clear();
                 };
                 const staleSubscriptions = [];
                 const killStaleSubscriptions = () => {
@@ -936,22 +796,22 @@
                 };
                 hc.start((health) => {
                     const isReady = !health.isSyncing && (health.peers > 0 || !health.shouldHavePeers);
-                    if (__classPrivateFieldGet(this, _ScProvider_isChainReady, "f") === isReady) {
+                    if (this.__internal__isChainReady === isReady) {
                         return;
                     }
-                    __classPrivateFieldSet(this, _ScProvider_isChainReady, isReady, "f");
+                    this.__internal__isChainReady = isReady;
                     if (!isReady) {
-                        [...__classPrivateFieldGet(this, _ScProvider_subscriptions, "f").values()].forEach((s) => {
+                        [...this.__internal__subscriptions.values()].forEach((s) => {
                             staleSubscriptions.push(s[1]);
                         });
                         cleanup();
-                        __classPrivateFieldGet(this, _ScProvider_eventemitter, "f").emit('disconnected');
+                        this.__internal__eventemitter.emit('disconnected');
                     }
                     else {
                         killStaleSubscriptions();
-                        __classPrivateFieldGet(this, _ScProvider_eventemitter, "f").emit('connected');
-                        if (__classPrivateFieldGet(this, _ScProvider_resubscribeMethods, "f").size) {
-                            __classPrivateFieldGet(this, _ScProvider_resubscribe, "f").call(this);
+                        this.__internal__eventemitter.emit('connected');
+                        if (this.__internal__resubscribeMethods.size) {
+                            this.__internal__resubscribe();
                         }
                     }
                 });
@@ -963,65 +823,65 @@
                     },
                     sendJsonRpc: hc.sendJsonRpc.bind(hc)
                 });
-            }), "f");
+            });
             try {
-                await __classPrivateFieldGet(this, _ScProvider_chain, "f");
+                await this.__internal__chain;
             }
             catch (e) {
-                __classPrivateFieldSet(this, _ScProvider_chain, null, "f");
-                __classPrivateFieldGet(this, _ScProvider_eventemitter, "f").emit('error', e);
+                this.__internal__chain = null;
+                this.__internal__eventemitter.emit('error', e);
                 throw e;
             }
         }
         async disconnect() {
-            if (!__classPrivateFieldGet(this, _ScProvider_chain, "f")) {
+            if (!this.__internal__chain) {
                 return;
             }
-            const chain = await __classPrivateFieldGet(this, _ScProvider_chain, "f");
-            __classPrivateFieldSet(this, _ScProvider_chain, null, "f");
-            __classPrivateFieldSet(this, _ScProvider_isChainReady, false, "f");
+            const chain = await this.__internal__chain;
+            this.__internal__chain = null;
+            this.__internal__isChainReady = false;
             try {
                 chain.remove();
             }
             catch (_) { }
-            __classPrivateFieldGet(this, _ScProvider_eventemitter, "f").emit('disconnected');
+            this.__internal__eventemitter.emit('disconnected');
         }
         on(type, sub) {
             if (type === 'connected' && this.isConnected) {
                 sub();
             }
-            __classPrivateFieldGet(this, _ScProvider_eventemitter, "f").on(type, sub);
+            this.__internal__eventemitter.on(type, sub);
             return () => {
-                __classPrivateFieldGet(this, _ScProvider_eventemitter, "f").removeListener(type, sub);
+                this.__internal__eventemitter.removeListener(type, sub);
             };
         }
         async send(method, params) {
-            if (!this.isConnected || !__classPrivateFieldGet(this, _ScProvider_chain, "f")) {
+            if (!this.isConnected || !this.__internal__chain) {
                 throw new Error('Provider is not connected');
             }
-            const chain = await __classPrivateFieldGet(this, _ScProvider_chain, "f");
-            const [id, json] = __classPrivateFieldGet(this, _ScProvider_coder, "f").encodeJson(method, params);
+            const chain = await this.__internal__chain;
+            const [id, json] = this.__internal__coder.encodeJson(method, params);
             const result = new Promise((resolve, reject) => {
-                __classPrivateFieldGet(this, _ScProvider_requests, "f").set(id, (response) => {
+                this.__internal__requests.set(id, (response) => {
                     (util.isError(response) ? reject : resolve)(response);
                 });
                 try {
                     chain.sendJsonRpc(json);
                 }
                 catch (e) {
-                    __classPrivateFieldSet(this, _ScProvider_chain, null, "f");
+                    this.__internal__chain = null;
                     try {
                         chain.remove();
                     }
                     catch (_) { }
-                    __classPrivateFieldGet(this, _ScProvider_eventemitter, "f").emit('error', e);
+                    this.__internal__eventemitter.emit('error', e);
                 }
             });
             try {
                 return await result;
             }
             finally {
-                __classPrivateFieldGet(this, _ScProvider_requests, "f").delete(id);
+                this.__internal__requests.delete(id);
             }
         }
         async subscribe(type, method, params, callback) {
@@ -1042,8 +902,8 @@
             if (!unsubscribeMethod) {
                 throw new Error('Invalid unsubscribe method found');
             }
-            __classPrivateFieldGet(this, _ScProvider_resubscribeMethods, "f").set(subscriptionId, { callback, method, params, type });
-            __classPrivateFieldGet(this, _ScProvider_subscriptions, "f").set(subscriptionId, [cb, { id, unsubscribeMethod }]);
+            this.__internal__resubscribeMethods.set(subscriptionId, { callback, method, params, type });
+            this.__internal__subscriptions.set(subscriptionId, [cb, { id, unsubscribeMethod }]);
             return id;
         }
         unsubscribe(type, method, id) {
@@ -1051,15 +911,14 @@
                 throw new Error('Provider is not connected');
             }
             const subscriptionId = `${type}::${id}`;
-            if (!__classPrivateFieldGet(this, _ScProvider_subscriptions, "f").has(subscriptionId)) {
+            if (!this.__internal__subscriptions.has(subscriptionId)) {
                 return Promise.reject(new Error(`Unable to find active subscription=${subscriptionId}`));
             }
-            __classPrivateFieldGet(this, _ScProvider_resubscribeMethods, "f").delete(subscriptionId);
-            __classPrivateFieldGet(this, _ScProvider_subscriptions, "f").delete(subscriptionId);
+            this.__internal__resubscribeMethods.delete(subscriptionId);
+            this.__internal__subscriptions.delete(subscriptionId);
             return this.send(method, [id]);
         }
     }
-    _ScProvider_Sc = new WeakMap(), _ScProvider_coder = new WeakMap(), _ScProvider_spec = new WeakMap(), _ScProvider_sharedSandbox = new WeakMap(), _ScProvider_subscriptions = new WeakMap(), _ScProvider_resubscribeMethods = new WeakMap(), _ScProvider_requests = new WeakMap(), _ScProvider_wellKnownChains = new WeakMap(), _ScProvider_eventemitter = new WeakMap(), _ScProvider_chain = new WeakMap(), _ScProvider_isChainReady = new WeakMap(), _ScProvider_resubscribe = new WeakMap();
 
     const WebSocket = xglobal.WebSocket;
 
@@ -1102,7 +961,6 @@
         return known[code] || '(Unknown)';
     }
 
-    var _WsProvider_instances, _WsProvider_callCache, _WsProvider_coder, _WsProvider_endpoints, _WsProvider_headers, _WsProvider_eventemitter, _WsProvider_handlers, _WsProvider_isReadyPromise, _WsProvider_stats, _WsProvider_waitingForId, _WsProvider_autoConnectMs, _WsProvider_endpointIndex, _WsProvider_endpointStats, _WsProvider_isConnected, _WsProvider_subscriptions, _WsProvider_timeoutId, _WsProvider_websocket, _WsProvider_timeout, _WsProvider_send, _WsProvider_emit, _WsProvider_onSocketClose, _WsProvider_onSocketError, _WsProvider_onSocketMessage, _WsProvider_onSocketMessageResult, _WsProvider_onSocketMessageSubscribe, _WsProvider_onSocketOpen, _WsProvider_resubscribe, _WsProvider_timeoutHandlers;
     const ALIASES = {
         chain_finalisedHead: 'chain_finalizedHead',
         chain_subscribeFinalisedHeads: 'chain_subscribeFinalizedHeads',
@@ -1125,45 +983,33 @@
     }
     class WsProvider {
         constructor(endpoint = defaults.WS_URL, autoConnectMs = RETRY_DELAY, headers = {}, timeout) {
-            _WsProvider_instances.add(this);
-            _WsProvider_callCache.set(this, new LRUCache());
-            _WsProvider_coder.set(this, void 0);
-            _WsProvider_endpoints.set(this, void 0);
-            _WsProvider_headers.set(this, void 0);
-            _WsProvider_eventemitter.set(this, void 0);
-            _WsProvider_handlers.set(this, {});
-            _WsProvider_isReadyPromise.set(this, void 0);
-            _WsProvider_stats.set(this, void 0);
-            _WsProvider_waitingForId.set(this, {});
-            _WsProvider_autoConnectMs.set(this, void 0);
-            _WsProvider_endpointIndex.set(this, void 0);
-            _WsProvider_endpointStats.set(this, void 0);
-            _WsProvider_isConnected.set(this, false);
-            _WsProvider_subscriptions.set(this, {});
-            _WsProvider_timeoutId.set(this, null);
-            _WsProvider_websocket.set(this, void 0);
-            _WsProvider_timeout.set(this, void 0);
-            _WsProvider_emit.set(this, (type, ...args) => {
-                __classPrivateFieldGet(this, _WsProvider_eventemitter, "f").emit(type, ...args);
-            });
-            _WsProvider_onSocketClose.set(this, (event) => {
+            this.__internal__callCache = new LRUCache();
+            this.__internal__handlers = {};
+            this.__internal__waitingForId = {};
+            this.__internal__isConnected = false;
+            this.__internal__subscriptions = {};
+            this.__internal__timeoutId = null;
+            this.__internal__emit = (type, ...args) => {
+                this.__internal__eventemitter.emit(type, ...args);
+            };
+            this.__internal__onSocketClose = (event) => {
                 const error = new Error(`disconnected from ${this.endpoint}: ${event.code}:: ${event.reason || getWSErrorString(event.code)}`);
-                if (__classPrivateFieldGet(this, _WsProvider_autoConnectMs, "f") > 0) {
+                if (this.__internal__autoConnectMs > 0) {
                     l$5.error(error.message);
                 }
-                __classPrivateFieldSet(this, _WsProvider_isConnected, false, "f");
-                if (__classPrivateFieldGet(this, _WsProvider_websocket, "f")) {
-                    __classPrivateFieldGet(this, _WsProvider_websocket, "f").onclose = null;
-                    __classPrivateFieldGet(this, _WsProvider_websocket, "f").onerror = null;
-                    __classPrivateFieldGet(this, _WsProvider_websocket, "f").onmessage = null;
-                    __classPrivateFieldGet(this, _WsProvider_websocket, "f").onopen = null;
-                    __classPrivateFieldSet(this, _WsProvider_websocket, null, "f");
+                this.__internal__isConnected = false;
+                if (this.__internal__websocket) {
+                    this.__internal__websocket.onclose = null;
+                    this.__internal__websocket.onerror = null;
+                    this.__internal__websocket.onmessage = null;
+                    this.__internal__websocket.onopen = null;
+                    this.__internal__websocket = null;
                 }
-                if (__classPrivateFieldGet(this, _WsProvider_timeoutId, "f")) {
-                    clearInterval(__classPrivateFieldGet(this, _WsProvider_timeoutId, "f"));
-                    __classPrivateFieldSet(this, _WsProvider_timeoutId, null, "f");
+                if (this.__internal__timeoutId) {
+                    clearInterval(this.__internal__timeoutId);
+                    this.__internal__timeoutId = null;
                 }
-                eraseRecord(__classPrivateFieldGet(this, _WsProvider_handlers, "f"), (h) => {
+                eraseRecord(this.__internal__handlers, (h) => {
                     try {
                         h.callback(error, undefined);
                     }
@@ -1171,90 +1017,91 @@
                         l$5.error(err);
                     }
                 });
-                eraseRecord(__classPrivateFieldGet(this, _WsProvider_waitingForId, "f"));
-                __classPrivateFieldSet(this, _WsProvider_endpointStats, defaultEndpointStats(), "f");
-                __classPrivateFieldGet(this, _WsProvider_emit, "f").call(this, 'disconnected');
-                if (__classPrivateFieldGet(this, _WsProvider_autoConnectMs, "f") > 0) {
+                eraseRecord(this.__internal__waitingForId);
+                this.__internal__endpointStats = defaultEndpointStats();
+                this.__internal__emit('disconnected');
+                if (this.__internal__autoConnectMs > 0) {
                     setTimeout(() => {
                         this.connectWithRetry().catch(() => {
                         });
-                    }, __classPrivateFieldGet(this, _WsProvider_autoConnectMs, "f"));
+                    }, this.__internal__autoConnectMs);
                 }
-            });
-            _WsProvider_onSocketError.set(this, (error) => {
+            };
+            this.__internal__onSocketError = (error) => {
                 l$5.debug(() => ['socket error', error]);
-                __classPrivateFieldGet(this, _WsProvider_emit, "f").call(this, 'error', error);
-            });
-            _WsProvider_onSocketMessage.set(this, (message) => {
+                this.__internal__emit('error', error);
+            };
+            this.__internal__onSocketMessage = (message) => {
                 l$5.debug(() => ['received', message.data]);
-                __classPrivateFieldGet(this, _WsProvider_endpointStats, "f").bytesRecv += message.data.length;
-                __classPrivateFieldGet(this, _WsProvider_stats, "f").total.bytesRecv += message.data.length;
+                const bytesRecv = message.data.length;
+                this.__internal__endpointStats.bytesRecv += bytesRecv;
+                this.__internal__stats.total.bytesRecv += bytesRecv;
                 const response = JSON.parse(message.data);
                 return util.isUndefined(response.method)
-                    ? __classPrivateFieldGet(this, _WsProvider_onSocketMessageResult, "f").call(this, response)
-                    : __classPrivateFieldGet(this, _WsProvider_onSocketMessageSubscribe, "f").call(this, response);
-            });
-            _WsProvider_onSocketMessageResult.set(this, (response) => {
-                const handler = __classPrivateFieldGet(this, _WsProvider_handlers, "f")[response.id];
+                    ? this.__internal__onSocketMessageResult(response)
+                    : this.__internal__onSocketMessageSubscribe(response);
+            };
+            this.__internal__onSocketMessageResult = (response) => {
+                const handler = this.__internal__handlers[response.id];
                 if (!handler) {
                     l$5.debug(() => `Unable to find handler for id=${response.id}`);
                     return;
                 }
                 try {
                     const { method, params, subscription } = handler;
-                    const result = __classPrivateFieldGet(this, _WsProvider_coder, "f").decodeResponse(response);
+                    const result = this.__internal__coder.decodeResponse(response);
                     handler.callback(null, result);
                     if (subscription) {
                         const subId = `${subscription.type}::${result}`;
-                        __classPrivateFieldGet(this, _WsProvider_subscriptions, "f")[subId] = util.objectSpread({}, subscription, {
+                        this.__internal__subscriptions[subId] = util.objectSpread({}, subscription, {
                             method,
                             params
                         });
-                        if (__classPrivateFieldGet(this, _WsProvider_waitingForId, "f")[subId]) {
-                            __classPrivateFieldGet(this, _WsProvider_onSocketMessageSubscribe, "f").call(this, __classPrivateFieldGet(this, _WsProvider_waitingForId, "f")[subId]);
+                        if (this.__internal__waitingForId[subId]) {
+                            this.__internal__onSocketMessageSubscribe(this.__internal__waitingForId[subId]);
                         }
                     }
                 }
                 catch (error) {
-                    __classPrivateFieldGet(this, _WsProvider_endpointStats, "f").errors++;
-                    __classPrivateFieldGet(this, _WsProvider_stats, "f").total.errors++;
+                    this.__internal__endpointStats.errors++;
+                    this.__internal__stats.total.errors++;
                     handler.callback(error, undefined);
                 }
-                delete __classPrivateFieldGet(this, _WsProvider_handlers, "f")[response.id];
-            });
-            _WsProvider_onSocketMessageSubscribe.set(this, (response) => {
+                delete this.__internal__handlers[response.id];
+            };
+            this.__internal__onSocketMessageSubscribe = (response) => {
                 const method = ALIASES[response.method] || response.method || 'invalid';
                 const subId = `${method}::${response.params.subscription}`;
-                const handler = __classPrivateFieldGet(this, _WsProvider_subscriptions, "f")[subId];
+                const handler = this.__internal__subscriptions[subId];
                 if (!handler) {
-                    __classPrivateFieldGet(this, _WsProvider_waitingForId, "f")[subId] = response;
+                    this.__internal__waitingForId[subId] = response;
                     l$5.debug(() => `Unable to find handler for subscription=${subId}`);
                     return;
                 }
-                delete __classPrivateFieldGet(this, _WsProvider_waitingForId, "f")[subId];
+                delete this.__internal__waitingForId[subId];
                 try {
-                    const result = __classPrivateFieldGet(this, _WsProvider_coder, "f").decodeResponse(response);
+                    const result = this.__internal__coder.decodeResponse(response);
                     handler.callback(null, result);
                 }
                 catch (error) {
-                    __classPrivateFieldGet(this, _WsProvider_endpointStats, "f").errors++;
-                    __classPrivateFieldGet(this, _WsProvider_stats, "f").total.errors++;
+                    this.__internal__endpointStats.errors++;
+                    this.__internal__stats.total.errors++;
                     handler.callback(error, undefined);
                 }
-            });
-            _WsProvider_onSocketOpen.set(this, () => {
-                if (__classPrivateFieldGet(this, _WsProvider_websocket, "f") === null) {
+            };
+            this.__internal__onSocketOpen = () => {
+                if (this.__internal__websocket === null) {
                     throw new Error('WebSocket cannot be null in onOpen');
                 }
                 l$5.debug(() => ['connected to', this.endpoint]);
-                __classPrivateFieldSet(this, _WsProvider_isConnected, true, "f");
-                __classPrivateFieldGet(this, _WsProvider_resubscribe, "f").call(this);
-                __classPrivateFieldGet(this, _WsProvider_emit, "f").call(this, 'connected');
+                this.__internal__isConnected = true;
+                this.__internal__resubscribe();
+                this.__internal__emit('connected');
                 return true;
-            });
-            _WsProvider_resubscribe.set(this, () => {
-                const subscriptions = __classPrivateFieldGet(this, _WsProvider_subscriptions, "f");
-                __classPrivateFieldSet(this, _WsProvider_subscriptions, {}, "f");
+            };
+            this.__internal__resubscribe = () => {
+                const subscriptions = this.__internal__subscriptions;
+                this.__internal__subscriptions = {};
                 Promise.all(Object.keys(subscriptions).map(async (id) => {
                     const { callback, method, params, type } = subscriptions[id];
                     if (type.startsWith('author_')) {
@@ -1267,24 +1114,24 @@
                         l$5.error(error);
                     }
                 })).catch(l$5.error);
-            });
-            _WsProvider_timeoutHandlers.set(this, () => {
+            };
+            this.__internal__timeoutHandlers = () => {
                 const now = Date.now();
-                const ids = Object.keys(__classPrivateFieldGet(this, _WsProvider_handlers, "f"));
-                for (let i = 0; i < ids.length; i++) {
-                    const handler = __classPrivateFieldGet(this, _WsProvider_handlers, "f")[ids[i]];
-                    if ((now - handler.start) > __classPrivateFieldGet(this, _WsProvider_timeout, "f")) {
+                const ids = Object.keys(this.__internal__handlers);
+                for (let i = 0, count = ids.length; i < count; i++) {
+                    const handler = this.__internal__handlers[ids[i]];
+                    if ((now - handler.start) > this.__internal__timeout) {
                         try {
-                            handler.callback(new Error(`No response received from RPC endpoint in ${__classPrivateFieldGet(this, _WsProvider_timeout, "f") / 1000}s`), undefined);
+                            handler.callback(new Error(`No response received from RPC endpoint in ${this.__internal__timeout / 1000}s`), undefined);
                         }
                         catch {
                         }
-                        __classPrivateFieldGet(this, _WsProvider_endpointStats, "f").timeout++;
-                        __classPrivateFieldGet(this, _WsProvider_stats, "f").total.timeout++;
-                        delete __classPrivateFieldGet(this, _WsProvider_handlers, "f")[ids[i]];
+                        this.__internal__endpointStats.timeout++;
+                        this.__internal__stats.total.timeout++;
+                        delete this.__internal__handlers[ids[i]];
                     }
                 }
-            });
+            };
             const endpoints = Array.isArray(endpoint)
                 ? endpoint
                 : [endpoint];
@@ -1296,28 +1143,28 @@
                     throw new Error(`Endpoint should start with 'ws://', received '${endpoint}'`);
                 }
             });
-            __classPrivateFieldSet(this, _WsProvider_eventemitter, new EventEmitter(), "f");
-            __classPrivateFieldSet(this, _WsProvider_autoConnectMs, autoConnectMs || 0, "f");
-            __classPrivateFieldSet(this, _WsProvider_coder, new RpcCoder(), "f");
-            __classPrivateFieldSet(this, _WsProvider_endpointIndex, -1, "f");
-            __classPrivateFieldSet(this, _WsProvider_endpoints, endpoints, "f");
-            __classPrivateFieldSet(this, _WsProvider_headers, headers, "f");
-            __classPrivateFieldSet(this, _WsProvider_websocket, null, "f");
-            __classPrivateFieldSet(this, _WsProvider_stats, {
+            this.__internal__eventemitter = new EventEmitter();
+            this.__internal__autoConnectMs = autoConnectMs || 0;
+            this.__internal__coder = new RpcCoder();
+            this.__internal__endpointIndex = -1;
+            this.__internal__endpoints = endpoints;
+            this.__internal__headers = headers;
+            this.__internal__websocket = null;
+            this.__internal__stats = {
                 active: { requests: 0, subscriptions: 0 },
                 total: defaultEndpointStats()
-            }, "f");
-            __classPrivateFieldSet(this, _WsProvider_endpointStats, defaultEndpointStats(), "f");
-            __classPrivateFieldSet(this, _WsProvider_timeout, timeout || DEFAULT_TIMEOUT_MS, "f");
+            };
+            this.__internal__endpointStats = defaultEndpointStats();
+            this.__internal__timeout = timeout || DEFAULT_TIMEOUT_MS;
             if (autoConnectMs && autoConnectMs > 0) {
                 this.connectWithRetry().catch(() => {
                 });
             }
-            __classPrivateFieldSet(this, _WsProvider_isReadyPromise, new Promise((resolve) => {
-                __classPrivateFieldGet(this, _WsProvider_eventemitter, "f").once('connected', () => {
+            this.__internal__isReadyPromise = new Promise((resolve) => {
+                this.__internal__eventemitter.once('connected', () => {
                     resolve(this);
                 });
-            }), "f");
+            });
         }
         get hasSubscriptions() {
             return true;
@@ -1326,47 +1173,47 @@
             return true;
         }
         get isConnected() {
-            return __classPrivateFieldGet(this, _WsProvider_isConnected, "f");
+            return this.__internal__isConnected;
         }
         get isReady() {
-            return __classPrivateFieldGet(this, _WsProvider_isReadyPromise, "f");
+            return this.__internal__isReadyPromise;
         }
         get endpoint() {
-            return __classPrivateFieldGet(this, _WsProvider_endpoints, "f")[__classPrivateFieldGet(this, _WsProvider_endpointIndex, "f")];
+            return this.__internal__endpoints[this.__internal__endpointIndex];
         }
         clone() {
-            return new WsProvider(__classPrivateFieldGet(this, _WsProvider_endpoints, "f"));
+            return new WsProvider(this.__internal__endpoints);
         }
         selectEndpointIndex(endpoints) {
-            return (__classPrivateFieldGet(this, _WsProvider_endpointIndex, "f") + 1) % endpoints.length;
+            return (this.__internal__endpointIndex + 1) % endpoints.length;
         }
         async connect() {
-            if (__classPrivateFieldGet(this, _WsProvider_websocket, "f")) {
+            if (this.__internal__websocket) {
                 throw new Error('WebSocket is already connected');
             }
             try {
-                __classPrivateFieldSet(this, _WsProvider_endpointIndex, this.selectEndpointIndex(__classPrivateFieldGet(this, _WsProvider_endpoints, "f")), "f");
-                __classPrivateFieldSet(this, _WsProvider_websocket, typeof xglobal.WebSocket !== 'undefined' && util.isChildClass(xglobal.WebSocket, WebSocket)
+                this.__internal__endpointIndex = this.selectEndpointIndex(this.__internal__endpoints);
+                this.__internal__websocket = typeof xglobal.WebSocket !== 'undefined' && util.isChildClass(xglobal.WebSocket, WebSocket)
                     ? new WebSocket(this.endpoint)
                     : new WebSocket(this.endpoint, undefined, {
-                        headers: __classPrivateFieldGet(this, _WsProvider_headers, "f")
-                    }), "f");
-                if (__classPrivateFieldGet(this, _WsProvider_websocket, "f")) {
-                    __classPrivateFieldGet(this, _WsProvider_websocket, "f").onclose = __classPrivateFieldGet(this, _WsProvider_onSocketClose, "f");
-                    __classPrivateFieldGet(this, _WsProvider_websocket, "f").onerror = __classPrivateFieldGet(this, _WsProvider_onSocketError, "f");
-                    __classPrivateFieldGet(this, _WsProvider_websocket, "f").onmessage = __classPrivateFieldGet(this, _WsProvider_onSocketMessage, "f");
-                    __classPrivateFieldGet(this, _WsProvider_websocket, "f").onopen = __classPrivateFieldGet(this, _WsProvider_onSocketOpen, "f");
+                        headers: this.__internal__headers
+                    });
+                if (this.__internal__websocket) {
+                    this.__internal__websocket.onclose = this.__internal__onSocketClose;
+                    this.__internal__websocket.onerror = this.__internal__onSocketError;
+                    this.__internal__websocket.onmessage = this.__internal__onSocketMessage;
+                    this.__internal__websocket.onopen = this.__internal__onSocketOpen;
                 }
-                __classPrivateFieldSet(this, _WsProvider_timeoutId, setInterval(() => __classPrivateFieldGet(this, _WsProvider_timeoutHandlers, "f").call(this), TIMEOUT_INTERVAL), "f");
+                this.__internal__timeoutId = setInterval(() => this.__internal__timeoutHandlers(), TIMEOUT_INTERVAL);
             }
             catch (error) {
                 l$5.error(error);
-                __classPrivateFieldGet(this, _WsProvider_emit, "f").call(this, 'error', error);
+                this.__internal__emit('error', error);
                 throw error;
             }
         }
         async connectWithRetry() {
-            if (__classPrivateFieldGet(this, _WsProvider_autoConnectMs, "f") > 0) {
+            if (this.__internal__autoConnectMs > 0) {
                 try {
                     await this.connect();
                 }
@@ -1374,74 +1221,105 @@
                     setTimeout(() => {
                         this.connectWithRetry().catch(() => {
                         });
-                    }, __classPrivateFieldGet(this, _WsProvider_autoConnectMs, "f"));
+                    }, this.__internal__autoConnectMs);
                 }
             }
         }
         async disconnect() {
-            __classPrivateFieldSet(this, _WsProvider_autoConnectMs, 0, "f");
+            this.__internal__autoConnectMs = 0;
             try {
-                if (__classPrivateFieldGet(this, _WsProvider_websocket, "f")) {
-                    __classPrivateFieldGet(this, _WsProvider_websocket, "f").close(1000);
+                if (this.__internal__websocket) {
+                    this.__internal__websocket.close(1000);
                 }
             }
             catch (error) {
                 l$5.error(error);
-                __classPrivateFieldGet(this, _WsProvider_emit, "f").call(this, 'error', error);
+                this.__internal__emit('error', error);
                 throw error;
             }
         }
         get stats() {
             return {
                 active: {
-                    requests: Object.keys(__classPrivateFieldGet(this, _WsProvider_handlers, "f")).length,
-                    subscriptions: Object.keys(__classPrivateFieldGet(this, _WsProvider_subscriptions, "f")).length
+                    requests: Object.keys(this.__internal__handlers).length,
+                    subscriptions: Object.keys(this.__internal__subscriptions).length
                 },
-                total: __classPrivateFieldGet(this, _WsProvider_stats, "f").total
+                total: this.__internal__stats.total
             };
         }
         get endpointStats() {
-            return __classPrivateFieldGet(this, _WsProvider_endpointStats, "f");
+            return this.__internal__endpointStats;
         }
         on(type, sub) {
-            __classPrivateFieldGet(this, _WsProvider_eventemitter, "f").on(type, sub);
+            this.__internal__eventemitter.on(type, sub);
             return () => {
-                __classPrivateFieldGet(this, _WsProvider_eventemitter, "f").removeListener(type, sub);
+                this.__internal__eventemitter.removeListener(type, sub);
             };
         }
         send(method, params, isCacheable, subscription) {
-            __classPrivateFieldGet(this, _WsProvider_endpointStats, "f").requests++;
-            __classPrivateFieldGet(this, _WsProvider_stats, "f").total.requests++;
-            const [id, body] = __classPrivateFieldGet(this, _WsProvider_coder, "f").encodeJson(method, params);
+            this.__internal__endpointStats.requests++;
+            this.__internal__stats.total.requests++;
+            const [id, body] = this.__internal__coder.encodeJson(method, params);
             let resultPromise = isCacheable
-                ? __classPrivateFieldGet(this, _WsProvider_callCache, "f").get(body)
+                ? this.__internal__callCache.get(body)
                 : null;
             if (!resultPromise) {
-                resultPromise = __classPrivateFieldGet(this, _WsProvider_instances, "m", _WsProvider_send).call(this, id, body, method, params, subscription);
+                resultPromise = this.__internal__send(id, body, method, params, subscription);
                 if (isCacheable) {
-                    __classPrivateFieldGet(this, _WsProvider_callCache, "f").set(body, resultPromise);
+                    this.__internal__callCache.set(body, resultPromise);
                 }
             }
             else {
-                __classPrivateFieldGet(this, _WsProvider_endpointStats, "f").cached++;
-                __classPrivateFieldGet(this, _WsProvider_stats, "f").total.cached++;
+                this.__internal__endpointStats.cached++;
+                this.__internal__stats.total.cached++;
             }
             return resultPromise;
         }
+        async __internal__send(id, body, method, params, subscription) {
+            return new Promise((resolve, reject) => {
+                try {
+                    if (!this.isConnected || this.__internal__websocket === null) {
+                        throw new Error('WebSocket is not connected');
+                    }
+                    const callback = (error, result) => {
+                        error
+                            ? reject(error)
+                            : resolve(result);
+                    };
+                    l$5.debug(() => ['calling', method, body]);
+                    this.__internal__handlers[id] = {
+                        callback,
+                        method,
+                        params,
+                        start: Date.now(),
+                        subscription
+                    };
+                    const bytesSent = body.length;
+                    this.__internal__endpointStats.bytesSent += bytesSent;
+                    this.__internal__stats.total.bytesSent += bytesSent;
+                    this.__internal__websocket.send(body);
+                }
+                catch (error) {
+                    this.__internal__endpointStats.errors++;
+                    this.__internal__stats.total.errors++;
+                    reject(error);
+                }
+            });
+        }
         subscribe(type, method, params, callback) {
-            __classPrivateFieldGet(this, _WsProvider_endpointStats, "f").subscriptions++;
-            __classPrivateFieldGet(this, _WsProvider_stats, "f").total.subscriptions++;
+            this.__internal__endpointStats.subscriptions++;
+            this.__internal__stats.total.subscriptions++;
             return this.send(method, params, false, { callback, type });
         }
         async unsubscribe(type, method, id) {
             const subscription = `${type}::${id}`;
-            if (util.isUndefined(__classPrivateFieldGet(this, _WsProvider_subscriptions, "f")[subscription])) {
+            if (util.isUndefined(this.__internal__subscriptions[subscription])) {
                 l$5.debug(() => `Unable to find active subscription=${subscription}`);
                 return false;
             }
-            delete __classPrivateFieldGet(this, _WsProvider_subscriptions, "f")[subscription];
+            delete this.__internal__subscriptions[subscription];
             try {
-                return this.isConnected && !util.isNull(__classPrivateFieldGet(this, _WsProvider_websocket, "f"))
+                return this.isConnected && !util.isNull(this.__internal__websocket)
                     ? this.send(method, [id])
                     : true;
             }
@@ -1450,38 +1328,115 @@
             }
         }
     }
-    _WsProvider_callCache = new WeakMap(), _WsProvider_coder = new WeakMap(), _WsProvider_endpoints = new WeakMap(), _WsProvider_headers = new WeakMap(), _WsProvider_eventemitter = new WeakMap(), _WsProvider_handlers = new WeakMap(), _WsProvider_isReadyPromise = new WeakMap(), _WsProvider_stats = new WeakMap(), _WsProvider_waitingForId = new WeakMap(), _WsProvider_autoConnectMs = new WeakMap(), _WsProvider_endpointIndex = new WeakMap(), _WsProvider_endpointStats = new WeakMap(), _WsProvider_isConnected = new WeakMap(), _WsProvider_subscriptions = new WeakMap(), _WsProvider_timeoutId = new WeakMap(), _WsProvider_websocket = new WeakMap(), _WsProvider_timeout = new WeakMap(), _WsProvider_emit = new WeakMap(), _WsProvider_onSocketClose = new WeakMap(), _WsProvider_onSocketError = new WeakMap(), _WsProvider_onSocketMessage = new WeakMap(), _WsProvider_onSocketMessageResult = new WeakMap(), _WsProvider_onSocketMessageSubscribe = new WeakMap(), _WsProvider_onSocketOpen = new WeakMap(), _WsProvider_resubscribe = new WeakMap(), _WsProvider_timeoutHandlers = new WeakMap(), _WsProvider_instances = new WeakSet(), _WsProvider_send = async function _WsProvider_send(id, body, method, params, subscription) {
-        return new Promise((resolve, reject) => {
-            try {
-                if (!this.isConnected || __classPrivateFieldGet(this, _WsProvider_websocket, "f") === null) {
-                    throw new Error('WebSocket is not connected');
-                }
-                const callback = (error, result) => {
-                    error
-                        ? reject(error)
-                        : resolve(result);
-                };
-                l$5.debug(() => ['calling', method, body]);
-                __classPrivateFieldGet(this, _WsProvider_handlers, "f")[id] = {
-                    callback,
-                    method,
-                    params,
-                    start: Date.now(),
-                    subscription
-                };
-                __classPrivateFieldGet(this, _WsProvider_endpointStats, "f").bytesSent += body.length;
-                __classPrivateFieldGet(this, _WsProvider_stats, "f").total.bytesSent += body.length;
-                __classPrivateFieldGet(this, _WsProvider_websocket, "f").send(body);
-            }
-            catch (error) {
-                __classPrivateFieldGet(this, _WsProvider_endpointStats, "f").errors++;
-                __classPrivateFieldGet(this, _WsProvider_stats, "f").total.errors++;
-                reject(error);
-            }
-        });
-    };
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.4.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.5.1' };
+
+    var extendStatics = function(d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    function __extends(d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    }
+    function __awaiter(thisArg, _arguments, P, generator) {
+        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+        return new (P || (P = Promise))(function (resolve, reject) {
+            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+            step((generator = generator.apply(thisArg, _arguments || [])).next());
+        });
+    }
+    function __generator(thisArg, body) {
+        var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+        function verb(n) { return function (v) { return step([n, v]); }; }
+        function step(op) {
+            if (f) throw new TypeError("Generator is already executing.");
+            while (g && (g = 0, op[0] && (_ = 0)), _) try {
+                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+                if (y = 0, t) op = [op[0] & 2, t.value];
+                switch (op[0]) {
+                    case 0: case 1: t = op; break;
+                    case 4: _.label++; return { value: op[1], done: false };
+                    case 5: _.label++; y = op[1]; op = [0]; continue;
+                    case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                    default:
+                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                        if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                        if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                        if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                        if (t[2]) _.ops.pop();
+                        _.trys.pop(); continue;
+                }
+                op = body.call(thisArg, _);
+            } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+            if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+        }
+    }
+    function __values(o) {
+        var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+        if (m) return m.call(o);
+        if (o && typeof o.length === "number") return {
+            next: function () {
+                if (o && i >= o.length) o = void 0;
+                return { value: o && o[i++], done: !o };
+            }
+        };
+        throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+    }
+    function __read(o, n) {
+        var m = typeof Symbol === "function" && o[Symbol.iterator];
+        if (!m) return o;
+        var i = m.call(o), r, ar = [], e;
+        try {
+            while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+        }
+        catch (error) { e = { error: error }; }
+        finally {
+            try {
+                if (r && !r.done && (m = i["return"])) m.call(i);
+            }
+            finally { if (e) throw e.error; }
+        }
+        return ar;
+    }
+    function __spreadArray(to, from, pack) {
+        if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+            if (ar || !(i in from)) {
+                if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+                ar[i] = from[i];
+            }
+        }
+        return to.concat(ar || Array.prototype.slice.call(from));
+    }
+    function __await(v) {
+        return this instanceof __await ? (this.v = v, this) : new __await(v);
+    }
+    function __asyncGenerator(thisArg, _arguments, generator) {
+        if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+        var g = generator.apply(thisArg, _arguments || []), i, q = [];
+        return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
+        function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+        function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
+        function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
+        function fulfill(value) { resume("next", value); }
+        function reject(value) { resume("throw", value); }
+        function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
+    }
+    function __asyncValues(o) {
+        if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+        var m = o[Symbol.asyncIterator], i;
+        return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+        function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+        function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+    }
 
     function isFunction(value) {
         return typeof value === 'function';
@@ -1859,13 +1814,13 @@
 
     var observable = (function () { return (typeof Symbol === 'function' && Symbol.observable) || '@@observable'; })();
 
-    function identity$2(x) {
+    function identity$1(x) {
         return x;
     }
 
     function pipeFromArray(fns) {
         if (fns.length === 0) {
-            return identity$2;
+            return identity$1;
         }
         if (fns.length === 1) {
             return fns[0];
@@ -2564,7 +2519,9 @@
             var actions = scheduler.actions;
             if (id != null && ((_a = actions[actions.length - 1]) === null || _a === void 0 ? void 0 : _a.id) !== id) {
                 immediateProvider.clearImmediate(id);
-                scheduler._scheduled = undefined;
+                if (scheduler._scheduled === id) {
+                    scheduler._scheduled = undefined;
+                }
             }
             return undefined;
         };
@@ -3094,11 +3051,11 @@
             ?
                 function (values) { return createObject(keys, values); }
             :
-                identity$2));
+                identity$1));
         return resultSelector ? result.pipe(mapOneOrManyArgs(resultSelector)) : result;
     }
     function combineLatestInit(observables, scheduler, valueTransform) {
-        if (valueTransform === void 0) { valueTransform = identity$2; }
+        if (valueTransform === void 0) { valueTransform = identity$1; }
         return function (subscriber) {
             maybeSchedule(scheduler, function () {
                 var length = observables.length;
@@ -3211,7 +3168,7 @@
 
     function mergeAll(concurrent) {
         if (concurrent === void 0) { concurrent = Infinity; }
-        return mergeMap(identity$2, concurrent);
+        return mergeMap(identity$1, concurrent);
     }
 
     function concatAll() {
@@ -3339,7 +3296,7 @@
     }
 
     function distinctUntilChanged(comparator, keySelector) {
-        if (keySelector === void 0) { keySelector = identity$2; }
+        if (keySelector === void 0) { keySelector = identity$1; }
         comparator = comparator !== null && comparator !== void 0 ? comparator : defaultCompare;
         return operate(function (source, subscriber) {
             var previousKey;
@@ -3375,7 +3332,7 @@
     function first(predicate, defaultValue) {
         var hasDefaultValue = arguments.length >= 2;
         return function (source) {
-            return source.pipe(predicate ? filter(function (v, i) { return predicate(v, i, source); }) : identity$2, take(1), hasDefaultValue ? defaultIfEmpty(defaultValue) : throwIfEmpty(function () { return new EmptyError(); }));
+            return source.pipe(predicate ? filter(function (v, i) { return predicate(v, i, source); }) : identity$1, take(1), hasDefaultValue ? defaultIfEmpty(defaultValue) : throwIfEmpty(function () { return new EmptyError(); }));
         };
     }
 
@@ -3462,7 +3419,31 @@
                 }));
             })
             :
-                identity$2;
+                identity$1;
+    }
+
+    const l$4 =  util.logger('api/util');
+
+    function filterEvents(txHash, { block: { extrinsics, header } }, allEvents, status) {
+        for (const [txIndex, x] of extrinsics.entries()) {
+            if (x.hash.eq(txHash)) {
+                return {
+                    blockNumber: util.isCompact(header.number) ? header.number.unwrap() : header.number,
+                    events: allEvents.filter(({ phase }) => phase.isApplyExtrinsic &&
+                        phase.asApplyExtrinsic.eqn(txIndex)),
+                    txIndex
+                };
+            }
+        }
+        if (status.isInBlock) {
+            const allHashes = extrinsics.map((x) => x.hash.toHex());
+            l$4.warn(`block ${header.hash.toHex()}: Unable to find extrinsic ${txHash.toHex()} inside ${allHashes.join(', ')}`);
+        }
+        return {};
+    }
+
+    function isKeyringPair(account) {
+        return util.isFunction(account.sign);
     }
 
     function refCountDelay(delay = 1750) {
@@ -3527,8 +3508,7 @@
         return cached;
     }
 
-    var _RpcCore_instanceId, _RpcCore_registryDefault, _RpcCore_getBlockRegistry, _RpcCore_getBlockHash, _RpcCore_storageCache;
-    const l$4 = util.logger('rpc-core');
+    const l$3 = util.logger('rpc-core');
     const EMPTY_META = {
         fallback: undefined,
         modifier: { isOptional: true },
@@ -3541,26 +3521,22 @@
         if (noErrorLog) {
             return;
         }
-        const inputs = params.map(({ isOptional, name, type }) => `${name}${isOptional ? '?' : ''}: ${type}`).join(', ');
-        l$4.error(`${method}(${inputs}): ${type}:: ${error.message}`);
+        l$3.error(`${method}(${params.map(({ isOptional, name, type }) => `${name}${isOptional ? '?' : ''}: ${type}`).join(', ')}): ${type}:: ${error.message}`);
     }
     function isTreatAsHex(key) {
         return ['0x3a636f6465'].includes(key.toHex());
     }
     class RpcCore {
-        constructor(instanceId, registry, provider, userRpc = {}) {
-            _RpcCore_instanceId.set(this, void 0);
-            _RpcCore_registryDefault.set(this, void 0);
-            _RpcCore_getBlockRegistry.set(this, void 0);
-            _RpcCore_getBlockHash.set(this, void 0);
-            _RpcCore_storageCache.set(this, new Map());
+        constructor(instanceId, registry, { isPedantic = true, provider, userRpc = {} }) {
+            this.__internal__storageCache = new Map();
             this.mapping = new Map();
             this.sections = [];
             if (!provider || !util.isFunction(provider.send)) {
                 throw new Error('Expected Provider to API create');
             }
-            __classPrivateFieldSet(this, _RpcCore_instanceId, instanceId, "f");
-            __classPrivateFieldSet(this, _RpcCore_registryDefault, registry, "f");
+            this.__internal__instanceId = instanceId;
+            this.__internal__isPedantic = isPedantic;
+            this.__internal__registryDefault = registry;
             this.provider = provider;
             const sectionNames = Object.keys(types.rpcDefinitions);
             this.sections.push(...sectionNames);
@@ -3576,22 +3552,22 @@
             return this.provider.disconnect();
         }
         setRegistrySwap(registrySwap) {
-            __classPrivateFieldSet(this, _RpcCore_getBlockRegistry, util.memoize(registrySwap, {
-                getInstanceId: () => __classPrivateFieldGet(this, _RpcCore_instanceId, "f")
-            }), "f");
+            this.__internal__getBlockRegistry = util.memoize(registrySwap, {
+                getInstanceId: () => this.__internal__instanceId
+            });
         }
         setResolveBlockHash(resolveBlockHash) {
-            __classPrivateFieldSet(this, _RpcCore_getBlockHash, util.memoize(resolveBlockHash, {
-                getInstanceId: () => __classPrivateFieldGet(this, _RpcCore_instanceId, "f")
-            }), "f");
+            this.__internal__getBlockHash = util.memoize(resolveBlockHash, {
+                getInstanceId: () => this.__internal__instanceId
+            });
         }
         addUserInterfaces(userRpc) {
             this.sections.push(...Object.keys(userRpc).filter((k) => !this.sections.includes(k)));
-            for (let s = 0; s < this.sections.length; s++) {
+            for (let s = 0, scount = this.sections.length; s < scount; s++) {
                 const section = this.sections[s];
                 const defs = util.objectSpread({}, types.rpcDefinitions[section], userRpc[section]);
                 const methods = Object.keys(defs);
-                for (let m = 0; m < methods.length; m++) {
+                for (let m = 0, mcount = methods.length; m < mcount; m++) {
                     const method = methods[m];
                     const def = defs[method];
                     const jsonrpc = def.endpoint || `${section}_${method}`;
@@ -3609,7 +3585,7 @@
             }
         }
         _memomize(creator, def) {
-            const memoOpts = { getInstanceId: () => __classPrivateFieldGet(this, _RpcCore_instanceId, "f") };
+            const memoOpts = { getInstanceId: () => this.__internal__instanceId };
             const memoized = util.memoize(creator(true), memoOpts);
             memoized.raw = util.memoize(creator(false), memoOpts);
             memoized.meta = def;
@@ -3629,12 +3605,12 @@
                     ? null
                     : values[hashIndex];
                 const blockHash = blockId && def.params[hashIndex].type === 'BlockNumber'
-                    ? await __classPrivateFieldGet(this, _RpcCore_getBlockHash, "f")?.call(this, blockId)
+                    ? await this.__internal__getBlockHash?.(blockId)
                     : blockId;
-                const { registry } = isScale && blockHash && __classPrivateFieldGet(this, _RpcCore_getBlockRegistry, "f")
-                    ? await __classPrivateFieldGet(this, _RpcCore_getBlockRegistry, "f").call(this, util.u8aToU8a(blockHash))
-                    : { registry: __classPrivateFieldGet(this, _RpcCore_registryDefault, "f") };
-                const params = this._formatInputs(registry, null, def, values);
+                const { registry } = isScale && blockHash && this.__internal__getBlockRegistry
+                    ? await this.__internal__getBlockRegistry(util.u8aToU8a(blockHash))
+                    : { registry: this.__internal__registryDefault };
+                const params = this._formatParams(registry, null, def, values);
                 const result = await this.provider.send(rpcName, params.map((p) => p.toJSON()), !!blockHash);
                 return this._formatResult(isScale, registry, blockHash, method, def, params, result);
             };
@@ -3688,14 +3664,13 @@
             const creator = (isScale) => (...values) => {
                 return new Observable((observer) => {
                     let subscriptionPromise = Promise.resolve(null);
-                    const registry = __classPrivateFieldGet(this, _RpcCore_registryDefault, "f");
+                    const registry = this.__internal__registryDefault;
                     const errorHandler = (error) => {
                         logErrorMessage(method, def, error);
                         observer.error(error);
                     };
                     try {
-                        const params = this._formatInputs(registry, null, def, values);
-                        const paramsJson = params.map((p) => p.toJSON());
+                        const params = this._formatParams(registry, null, def, values);
                         const update = (error, result) => {
                             if (error) {
                                 logErrorMessage(method, def, error);
@@ -3708,7 +3683,7 @@
                                 observer.error(error);
                             }
                         };
-                        subscriptionPromise = this._createSubscriber({ paramsJson, subName, subType, update }, errorHandler);
+                        subscriptionPromise = this._createSubscriber({ paramsJson: params.map((p) => p.toJSON()), subName, subType, update }, errorHandler);
                     }
                     catch (error) {
                         errorHandler(error);
@@ -3731,15 +3706,17 @@
             memoized = this._memomize(creator, def);
             return memoized;
         }
-        _formatInputs(registry, blockHash, def, inputs) {
-            const reqArgCount = def.params.filter(({ isOptional }) => !isOptional).length;
-            const optText = reqArgCount === def.params.length
-                ? ''
-                : ` (${def.params.length - reqArgCount} optional)`;
-            if (inputs.length < reqArgCount || inputs.length > def.params.length) {
-                throw new Error(`Expected ${def.params.length} parameters${optText}, ${inputs.length} found instead`);
+        _formatParams(registry, blockHash, def, inputs) {
+            const count = inputs.length;
+            const reqCount = def.params.filter(({ isOptional }) => !isOptional).length;
+            if (count < reqCount || count > def.params.length) {
+                throw new Error(`Expected ${def.params.length} parameters${reqCount === def.params.length ? '' : ` (${def.params.length - reqCount} optional)`}, ${count} found instead`);
             }
-            return inputs.map((input, index) => registry.createTypeUnsafe(def.params[index].type, [input], { blockHash }));
+            const params = new Array(count);
+            for (let i = 0; i < count; i++) {
+                params[i] = registry.createTypeUnsafe(def.params[i].type, [inputs[i]], { blockHash });
+            }
+            return params;
         }
         _formatOutput(registry, blockHash, method, rpc, params, result) {
             if (rpc.type === 'StorageData') {
@@ -3753,10 +3730,16 @@
                     : registry.createType('StorageChangeSet', result);
             }
             else if (rpc.type === 'Vec<StorageChangeSet>') {
-                const mapped = result.map(({ block, changes }) => [
-                    registry.createType('Hash', block),
-                    this._formatStorageSet(registry, block, params[0], changes)
-                ]);
+                const jsonSet = result;
+                const count = jsonSet.length;
+                const mapped = new Array(count);
+                for (let i = 0; i < count; i++) {
+                    const { block, changes } = jsonSet[i];
+                    mapped[i] = [
+                        registry.createType('BlockHash', block),
+                        this._formatStorageSet(registry, block, params[0], changes)
+                    ];
+                }
                 return method === 'queryStorageAt'
                     ? mapped[0][1]
                     : mapped;
@@ -3773,18 +3756,20 @@
             return this._newType(registry, blockHash, key, input, isEmpty);
         }
         _formatStorageSet(registry, blockHash, keys, changes) {
-            const withCache = keys.length !== 1;
-            return keys.reduce((results, key, index) => {
-                results.push(this._formatStorageSetEntry(registry, blockHash, key, changes, withCache, index));
-                return results;
-            }, []);
+            const count = keys.length;
+            const withCache = count !== 1;
+            const values = new Array(count);
+            for (let i = 0; i < count; i++) {
+                values[i] = this._formatStorageSetEntry(registry, blockHash, keys[i], changes, withCache, i);
+            }
+            return values;
         }
         _formatStorageSetEntry(registry, blockHash, key, changes, withCache, entryIndex) {
             const hexKey = key.toHex();
             const found = changes.find(([key]) => key === hexKey);
             const isNotFound = util.isUndefined(found);
             if (isNotFound && withCache) {
-                const cached = __classPrivateFieldGet(this, _RpcCore_storageCache, "f").get(hexKey);
+                const cached = this.__internal__storageCache.get(hexKey);
                 if (cached) {
                     return cached;
                 }
@@ -3797,7 +3782,7 @@
                 ? value
                 : util.u8aToU8a(value);
             const codec = this._newType(registry, blockHash, key, input, isEmpty, entryIndex);
-            __classPrivateFieldGet(this, _RpcCore_storageCache, "f").set(hexKey, codec);
+            this.__internal__storageCache.set(hexKey, codec);
             return codec;
         }
         _newType(registry, blockHash, key, input, isEmpty, entryIndex = -1) {
@@ -3815,16 +3800,15 @@
                                 : util.hexToU8a(meta.fallback.toHex())
                             : undefined
                         : meta.modifier.isOptional
-                            ? registry.createTypeUnsafe(type, [input], { blockHash, isPedantic: true })
+                            ? registry.createTypeUnsafe(type, [input], { blockHash, isPedantic: this.__internal__isPedantic })
                             : input
-                ], { blockHash, isFallback: isEmpty && !!meta.fallback, isOptional: meta.modifier.isOptional, isPedantic: !meta.modifier.isOptional });
+                ], { blockHash, isFallback: isEmpty && !!meta.fallback, isOptional: meta.modifier.isOptional, isPedantic: this.__internal__isPedantic && !meta.modifier.isOptional });
             }
             catch (error) {
                 throw new Error(`Unable to decode storage ${key.section || 'unknown'}.${key.method || 'unknown'}:${entryNum}: ${error.message}`);
             }
         }
     }
-    _RpcCore_instanceId = new WeakMap(), _RpcCore_registryDefault = new WeakMap(), _RpcCore_getBlockRegistry = new WeakMap(), _RpcCore_getBlockHash = new WeakMap(), _RpcCore_storageCache = new WeakMap();
 
     function unwrapBlockNumber(hdr) {
         return util.isCompact(hdr.number)
@@ -3928,7 +3912,7 @@
             }
             return api.queryMulti(filtered).pipe(map((values) => {
                 let resultIndex = -1;
-                for (let i = 0; i < calls.length; i++) {
+                for (let i = 0, count = calls.length; i < count; i++) {
                     if (util.isFunction(calls[i])) {
                         results[i] = values[++resultIndex];
                     }
@@ -3958,10 +3942,6 @@
                 return of([undefined, undefined]);
             }
         });
-    }
-
-    function idToIndex(instanceId, api) {
-        return memo(instanceId, (accountId) => api.derive.accounts.indexes().pipe(map((indexes) => (indexes || {})[accountId.toString()])));
     }
 
     const UNDEF_HEX = { toHex: () => undefined };
@@ -4024,7 +4004,7 @@
             ])
             : of([undefined, undefined]));
     }
-    function identity$1(instanceId, api) {
+    function identity(instanceId, api) {
         return memo(instanceId, (accountId) => api.derive.accounts._identity(accountId).pipe(switchMap(([identityOfOpt, superOfOpt]) => getParent(api, identityOfOpt, superOfOpt)), map(([identityOfOpt, superOf]) => extractIdentity(identityOfOpt, superOf))));
     }
     const hasIdentity =  firstMemo((api, accountId) => api.derive.accounts.hasIdentityMulti([accountId]));
@@ -4050,10 +4030,8 @@
             : of(accountIds.map(() => ({ hasIdentity: false }))));
     }
 
-    function indexToId(instanceId, api) {
-        return memo(instanceId, (accountIndex) => api.query.indices
-            ? api.query.indices.accounts(accountIndex).pipe(map((optResult) => optResult.unwrapOr([])[0]))
-            : of(undefined));
+    function idToIndex(instanceId, api) {
+        return memo(instanceId, (accountId) => api.derive.accounts.indexes().pipe(map((indexes) => (indexes || {})[accountId.toString()])));
     }
 
     let indicesCache = null;
@@ -4074,6 +4052,12 @@
                 indicesCache = indices;
                 return indices;
             })));
+    }
+
+    function indexToId(instanceId, api) {
+        return memo(instanceId, (accountIndex) => api.query.indices
+            ? api.query.indices.accounts(accountIndex).pipe(map((optResult) => optResult.unwrapOr([])[0]))
+            : of(undefined));
     }
 
     function retrieveNick(api, accountId) {
@@ -4103,7 +4087,7 @@
         hasIdentityMulti: hasIdentityMulti,
         idAndIndex: idAndIndex,
         idToIndex: idToIndex,
-        identity: identity$1,
+        identity: identity,
         indexToId: indexToId,
         indexes: indexes$1,
         info: info$4
@@ -4640,20 +4624,17 @@
     }
 
     function createHeaderExtended(registry, header, validators, author) {
-        var _Implementation_author;
         const HeaderBase = registry.createClass('Header');
         class Implementation extends HeaderBase {
             constructor(registry, header, validators, author) {
                 super(registry, header);
-                _Implementation_author.set(this, void 0);
-                __classPrivateFieldSet(this, _Implementation_author, author || extractAuthor(this.digest, validators || []), "f");
+                this.__internal__author = author || extractAuthor(this.digest, validators || []);
                 this.createdAtHash = header?.createdAtHash;
             }
             get author() {
-                return __classPrivateFieldGet(this, _Implementation_author, "f");
+                return this.__internal__author;
             }
         }
-        _Implementation_author = new WeakMap();
         return new Implementation(registry, header, validators, author);
     }
 
@@ -4679,35 +4660,26 @@
         });
     }
     function createSignedBlockExtended(registry, block, events, validators, author) {
-        var _Implementation_author, _Implementation_events, _Implementation_extrinsics;
         const SignedBlockBase = registry.createClass('SignedBlock');
         class Implementation extends SignedBlockBase {
             constructor(registry, block, events, validators, author) {
                 super(registry, block);
-                _Implementation_author.set(this, void 0);
-                _Implementation_events.set(this, void 0);
-                _Implementation_extrinsics.set(this, void 0);
-                __classPrivateFieldSet(this, _Implementation_author, author || extractAuthor(this.block.header.digest, validators || []), "f");
-                __classPrivateFieldSet(this, _Implementation_events, events || [], "f");
-                __classPrivateFieldSet(this, _Implementation_extrinsics, mapExtrinsics(this.block.extrinsics, __classPrivateFieldGet(this, _Implementation_events, "f")), "f");
+                this.__internal__author = author || extractAuthor(this.block.header.digest, validators || []);
+                this.__internal__events = events || [];
+                this.__internal__extrinsics = mapExtrinsics(this.block.extrinsics, this.__internal__events);
                 this.createdAtHash = block?.createdAtHash;
             }
             get author() {
-                return __classPrivateFieldGet(this, _Implementation_author, "f");
+                return this.__internal__author;
             }
             get events() {
-                return __classPrivateFieldGet(this, _Implementation_events, "f");
+                return this.__internal__events;
             }
             get extrinsics() {
-                return __classPrivateFieldGet(this, _Implementation_extrinsics, "f");
+                return this.__internal__extrinsics;
             }
         }
-        _Implementation_author = new WeakMap(), _Implementation_events = new WeakMap(), _Implementation_extrinsics = new WeakMap();
         return new Implementation(registry, block, events, validators, author);
-    }
-
-    function getHeader(instanceId, api) {
-        return memo(instanceId, (blockHash) => api.rpc.chain.getHeader(blockHash).pipe(switchMap((header) => getAuthorDetails(api, header, blockHash)), map(([header, validators, author]) => createHeaderExtended((validators || header).registry, header, validators, author))));
     }
 
     function getBlock(instanceId, api) {
@@ -4723,6 +4695,10 @@
 
     function getBlockByNumber(instanceId, api) {
         return memo(instanceId, (blockNumber) => api.rpc.chain.getBlockHash(blockNumber).pipe(switchMap((h) => api.derive.chain.getBlock(h))));
+    }
+
+    function getHeader(instanceId, api) {
+        return memo(instanceId, (blockHash) => api.rpc.chain.getHeader(blockHash).pipe(switchMap((header) => getAuthorDetails(api, header, blockHash)), map(([header, validators, author]) => createHeaderExtended((validators || header).registry, header, validators, author))));
     }
 
     function _getHeaderRange(instanceId, api) {
@@ -5979,6 +5955,18 @@
         return memo(instanceId, () => api.derive.session.indexes().pipe(switchMap(({ activeEra }) => api.query.staking.erasRewardPoints(activeEra))));
     }
 
+    const DEFAULT_FLAGS$1 = { withController: true, withExposure: true, withPrefs: true };
+    function combineAccounts(nextElected, validators) {
+        return util.arrayFlatten([nextElected, validators.filter((v) => !nextElected.find((n) => n.eq(v)))]);
+    }
+    function electedInfo(instanceId, api) {
+        return memo(instanceId, (flags = DEFAULT_FLAGS$1) => api.derive.staking.validators().pipe(switchMap(({ nextElected, validators }) => api.derive.staking.queryMulti(combineAccounts(nextElected, validators), flags).pipe(map((info) => ({
+            info,
+            nextElected,
+            validators
+        }))))));
+    }
+
     function getEraCache(CACHE_KEY, era, withActive) {
         const cacheKey = `${CACHE_KEY}-${era.toString()}`;
         return [
@@ -6191,18 +6179,6 @@
     const eraSlashes =  singleEra('_eraSlashes');
     const _erasSlashes =  combineEras('_eraSlashes');
     const erasSlashes =  erasHistoricApply('_erasSlashes');
-
-    const DEFAULT_FLAGS$1 = { withController: true, withExposure: true, withPrefs: true };
-    function combineAccounts(nextElected, validators) {
-        return util.arrayFlatten([nextElected, validators.filter((v) => !nextElected.find((n) => n.eq(v)))]);
-    }
-    function electedInfo(instanceId, api) {
-        return memo(instanceId, (flags = DEFAULT_FLAGS$1) => api.derive.staking.validators().pipe(switchMap(({ nextElected, validators }) => api.derive.staking.queryMulti(combineAccounts(nextElected, validators), flags).pipe(map((info) => ({
-            info,
-            nextElected,
-            validators
-        }))))));
-    }
 
     function extractsIds(stashId, queuedKeys, nextKeys) {
         const sessionIds = (queuedKeys.find(([currentId]) => currentId.eq(stashId)) || [undefined, []])[1];
@@ -6852,7 +6828,7 @@
             checks[c].methods.every(filterMethods(checks[c].instances)))) ||
             (checks[c].withDetect &&
                 checks[c].instances.some(filterInstances))));
-        for (let i = 0; i < names.length; i++) {
+        for (let i = 0, count = names.length; i < count; i++) {
             const name = names[i];
             isIncluded(name) &&
                 lazyDeriveSection(result, name, getKeys, creator);
@@ -6871,34 +6847,10 @@
         const creator = (s, m) => decorateMethod(derives[s][m]);
         const result = {};
         const names = Object.keys(derives);
-        for (let i = 0; i < names.length; i++) {
+        for (let i = 0, count = names.length; i < count; i++) {
             lazyDeriveSection(result, names[i], getKeys, creator);
         }
         return result;
-    }
-
-    const l$3 =  util.logger('api/util');
-
-    function filterEvents(txHash, { block: { extrinsics, header } }, allEvents, status) {
-        for (const [txIndex, x] of extrinsics.entries()) {
-            if (x.hash.eq(txHash)) {
-                return {
-                    blockNumber: util.isCompact(header.number) ? header.number.unwrap() : header.number,
-                    events: allEvents.filter(({ phase }) => phase.isApplyExtrinsic &&
-                        phase.asApplyExtrinsic.eqn(txIndex)),
-                    txIndex
-                };
-            }
-        }
-        if (status.isInBlock) {
-            const allHashes = extrinsics.map((x) => x.hash.toHex());
-            l$3.warn(`block ${header.hash.toHex()}: Unable to find extrinsic ${txHash.toHex()} inside ${allHashes.join(', ')}`);
-        }
-        return {};
-    }
-
-    function isKeyringPair(account) {
-        return util.isFunction(account.sign);
     }
 
     const recordIdentity = (record) => record;
@@ -6965,7 +6917,6 @@
         }
     }
 
-    const identity = (input) => input;
     function makeEraOptions(api, registry, partialOptions, { header, mortalLength, nonce }) {
         if (!header) {
             if (partialOptions.era && !partialOptions.blockHash) {
@@ -7005,14 +6956,12 @@
             : partialOptions;
     }
     function createClass({ api, apiType, blockHash, decorateMethod }) {
-        var _Submittable_ignoreStatusCb, _Submittable_transformResult, _Submittable_observeSign, _Submittable_observeStatus, _Submittable_observeSend, _Submittable_observeSubscribe, _Submittable_signViaSigner, _Submittable_updateSigner;
         const ExtrinsicBase = api.registry.createClass('Extrinsic');
         class Submittable extends ExtrinsicBase {
             constructor(registry, extrinsic) {
                 super(registry, extrinsic, { version: api.extrinsicType });
-                _Submittable_ignoreStatusCb.set(this, void 0);
-                _Submittable_transformResult.set(this, identity);
-                _Submittable_observeSign.set(this, (account, partialOptions) => {
+                this.__internal__transformResult = (util.identity);
+                this.__internal__observeSign = (account, partialOptions) => {
                     const address = isKeyringPair(account) ? account.address : account.toString();
                     const options = optionsOrNonce(partialOptions);
                     return api.derive.tx.signingInfo(address, options.nonce, options.era).pipe(first(), mergeMap(async (signingInfo) => {
@@ -7022,14 +6971,14 @@
                             this.sign(account, eraOptions);
                         }
                         else {
-                            updateId = await __classPrivateFieldGet(this, _Submittable_signViaSigner, "f").call(this, address, eraOptions, signingInfo.header);
+                            updateId = await this.__internal__signViaSigner(address, eraOptions, signingInfo.header);
                         }
                         return { options: eraOptions, updateId };
                     }));
-                });
-                _Submittable_observeStatus.set(this, (txHash, status) => {
+                };
+                this.__internal__observeStatus = (txHash, status) => {
                     if (!status.isFinalized && !status.isInBlock) {
-                        return of(__classPrivateFieldGet(this, _Submittable_transformResult, "f").call(this, new SubmittableResult({
+                        return of(this.__internal__transformResult(new SubmittableResult({
                             status,
                             txHash
                         })));
@@ -7037,28 +6986,28 @@
                     const blockHash = status.isInBlock
                         ? status.asInBlock
                         : status.asFinalized;
-                    return api.derive.tx.events(blockHash).pipe(map(({ block, events }) => __classPrivateFieldGet(this, _Submittable_transformResult, "f").call(this, new SubmittableResult({
+                    return api.derive.tx.events(blockHash).pipe(map(({ block, events }) => this.__internal__transformResult(new SubmittableResult({
                         ...filterEvents(txHash, block, events, status),
                         status,
                         txHash
-                    }))), catchError((internalError) => of(__classPrivateFieldGet(this, _Submittable_transformResult, "f").call(this, new SubmittableResult({
+                    }))), catchError((internalError) => of(this.__internal__transformResult(new SubmittableResult({
                         internalError,
                         status,
                         txHash
                     })))));
-                });
-                _Submittable_observeSend.set(this, (info) => {
+                };
+                this.__internal__observeSend = (info) => {
                     return api.rpc.author.submitExtrinsic(this).pipe(tap((hash) => {
-                        __classPrivateFieldGet(this, _Submittable_updateSigner, "f").call(this, hash, info);
+                        this.__internal__updateSigner(hash, info);
                     }));
-                });
-                _Submittable_observeSubscribe.set(this, (info) => {
+                };
+                this.__internal__observeSubscribe = (info) => {
                     const txHash = this.hash;
-                    return api.rpc.author.submitAndWatchExtrinsic(this).pipe(switchMap((status) => __classPrivateFieldGet(this, _Submittable_observeStatus, "f").call(this, txHash, status)), tap((status) => {
-                        __classPrivateFieldGet(this, _Submittable_updateSigner, "f").call(this, status, info);
+                    return api.rpc.author.submitAndWatchExtrinsic(this).pipe(switchMap((status) => this.__internal__observeStatus(txHash, status)), tap((status) => {
+                        this.__internal__updateSigner(status, info);
                     }));
-                });
-                _Submittable_signViaSigner.set(this, async (address, options, header) => {
+                };
+                this.__internal__signViaSigner = async (address, options, header) => {
                     const signer = options.signer || api.signer;
                     if (!signer) {
                         throw new Error('No signer specified, either via api.setSigner or via sign options. You possibly need to pass through an explicit keypair for the origin so it can be used for signing.');
@@ -7080,8 +7029,8 @@
                     }
                     super.addSignature(address, result.signature, payload.toPayload());
                     return result.id;
-                });
-                _Submittable_updateSigner.set(this, (status, info) => {
+                };
+                this.__internal__updateSigner = (status, info) => {
                     if (info && (info.updateId !== -1)) {
                         const { options, updateId } = info;
                         const signer = options.signer || api.signer;
@@ -7089,8 +7038,8 @@
                             signer.update(updateId, status);
                         }
                     }
-                });
-                __classPrivateFieldSet(this, _Submittable_ignoreStatusCb, apiType === 'rxjs', "f");
+                };
+                this.__internal__ignoreStatusCb = apiType === 'rxjs';
             }
             get hasDryRun() {
                 return util.isFunction(api.rpc.system?.dryRun);
@@ -7105,7 +7054,7 @@
                 if (blockHash || util.isString(optionsOrHash) || util.isU8a(optionsOrHash)) {
                     return decorateMethod(() => api.rpc.system.dryRun(this.toHex(), blockHash || optionsOrHash));
                 }
-                return decorateMethod(() => __classPrivateFieldGet(this, _Submittable_observeSign, "f").call(this, account, optionsOrHash).pipe(switchMap(() => api.rpc.system.dryRun(this.toHex()))))();
+                return decorateMethod(() => this.__internal__observeSign(account, optionsOrHash).pipe(switchMap(() => api.rpc.system.dryRun(this.toHex()))))();
             }
             paymentInfo(account, optionsOrHash) {
                 if (!this.hasPaymentInfo) {
@@ -7129,28 +7078,27 @@
                 })))();
             }
             send(statusCb) {
-                const isSubscription = api.hasSubscriptions && (__classPrivateFieldGet(this, _Submittable_ignoreStatusCb, "f") || !!statusCb);
+                const isSubscription = api.hasSubscriptions && (this.__internal__ignoreStatusCb || !!statusCb);
                 return decorateMethod(isSubscription
-                    ? __classPrivateFieldGet(this, _Submittable_observeSubscribe, "f")
-                    : __classPrivateFieldGet(this, _Submittable_observeSend, "f"))(statusCb);
+                    ? this.__internal__observeSubscribe
+                    : this.__internal__observeSend)(statusCb);
             }
             signAsync(account, partialOptions) {
-                return decorateMethod(() => __classPrivateFieldGet(this, _Submittable_observeSign, "f").call(this, account, partialOptions).pipe(map(() => this)))();
+                return decorateMethod(() => this.__internal__observeSign(account, partialOptions).pipe(map(() => this)))();
             }
             signAndSend(account, partialOptions, optionalStatusCb) {
                 const [options, statusCb] = makeSignAndSendOptions(partialOptions, optionalStatusCb);
-                const isSubscription = api.hasSubscriptions && (__classPrivateFieldGet(this, _Submittable_ignoreStatusCb, "f") || !!statusCb);
-                return decorateMethod(() => __classPrivateFieldGet(this, _Submittable_observeSign, "f").call(this, account, options).pipe(switchMap((info) => isSubscription
-                    ? __classPrivateFieldGet(this, _Submittable_observeSubscribe, "f").call(this, info)
-                    : __classPrivateFieldGet(this, _Submittable_observeSend, "f").call(this, info)))
+                const isSubscription = api.hasSubscriptions && (this.__internal__ignoreStatusCb || !!statusCb);
+                return decorateMethod(() => this.__internal__observeSign(account, options).pipe(switchMap((info) => isSubscription
+                    ? this.__internal__observeSubscribe(info)
+                    : this.__internal__observeSend(info)))
                 )(statusCb);
             }
             withResultTransform(transform) {
-                __classPrivateFieldSet(this, _Submittable_transformResult, transform, "f");
+                this.__internal__transformResult = transform;
                 return this;
             }
         }
-        _Submittable_ignoreStatusCb = new WeakMap(), _Submittable_transformResult = new WeakMap(), _Submittable_observeSign = new WeakMap(), _Submittable_observeStatus = new WeakMap(), _Submittable_observeSend = new WeakMap(), _Submittable_observeSubscribe = new WeakMap(), _Submittable_signViaSigner = new WeakMap(), _Submittable_updateSigner = new WeakMap();
         return Submittable;
     }
 
@@ -7172,7 +7120,6 @@
     }
 
     const typesChain = {};
-    const typesChain$1 = typesChain;
 
     const sharedTypes$5 = {
         AnchorData: {
@@ -7238,17 +7185,19 @@
             ]
         }
     };
-    const standaloneTypes = util.objectSpread({}, sharedTypes$5, {
+    const standaloneTypes = {
+        ...sharedTypes$5,
         AccountInfo: 'AccountInfoWithRefCount',
         Address: 'LookupSource',
         LookupSource: 'IndicesLookupSource',
         Multiplier: 'Fixed64',
         RefCount: 'RefCountTo259'
-    });
+    };
     const versioned$8 = [
         {
             minmax: [240, 243],
-            types: util.objectSpread({}, standaloneTypes, {
+            types: {
+                ...standaloneTypes,
                 ProxyType: {
                     _enum: [
                         'Any',
@@ -7258,18 +7207,17 @@
                         'Vesting'
                     ]
                 }
-            })
+            }
         },
         {
             minmax: [244, 999],
-            types: util.objectSpread({}, standaloneTypes)
+            types: { ...standaloneTypes }
         },
         {
             minmax: [1000, undefined],
-            types: util.objectSpread({}, sharedTypes$5)
+            types: { ...sharedTypes$5 }
         }
     ];
-    const centrifugeChain = versioned$8;
 
     const sharedTypes$4 = {
         CompactAssignments: 'CompactAssignmentsWith24',
@@ -7304,7 +7252,8 @@
     const versioned$7 = [
         {
             minmax: [1019, 1031],
-            types: util.objectSpread({}, addrIndicesTypes, {
+            types: {
+                ...addrIndicesTypes,
                 BalanceLock: 'BalanceLockTo212',
                 CompactAssignments: 'CompactAssignmentsTo257',
                 DispatchError: 'DispatchErrorTo198',
@@ -7320,11 +7269,12 @@
                 StakingLedger: 'StakingLedgerTo223',
                 Votes: 'VotesTo230',
                 Weight: 'u32'
-            })
+            }
         },
         {
             minmax: [1032, 1042],
-            types: util.objectSpread({}, addrIndicesTypes, {
+            types: {
+                ...addrIndicesTypes,
                 BalanceLock: 'BalanceLockTo212',
                 CompactAssignments: 'CompactAssignmentsTo257',
                 DispatchInfo: 'DispatchInfoTo244',
@@ -7338,11 +7288,12 @@
                 StakingLedger: 'StakingLedgerTo223',
                 Votes: 'VotesTo230',
                 Weight: 'u32'
-            })
+            }
         },
         {
             minmax: [1043, 1045],
-            types: util.objectSpread({}, addrIndicesTypes, {
+            types: {
+                ...addrIndicesTypes,
                 BalanceLock: 'BalanceLockTo212',
                 CompactAssignments: 'CompactAssignmentsTo257',
                 DispatchInfo: 'DispatchInfoTo244',
@@ -7355,11 +7306,13 @@
                 StakingLedger: 'StakingLedgerTo223',
                 Votes: 'VotesTo230',
                 Weight: 'u32'
-            })
+            }
         },
         {
             minmax: [1046, 1049],
-            types: util.objectSpread({}, sharedTypes$4, addrAccountIdTypes$2, {
+            types: {
+                ...sharedTypes$4,
+                ...addrAccountIdTypes$2,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 DispatchInfo: 'DispatchInfoTo244',
                 Heartbeat: 'HeartbeatTo244',
@@ -7369,11 +7322,13 @@
                 ReferendumInfo: 'ReferendumInfoTo239',
                 StakingLedger: 'StakingLedgerTo223',
                 Weight: 'u32'
-            })
+            }
         },
         {
             minmax: [1050, 1054],
-            types: util.objectSpread({}, sharedTypes$4, addrAccountIdTypes$2, {
+            types: {
+                ...sharedTypes$4,
+                ...addrAccountIdTypes$2,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 DispatchInfo: 'DispatchInfoTo244',
                 Heartbeat: 'HeartbeatTo244',
@@ -7383,11 +7338,13 @@
                 ReferendumInfo: 'ReferendumInfoTo239',
                 StakingLedger: 'StakingLedgerTo240',
                 Weight: 'u32'
-            })
+            }
         },
         {
             minmax: [1055, 1056],
-            types: util.objectSpread({}, sharedTypes$4, addrAccountIdTypes$2, {
+            types: {
+                ...sharedTypes$4,
+                ...addrAccountIdTypes$2,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 DispatchInfo: 'DispatchInfoTo244',
                 Heartbeat: 'HeartbeatTo244',
@@ -7396,65 +7353,84 @@
                 RefCount: 'RefCountTo259',
                 StakingLedger: 'StakingLedgerTo240',
                 Weight: 'u32'
-            })
+            }
         },
         {
             minmax: [1057, 1061],
-            types: util.objectSpread({}, sharedTypes$4, addrAccountIdTypes$2, {
+            types: {
+                ...sharedTypes$4,
+                ...addrAccountIdTypes$2,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 DispatchInfo: 'DispatchInfoTo244',
                 Heartbeat: 'HeartbeatTo244',
                 OpenTip: 'OpenTipTo225',
                 RefCount: 'RefCountTo259'
-            })
+            }
         },
         {
             minmax: [1062, 2012],
-            types: util.objectSpread({}, sharedTypes$4, addrAccountIdTypes$2, {
+            types: {
+                ...sharedTypes$4,
+                ...addrAccountIdTypes$2,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 OpenTip: 'OpenTipTo225',
                 RefCount: 'RefCountTo259'
-            })
+            }
         },
         {
             minmax: [2013, 2022],
-            types: util.objectSpread({}, sharedTypes$4, addrAccountIdTypes$2, {
+            types: {
+                ...sharedTypes$4,
+                ...addrAccountIdTypes$2,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 RefCount: 'RefCountTo259'
-            })
+            }
         },
         {
             minmax: [2023, 2024],
-            types: util.objectSpread({}, sharedTypes$4, addrAccountIdTypes$2, {
+            types: {
+                ...sharedTypes$4,
+                ...addrAccountIdTypes$2,
                 RefCount: 'RefCountTo259'
-            })
+            }
         },
         {
             minmax: [2025, 2027],
-            types: util.objectSpread({}, sharedTypes$4, addrAccountIdTypes$2)
+            types: {
+                ...sharedTypes$4,
+                ...addrAccountIdTypes$2
+            }
         },
         {
             minmax: [2028, 2029],
-            types: util.objectSpread({}, sharedTypes$4, {
+            types: {
+                ...sharedTypes$4,
                 AccountInfo: 'AccountInfoWithDualRefCount',
                 CompactAssignments: 'CompactAssignmentsWith16',
                 RawSolution: 'RawSolutionWith16'
-            })
+            }
         },
         {
             minmax: [2030, 9000],
-            types: util.objectSpread({}, sharedTypes$4, {
+            types: {
+                ...sharedTypes$4,
                 CompactAssignments: 'CompactAssignmentsWith16',
                 RawSolution: 'RawSolutionWith16'
-            })
+            }
         },
         {
             minmax: [9010, 9099],
-            types: util.objectSpread({}, sharedTypes$4, mapXcmTypes('V0'))
+            types: {
+                ...sharedTypes$4,
+                ...mapXcmTypes('V0')
+            }
         },
         {
             minmax: [9100, 9105],
-            types: util.objectSpread({}, sharedTypes$4, mapXcmTypes('V1'))
+            types: {
+                ...sharedTypes$4,
+                ...mapXcmTypes('V1')
+            }
         },
         {
             minmax: [9106, undefined],
@@ -7463,7 +7439,6 @@
             }
         }
     ];
-    const kusama = versioned$7;
 
     const versioned$6 = [
         {
@@ -7473,7 +7448,6 @@
             }
         }
     ];
-    const node = versioned$6;
 
     const versioned$5 = [
         {
@@ -7483,7 +7457,6 @@
             }
         }
     ];
-    const nodeTemplate = versioned$5;
 
     const sharedTypes$3 = {
         CompactAssignments: 'CompactAssignmentsWith16',
@@ -7515,38 +7488,48 @@
     const versioned$4 = [
         {
             minmax: [0, 12],
-            types: util.objectSpread({}, sharedTypes$3, addrAccountIdTypes$1, {
+            types: {
+                ...sharedTypes$3,
+                ...addrAccountIdTypes$1,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 OpenTip: 'OpenTipTo225',
                 RefCount: 'RefCountTo259'
-            })
+            }
         },
         {
             minmax: [13, 22],
-            types: util.objectSpread({}, sharedTypes$3, addrAccountIdTypes$1, {
+            types: {
+                ...sharedTypes$3,
+                ...addrAccountIdTypes$1,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 RefCount: 'RefCountTo259'
-            })
+            }
         },
         {
             minmax: [23, 24],
-            types: util.objectSpread({}, sharedTypes$3, addrAccountIdTypes$1, {
+            types: {
+                ...sharedTypes$3,
+                ...addrAccountIdTypes$1,
                 RefCount: 'RefCountTo259'
-            })
+            }
         },
         {
             minmax: [25, 27],
-            types: util.objectSpread({}, sharedTypes$3, addrAccountIdTypes$1)
+            types: {
+                ...sharedTypes$3,
+                ...addrAccountIdTypes$1
+            }
         },
         {
             minmax: [28, 29],
-            types: util.objectSpread({}, sharedTypes$3, {
+            types: {
+                ...sharedTypes$3,
                 AccountInfo: 'AccountInfoWithDualRefCount'
-            })
+            }
         },
         {
             minmax: [30, 9109],
-            types: util.objectSpread({}, sharedTypes$3)
+            types: { ...sharedTypes$3 }
         },
         {
             minmax: [9110, undefined],
@@ -7555,7 +7538,6 @@
             }
         }
     ];
-    const polkadot = versioned$4;
 
     const sharedTypes$2 = {
         DispatchErrorModule: 'DispatchErrorModuleU8',
@@ -7566,31 +7548,40 @@
     const versioned$3 = [
         {
             minmax: [0, 200],
-            types: util.objectSpread({}, sharedTypes$2, {
+            types: {
+                ...sharedTypes$2,
                 AccountInfo: 'AccountInfoWithDualRefCount',
                 Address: 'AccountId',
                 LookupSource: 'AccountId'
-            })
+            }
         },
         {
             minmax: [201, 214],
-            types: util.objectSpread({}, sharedTypes$2, {
+            types: {
+                ...sharedTypes$2,
                 AccountInfo: 'AccountInfoWithDualRefCount'
-            })
+            }
         },
         {
             minmax: [215, 228],
-            types: util.objectSpread({}, sharedTypes$2, {
+            types: {
+                ...sharedTypes$2,
                 Keys: 'SessionKeys6'
-            })
+            }
         },
         {
             minmax: [229, 9099],
-            types: util.objectSpread({}, sharedTypes$2, mapXcmTypes('V0'))
+            types: {
+                ...sharedTypes$2,
+                ...mapXcmTypes('V0')
+            }
         },
         {
             minmax: [9100, 9105],
-            types: util.objectSpread({}, sharedTypes$2, mapXcmTypes('V1'))
+            types: {
+                ...sharedTypes$2,
+                ...mapXcmTypes('V1')
+            }
         },
         {
             minmax: [9106, undefined],
@@ -7599,7 +7590,6 @@
             }
         }
     ];
-    const rococo = versioned$3;
 
     const versioned$2 = [
         {
@@ -7608,7 +7598,6 @@
             }
         }
     ];
-    const shell = versioned$2;
 
     const sharedTypes$1 = {
         DispatchErrorModule: 'DispatchErrorModuleU8',
@@ -7629,15 +7618,19 @@
     const versioned$1 = [
         {
             minmax: [0, 3],
-            types: util.objectSpread({
-                DispatchError: 'DispatchErrorPre6First'
-            }, sharedTypes$1, mapXcmTypes('V0'))
+            types: {
+                DispatchError: 'DispatchErrorPre6First',
+                ...sharedTypes$1,
+                ...mapXcmTypes('V0')
+            }
         },
         {
             minmax: [4, 5],
-            types: util.objectSpread({
-                DispatchError: 'DispatchErrorPre6First'
-            }, sharedTypes$1, mapXcmTypes('V1'))
+            types: {
+                DispatchError: 'DispatchErrorPre6First',
+                ...sharedTypes$1,
+                ...mapXcmTypes('V1')
+            }
         },
         {
             minmax: [500, undefined],
@@ -7646,7 +7639,6 @@
             }
         }
     ];
-    const statemint = versioned$1;
 
     const sharedTypes = {
         CompactAssignments: 'CompactAssignmentsWith16',
@@ -7671,7 +7663,9 @@
     const versioned = [
         {
             minmax: [1, 2],
-            types: util.objectSpread({}, sharedTypes, addrAccountIdTypes, {
+            types: {
+                ...sharedTypes,
+                ...addrAccountIdTypes,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 DispatchInfo: 'DispatchInfoTo244',
                 Heartbeat: 'HeartbeatTo244',
@@ -7679,52 +7673,68 @@
                 OpenTip: 'OpenTipTo225',
                 RefCount: 'RefCountTo259',
                 Weight: 'u32'
-            })
+            }
         },
         {
             minmax: [3, 22],
-            types: util.objectSpread({}, sharedTypes, addrAccountIdTypes, {
+            types: {
+                ...sharedTypes,
+                ...addrAccountIdTypes,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 DispatchInfo: 'DispatchInfoTo244',
                 Heartbeat: 'HeartbeatTo244',
                 OpenTip: 'OpenTipTo225',
                 RefCount: 'RefCountTo259'
-            })
+            }
         },
         {
             minmax: [23, 42],
-            types: util.objectSpread({}, sharedTypes, addrAccountIdTypes, {
+            types: {
+                ...sharedTypes,
+                ...addrAccountIdTypes,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 DispatchInfo: 'DispatchInfoTo244',
                 Heartbeat: 'HeartbeatTo244',
                 RefCount: 'RefCountTo259'
-            })
+            }
         },
         {
             minmax: [43, 44],
-            types: util.objectSpread({}, sharedTypes, addrAccountIdTypes, {
+            types: {
+                ...sharedTypes,
+                ...addrAccountIdTypes,
                 DispatchInfo: 'DispatchInfoTo244',
                 Heartbeat: 'HeartbeatTo244',
                 RefCount: 'RefCountTo259'
-            })
+            }
         },
         {
             minmax: [45, 47],
-            types: util.objectSpread({}, sharedTypes, addrAccountIdTypes)
+            types: {
+                ...sharedTypes,
+                ...addrAccountIdTypes
+            }
         },
         {
             minmax: [48, 49],
-            types: util.objectSpread({}, sharedTypes, {
+            types: {
+                ...sharedTypes,
                 AccountInfo: 'AccountInfoWithDualRefCount'
-            })
+            }
         },
         {
             minmax: [50, 9099],
-            types: util.objectSpread({}, sharedTypes, mapXcmTypes('V0'))
+            types: {
+                ...sharedTypes,
+                ...mapXcmTypes('V0')
+            }
         },
         {
             minmax: [9100, 9105],
-            types: util.objectSpread({}, sharedTypes, mapXcmTypes('V1'))
+            types: {
+                ...sharedTypes,
+                ...mapXcmTypes('V1')
+            }
         },
         {
             minmax: [9106, undefined],
@@ -7733,24 +7743,22 @@
             }
         }
     ];
-    const westend = versioned;
 
     const typesSpec = {
-        'centrifuge-chain': centrifugeChain,
-        kusama,
-        node,
-        'node-template': nodeTemplate,
-        polkadot,
-        rococo,
-        shell,
-        statemine: statemint,
-        statemint,
-        westend,
-        westmint: statemint
+        'centrifuge-chain': versioned$8,
+        kusama: versioned$7,
+        node: versioned$6,
+        'node-template': versioned$5,
+        polkadot: versioned$4,
+        rococo: versioned$3,
+        shell: versioned$2,
+        statemine: versioned$1,
+        statemint: versioned$1,
+        westend: versioned,
+        westmint: versioned$1
     };
-    const typesSpec$1 = typesSpec;
 
-    const upgrades$6 = [
+    const upgrades$3 = [
         [
             0,
             1020,
@@ -11924,9 +11932,8 @@
             ]
         ]
     ];
-    const upgrades$7 = upgrades$6;
 
-    const upgrades$4 = [
+    const upgrades$2 = [
         [
             0,
             0,
@@ -14550,9 +14557,8 @@
             ]
         ]
     ];
-    const upgrades$5 = upgrades$4;
 
-    const upgrades$2 = [
+    const upgrades$1 = [
         [
             214356,
             4,
@@ -18564,13 +18570,12 @@
             ]
         ]
     ];
-    const upgrades$3 = upgrades$2;
 
     const allKnown = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        kusama: upgrades$7,
-        polkadot: upgrades$5,
-        westend: upgrades$3
+        kusama: upgrades$3,
+        polkadot: upgrades$2,
+        westend: upgrades$1
     });
 
     const NET_EXTRA = {
@@ -18594,7 +18599,6 @@
         };
     }
     const upgrades = Object.entries(allKnown).map(mapRaw);
-    const upgrades$1 = upgrades;
 
     function withNames(chainName, specName, fn) {
         return fn(chainName.toString(), specName.toString());
@@ -18603,15 +18607,25 @@
         return versions
             .filter(({ minmax: [min, max] }) => (min === undefined || min === null || specVersion >= min) &&
             (max === undefined || max === null || specVersion <= max))
-            .reduce((result, { types }) => util.objectSpread(result, types), {});
+            .reduce((result, { types }) => ({ ...result, ...types }), {});
     }
     function getSpecExtensions({ knownTypes }, chainName, specName) {
-        return withNames(chainName, specName, (c, s) => util.objectSpread({}, knownTypes.typesBundle?.spec?.[s]?.signedExtensions, knownTypes.typesBundle?.chain?.[c]?.signedExtensions));
+        return withNames(chainName, specName, (c, s) => ({
+            ...(knownTypes.typesBundle?.spec?.[s]?.signedExtensions ?? {}),
+            ...(knownTypes.typesBundle?.chain?.[c]?.signedExtensions ?? {})
+        }));
     }
     function getSpecTypes({ knownTypes }, chainName, specName, specVersion) {
         const _specVersion = util.bnToBn(specVersion).toNumber();
-        return withNames(chainName, specName, (c, s) =>
-        util.objectSpread({}, filterVersions(typesSpec$1[s], _specVersion), filterVersions(typesChain$1[c], _specVersion), filterVersions(knownTypes.typesBundle?.spec?.[s]?.types, _specVersion), filterVersions(knownTypes.typesBundle?.chain?.[c]?.types, _specVersion), knownTypes.typesSpec?.[s], knownTypes.typesChain?.[c], knownTypes.types));
+        return withNames(chainName, specName, (c, s) => ({
+            ...filterVersions(typesSpec[s], _specVersion),
+            ...filterVersions(typesChain[c], _specVersion),
+            ...filterVersions(knownTypes.typesBundle?.spec?.[s]?.types, _specVersion),
+            ...filterVersions(knownTypes.typesBundle?.chain?.[c]?.types, _specVersion),
+            ...(knownTypes.typesSpec?.[s] ?? {}),
+            ...(knownTypes.typesChain?.[c] ?? {}),
+            ...(knownTypes.types ?? {})
+        }));
     }
     function getSpecHasher({ knownTypes }, chainName, specName) {
         return withNames(chainName, specName, (c, s) => knownTypes.hasher ||
@@ -18620,17 +18634,26 @@
             null);
     }
     function getSpecRpc({ knownTypes }, chainName, specName) {
-        return withNames(chainName, specName, (c, s) => util.objectSpread({}, knownTypes.typesBundle?.spec?.[s]?.rpc, knownTypes.typesBundle?.chain?.[c]?.rpc));
+        return withNames(chainName, specName, (c, s) => ({
+            ...(knownTypes.typesBundle?.spec?.[s]?.rpc ?? {}),
+            ...(knownTypes.typesBundle?.chain?.[c]?.rpc ?? {})
+        }));
     }
     function getSpecRuntime({ knownTypes }, chainName, specName) {
-        return withNames(chainName, specName, (c, s) => util.objectSpread({}, knownTypes.typesBundle?.spec?.[s]?.runtime, knownTypes.typesBundle?.chain?.[c]?.runtime));
+        return withNames(chainName, specName, (c, s) => ({
+            ...(knownTypes.typesBundle?.spec?.[s]?.runtime ?? {}),
+            ...(knownTypes.typesBundle?.chain?.[c]?.runtime ?? {})
+        }));
     }
     function getSpecAlias({ knownTypes }, chainName, specName) {
-        return withNames(chainName, specName, (c, s) =>
-        util.objectSpread({}, knownTypes.typesBundle?.spec?.[s]?.alias, knownTypes.typesBundle?.chain?.[c]?.alias, knownTypes.typesAlias));
+        return withNames(chainName, specName, (c, s) => ({
+            ...(knownTypes.typesBundle?.spec?.[s]?.alias ?? {}),
+            ...(knownTypes.typesBundle?.chain?.[c]?.alias ?? {}),
+            ...(knownTypes.typesAlias ?? {})
+        }));
     }
     function getUpgradeVersion(genesisHash, blockNumber) {
-        const known = upgrades$1.find((u) => genesisHash.eq(u.genesisHash));
+        const known = upgrades.find((u) => genesisHash.eq(u.genesisHash));
         return known
             ? [
                 known.versions.reduce((last, version) => {
@@ -18677,11 +18700,11 @@
         const srcSections = Object.keys(src);
         const dstSections = findSectionIncludes(Object.keys(dst), srcSections);
         const excludes = [];
-        for (let s = 0; s < dstSections.length; s++) {
+        for (let s = 0, scount = dstSections.length; s < scount; s++) {
             const section = dstSections[s];
             const srcMethods = Object.keys(src[section]);
             const dstMethods = Object.keys(dst[section]);
-            for (let d = 0; d < dstMethods.length; d++) {
+            for (let d = 0, mcount = dstMethods.length; d < mcount; d++) {
                 const method = dstMethods[d];
                 if (!srcMethods.includes(method)) {
                     excludes.push(`${section}.${method}`);
@@ -18703,7 +18726,7 @@
             warn(prefix, 'calls', extractMethods(src, dst));
         }
         const sections = Object.keys(src);
-        for (let i = 0; i < sections.length; i++) {
+        for (let i = 0, count = sections.length; i < count; i++) {
             const section = sections[i];
             const methods = src[section];
             if (!dst[section]) {
@@ -18736,30 +18759,27 @@
         return [creator, args];
     }
 
-    var _Events_eventemitter;
     class Events {
         constructor() {
-            _Events_eventemitter.set(this, new EventEmitter());
+            this.__internal__eventemitter = new EventEmitter();
         }
         emit(type, ...args) {
-            return __classPrivateFieldGet(this, _Events_eventemitter, "f").emit(type, ...args);
+            return this.__internal__eventemitter.emit(type, ...args);
         }
         on(type, handler) {
-            __classPrivateFieldGet(this, _Events_eventemitter, "f").on(type, handler);
+            this.__internal__eventemitter.on(type, handler);
             return this;
         }
         off(type, handler) {
-            __classPrivateFieldGet(this, _Events_eventemitter, "f").removeListener(type, handler);
+            this.__internal__eventemitter.removeListener(type, handler);
             return this;
         }
         once(type, handler) {
-            __classPrivateFieldGet(this, _Events_eventemitter, "f").once(type, handler);
+            this.__internal__eventemitter.once(type, handler);
             return this;
         }
     }
-    _Events_eventemitter = new WeakMap();
 
-    var _Decorate_instanceId, _Decorate_runtimeLog, _Decorate_registry, _Decorate_storageGetQ, _Decorate_storageSubQ;
     const PAGE_SIZE_K = 1000;
     const PAGE_SIZE_V = 250;
     const PAGE_SIZE_Q = 50;
@@ -18771,11 +18791,9 @@
     class Decorate extends Events {
         constructor(options, type, decorateMethod) {
             super();
-            _Decorate_instanceId.set(this, void 0);
-            _Decorate_runtimeLog.set(this, {});
-            _Decorate_registry.set(this, void 0);
-            _Decorate_storageGetQ.set(this, []);
-            _Decorate_storageSubQ.set(this, []);
+            this.__internal__runtimeLog = {};
+            this.__internal__storageGetQ = [];
+            this.__internal__storageSubQ = [];
             this.__phantom = new util.BN(0);
             this._call = {};
             this._consts = {};
@@ -18789,31 +18807,35 @@
             this._rxDecorateMethod = (method) => {
                 return method;
             };
-            __classPrivateFieldSet(this, _Decorate_instanceId, `${++instanceCounter}`, "f");
-            __classPrivateFieldSet(this, _Decorate_registry, options.source?.registry || options.registry || new types.TypeRegistry(), "f");
+            this.__internal__instanceId = `${++instanceCounter}`;
+            this.__internal__registry = options.source?.registry || options.registry || new types.TypeRegistry();
             this._rx.callAt = (blockHash, knownVersion) => from(this.at(blockHash, knownVersion)).pipe(map((a) => a.rx.call));
             this._rx.queryAt = (blockHash, knownVersion) => from(this.at(blockHash, knownVersion)).pipe(map((a) => a.rx.query));
-            this._rx.registry = __classPrivateFieldGet(this, _Decorate_registry, "f");
-            const thisProvider = options.source
+            this._rx.registry = this.__internal__registry;
+            this._decorateMethod = decorateMethod;
+            this._options = options;
+            this._type = type;
+            const provider = options.source
                 ? options.source._rpcCore.provider.isClonable
                     ? options.source._rpcCore.provider.clone()
                     : options.source._rpcCore.provider
                 : (options.provider || new WsProvider());
-            this._decorateMethod = decorateMethod;
-            this._options = options;
-            this._type = type;
-            this._rpcCore = new RpcCore(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), __classPrivateFieldGet(this, _Decorate_registry, "f"), thisProvider, this._options.rpc);
+            this._rpcCore = new RpcCore(this.__internal__instanceId, this.__internal__registry, {
+                isPedantic: this._options.isPedantic,
+                provider,
+                userRpc: this._options.rpc
+            });
             this._isConnected = new BehaviorSubject(this._rpcCore.provider.isConnected);
             this._rx.hasSubscriptions = this._rpcCore.provider.hasSubscriptions;
         }
         get registry() {
-            return __classPrivateFieldGet(this, _Decorate_registry, "f");
+            return this.__internal__registry;
         }
         createType(type, ...params) {
-            return __classPrivateFieldGet(this, _Decorate_registry, "f").createType(type, ...params);
+            return this.__internal__registry.createType(type, ...params);
         }
         registerTypes(types) {
-            types && __classPrivateFieldGet(this, _Decorate_registry, "f").register(types);
+            types && this.__internal__registry.register(types);
         }
         get hasSubscriptions() {
             return this._rpcCore.provider.hasSubscriptions;
@@ -18892,7 +18914,7 @@
             this.emit('decorated');
         }
         injectMetadata(metadata, fromEmpty, registry) {
-            this._injectMetadata({ counter: 0, metadata, registry: registry || __classPrivateFieldGet(this, _Decorate_registry, "f"), runtimeVersion: __classPrivateFieldGet(this, _Decorate_registry, "f").createType('RuntimeVersionPartial') }, fromEmpty);
+            this._injectMetadata({ counter: 0, metadata, registry: registry || this.__internal__registry, runtimeVersion: this.__internal__registry.createType('RuntimeVersionPartial') }, fromEmpty);
         }
         _decorateFunctionMeta(input, output) {
             output.meta = input.meta;
@@ -18911,12 +18933,12 @@
                 this._decorateRpc(this._rpcCore, this._rxDecorateMethod, this._rx.rpc);
             }
             const sectionMap = {};
-            for (let i = 0; i < methods.length; i++) {
+            for (let i = 0, count = methods.length; i < count; i++) {
                 const [section] = methods[i].split('_');
                 sectionMap[section] = true;
             }
             const sections = Object.keys(sectionMap);
-            for (let i = 0; i < sections.length; i++) {
+            for (let i = 0, count = sections.length; i < count; i++) {
                 const nameA = util.stringUpperFirst(sections[i]);
                 const nameB = `${nameA}Api`;
                 this._runtimeMap[utilCrypto.blake2AsHex(nameA, 64)] = nameA;
@@ -18928,7 +18950,8 @@
             const hasResults = exposed.length !== 0;
             const allKnown = [...this._rpcCore.mapping.entries()];
             const allKeys = [];
-            for (let i = 0; i < allKnown.length; i++) {
+            const count = allKnown.length;
+            for (let i = 0; i < count; i++) {
                 const [, { alias, endpoint, method, pubsub, section }] = allKnown[i];
                 allKeys.push(`${section}_${method}`);
                 if (pubsub) {
@@ -18947,7 +18970,7 @@
             if (unknown.length && !this._options.noInitWarn) {
                 l$1.warn(`RPC methods not decorated: ${unknown.join(', ')}`);
             }
-            for (let i = 0; i < allKnown.length; i++) {
+            for (let i = 0; i < count; i++) {
                 const [k, { method, section }] = allKnown[i];
                 if (hasResults && !exposed.includes(k) && k !== 'rpc_methods') {
                     if (this._rpc[section]) {
@@ -18972,12 +18995,12 @@
                 fn.raw = decorateMethod(source.raw, { methodName: method });
                 return fn;
             };
-            for (let s = 0; s < rpc.sections.length; s++) {
+            for (let s = 0, scount = rpc.sections.length; s < scount; s++) {
                 const section = rpc.sections[s];
                 if (!Object.prototype.hasOwnProperty.call(out, section)) {
                     const methods = Object.keys(rpc[section]);
                     const decorateInternal = (method) => decorateFn(section, method);
-                    for (let m = 0; m < methods.length; m++) {
+                    for (let m = 0, mcount = methods.length; m < mcount; m++) {
                         const method = methods[m];
                         if (this.hasSubscriptions || !(method.startsWith('subscribe') || method.startsWith('unsubscribe'))) {
                             if (!Object.prototype.hasOwnProperty.call(out, section)) {
@@ -18995,10 +19018,10 @@
                 return;
             }
             const entries = Object.entries(additional);
-            for (let j = 0; j < entries.length; j++) {
+            for (let j = 0, ecount = entries.length; j < ecount; j++) {
                 const [key, defs] = entries[j];
                 if (result[key]) {
-                    for (let k = 0; k < defs.length; k++) {
+                    for (let k = 0, dcount = defs.length; k < dcount; k++) {
                         const def = defs[k];
                         const prev = result[key].find(({ version }) => def.version === version);
                         if (prev) {
@@ -19017,7 +19040,7 @@
         _getRuntimeDefs(registry, specName, chain = '') {
             const result = {};
             const defValues = Object.values(types.typeDefinitions);
-            for (let i = 0; i < defValues.length; i++) {
+            for (let i = 0, count = defValues.length; i < count; i++) {
                 this._addRuntimeDef(result, defValues[i].runtime);
             }
             this._addRuntimeDef(result, getSpecRuntime(registry, chain, specName));
@@ -19031,9 +19054,9 @@
             const sections = this._getRuntimeDefs(registry, specName, this._runtimeChain);
             const older = [];
             const implName = `${specName.toString()}/${specVersion.toString()}`;
-            const hasLogged = __classPrivateFieldGet(this, _Decorate_runtimeLog, "f")[implName] || false;
-            __classPrivateFieldGet(this, _Decorate_runtimeLog, "f")[implName] = true;
-            for (let i = 0; i < sections.length; i++) {
+            const hasLogged = this.__internal__runtimeLog[implName] || false;
+            this.__internal__runtimeLog[implName] = true;
+            for (let i = 0, scount = sections.length; i < scount; i++) {
                 const [_section, secs] = sections[i];
                 const sectionHash = utilCrypto.blake2AsHex(_section, 64);
                 const rtApi = apis.find(([a]) => a.eq(sectionHash));
@@ -19048,7 +19071,7 @@
                             if (!named[section]) {
                                 named[section] = {};
                             }
-                            for (let m = 0; m < methods.length; m++) {
+                            for (let m = 0, mcount = methods.length; m < mcount; m++) {
                                 const [_method, def] = methods[m];
                                 const method = util.stringCamelCase(_method);
                                 named[section][method] = util.objectSpread({ method, name: `${_section}_${_method}`, section, sectionHash }, def);
@@ -19077,7 +19100,7 @@
                 : (name, bytes) => this._rpcCore.state.call(name, bytes);
             const lazySection = (section) => util.lazyMethods({}, Object.keys(named[section]), (method) => this._decorateCall(registry, named[section][method], stateCall, decorateMethod));
             const modules = Object.keys(named);
-            for (let i = 0; i < modules.length; i++) {
+            for (let i = 0, count = modules.length; i < count; i++) {
                 util.lazyMethod(result, modules[i], lazySection);
             }
             return result;
@@ -19127,7 +19150,7 @@
                 ? tx[section][method]
                 : this._decorateExtrinsicEntry(tx[section][method], result));
             const sections = Object.keys(tx);
-            for (let i = 0; i < sections.length; i++) {
+            for (let i = 0, count = sections.length; i < count; i++) {
                 util.lazyMethod(result, sections[i], lazySection);
             }
             return result;
@@ -19143,13 +19166,13 @@
                 ? this._decorateStorageEntryAt(registry, query[section][method], decorateMethod, blockHash)
                 : this._decorateStorageEntry(query[section][method], decorateMethod));
             const sections = Object.keys(query);
-            for (let i = 0; i < sections.length; i++) {
+            for (let i = 0, count = sections.length; i < count; i++) {
                 util.lazyMethod(result, sections[i], lazySection);
             }
             return result;
         }
         _decorateStorageEntry(creator, decorateMethod) {
-            const getArgs = (args, registry) => extractStorageArgs(registry || __classPrivateFieldGet(this, _Decorate_registry, "f"), creator, args);
+            const getArgs = (args, registry) => extractStorageArgs(registry || this.__internal__registry, creator, args);
             const getQueryAt = (blockHash) => from(this.at(blockHash)).pipe(map((api) => getAtQueryFn(api, creator)));
             const decorated = this._decorateStorageCall(creator, decorateMethod);
             decorated.creator = creator;
@@ -19162,12 +19185,12 @@
             decorated.size = decorateMethod((...args) => this._rpcCore.state.getStorageSize(getArgs(args)));
             decorated.sizeAt = decorateMethod((blockHash, ...args) => getQueryAt(blockHash).pipe(switchMap((q) => this._rpcCore.state.getStorageSize(getArgs(args, q.creator.meta.registry), blockHash))));
             if (creator.iterKey && creator.meta.type.isMap) {
-                decorated.entries = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (...args) => this._retrieveMapEntries(creator, null, args)));
-                decorated.entriesAt = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (blockHash, ...args) => getQueryAt(blockHash).pipe(switchMap((q) => this._retrieveMapEntries(q.creator, blockHash, args)))));
-                decorated.entriesPaged = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (opts) => this._retrieveMapEntriesPaged(creator, undefined, opts)));
-                decorated.keys = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (...args) => this._retrieveMapKeys(creator, null, args)));
-                decorated.keysAt = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (blockHash, ...args) => getQueryAt(blockHash).pipe(switchMap((q) => this._retrieveMapKeys(q.creator, blockHash, args)))));
-                decorated.keysPaged = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (opts) => this._retrieveMapKeysPaged(creator, undefined, opts)));
+                decorated.entries = decorateMethod(memo(this.__internal__instanceId, (...args) => this._retrieveMapEntries(creator, null, args)));
+                decorated.entriesAt = decorateMethod(memo(this.__internal__instanceId, (blockHash, ...args) => getQueryAt(blockHash).pipe(switchMap((q) => this._retrieveMapEntries(q.creator, blockHash, args)))));
+                decorated.entriesPaged = decorateMethod(memo(this.__internal__instanceId, (opts) => this._retrieveMapEntriesPaged(creator, undefined, opts)));
+                decorated.keys = decorateMethod(memo(this.__internal__instanceId, (...args) => this._retrieveMapKeys(creator, null, args)));
+                decorated.keysAt = decorateMethod(memo(this.__internal__instanceId, (blockHash, ...args) => getQueryAt(blockHash).pipe(switchMap((q) => this._retrieveMapKeys(q.creator, blockHash, args)))));
+                decorated.keysPaged = decorateMethod(memo(this.__internal__instanceId, (opts) => this._retrieveMapKeysPaged(creator, undefined, opts)));
             }
             if (this.supportMulti && creator.meta.type.isMap) {
                 decorated.multi = decorateMethod((args) => creator.meta.type.asMap.hashers.length === 1
@@ -19187,10 +19210,10 @@
             decorated.keyPrefix = (...keys) => util.u8aToHex(creator.keyPrefix(...keys));
             decorated.size = decorateMethod((...args) => this._rpcCore.state.getStorageSize(getArgs(args), blockHash));
             if (creator.iterKey && creator.meta.type.isMap) {
-                decorated.entries = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (...args) => this._retrieveMapEntries(creator, blockHash, args)));
-                decorated.entriesPaged = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (opts) => this._retrieveMapEntriesPaged(creator, blockHash, opts)));
-                decorated.keys = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (...args) => this._retrieveMapKeys(creator, blockHash, args)));
-                decorated.keysPaged = decorateMethod(memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (opts) => this._retrieveMapKeysPaged(creator, blockHash, opts)));
+                decorated.entries = decorateMethod(memo(this.__internal__instanceId, (...args) => this._retrieveMapEntries(creator, blockHash, args)));
+                decorated.entriesPaged = decorateMethod(memo(this.__internal__instanceId, (opts) => this._retrieveMapEntriesPaged(creator, blockHash, opts)));
+                decorated.keys = decorateMethod(memo(this.__internal__instanceId, (...args) => this._retrieveMapKeys(creator, blockHash, args)));
+                decorated.keysPaged = decorateMethod(memo(this.__internal__instanceId, (opts) => this._retrieveMapKeysPaged(creator, blockHash, opts)));
             }
             if (this.supportMulti && creator.meta.type.isMap) {
                 decorated.multi = decorateMethod((args) => creator.meta.type.asMap.hashers.length === 1
@@ -19200,7 +19223,7 @@
             return this._decorateFunctionMeta(creator, decorated);
         }
         _queueStorage(call, queue) {
-            const query = queue === __classPrivateFieldGet(this, _Decorate_storageSubQ, "f")
+            const query = queue === this.__internal__storageSubQ
                 ? this._rpcCore.state.subscribeStorage
                 : this._rpcCore.state.queryStorageAt;
             let queueIdx = queue.length - 1;
@@ -19227,16 +19250,16 @@
             map((values) => values[valueIdx]));
         }
         _decorateStorageCall(creator, decorateMethod) {
-            const memoed = memo(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), (...args) => {
-                const call = extractStorageArgs(__classPrivateFieldGet(this, _Decorate_registry, "f"), creator, args);
+            const memoed = memo(this.__internal__instanceId, (...args) => {
+                const call = extractStorageArgs(this.__internal__registry, creator, args);
                 if (!this.hasSubscriptions) {
                     return this._rpcCore.state.getStorage(call);
                 }
-                return this._queueStorage(call, __classPrivateFieldGet(this, _Decorate_storageSubQ, "f"));
+                return this._queueStorage(call, this.__internal__storageSubQ);
             });
             return decorateMethod(memoed, {
                 methodName: creator.method,
-                overrideNoSub: (...args) => this._queueStorage(extractStorageArgs(__classPrivateFieldGet(this, _Decorate_registry, "f"), creator, args), __classPrivateFieldGet(this, _Decorate_storageGetQ, "f"))
+                overrideNoSub: (...args) => this._queueStorage(extractStorageArgs(this.__internal__registry, creator, args), this.__internal__storageGetQ)
             });
         }
         _retrieveMulti(keys, blockHash) {
@@ -19300,16 +19323,14 @@
         }
         _decorateDeriveRx(decorateMethod) {
             const specName = this._runtimeVersion?.specName.toString();
-            const available = getAvailableDerives(__classPrivateFieldGet(this, _Decorate_instanceId, "f"), this._rx, util.objectSpread({}, this._options.derives, this._options.typesBundle?.spec?.[specName || '']?.derives));
+            const available = getAvailableDerives(this.__internal__instanceId, this._rx, util.objectSpread({}, this._options.derives, this._options.typesBundle?.spec?.[specName || '']?.derives));
             return decorateDeriveSections(decorateMethod, available);
         }
         _decorateDerive(decorateMethod) {
             return decorateDeriveSections(decorateMethod, this._rx.derive);
         }
     }
-    _Decorate_instanceId = new WeakMap(), _Decorate_runtimeLog = new WeakMap(), _Decorate_registry = new WeakMap(), _Decorate_storageGetQ = new WeakMap(), _Decorate_storageSubQ = new WeakMap();
 
-    var _Init_instances, _Init_atLast, _Init_healthTimer, _Init_registries, _Init_updateSub, _Init_waitingRegistries, _Init_onProviderConnect, _Init_onProviderDisconnect, _Init_onProviderError;
     const KEEPALIVE_INTERVAL = 10000;
     const l = util.logger('api/init');
     function textToString(t) {
@@ -19318,18 +19339,17 @@
     class Init extends Decorate {
         constructor(options, type, decorateMethod) {
             super(options, type, decorateMethod);
-            _Init_instances.add(this);
-            _Init_atLast.set(this, null);
-            _Init_healthTimer.set(this, null);
-            _Init_registries.set(this, []);
-            _Init_updateSub.set(this, null);
-            _Init_waitingRegistries.set(this, {});
+            this.__internal__atLast = null;
+            this.__internal__healthTimer = null;
+            this.__internal__registries = [];
+            this.__internal__updateSub = null;
+            this.__internal__waitingRegistries = {};
             this.registry.setKnownTypes(options);
             if (!options.source) {
                 this.registerTypes(options.types);
             }
             else {
-                __classPrivateFieldSet(this, _Init_registries, __classPrivateFieldGet(options.source, _Init_registries, "f"), "f");
+                this.__internal__registries = options.source.__internal__registries;
             }
             this._rpc = this._decorateRpc(this._rpcCore, this._decorateMethod);
             this._rx.rpc = this._decorateRpc(this._rpcCore, this._rxDecorateMethod);
@@ -19341,15 +19361,15 @@
             this._rpcCore.setRegistrySwap((blockHash) => this.getBlockRegistry(blockHash));
             this._rpcCore.setResolveBlockHash((blockNumber) => firstValueFrom(this._rpcCore.chain.getBlockHash(blockNumber)));
             if (this.hasSubscriptions) {
-                this._rpcCore.provider.on('disconnected', () => __classPrivateFieldGet(this, _Init_instances, "m", _Init_onProviderDisconnect).call(this));
-                this._rpcCore.provider.on('error', (e) => __classPrivateFieldGet(this, _Init_instances, "m", _Init_onProviderError).call(this, e));
-                this._rpcCore.provider.on('connected', () => __classPrivateFieldGet(this, _Init_instances, "m", _Init_onProviderConnect).call(this));
+                this._rpcCore.provider.on('disconnected', () => this.__internal__onProviderDisconnect());
+                this._rpcCore.provider.on('error', (e) => this.__internal__onProviderError(e));
+                this._rpcCore.provider.on('connected', () => this.__internal__onProviderConnect());
             }
             else if (!this._options.noInitWarn) {
                 l.warn('Api will be available in a limited mode since the provider does not support subscriptions');
             }
             if (this._rpcCore.provider.isConnected) {
-                __classPrivateFieldGet(this, _Init_instances, "m", _Init_onProviderConnect).call(this);
+                this.__internal__onProviderConnect();
             }
         }
         _initRegistry(registry, chain, version, metadata, chainProps) {
@@ -19364,36 +19384,36 @@
             registry.setMetadata(metadata, undefined, util.objectSpread({}, getSpecExtensions(registry, chain, version.specName), this._options.signedExtensions), this._options.noInitWarn);
         }
         _getDefaultRegistry() {
-            return util.assertReturn(__classPrivateFieldGet(this, _Init_registries, "f").find(({ isDefault }) => isDefault), 'Initialization error, cannot find the default registry');
+            return util.assertReturn(this.__internal__registries.find(({ isDefault }) => isDefault), 'Initialization error, cannot find the default registry');
         }
         async at(blockHash, knownVersion) {
             const u8aHash = util.u8aToU8a(blockHash);
             const u8aHex = util.u8aToHex(u8aHash);
             const registry = await this.getBlockRegistry(u8aHash, knownVersion);
-            if (!__classPrivateFieldGet(this, _Init_atLast, "f") || __classPrivateFieldGet(this, _Init_atLast, "f")[0] !== u8aHex) {
-                __classPrivateFieldSet(this, _Init_atLast, [u8aHex, this._createDecorated(registry, true, null, u8aHash).decoratedApi], "f");
+            if (!this.__internal__atLast || this.__internal__atLast[0] !== u8aHex) {
+                this.__internal__atLast = [u8aHex, this._createDecorated(registry, true, null, u8aHash).decoratedApi];
             }
-            return __classPrivateFieldGet(this, _Init_atLast, "f")[1];
+            return this.__internal__atLast[1];
         }
         async _createBlockRegistry(blockHash, header, version) {
             const registry = new types.TypeRegistry(blockHash);
             const metadata = new types.Metadata(registry, await firstValueFrom(this._rpcCore.state.getMetadata.raw(header.parentHash)));
             this._initRegistry(registry, this._runtimeChain, version, metadata);
             const result = { counter: 0, lastBlockHash: blockHash, metadata, registry, runtimeVersion: version };
-            __classPrivateFieldGet(this, _Init_registries, "f").push(result);
+            this.__internal__registries.push(result);
             return result;
         }
         _cacheBlockRegistryProgress(key, creator) {
-            let waiting = __classPrivateFieldGet(this, _Init_waitingRegistries, "f")[key];
+            let waiting = this.__internal__waitingRegistries[key];
             if (util.isUndefined(waiting)) {
-                waiting = __classPrivateFieldGet(this, _Init_waitingRegistries, "f")[key] = new Promise((resolve, reject) => {
+                waiting = this.__internal__waitingRegistries[key] = new Promise((resolve, reject) => {
                     creator()
                         .then((registry) => {
-                        delete __classPrivateFieldGet(this, _Init_waitingRegistries, "f")[key];
+                        delete this.__internal__waitingRegistries[key];
                         resolve(registry);
                     })
                         .catch((error) => {
-                        delete __classPrivateFieldGet(this, _Init_waitingRegistries, "f")[key];
+                        delete this.__internal__waitingRegistries[key];
                         reject(error);
                     });
                 });
@@ -19402,7 +19422,7 @@
         }
         _getBlockRegistryViaVersion(blockHash, version) {
             if (version) {
-                const existingViaVersion = __classPrivateFieldGet(this, _Init_registries, "f").find(({ runtimeVersion: { specName, specVersion } }) => specName.eq(version.specName) &&
+                const existingViaVersion = this.__internal__registries.find(({ runtimeVersion: { specName, specVersion } }) => specName.eq(version.specName) &&
                     specVersion.eq(version.specVersion));
                 if (existingViaVersion) {
                     existingViaVersion.counter++;
@@ -19430,7 +19450,7 @@
         }
         async getBlockRegistry(blockHash, knownVersion) {
             return (
-            __classPrivateFieldGet(this, _Init_registries, "f").find(({ lastBlockHash }) => lastBlockHash && util.u8aEq(lastBlockHash, blockHash)) ||
+            this.__internal__registries.find(({ lastBlockHash }) => lastBlockHash && util.u8aEq(lastBlockHash, blockHash)) ||
                 this._getBlockRegistryViaVersion(blockHash, knownVersion) ||
                 await this._cacheBlockRegistryProgress(util.u8aToHex(blockHash), () => this._getBlockRegistryViaHash(blockHash)));
         }
@@ -19450,10 +19470,10 @@
             this._runtimeVersion = source.runtimeVersion;
             const sections = Object.keys(source.rpc);
             const rpcs = [];
-            for (let s = 0; s < sections.length; s++) {
+            for (let s = 0, scount = sections.length; s < scount; s++) {
                 const section = sections[s];
                 const methods = Object.keys(source.rpc[section]);
-                for (let m = 0; m < methods.length; m++) {
+                for (let m = 0, mcount = methods.length; m < mcount; m++) {
                     rpcs.push(`${section}_${methods[m]}`);
                 }
             }
@@ -19461,10 +19481,10 @@
             return [source.genesisHash, source.runtimeMetadata];
         }
         _subscribeUpdates() {
-            if (__classPrivateFieldGet(this, _Init_updateSub, "f") || !this.hasSubscriptions) {
+            if (this.__internal__updateSub || !this.hasSubscriptions) {
                 return;
             }
-            __classPrivateFieldSet(this, _Init_updateSub, this._rpcCore.state.subscribeRuntimeVersion().pipe(switchMap((version) =>
+            this.__internal__updateSub = this._rpcCore.state.subscribeRuntimeVersion().pipe(switchMap((version) =>
             this._runtimeVersion?.specVersion.eq(version.specVersion)
                 ? of(false)
                 : this._rpcCore.state.getMetadata().pipe(map((metadata) => {
@@ -19478,7 +19498,7 @@
                     this._initRegistry(this.registry, this._runtimeChain, version, metadata);
                     this._injectMetadata(thisRegistry, true);
                     return true;
-                })))).subscribe(), "f");
+                })))).subscribe();
         }
         async _metaFromChain(optMetadata) {
             const [genesisHash, runtimeVersion, chain, chainProps, rpcMethods, chainMetadata] = await Promise.all([
@@ -19501,8 +19521,8 @@
             this._initRegistry(this.registry, chain, runtimeVersion, metadata, chainProps);
             this._filterRpc(rpcMethods.methods.map(textToString), getSpecRpc(this.registry, chain, runtimeVersion.specName));
             this._subscribeUpdates();
-            if (!__classPrivateFieldGet(this, _Init_registries, "f").length) {
-                __classPrivateFieldGet(this, _Init_registries, "f").push({ counter: 0, isDefault: true, metadata, registry: this.registry, runtimeVersion });
+            if (!this.__internal__registries.length) {
+                this.__internal__registries.push({ counter: 0, isDefault: true, metadata, registry: this.registry, runtimeVersion });
             }
             metadata.getUniqTypes(this._options.throwOnUnknown || false);
             return [genesisHash, metadata];
@@ -19519,55 +19539,57 @@
         }
         _subscribeHealth() {
             this._unsubscribeHealth();
-            __classPrivateFieldSet(this, _Init_healthTimer, this.hasSubscriptions
+            this.__internal__healthTimer = this.hasSubscriptions
                 ? setInterval(() => {
                     firstValueFrom(this._rpcCore.system.health.raw()).catch(() => undefined);
                 }, KEEPALIVE_INTERVAL)
-                : null, "f");
+                : null;
         }
         _unsubscribeHealth() {
-            if (__classPrivateFieldGet(this, _Init_healthTimer, "f")) {
-                clearInterval(__classPrivateFieldGet(this, _Init_healthTimer, "f"));
-                __classPrivateFieldSet(this, _Init_healthTimer, null, "f");
+            if (this.__internal__healthTimer) {
+                clearInterval(this.__internal__healthTimer);
+                this.__internal__healthTimer = null;
             }
         }
         _unsubscribeUpdates() {
-            if (__classPrivateFieldGet(this, _Init_updateSub, "f")) {
-                __classPrivateFieldGet(this, _Init_updateSub, "f").unsubscribe();
-                __classPrivateFieldSet(this, _Init_updateSub, null, "f");
+            if (this.__internal__updateSub) {
+                this.__internal__updateSub.unsubscribe();
+                this.__internal__updateSub = null;
             }
         }
         _unsubscribe() {
             this._unsubscribeHealth();
             this._unsubscribeUpdates();
         }
-    }
-    _Init_atLast = new WeakMap(), _Init_healthTimer = new WeakMap(), _Init_registries = new WeakMap(), _Init_updateSub = new WeakMap(), _Init_waitingRegistries = new WeakMap(), _Init_instances = new WeakSet(), _Init_onProviderConnect = async function _Init_onProviderConnect() {
-        this._isConnected.next(true);
-        this.emit('connected');
-        try {
-            const cryptoReady = this._options.initWasm === false
-                ? true
-                : await utilCrypto.cryptoWaitReady();
-            const hasMeta = await this._loadMeta();
-            this._subscribeHealth();
-            if (hasMeta && !this._isReady && cryptoReady) {
-                this._isReady = true;
-                this.emit('ready', this);
+        async __internal__onProviderConnect() {
+            this._isConnected.next(true);
+            this.emit('connected');
+            try {
+                const cryptoReady = this._options.initWasm === false
+                    ? true
+                    : await utilCrypto.cryptoWaitReady();
+                const hasMeta = await this._loadMeta();
+                this._subscribeHealth();
+                if (hasMeta && !this._isReady && cryptoReady) {
+                    this._isReady = true;
+                    this.emit('ready', this);
+                }
+            }
+            catch (_error) {
+                const error = new Error(`FATAL: Unable to initialize the API: ${_error.message}`);
+                l.error(error);
+                this.emit('error', error);
             }
         }
-        catch (_error) {
-            const error = new Error(`FATAL: Unable to initialize the API: ${_error.message}`);
-            l.error(error);
+        __internal__onProviderDisconnect() {
+            this._isConnected.next(false);
+            this._unsubscribe();
+            this.emit('disconnected');
+        }
+        __internal__onProviderError(error) {
             this.emit('error', error);
         }
-    }, _Init_onProviderDisconnect = function _Init_onProviderDisconnect() {
-        this._isConnected.next(false);
-        this._unsubscribe();
-        this.emit('disconnected');
-    }, _Init_onProviderError = function _Init_onProviderError(error) {
-        this.emit('error', error);
-    };
+    }
 
     function assertResult(value) {
         if (value === undefined) {
@@ -19667,53 +19689,51 @@
         }
     }
 
-    var _Combinator_allHasFired, _Combinator_callback, _Combinator_fired, _Combinator_fns, _Combinator_isActive, _Combinator_results, _Combinator_subscriptions;
     class Combinator {
         constructor(fns, callback) {
-            _Combinator_allHasFired.set(this, false);
-            _Combinator_callback.set(this, void 0);
-            _Combinator_fired.set(this, []);
-            _Combinator_fns.set(this, []);
-            _Combinator_isActive.set(this, true);
-            _Combinator_results.set(this, []);
-            _Combinator_subscriptions.set(this, []);
-            __classPrivateFieldSet(this, _Combinator_callback, callback, "f");
-            __classPrivateFieldSet(this, _Combinator_subscriptions, fns.map(async (input, index) => {
+            this.__internal__allHasFired = false;
+            this.__internal__fired = [];
+            this.__internal__fns = [];
+            this.__internal__isActive = true;
+            this.__internal__results = [];
+            this.__internal__subscriptions = [];
+            this.__internal__callback = callback;
+            this.__internal__subscriptions = fns.map(async (input, index) => {
                 const [fn, ...args] = Array.isArray(input)
                     ? input
                     : [input];
-                __classPrivateFieldGet(this, _Combinator_fired, "f").push(false);
-                __classPrivateFieldGet(this, _Combinator_fns, "f").push(fn);
+                this.__internal__fired.push(false);
+                this.__internal__fns.push(fn);
                 return fn(...args, this._createCallback(index));
-            }), "f");
+            });
         }
         _allHasFired() {
-            __classPrivateFieldSet(this, _Combinator_allHasFired, __classPrivateFieldGet(this, _Combinator_allHasFired, "f") || __classPrivateFieldGet(this, _Combinator_fired, "f").filter((hasFired) => !hasFired).length === 0, "f");
-            return __classPrivateFieldGet(this, _Combinator_allHasFired, "f");
+            this.__internal__allHasFired ||= this.__internal__fired.filter((hasFired) => !hasFired).length === 0;
+            return this.__internal__allHasFired;
         }
         _createCallback(index) {
             return (value) => {
-                __classPrivateFieldGet(this, _Combinator_fired, "f")[index] = true;
-                __classPrivateFieldGet(this, _Combinator_results, "f")[index] = value;
+                this.__internal__fired[index] = true;
+                this.__internal__results[index] = value;
                 this._triggerUpdate();
             };
         }
         _triggerUpdate() {
-            if (!__classPrivateFieldGet(this, _Combinator_isActive, "f") || !util.isFunction(__classPrivateFieldGet(this, _Combinator_callback, "f")) || !this._allHasFired()) {
+            if (!this.__internal__isActive || !util.isFunction(this.__internal__callback) || !this._allHasFired()) {
                 return;
             }
             try {
-                __classPrivateFieldGet(this, _Combinator_callback, "f").call(this, __classPrivateFieldGet(this, _Combinator_results, "f"));
+                this.__internal__callback(this.__internal__results);
             }
             catch {
             }
         }
         unsubscribe() {
-            if (!__classPrivateFieldGet(this, _Combinator_isActive, "f")) {
+            if (!this.__internal__isActive) {
                 return;
             }
-            __classPrivateFieldSet(this, _Combinator_isActive, false, "f");
-            __classPrivateFieldGet(this, _Combinator_subscriptions, "f").forEach(async (subscription) => {
+            this.__internal__isActive = false;
+            this.__internal__subscriptions.forEach(async (subscription) => {
                 try {
                     const unsubscribe = await subscription;
                     if (util.isFunction(unsubscribe)) {
@@ -19725,7 +19745,6 @@
             });
         }
     }
-    _Combinator_allHasFired = new WeakMap(), _Combinator_callback = new WeakMap(), _Combinator_fired = new WeakMap(), _Combinator_fns = new WeakMap(), _Combinator_isActive = new WeakMap(), _Combinator_results = new WeakMap(), _Combinator_subscriptions = new WeakMap();
 
     function promiseTracker(resolve, reject) {
         let isCompleted = false;
@@ -19786,20 +19805,17 @@
         };
     }
 
-    var _ApiPromise_isReadyPromise, _ApiPromise_isReadyOrErrorPromise;
     class ApiPromise extends ApiBase {
         constructor(options) {
             super(options, 'promise', toPromiseMethod);
-            _ApiPromise_isReadyPromise.set(this, void 0);
-            _ApiPromise_isReadyOrErrorPromise.set(this, void 0);
-            __classPrivateFieldSet(this, _ApiPromise_isReadyPromise, new Promise((resolve) => {
+            this.__internal__isReadyPromise = new Promise((resolve) => {
                 super.once('ready', () => resolve(this));
-            }), "f");
-            __classPrivateFieldSet(this, _ApiPromise_isReadyOrErrorPromise, new Promise((resolve, reject) => {
+            });
+            this.__internal__isReadyOrErrorPromise = new Promise((resolve, reject) => {
                 const tracker = promiseTracker(resolve, reject);
                 super.once('ready', () => tracker.resolve(this));
                 super.once('error', (error) => tracker.reject(error));
-            }), "f");
+            });
         }
         static create(options) {
             const instance = new ApiPromise(options);
@@ -19811,10 +19827,10 @@
             return instance.isReady;
         }
         get isReady() {
-            return __classPrivateFieldGet(this, _ApiPromise_isReadyPromise, "f");
+            return this.__internal__isReadyPromise;
         }
         get isReadyOrError() {
-            return __classPrivateFieldGet(this, _ApiPromise_isReadyOrErrorPromise, "f");
+            return this.__internal__isReadyOrErrorPromise;
         }
         clone() {
             return new ApiPromise(util.objectSpread({}, this._options, { source: this }));
@@ -19826,33 +19842,29 @@
             };
         }
     }
-    _ApiPromise_isReadyPromise = new WeakMap(), _ApiPromise_isReadyOrErrorPromise = new WeakMap();
 
     function toRxMethod(method) {
         return method;
     }
 
-    var _ApiRx_isReadyRx;
     class ApiRx extends ApiBase {
         constructor(options) {
             super(options, 'rxjs', toRxMethod);
-            _ApiRx_isReadyRx.set(this, void 0);
-            __classPrivateFieldSet(this, _ApiRx_isReadyRx, from(
+            this.__internal__isReadyRx = from(
             new Promise((resolve) => {
                 super.on('ready', () => resolve(this));
-            })), "f");
+            }));
         }
         static create(options) {
             return new ApiRx(options).isReady;
         }
         get isReady() {
-            return __classPrivateFieldGet(this, _ApiRx_isReadyRx, "f");
+            return this.__internal__isReadyRx;
         }
         clone() {
             return new ApiRx(util.objectSpread({}, this._options, { source: this }));
         }
     }
-    _ApiRx_isReadyRx = new WeakMap();
 
     Object.defineProperty(exports, 'Keyring', {
         enumerable: true,

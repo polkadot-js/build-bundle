@@ -6,61 +6,6 @@
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
-    var extendStatics = function(d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    function __extends(d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    }
-    function __values(o) {
-        var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-        if (m) return m.call(o);
-        if (o && typeof o.length === "number") return {
-            next: function () {
-                if (o && i >= o.length) o = void 0;
-                return { value: o && o[i++], done: !o };
-            }
-        };
-        throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-    }
-    function __read(o, n) {
-        var m = typeof Symbol === "function" && o[Symbol.iterator];
-        if (!m) return o;
-        var i = m.call(o), r, ar = [], e;
-        try {
-            while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-        }
-        catch (error) { e = { error: error }; }
-        finally {
-            try {
-                if (r && !r.done && (m = i["return"])) m.call(i);
-            }
-            finally { if (e) throw e.error; }
-        }
-        return ar;
-    }
-    function __spreadArray(to, from, pack) {
-        if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-            if (ar || !(i in from)) {
-                if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-                ar[i] = from[i];
-            }
-        }
-        return to.concat(ar || Array.prototype.slice.call(from));
-    }
-    function __classPrivateFieldGet(receiver, state, kind, f) {
-        if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-        return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-    }
-
     var TypeDefInfo;
     (function (TypeDefInfo) {
         TypeDefInfo[TypeDefInfo["BTreeMap"] = 0] = "BTreeMap";
@@ -167,7 +112,6 @@
         ['V0', v0ToLatest]
     ];
 
-    var _Abi_createArgs, _Abi_createEvent, _Abi_createMessage, _Abi_decodeArgs, _Abi_decodeMessage, _Abi_encodeArgs;
     const l$1 = util.logger('Abi');
     const PRIMITIVE_ALWAYS = ['AccountId', 'AccountIndex', 'Address', 'Balance'];
     function findMessage(list, messageOrId) {
@@ -209,7 +153,7 @@
     }
     class Abi {
         constructor(abiJson, chainProperties) {
-            _Abi_createArgs.set(this, (args, spec) => {
+            this.__internal__createArgs = (args, spec) => {
                 return args.map(({ label, type }, index) => {
                     try {
                         if (!util.isObject(type)) {
@@ -241,30 +185,30 @@
                         throw error;
                     }
                 });
-            });
-            _Abi_createEvent.set(this, (spec, index) => {
-                const args = __classPrivateFieldGet(this, _Abi_createArgs, "f").call(this, spec.args, spec);
+            };
+            this.__internal__createEvent = (spec, index) => {
+                const args = this.__internal__createArgs(spec.args, spec);
                 const event = {
                     args,
                     docs: spec.docs.map((d) => d.toString()),
                     fromU8a: (data) => ({
-                        args: __classPrivateFieldGet(this, _Abi_decodeArgs, "f").call(this, args, data),
+                        args: this.__internal__decodeArgs(args, data),
                         event
                     }),
                     identifier: spec.label.toString(),
                     index
                 };
                 return event;
-            });
-            _Abi_createMessage.set(this, (spec, index, add = {}) => {
-                const args = __classPrivateFieldGet(this, _Abi_createArgs, "f").call(this, spec.args, spec);
+            };
+            this.__internal__createMessage = (spec, index, add = {}) => {
+                const args = this.__internal__createArgs(spec.args, spec);
                 const identifier = spec.label.toString();
                 const message = {
                     ...add,
                     args,
                     docs: spec.docs.map((d) => d.toString()),
                     fromU8a: (data) => ({
-                        args: __classPrivateFieldGet(this, _Abi_decodeArgs, "f").call(this, args, data),
+                        args: this.__internal__decodeArgs(args, data),
                         message
                     }),
                     identifier,
@@ -272,19 +216,19 @@
                     method: util.stringCamelCase(identifier),
                     path: identifier.split('::').map((s) => util.stringCamelCase(s)),
                     selector: spec.selector,
-                    toU8a: (params) => __classPrivateFieldGet(this, _Abi_encodeArgs, "f").call(this, spec, args, params)
+                    toU8a: (params) => this.__internal__encodeArgs(spec, args, params)
                 };
                 return message;
-            });
-            _Abi_decodeArgs.set(this, (args, data) => {
+            };
+            this.__internal__decodeArgs = (args, data) => {
                 let offset = 0;
                 return args.map(({ type: { lookupName, type } }) => {
                     const value = this.registry.createType(lookupName || type, data.subarray(offset));
                     offset += value.encodedLength;
                     return value;
                 });
-            });
-            _Abi_decodeMessage.set(this, (type, list, data) => {
+            };
+            this.__internal__decodeMessage = (type, list, data) => {
                 const [, trimmed] = util.compactStripLength(data);
                 const selector = trimmed.subarray(0, 4);
                 const message = list.find((m) => m.selector.eq(selector));
@@ -292,24 +236,24 @@
                     throw new Error(`Unable to find ${type} with selector ${util.u8aToHex(selector)}`);
                 }
                 return message.fromU8a(trimmed.subarray(4));
-            });
-            _Abi_encodeArgs.set(this, ({ label, selector }, args, data) => {
+            };
+            this.__internal__encodeArgs = ({ label, selector }, args, data) => {
                 if (data.length !== args.length) {
                     throw new Error(`Expected ${args.length} arguments to contract message '${label.toString()}', found ${data.length}`);
                 }
                 return util.compactAddLength(util.u8aConcat(this.registry.createType('ContractSelector', selector).toU8a(), ...args.map(({ type: { lookupName, type } }, index) => this.registry.createType(lookupName || type, data[index]).toU8a())));
-            });
+            };
             [this.json, this.registry, this.metadata, this.info] = parseJson(util.isString(abiJson)
                 ? JSON.parse(abiJson)
                 : abiJson, chainProperties);
-            this.constructors = this.metadata.spec.constructors.map((spec, index) => __classPrivateFieldGet(this, _Abi_createMessage, "f").call(this, spec, index, {
+            this.constructors = this.metadata.spec.constructors.map((spec, index) => this.__internal__createMessage(spec, index, {
                 isConstructor: true,
                 isPayable: spec.payable.isTrue
             }));
-            this.events = this.metadata.spec.events.map((spec, index) => __classPrivateFieldGet(this, _Abi_createEvent, "f").call(this, spec, index));
+            this.events = this.metadata.spec.events.map((spec, index) => this.__internal__createEvent(spec, index));
             this.messages = this.metadata.spec.messages.map((spec, index) => {
                 const typeSpec = spec.returnType.unwrapOr(null);
-                return __classPrivateFieldGet(this, _Abi_createMessage, "f").call(this, spec, index, {
+                return this.__internal__createMessage(spec, index, {
                     isMutating: spec.mutates.isTrue,
                     isPayable: spec.payable.isTrue,
                     returnType: typeSpec
@@ -327,10 +271,10 @@
             return event.fromU8a(data.subarray(1));
         }
         decodeConstructor(data) {
-            return __classPrivateFieldGet(this, _Abi_decodeMessage, "f").call(this, 'message', this.constructors, data);
+            return this.__internal__decodeMessage('message', this.constructors, data);
         }
         decodeMessage(data) {
-            return __classPrivateFieldGet(this, _Abi_decodeMessage, "f").call(this, 'message', this.messages, data);
+            return this.__internal__decodeMessage('message', this.messages, data);
         }
         findConstructor(constructorOrId) {
             return findMessage(this.constructors, constructorOrId);
@@ -339,9 +283,8 @@
             return findMessage(this.messages, messageOrId);
         }
     }
-    _Abi_createArgs = new WeakMap(), _Abi_createEvent = new WeakMap(), _Abi_createMessage = new WeakMap(), _Abi_decodeArgs = new WeakMap(), _Abi_decodeMessage = new WeakMap(), _Abi_encodeArgs = new WeakMap();
 
-    const packageInfo = { name: '@polkadot/api-contract', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.4.1' };
+    const packageInfo = { name: '@polkadot/api-contract', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.5.1' };
 
     function applyOnEvent(result, types, fn) {
         if (result.isInBlock || result.isFinalized) {
@@ -374,6 +317,56 @@
         get registry() {
             return this.api.registry;
         }
+    }
+
+    var extendStatics = function(d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    function __extends(d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    }
+    function __values(o) {
+        var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+        if (m) return m.call(o);
+        if (o && typeof o.length === "number") return {
+            next: function () {
+                if (o && i >= o.length) o = void 0;
+                return { value: o && o[i++], done: !o };
+            }
+        };
+        throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+    }
+    function __read(o, n) {
+        var m = typeof Symbol === "function" && o[Symbol.iterator];
+        if (!m) return o;
+        var i = m.call(o), r, ar = [], e;
+        try {
+            while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+        }
+        catch (error) { e = { error: error }; }
+        finally {
+            try {
+                if (r && !r.done && (m = i["return"])) m.call(i);
+            }
+            finally { if (e) throw e.error; }
+        }
+        return ar;
+    }
+    function __spreadArray(to, from, pack) {
+        if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+            if (ar || !(i in from)) {
+                if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+                ar[i] = from[i];
+            }
+        }
+        return to.concat(ar || Array.prototype.slice.call(from));
     }
 
     function isFunction(value) {
@@ -858,7 +851,6 @@
         return !!weight.proofSize;
     }
 
-    var _Contract_query, _Contract_tx, _Contract_getGas, _Contract_exec, _Contract_read;
     const MAX_CALL_GAS = new util.BN(5000000000000).isub(util.BN_ONE);
     const l = util.logger('Contract');
     function createQuery(meta, fn) {
@@ -876,9 +868,9 @@
     class Contract extends Base {
         constructor(api, abi, address, decorateMethod) {
             super(api, abi, decorateMethod);
-            _Contract_query.set(this, {});
-            _Contract_tx.set(this, {});
-            _Contract_getGas.set(this, (_gasLimit, isCall = false) => {
+            this.__internal__query = {};
+            this.__internal__tx = {};
+            this.__internal__getGas = (_gasLimit, isCall = false) => {
                 const weight = convertWeight(_gasLimit);
                 if (weight.v1Weight.gt(util.BN_ZERO)) {
                     return weight;
@@ -888,8 +880,8 @@
                     : convertWeight(this.api.consts.system.blockWeights
                         ? this.api.consts.system.blockWeights.maxBlock
                         : this.api.consts.system.maximumBlockWeight).v1Weight.muln(64).div(util.BN_HUNDRED));
-            });
-            _Contract_exec.set(this, (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
+            };
+            this.__internal__exec = (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
                 return this.api.tx.contracts.call(this.address, value,
                 this._isWeightV1
                     ? convertWeight(gasLimit).v1Weight
@@ -905,14 +897,14 @@
                     }
                 })
                     .filter((decoded) => !!decoded))));
-            });
-            _Contract_read.set(this, (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
+            };
+            this.__internal__read = (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
                 const message = this.abi.findMessage(messageOrId);
                 return {
                     send: this._decorateMethod((origin) => this.api.rx.call.contractsApi.call(origin, this.address, value,
                     this._isWeightV1
-                        ? __classPrivateFieldGet(this, _Contract_getGas, "f").call(this, gasLimit, true).v1Weight
-                        : __classPrivateFieldGet(this, _Contract_getGas, "f").call(this, gasLimit, true).v2Weight, storageDepositLimit, message.toU8a(params)).pipe(map(({ debugMessage, gasConsumed, gasRequired, result, storageDeposit }) => ({
+                        ? this.__internal__getGas(gasLimit, true).v1Weight
+                        : this.__internal__getGas(gasLimit, true).v2Weight, storageDepositLimit, message.toU8a(params)).pipe(map(({ debugMessage, gasConsumed, gasRequired, result, storageDeposit }) => ({
                         debugMessage,
                         gasConsumed,
                         gasRequired: gasRequired && !convertWeight(gasRequired).v1Weight.isZero()
@@ -925,27 +917,25 @@
                         storageDeposit
                     }))))
                 };
-            });
+            };
             this.address = this.registry.createType('AccountId', address);
             this.abi.messages.forEach((m) => {
-                if (util.isUndefined(__classPrivateFieldGet(this, _Contract_tx, "f")[m.method])) {
-                    __classPrivateFieldGet(this, _Contract_tx, "f")[m.method] = createTx(m, (o, p) => __classPrivateFieldGet(this, _Contract_exec, "f").call(this, m, o, p));
+                if (util.isUndefined(this.__internal__tx[m.method])) {
+                    this.__internal__tx[m.method] = createTx(m, (o, p) => this.__internal__exec(m, o, p));
                 }
-                if (util.isUndefined(__classPrivateFieldGet(this, _Contract_query, "f")[m.method])) {
-                    __classPrivateFieldGet(this, _Contract_query, "f")[m.method] = createQuery(m, (f, o, p) => __classPrivateFieldGet(this, _Contract_read, "f").call(this, m, o, p).send(f));
+                if (util.isUndefined(this.__internal__query[m.method])) {
+                    this.__internal__query[m.method] = createQuery(m, (f, o, p) => this.__internal__read(m, o, p).send(f));
                 }
             });
         }
         get query() {
-            return __classPrivateFieldGet(this, _Contract_query, "f");
+            return this.__internal__query;
         }
         get tx() {
-            return __classPrivateFieldGet(this, _Contract_tx, "f");
+            return this.__internal__tx;
         }
     }
-    _Contract_query = new WeakMap(), _Contract_tx = new WeakMap(), _Contract_getGas = new WeakMap(), _Contract_exec = new WeakMap(), _Contract_read = new WeakMap();
 
-    var _Blueprint_tx, _Blueprint_deploy;
     class BlueprintSubmittableResult extends api.SubmittableResult {
         constructor(result, contract) {
             super(result);
@@ -955,27 +945,25 @@
     class Blueprint extends Base {
         constructor(api, abi, codeHash, decorateMethod) {
             super(api, abi, decorateMethod);
-            _Blueprint_tx.set(this, {});
-            _Blueprint_deploy.set(this, (constructorOrId, { gasLimit = util.BN_ZERO, salt, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
+            this.__internal__tx = {};
+            this.__internal__deploy = (constructorOrId, { gasLimit = util.BN_ZERO, salt, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
                 return this.api.tx.contracts.instantiate(value,
                 this._isWeightV1
                     ? convertWeight(gasLimit).v1Weight
                     : convertWeight(gasLimit).v2Weight, storageDepositLimit, this.codeHash, this.abi.findConstructor(constructorOrId).toU8a(params), encodeSalt(salt)).withResultTransform((result) => new BlueprintSubmittableResult(result, applyOnEvent(result, ['Instantiated'], ([record]) => new Contract(this.api, this.abi, record.event.data[1], this._decorateMethod))));
-            });
+            };
             this.codeHash = this.registry.createType('Hash', codeHash);
             this.abi.constructors.forEach((c) => {
-                if (util.isUndefined(__classPrivateFieldGet(this, _Blueprint_tx, "f")[c.method])) {
-                    __classPrivateFieldGet(this, _Blueprint_tx, "f")[c.method] = createBluePrintTx(c, (o, p) => __classPrivateFieldGet(this, _Blueprint_deploy, "f").call(this, c, o, p));
+                if (util.isUndefined(this.__internal__tx[c.method])) {
+                    this.__internal__tx[c.method] = createBluePrintTx(c, (o, p) => this.__internal__deploy(c, o, p));
                 }
             });
         }
         get tx() {
-            return __classPrivateFieldGet(this, _Blueprint_tx, "f");
+            return this.__internal__tx;
         }
     }
-    _Blueprint_tx = new WeakMap(), _Blueprint_deploy = new WeakMap();
 
-    var _Code_tx, _Code_instantiate;
     class CodeSubmittableResult extends api.SubmittableResult {
         constructor(result, blueprint, contract) {
             super(result);
@@ -986,8 +974,8 @@
     class Code extends Base {
         constructor(api, abi, wasm, decorateMethod) {
             super(api, abi, decorateMethod);
-            _Code_tx.set(this, {});
-            _Code_instantiate.set(this, (constructorOrId, { gasLimit = util.BN_ZERO, salt, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
+            this.__internal__tx = {};
+            this.__internal__instantiate = (constructorOrId, { gasLimit = util.BN_ZERO, salt, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
                 return this.api.tx.contracts.instantiateWithCode(value,
                 this._isWeightV1
                     ? convertWeight(gasLimit).v1Weight
@@ -996,7 +984,7 @@
                     : this.api.events.contracts.CodeStored.is(event)
                         ? [new Blueprint(this.api, this.abi, event.data[0], this._decorateMethod), contract]
                         : [blueprint, contract], [undefined, undefined])) || [undefined, undefined])));
-            });
+            };
             this.code = util.isWasm(this.abi.info.source.wasm)
                 ? this.abi.info.source.wasm
                 : util.u8aToU8a(wasm);
@@ -1004,16 +992,15 @@
                 throw new Error('No WASM code provided');
             }
             this.abi.constructors.forEach((c) => {
-                if (util.isUndefined(__classPrivateFieldGet(this, _Code_tx, "f")[c.method])) {
-                    __classPrivateFieldGet(this, _Code_tx, "f")[c.method] = createBluePrintTx(c, (o, p) => __classPrivateFieldGet(this, _Code_instantiate, "f").call(this, c, o, p));
+                if (util.isUndefined(this.__internal__tx[c.method])) {
+                    this.__internal__tx[c.method] = createBluePrintTx(c, (o, p) => this.__internal__instantiate(c, o, p));
                 }
             });
         }
         get tx() {
-            return __classPrivateFieldGet(this, _Code_tx, "f");
+            return this.__internal__tx;
         }
     }
-    _Code_tx = new WeakMap(), _Code_instantiate = new WeakMap();
 
     class BlueprintPromise extends Blueprint {
         constructor(api$1, abi, codeHash) {
