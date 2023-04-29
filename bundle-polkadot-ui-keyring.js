@@ -112,17 +112,6 @@
         function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
         function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
     }
-    function __classPrivateFieldGet(receiver, state, kind, f) {
-        if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-        return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-    }
-    function __classPrivateFieldSet(receiver, state, value, kind, f) {
-        if (kind === "m") throw new TypeError("Private method is not writable");
-        if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-        return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-    }
 
     function isFunction$2(value) {
         return typeof value === 'function';
@@ -1433,7 +1422,6 @@
         contracts
     })));
 
-    var _KeyringOption_allSub;
     let hasCalledInitOptions = false;
     const sortByName = (a, b) => {
         const valueA = a.option.name;
@@ -1453,7 +1441,7 @@
     };
     class KeyringOption {
         constructor() {
-            _KeyringOption_allSub.set(this, null);
+            this.__internal__allSub = null;
             this.optionsSubject = new BehaviorSubject(this.emptyOptions());
         }
         createOptionHeader(name) {
@@ -1467,7 +1455,7 @@
             if (hasCalledInitOptions) {
                 throw new Error('Unable to initialise options more than once');
             }
-            __classPrivateFieldSet(this, _KeyringOption_allSub, obervableAll.subscribe(() => {
+            this.__internal__allSub = obervableAll.subscribe(() => {
                 const opts = this.emptyOptions();
                 this.addAccounts(keyring, opts);
                 this.addAddresses(keyring, opts);
@@ -1478,12 +1466,12 @@
                 opts.all = [].concat(opts.account, opts.address);
                 opts.allPlus = [].concat(opts.account, opts.address, opts.contract);
                 this.optionsSubject.next(opts);
-            }), "f");
+            });
             hasCalledInitOptions = true;
         }
         clear() {
-            if (__classPrivateFieldGet(this, _KeyringOption_allSub, "f")) {
-                __classPrivateFieldGet(this, _KeyringOption_allSub, "f").unsubscribe();
+            if (this.__internal__allSub) {
+                this.__internal__allSub.unsubscribe();
             }
         }
         linkItems(items) {
@@ -1546,7 +1534,6 @@
             };
         }
     }
-    _KeyringOption_allSub = new WeakMap();
 
     var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -2365,14 +2352,8 @@
         }
     }
 
-    var _Base_accounts, _Base_addresses, _Base_contracts, _Base_isEthereum, _Base_keyring;
     class Base {
         constructor() {
-            _Base_accounts.set(this, void 0);
-            _Base_addresses.set(this, void 0);
-            _Base_contracts.set(this, void 0);
-            _Base_isEthereum.set(this, void 0);
-            _Base_keyring.set(this, void 0);
             this._genesisHashAdd = [];
             this.decodeAddress = (key, ignoreChecksum, ss58Format) => {
                 return this.keyring.decodeAddress(key, ignoreChecksum, ss58Format);
@@ -2380,27 +2361,27 @@
             this.encodeAddress = (key, ss58Format) => {
                 return this.keyring.encodeAddress(key, ss58Format);
             };
-            __classPrivateFieldSet(this, _Base_accounts, accounts, "f");
-            __classPrivateFieldSet(this, _Base_addresses, addresses, "f");
-            __classPrivateFieldSet(this, _Base_contracts, contracts, "f");
-            __classPrivateFieldSet(this, _Base_isEthereum, false, "f");
+            this.__internal__accounts = accounts;
+            this.__internal__addresses = addresses;
+            this.__internal__contracts = contracts;
+            this.__internal__isEthereum = false;
             this._store = new BrowserStore();
         }
         get accounts() {
-            return __classPrivateFieldGet(this, _Base_accounts, "f");
+            return this.__internal__accounts;
         }
         get addresses() {
-            return __classPrivateFieldGet(this, _Base_addresses, "f");
+            return this.__internal__addresses;
         }
         get contracts() {
-            return __classPrivateFieldGet(this, _Base_contracts, "f");
+            return this.__internal__contracts;
         }
         get isEthereum() {
-            return __classPrivateFieldGet(this, _Base_isEthereum, "f");
+            return this.__internal__isEthereum;
         }
         get keyring() {
-            if (__classPrivateFieldGet(this, _Base_keyring, "f")) {
-                return __classPrivateFieldGet(this, _Base_keyring, "f");
+            if (this.__internal__keyring) {
+                return this.__internal__keyring;
             }
             throw new Error('Keyring should be initialised via \'loadAll\' before use');
         }
@@ -2431,8 +2412,8 @@
             return password.length > 0;
         }
         setSS58Format(ss58Format) {
-            if (__classPrivateFieldGet(this, _Base_keyring, "f") && util$7.isNumber(ss58Format)) {
-                __classPrivateFieldGet(this, _Base_keyring, "f").setSS58Format(ss58Format);
+            if (this.__internal__keyring && util$7.isNumber(ss58Format)) {
+                this.__internal__keyring.setSS58Format(ss58Format);
             }
         }
         setDevMode(isDevelopment) {
@@ -2443,8 +2424,8 @@
             if (util$7.isBoolean(options.isDevelopment)) {
                 this.setDevMode(options.isDevelopment);
             }
-            __classPrivateFieldSet(this, _Base_isEthereum, keyring.type === 'ethereum', "f");
-            __classPrivateFieldSet(this, _Base_keyring, keyring, "f");
+            this.__internal__isEthereum = keyring.type === 'ethereum';
+            this.__internal__keyring = keyring;
             this._genesisHash = options.genesisHash && (util$7.isString(options.genesisHash)
                 ? options.genesisHash.toString()
                 : options.genesisHash.toHex());
@@ -2465,19 +2446,17 @@
             }
         }
     }
-    _Base_accounts = new WeakMap(), _Base_addresses = new WeakMap(), _Base_contracts = new WeakMap(), _Base_isEthereum = new WeakMap(), _Base_keyring = new WeakMap();
 
-    var _Keyring_stores;
     const RECENT_EXPIRY = 24 * 60 * 60;
     class Keyring extends Base {
         constructor() {
             super(...arguments);
             this.keyringOption = new KeyringOption();
-            _Keyring_stores.set(this, {
+            this.__internal__stores = {
                 account: () => this.accounts,
                 address: () => this.addresses,
                 contract: () => this.contracts
-            });
+            };
         }
         addExternal(address, meta = {}) {
             const pair = this.keyring.addFromAddress(address, util$7.objectSpread({}, meta, { isExternal: true }), null);
@@ -2572,8 +2551,8 @@
                 : this.encodeAddress(_address);
             const publicKey = this.decodeAddress(address);
             const stores = type
-                ? [__classPrivateFieldGet(this, _Keyring_stores, "f")[type]]
-                : Object.values(__classPrivateFieldGet(this, _Keyring_stores, "f"));
+                ? [this.__internal__stores[type]]
+                : Object.values(this.__internal__stores);
             const info = stores.reduce((lastInfo, store) => (store().subject.getValue()[address] || lastInfo), undefined);
             return info && {
                 address,
@@ -2731,7 +2710,7 @@
                 json.meta[key] = meta[key];
             });
             delete json.meta.isRecent;
-            __classPrivateFieldGet(this, _Keyring_stores, "f")[type]().add(this._store, address, json);
+            this.__internal__stores[type]().add(this._store, address, json);
             return json;
         }
         saveContract(address, meta) {
@@ -2752,9 +2731,8 @@
             return this.addresses.subject.getValue()[address];
         }
     }
-    _Keyring_stores = new WeakMap();
 
-    const packageInfo = { name: '@polkadot/ui-keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.2.1' };
+    const packageInfo = { name: '@polkadot/ui-keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.2.2' };
 
     const keyring = new Keyring();
 
