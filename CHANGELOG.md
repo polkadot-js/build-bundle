@@ -2,6 +2,7 @@
 
 ## master
 
+- hw-ledger, keyring, util, util-crypto 12.1.1
 - wasm-crypto 7.1.2
 - extension-dapp 0.46.1
 - api, api-contract, types 10.4.1

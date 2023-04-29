@@ -6,7 +6,7 @@
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
-    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.0.1' };
+    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.1.1' };
 
     function evaluateThis(fn) {
         return fn('return this');
@@ -45,18 +45,6 @@
     const BigInt$1 =  extractGlobal('BigInt', invalidFallback);
 
     exposeGlobal('BigInt', BigInt$1);
-
-    function __classPrivateFieldGet(receiver, state, kind, f) {
-        if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-        return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-    }
-    function __classPrivateFieldSet(receiver, state, value, kind, f) {
-        if (kind === "m") throw new TypeError("Private method is not writable");
-        if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-        return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-    }
 
     function getDefaultExportFromCjs (x) {
     	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
@@ -98,7 +86,7 @@
 
     Object.defineProperty(packageInfo$1, "__esModule", { value: true });
     packageInfo$1.packageInfo = void 0;
-    packageInfo$1.packageInfo = { name: '@polkadot/x-randomvalues', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.0.1' };
+    packageInfo$1.packageInfo = { name: '@polkadot/x-randomvalues', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.1.1' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -114,101 +102,87 @@
     } (browser));
     getDefaultExportFromCjs(browser);
 
-    var _Wbg_bridge;
     const DEFAULT_CRYPTO = { getRandomValues: browser.getRandomValues };
     const DEFAULT_SELF = { crypto: DEFAULT_CRYPTO };
     class Wbg {
         constructor(bridge) {
-            _Wbg_bridge.set(this, void 0);
             this.abort = () => {
                 throw new Error('abort');
             };
             this.__wbindgen_is_undefined = (idx) => {
-                return __classPrivateFieldGet(this, _Wbg_bridge, "f").getObject(idx) === undefined;
+                return this.__internal__bridge.getObject(idx) === undefined;
             };
             this.__wbindgen_throw = (ptr, len) => {
-                throw new Error(__classPrivateFieldGet(this, _Wbg_bridge, "f").getString(ptr, len));
+                throw new Error(this.__internal__bridge.getString(ptr, len));
             };
             this.__wbg_self_1b7a39e3a92c949c = () => {
-                return __classPrivateFieldGet(this, _Wbg_bridge, "f").addObject(DEFAULT_SELF);
+                return this.__internal__bridge.addObject(DEFAULT_SELF);
             };
             this.__wbg_require_604837428532a733 = (ptr, len) => {
-                throw new Error(`Unable to require ${__classPrivateFieldGet(this, _Wbg_bridge, "f").getString(ptr, len)}`);
+                throw new Error(`Unable to require ${this.__internal__bridge.getString(ptr, len)}`);
             };
             this.__wbg_crypto_968f1772287e2df0 = (_idx) => {
-                return __classPrivateFieldGet(this, _Wbg_bridge, "f").addObject(DEFAULT_CRYPTO);
+                return this.__internal__bridge.addObject(DEFAULT_CRYPTO);
             };
             this.__wbg_getRandomValues_a3d34b4fee3c2869 = (_idx) => {
-                return __classPrivateFieldGet(this, _Wbg_bridge, "f").addObject(DEFAULT_CRYPTO.getRandomValues);
+                return this.__internal__bridge.addObject(DEFAULT_CRYPTO.getRandomValues);
             };
             this.__wbg_getRandomValues_f5e14ab7ac8e995d = (_arg0, ptr, len) => {
-                DEFAULT_CRYPTO.getRandomValues(__classPrivateFieldGet(this, _Wbg_bridge, "f").getU8a(ptr, len));
+                DEFAULT_CRYPTO.getRandomValues(this.__internal__bridge.getU8a(ptr, len));
             };
             this.__wbg_randomFillSync_d5bd2d655fdf256a = (_idx, _ptr, _len) => {
                 throw new Error('randomFillsync is not available');
             };
             this.__wbindgen_object_drop_ref = (idx) => {
-                __classPrivateFieldGet(this, _Wbg_bridge, "f").takeObject(idx);
+                this.__internal__bridge.takeObject(idx);
             };
-            __classPrivateFieldSet(this, _Wbg_bridge, bridge, "f");
+            this.__internal__bridge = bridge;
         }
     }
-    _Wbg_bridge = new WeakMap();
 
-    var _Bridge_cachegetInt32, _Bridge_cachegetUint8, _Bridge_createWasm, _Bridge_heap, _Bridge_heapNext, _Bridge_wasm, _Bridge_wasmError, _Bridge_wasmPromise, _Bridge_wbg, _Bridge_type;
     class Bridge {
         constructor(createWasm) {
-            _Bridge_cachegetInt32.set(this, void 0);
-            _Bridge_cachegetUint8.set(this, void 0);
-            _Bridge_createWasm.set(this, void 0);
-            _Bridge_heap.set(this, void 0);
-            _Bridge_heapNext.set(this, void 0);
-            _Bridge_wasm.set(this, void 0);
-            _Bridge_wasmError.set(this, void 0);
-            _Bridge_wasmPromise.set(this, void 0);
-            _Bridge_wbg.set(this, void 0);
-            _Bridge_type.set(this, void 0);
-            __classPrivateFieldSet(this, _Bridge_createWasm, createWasm, "f");
-            __classPrivateFieldSet(this, _Bridge_cachegetInt32, null, "f");
-            __classPrivateFieldSet(this, _Bridge_cachegetUint8, null, "f");
-            __classPrivateFieldSet(this, _Bridge_heap, new Array(32)
+            this.__internal__createWasm = createWasm;
+            this.__internal__cachegetInt32 = null;
+            this.__internal__cachegetUint8 = null;
+            this.__internal__heap = new Array(32)
                 .fill(undefined)
-                .concat(undefined, null, true, false), "f");
-            __classPrivateFieldSet(this, _Bridge_heapNext, __classPrivateFieldGet(this, _Bridge_heap, "f").length, "f");
-            __classPrivateFieldSet(this, _Bridge_type, 'none', "f");
-            __classPrivateFieldSet(this, _Bridge_wasm, null, "f");
-            __classPrivateFieldSet(this, _Bridge_wasmError, null, "f");
-            __classPrivateFieldSet(this, _Bridge_wasmPromise, null, "f");
-            __classPrivateFieldSet(this, _Bridge_wbg, { ...new Wbg(this) }, "f");
+                .concat(undefined, null, true, false);
+            this.__internal__heapNext = this.__internal__heap.length;
+            this.__internal__type = 'none';
+            this.__internal__wasm = null;
+            this.__internal__wasmError = null;
+            this.__internal__wasmPromise = null;
+            this.__internal__wbg = { ...new Wbg(this) };
         }
         get error() {
-            return __classPrivateFieldGet(this, _Bridge_wasmError, "f");
+            return this.__internal__wasmError;
         }
         get type() {
-            return __classPrivateFieldGet(this, _Bridge_type, "f");
+            return this.__internal__type;
         }
         get wasm() {
-            return __classPrivateFieldGet(this, _Bridge_wasm, "f");
+            return this.__internal__wasm;
         }
         async init(createWasm) {
-            if (!__classPrivateFieldGet(this, _Bridge_wasmPromise, "f") || createWasm) {
-                __classPrivateFieldSet(this, _Bridge_wasmPromise, (createWasm || __classPrivateFieldGet(this, _Bridge_createWasm, "f"))(__classPrivateFieldGet(this, _Bridge_wbg, "f")), "f");
+            if (!this.__internal__wasmPromise || createWasm) {
+                this.__internal__wasmPromise = (createWasm || this.__internal__createWasm)(this.__internal__wbg);
             }
-            const { error, type, wasm } = await __classPrivateFieldGet(this, _Bridge_wasmPromise, "f");
-            __classPrivateFieldSet(this, _Bridge_type, type, "f");
-            __classPrivateFieldSet(this, _Bridge_wasm, wasm, "f");
-            __classPrivateFieldSet(this, _Bridge_wasmError, error, "f");
-            return __classPrivateFieldGet(this, _Bridge_wasm, "f");
+            const { error, type, wasm } = await this.__internal__wasmPromise;
+            this.__internal__type = type;
+            this.__internal__wasm = wasm;
+            this.__internal__wasmError = error;
+            return this.__internal__wasm;
         }
         getObject(idx) {
-            return __classPrivateFieldGet(this, _Bridge_heap, "f")[idx];
+            return this.__internal__heap[idx];
         }
         dropObject(idx) {
             if (idx < 36) {
                 return;
             }
-            __classPrivateFieldGet(this, _Bridge_heap, "f")[idx] = __classPrivateFieldGet(this, _Bridge_heapNext, "f");
-            __classPrivateFieldSet(this, _Bridge_heapNext, idx, "f");
+            this.__internal__heap[idx] = this.__internal__heapNext;
+            this.__internal__heapNext = idx;
         }
         takeObject(idx) {
             const ret = this.getObject(idx);
@@ -216,25 +190,25 @@
             return ret;
         }
         addObject(obj) {
-            if (__classPrivateFieldGet(this, _Bridge_heapNext, "f") === __classPrivateFieldGet(this, _Bridge_heap, "f").length) {
-                __classPrivateFieldGet(this, _Bridge_heap, "f").push(__classPrivateFieldGet(this, _Bridge_heap, "f").length + 1);
+            if (this.__internal__heapNext === this.__internal__heap.length) {
+                this.__internal__heap.push(this.__internal__heap.length + 1);
             }
-            const idx = __classPrivateFieldGet(this, _Bridge_heapNext, "f");
-            __classPrivateFieldSet(this, _Bridge_heapNext, __classPrivateFieldGet(this, _Bridge_heap, "f")[idx], "f");
-            __classPrivateFieldGet(this, _Bridge_heap, "f")[idx] = obj;
+            const idx = this.__internal__heapNext;
+            this.__internal__heapNext = this.__internal__heap[idx];
+            this.__internal__heap[idx] = obj;
             return idx;
         }
         getInt32() {
-            if (__classPrivateFieldGet(this, _Bridge_cachegetInt32, "f") === null || __classPrivateFieldGet(this, _Bridge_cachegetInt32, "f").buffer !== __classPrivateFieldGet(this, _Bridge_wasm, "f").memory.buffer) {
-                __classPrivateFieldSet(this, _Bridge_cachegetInt32, new Int32Array(__classPrivateFieldGet(this, _Bridge_wasm, "f").memory.buffer), "f");
+            if (this.__internal__cachegetInt32 === null || this.__internal__cachegetInt32.buffer !== this.__internal__wasm.memory.buffer) {
+                this.__internal__cachegetInt32 = new Int32Array(this.__internal__wasm.memory.buffer);
             }
-            return __classPrivateFieldGet(this, _Bridge_cachegetInt32, "f");
+            return this.__internal__cachegetInt32;
         }
         getUint8() {
-            if (__classPrivateFieldGet(this, _Bridge_cachegetUint8, "f") === null || __classPrivateFieldGet(this, _Bridge_cachegetUint8, "f").buffer !== __classPrivateFieldGet(this, _Bridge_wasm, "f").memory.buffer) {
-                __classPrivateFieldSet(this, _Bridge_cachegetUint8, new Uint8Array(__classPrivateFieldGet(this, _Bridge_wasm, "f").memory.buffer), "f");
+            if (this.__internal__cachegetUint8 === null || this.__internal__cachegetUint8.buffer !== this.__internal__wasm.memory.buffer) {
+                this.__internal__cachegetUint8 = new Uint8Array(this.__internal__wasm.memory.buffer);
             }
-            return __classPrivateFieldGet(this, _Bridge_cachegetUint8, "f");
+            return this.__internal__cachegetUint8;
         }
         getU8a(ptr, len) {
             return this.getUint8().subarray(ptr / 1, ptr / 1 + len);
@@ -243,7 +217,7 @@
             return util.u8aToString(this.getU8a(ptr, len));
         }
         allocU8a(arg) {
-            const ptr = __classPrivateFieldGet(this, _Bridge_wasm, "f").__wbindgen_malloc(arg.length * 1);
+            const ptr = this.__internal__wasm.__wbindgen_malloc(arg.length * 1);
             this.getUint8().set(arg, ptr / 1);
             return [ptr, arg.length];
         }
@@ -254,14 +228,13 @@
             const r0 = this.getInt32()[8 / 4 + 0];
             const r1 = this.getInt32()[8 / 4 + 1];
             const ret = this.getU8a(r0, r1).slice();
-            __classPrivateFieldGet(this, _Bridge_wasm, "f").__wbindgen_free(r0, r1 * 1);
+            this.__internal__wasm.__wbindgen_free(r0, r1 * 1);
             return ret;
         }
         resultString() {
             return util.u8aToString(this.resultU8a());
         }
     }
-    _Bridge_cachegetInt32 = new WeakMap(), _Bridge_cachegetUint8 = new WeakMap(), _Bridge_createWasm = new WeakMap(), _Bridge_heap = new WeakMap(), _Bridge_heapNext = new WeakMap(), _Bridge_wasm = new WeakMap(), _Bridge_wasmError = new WeakMap(), _Bridge_wasmPromise = new WeakMap(), _Bridge_wbg = new WeakMap(), _Bridge_type = new WeakMap();
 
     function createWasmFn(root, wasmBytes, asmFn) {
         return async (wbg) => {
@@ -739,7 +712,7 @@
     cryptoWaitReady().catch(() => {
     });
 
-    const packageInfo = { name: '@polkadot/util-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.0.1' };
+    const packageInfo = { name: '@polkadot/util-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.1.1' };
 
     /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
     function assertNumber(n) {
@@ -2236,7 +2209,7 @@
     	{
     		"prefix": 50,
     		"network": "composable",
-    		"displayName": "Composable",
+    		"displayName": "Composable Finance",
     		"symbols": [
     			"LAYR"
     		],
@@ -2355,7 +2328,7 @@
     	{
     		"prefix": 65,
     		"network": "aventus",
-    		"displayName": "AvN Mainnet",
+    		"displayName": "Aventus Mainnet",
     		"symbols": [
     			"AVT"
     		],
@@ -2977,6 +2950,19 @@
     		"website": "https://explorer.mainnet.cloudwalk.io"
     	},
     	{
+    		"prefix": 2021,
+    		"network": "logion",
+    		"displayName": "logion network",
+    		"symbols": [
+    			"LGNT"
+    		],
+    		"decimals": [
+    			18
+    		],
+    		"standardAccount": "*25519",
+    		"website": "https://logion.network"
+    	},
+    	{
     		"prefix": 2032,
     		"network": "interlay",
     		"displayName": "Interlay",
@@ -3278,6 +3264,19 @@
     		],
     		"standardAccount": "*25519",
     		"website": "https://ata.network"
+    	},
+    	{
+    		"prefix": 12155,
+    		"network": "impact",
+    		"displayName": "Impact Protocol Network",
+    		"symbols": [
+    			"BSTY"
+    		],
+    		"decimals": [
+    			18
+    		],
+    		"standardAccount": "*25519",
+    		"website": "https://impactprotocol.network/"
     	},
     	{
     		"prefix": 12191,
@@ -3621,27 +3620,12 @@
     const BN_LE_256_OPTS = { bitLength: 256, isLe: true };
     const BN_LE_512_OPTS = { bitLength: 512, isLe: true };
 
-    function addressToU8a(who) {
-        return decodeAddress(who);
-    }
-
-    const PREFIX$1 = util.stringToU8a('modlpy/utilisuba');
-    function createKeyMulti(who, threshold) {
-        return blake2AsU8a(util.u8aConcat(PREFIX$1, util.compactToU8a(who.length), ...util.u8aSorted(who.map(addressToU8a)), util.bnToU8a(threshold, BN_LE_16_OPTS)));
-    }
-
-    const PREFIX = util.stringToU8a('modlpy/utilisuba');
-    function createKeyDerived(who, index) {
-        return blake2AsU8a(util.u8aConcat(PREFIX, decodeAddress(who), util.bnToU8a(index, BN_LE_16_OPTS)));
-    }
-
-    var _DeriveJunction_chainCode, _DeriveJunction_isHard;
     const RE_NUMBER = /^\d+$/;
     const JUNCTION_ID_LEN = 32;
     class DeriveJunction {
         constructor() {
-            _DeriveJunction_chainCode.set(this, new Uint8Array(32));
-            _DeriveJunction_isHard.set(this, false);
+            this.__internal__chainCode = new Uint8Array(32);
+            this.__internal__isHard = false;
         }
         static from(value) {
             const result = new DeriveJunction();
@@ -3656,19 +3640,19 @@
                 : result;
         }
         get chainCode() {
-            return __classPrivateFieldGet(this, _DeriveJunction_chainCode, "f");
+            return this.__internal__chainCode;
         }
         get isHard() {
-            return __classPrivateFieldGet(this, _DeriveJunction_isHard, "f");
+            return this.__internal__isHard;
         }
         get isSoft() {
-            return !__classPrivateFieldGet(this, _DeriveJunction_isHard, "f");
+            return !this.__internal__isHard;
         }
         hard(value) {
             return this.soft(value).harden();
         }
         harden() {
-            __classPrivateFieldSet(this, _DeriveJunction_isHard, true, "f");
+            this.__internal__isHard = true;
             return this;
         }
         soft(value) {
@@ -3684,16 +3668,15 @@
             else if (value.length > JUNCTION_ID_LEN) {
                 return this.soft(blake2AsU8a(value));
             }
-            __classPrivateFieldGet(this, _DeriveJunction_chainCode, "f").fill(0);
-            __classPrivateFieldGet(this, _DeriveJunction_chainCode, "f").set(value, 0);
+            this.__internal__chainCode.fill(0);
+            this.__internal__chainCode.set(value, 0);
             return this;
         }
         soften() {
-            __classPrivateFieldSet(this, _DeriveJunction_isHard, false, "f");
+            this.__internal__isHard = false;
             return this;
         }
     }
-    _DeriveJunction_chainCode = new WeakMap(), _DeriveJunction_isHard = new WeakMap();
 
     const RE_JUNCTION = /\/(\/?)([^/]+)/g;
     function keyExtractPath(derivePath) {
@@ -6993,12 +6976,30 @@
         return encodeAddress(publicKey, ss58Format);
     }
 
+    const PREFIX$1 = util.stringToU8a('modlpy/utilisuba');
+    function createKeyDerived(who, index) {
+        return blake2AsU8a(util.u8aConcat(PREFIX$1, decodeAddress(who), util.bnToU8a(index, BN_LE_16_OPTS)));
+    }
+
     function encodeDerivedAddress(who, index, ss58Format) {
         return encodeAddress(createKeyDerived(decodeAddress(who), index), ss58Format);
     }
 
+    function addressToU8a(who) {
+        return decodeAddress(who);
+    }
+
+    const PREFIX = util.stringToU8a('modlpy/utilisuba');
+    function createKeyMulti(who, threshold) {
+        return blake2AsU8a(util.u8aConcat(PREFIX, util.compactToU8a(who.length), ...util.u8aSorted(who.map(addressToU8a)), util.bnToU8a(threshold, BN_LE_16_OPTS)));
+    }
+
     function encodeMultiAddress(who, threshold, ss58Format) {
         return encodeAddress(createKeyMulti(who, threshold), ss58Format);
+    }
+
+    function addressEq(a, b) {
+        return util.u8aEq(decodeAddress(a), decodeAddress(b));
     }
 
     const [SHA3_PI, SHA3_ROTL, _SHA3_IOTA] = [[], [], []];
@@ -7196,10 +7197,6 @@
             throw new Error(`Converting ${evmAddress}: Invalid evm address length`);
         }
         return encodeAddress(hasher(hashType, message), ss58Format);
-    }
-
-    function addressEq(a, b) {
-        return util.u8aEq(decodeAddress(a), decodeAddress(b));
     }
 
     function validateAddress(encoded, ignoreChecksum, ss58Format) {

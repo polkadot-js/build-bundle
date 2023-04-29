@@ -6,7 +6,7 @@
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
-    const packageInfo$3 = { name: '@polkadot/util', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.0.1' };
+    const packageInfo$3 = { name: '@polkadot/util', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.1.1' };
 
     function arrayChunk(array, chunkSize) {
         const outputSize = Math.ceil(array.length / chunkSize);
@@ -74,17 +74,19 @@
     }
 
     function arrayUnzip(entries) {
-        const keys = new Array(entries.length);
-        const values = new Array(entries.length);
-        for (let i = 0; i < entries.length; i++) {
+        const count = entries.length;
+        const keys = new Array(count);
+        const values = new Array(count);
+        for (let i = 0; i < count; i++) {
             [keys[i], values[i]] = entries[i];
         }
         return [keys, values];
     }
 
     function arrayZip(keys, values) {
-        const result = new Array(keys.length);
-        for (let i = 0; i < keys.length; i++) {
+        const count = keys.length;
+        const result = new Array(count);
+        for (let i = 0; i < count; i++) {
             result[i] = [keys[i], values[i]];
         }
         return result;
@@ -109,7 +111,25 @@
         throw new Error(`This codepath should be unreachable. Unhandled input: ${x}`);
     }
 
-    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.0.1' };
+    function createCmp(cmp) {
+        return (...items) => {
+            if (items.length === 0) {
+                throw new Error('Must provide one or more arguments');
+            }
+            let result = items[0];
+            for (let i = 1; i < items.length; i++) {
+                if (cmp(items[i], result)) {
+                    result = items[i];
+                }
+            }
+            return result;
+        };
+    }
+
+    const nMax =  createCmp((a, b) => a > b);
+    const nMin =  createCmp((a, b) => a < b);
+
+    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.1.1' };
 
     function evaluateThis(fn) {
         return fn('return this');
@@ -3030,24 +3050,6 @@
         }
     }
 
-    function createCmp(cmp) {
-        return (...items) => {
-            if (items.length === 0) {
-                throw new Error('Must provide one or more arguments');
-            }
-            let result = items[0];
-            for (let i = 1; i < items.length; i++) {
-                if (cmp(items[i], result)) {
-                    result = items[i];
-                }
-            }
-            return result;
-        };
-    }
-
-    const nMax =  createCmp((a, b) => a > b);
-    const nMin =  createCmp((a, b) => a < b);
-
     const hasBigInt = typeof BigInt === 'function' && typeof BigInt.asIntN === 'function';
     const hasCjs = typeof require === 'function' && typeof module !== 'undefined';
     const hasDirname = typeof __dirname !== 'undefined';
@@ -3057,7 +3059,7 @@
     const hasProcess = typeof xglobal.process === 'object';
 
     function isBuffer(value) {
-        return hasBuffer && isFunction(value && value.readDoubleLE) && xglobal.Buffer.isBuffer(value);
+        return hasBuffer && !!value && isFunction(value.readDoubleLE) && xglobal.Buffer.isBuffer(value);
     }
 
     function isU8a(value) {
@@ -3075,8 +3077,9 @@
     fallback$1.TextEncoder = void 0;
     class TextEncoder {
         encode(value) {
-            const u8a = new Uint8Array(value.length);
-            for (let i = 0; i < value.length; i++) {
+            const count = value.length;
+            const u8a = new Uint8Array(count);
+            for (let i = 0; i < count; i++) {
                 u8a[i] = value.charCodeAt(i);
             }
             return u8a;
@@ -3088,7 +3091,7 @@
 
     Object.defineProperty(packageInfo$1, "__esModule", { value: true });
     packageInfo$1.packageInfo = void 0;
-    packageInfo$1.packageInfo = { name: '@polkadot/x-textencoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.0.1' };
+    packageInfo$1.packageInfo = { name: '@polkadot/x-textencoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.1.1' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -3146,9 +3149,10 @@
     }
 
     function u8aConcat(...list) {
-        const u8as = new Array(list.length);
+        const count = list.length;
+        const u8as = new Array(count);
         let length = 0;
-        for (let i = 0; i < list.length; i++) {
+        for (let i = 0; i < count; i++) {
             u8as[i] = u8aToU8a(list[i]);
             length += u8as[i].length;
         }
@@ -3213,19 +3217,6 @@
         const result = new Uint8Array(byteLength);
         result.set(value, atStart ? 0 : (byteLength - value.length));
         return result;
-    }
-
-    function u8aToFloat(value, { bitLength = 32, isLe = true } = {}) {
-        if (bitLength !== 32 && bitLength !== 64) {
-            throw new Error('Invalid bitLength provided, expected 32 or 64');
-        }
-        else if (value.length < (bitLength / 8)) {
-            throw new Error(`Invalid input buffer provided, expected at least ${bitLength / 8} bytes, found ${value.length}`);
-        }
-        const dv = new DataView(value.buffer, value.byteOffset);
-        return bitLength === 32
-            ? dv.getFloat32(0, isLe)
-            : dv.getFloat64(0, isLe);
     }
 
     function u8aSorted(u8as) {
@@ -3303,6 +3294,19 @@
 
     function u8aToBuffer(value) {
         return Buffer.from(value || []);
+    }
+
+    function u8aToFloat(value, { bitLength = 32, isLe = true } = {}) {
+        if (bitLength !== 32 && bitLength !== 64) {
+            throw new Error('Invalid bitLength provided, expected 32 or 64');
+        }
+        else if (value.length < (bitLength / 8)) {
+            throw new Error(`Invalid input buffer provided, expected at least ${bitLength / 8} bytes, found ${value.length}`);
+        }
+        const dv = new DataView(value.buffer, value.byteOffset);
+        return bitLength === 32
+            ? dv.getFloat32(0, isLe)
+            : dv.getFloat64(0, isLe);
     }
 
     const U8 = new Array(256);
@@ -3416,7 +3420,7 @@
 
     Object.defineProperty(packageInfo, "__esModule", { value: true });
     packageInfo.packageInfo = void 0;
-    packageInfo.packageInfo = { name: '@polkadot/x-textdecoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.0.1' };
+    packageInfo.packageInfo = { name: '@polkadot/x-textdecoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.1.1' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -3507,25 +3511,6 @@
         return u8aToHex(nToU8a(value || 0, { bitLength, isLe, isNegative }));
     }
 
-    const BN_ZERO =  new BN(0);
-    const BN_ONE =  new BN(1);
-    const BN_TWO =  new BN(2);
-    const BN_THREE =  new BN(3);
-    const BN_FOUR =  new BN(4);
-    const BN_FIVE =  new BN(5);
-    const BN_SIX =  new BN(6);
-    const BN_SEVEN =  new BN(7);
-    const BN_EIGHT =  new BN(8);
-    const BN_NINE =  new BN(9);
-    const BN_TEN =  new BN(10);
-    const BN_HUNDRED =  new BN(100);
-    const BN_THOUSAND =  new BN(1000);
-    const BN_MILLION =  new BN(1000000);
-    const BN_BILLION =  new BN(1000000000);
-    const BN_QUINTILL = BN_BILLION.mul(BN_BILLION);
-    const BN_MAX_INTEGER =  new BN(Number.MAX_SAFE_INTEGER);
-    const BN_SQRT_MAX_INTEGER =  new BN(94906265);
-
     function hexStripPrefix(value) {
         if (!value || value === '0x') {
             return '';
@@ -3552,6 +3537,25 @@
 
     const bnMax =  createCmp((a, b) => a.gt(b));
     const bnMin =  createCmp((a, b) => a.lt(b));
+
+    const BN_ZERO =  new BN(0);
+    const BN_ONE =  new BN(1);
+    const BN_TWO =  new BN(2);
+    const BN_THREE =  new BN(3);
+    const BN_FOUR =  new BN(4);
+    const BN_FIVE =  new BN(5);
+    const BN_SIX =  new BN(6);
+    const BN_SEVEN =  new BN(7);
+    const BN_EIGHT =  new BN(8);
+    const BN_NINE =  new BN(9);
+    const BN_TEN =  new BN(10);
+    const BN_HUNDRED =  new BN(100);
+    const BN_THOUSAND =  new BN(1000);
+    const BN_MILLION =  new BN(1000000);
+    const BN_BILLION =  new BN(1000000000);
+    const BN_QUINTILL = BN_BILLION.mul(BN_BILLION);
+    const BN_MAX_INTEGER =  new BN(Number.MAX_SAFE_INTEGER);
+    const BN_SQRT_MAX_INTEGER =  new BN(94906265);
 
     function isBigInt(value) {
         return typeof value === 'bigint';
@@ -4266,6 +4270,12 @@
         return result;
     }
 
+    function identity(value) {
+        return value;
+    }
+    function noop() {
+    }
+
     const logTo = {
         debug: 'log',
         error: 'error',
@@ -4314,8 +4324,6 @@
             .map(loggerFormat)
             .map(formatWithLength(maxSize)));
     }
-    function noop() {
-    }
     function isDebugOn(e, type) {
         return !!e && (e === '*' ||
             type === e ||
@@ -4350,9 +4358,9 @@
                 : maxSize
         ];
     }
-    function logger(_type) {
-        const type = `${_type.toUpperCase()}:`.padStart(16);
-        const [isDebug, maxSize] = parseEnv(_type.toLowerCase());
+    function logger(origin) {
+        const type = `${origin.toUpperCase()}:`.padStart(16);
+        const [isDebug, maxSize] = parseEnv(origin.toLowerCase());
         return {
             debug: isDebug
                 ? (...values) => apply('debug', type, values, maxSize)
@@ -4552,7 +4560,7 @@
     }
     function formatDisplay(all, fmt) {
         let max = 0;
-        for (let i = 0; i < all.length; i++) {
+        for (let i = 0, count = all.length; i < count; i++) {
             max = Math.max(max, all[i].version.length);
         }
         return all
@@ -4704,6 +4712,7 @@
     exports.hexToNumber = hexToNumber;
     exports.hexToString = hexToString;
     exports.hexToU8a = hexToU8a;
+    exports.identity = identity;
     exports.isArray = isArray;
     exports.isAscii = isAscii;
     exports.isBigInt = isBigInt;
@@ -4745,6 +4754,7 @@
     exports.nToHex = nToHex;
     exports.nToU8a = nToU8a;
     exports.nextTick = nextTick;
+    exports.noop = noop;
     exports.numberToHex = numberToHex;
     exports.numberToU8a = numberToU8a;
     exports.objectClear = objectClear;
