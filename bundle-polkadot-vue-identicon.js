@@ -223,9 +223,9 @@
 
     const Beachball = vue.defineComponent({
         props: ['address', 'size', 'isAlternative'],
-        render(h) {
+        render() {
             const { address, isAlternative, size } = this.$props;
-            return h({
+            return vue.h({
                 template: beachballIcon(address, {
                     isAlternative,
                     size
@@ -751,25 +751,32 @@
 
     const Jdenticon = vue.defineComponent({
         props: ['publicKey', 'size'],
-        render(h) {
+        render() {
             const { publicKey, size } = this.$props;
-            return h({
+            return vue.h({
                 template: toSvg(publicKey.substring(2), size)
             });
         }
     });
 
+    const isV3 = vue.version.startsWith('3.');
+    function adaptVNodeAttrs(data) {
+        return isV3
+            ? data
+            : { attrs: data };
+    }
+
     const Polkadot = vue.defineComponent({
         props: ['address', 'isAlternative', 'size'],
-        render(h) {
+        render() {
             const { address, isAlternative, size } = this.$props;
-            const circles = polkadotIcon(address, { isAlternative }).map(({ cx, cy, fill, r }) => h('circle', { attrs: { cx, cy, fill, r } }, []));
-            return h('svg', {
-                attrs: {
+            const circles = polkadotIcon(address, { isAlternative }).map(({ cx, cy, fill, r }) => vue.h('circle', { ...adaptVNodeAttrs({ cx, cy, fill, r }) }, []));
+            return vue.h('svg', {
+                ...adaptVNodeAttrs({
                     height: size,
                     viewBox: '0 0 64 64',
                     width: size
-                }
+                })
             }, circles);
         }
     });
@@ -820,37 +827,45 @@
             }
         },
         props: ['prefix', 'isAlternative', 'size', 'theme', 'value'],
-        render(h) {
+        render() {
             const { address, iconSize, isAlternativeIcon, publicKey, type } = this.$data;
             if (type === 'empty') {
-                return h('Empty', {
-                    attrs: {
+                return vue.h(Empty, {
+                    ...adaptVNodeAttrs({
                         key: address,
                         size: iconSize
-                    }
+                    })
                 }, []);
             }
             else if (type === 'jdenticon') {
-                return h('Jdenticon', {
-                    attrs: {
+                return vue.h(Jdenticon, {
+                    ...adaptVNodeAttrs({
                         key: address,
                         publicKey,
                         size: iconSize
-                    }
+                    })
                 }, []);
             }
             else if (type === 'substrate') {
                 throw new Error('substrate type is not supported');
             }
             const cmp = type.charAt(0).toUpperCase() + type.slice(1);
-            return h(cmp, {
-                attrs: {
-                    address,
-                    isAlternative: isAlternativeIcon,
-                    key: address,
-                    size: iconSize
-                }
-            }, []);
+            if (['Beachball', 'Polkadot'].includes(cmp)) {
+                const component = cmp === 'Beachball'
+                    ? Beachball
+                    : Polkadot;
+                return vue.h(component, {
+                    ...adaptVNodeAttrs({
+                        address,
+                        isAlternative: isAlternativeIcon,
+                        key: address,
+                        size: iconSize
+                    })
+                }, []);
+            }
+            else {
+                return vue.h(cmp, {}, []);
+            }
         },
         watch: {
             value: function () {
@@ -859,7 +874,7 @@
         }
     });
 
-    const packageInfo = { name: '@polkadot/vue-identicon', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.2.2' };
+    const packageInfo = { name: '@polkadot/vue-identicon', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-vue-identicon.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.3.1' };
 
     exports.Identicon = Identicon;
     exports.packageInfo = packageInfo;
