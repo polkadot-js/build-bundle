@@ -485,6 +485,41 @@
         StorageHasherV14: 'StorageHasherV13'
     };
 
+    const v15 = {
+        PalletMetadataV15: {
+            name: 'Text',
+            storage: 'Option<PalletStorageMetadataV14>',
+            calls: 'Option<PalletCallMetadataV14>',
+            events: 'Option<PalletEventMetadataV14>',
+            constants: 'Vec<PalletConstantMetadataV14>',
+            errors: 'Option<PalletErrorMetadataV14>',
+            index: 'u8',
+            docs: 'Vec<Text>'
+        },
+        RuntimeApiMetadataV15: {
+            name: 'Text',
+            methods: 'Vec<RuntimeApiMethodMetadataV15>',
+            docs: 'Vec<Text>'
+        },
+        RuntimeApiMethodMetadataV15: {
+            name: 'Text',
+            inputs: 'Vec<RuntimeApiMethodParamMetadataV15>',
+            output: 'SiLookupTypeId',
+            docs: 'Vec<Text>'
+        },
+        RuntimeApiMethodParamMetadataV15: {
+            name: 'Text',
+            type: 'SiLookupTypeId'
+        },
+        MetadataV15: {
+            lookup: 'PortableRegistry',
+            pallets: 'Vec<PalletMetadataV15>',
+            extrinsic: 'ExtrinsicMetadataV14',
+            type: 'SiLookupTypeId',
+            apis: 'Vec<RuntimeApiMetadataV15>'
+        }
+    };
+
     const definitions$16 = {
         rpc: {},
         runtime: runtime$s,
@@ -495,19 +530,21 @@
             ...v12,
             ...v13,
             ...v14,
+            ...v15,
             ErrorMetadataLatest: 'ErrorMetadataV14',
             EventMetadataLatest: 'EventMetadataV14',
             ExtrinsicMetadataLatest: 'ExtrinsicMetadataV14',
             FunctionArgumentMetadataLatest: 'FunctionArgumentMetadataV14',
             FunctionMetadataLatest: 'FunctionMetadataV14',
-            MetadataLatest: 'MetadataV14',
+            MetadataLatest: 'MetadataV15',
             PalletCallMetadataLatest: 'PalletCallMetadataV14',
             PalletConstantMetadataLatest: 'PalletConstantMetadataV14',
             PalletErrorMetadataLatest: 'PalletErrorMetadataV14',
             PalletEventMetadataLatest: 'PalletEventMetadataV14',
-            PalletMetadataLatest: 'PalletMetadataV14',
+            PalletMetadataLatest: 'PalletMetadataV15',
             PalletStorageMetadataLatest: 'PalletStorageMetadataV14',
             PortableType: 'PortableTypeV14',
+            RuntimeApiMetadataLatest: 'RuntimeApiMetadataV15',
             SignedExtensionMetadataLatest: 'SignedExtensionMetadataV14',
             StorageEntryMetadataLatest: 'StorageEntryMetadataV14',
             StorageEntryModifierLatest: 'StorageEntryModifierV14',
@@ -530,7 +567,8 @@
                     V11: 'MetadataV11',
                     V12: 'MetadataV12',
                     V13: 'MetadataV13',
-                    V14: 'MetadataV14'
+                    V14: 'MetadataV14',
+                    V15: 'MetadataV15'
                 }
             }
         }
@@ -13692,7 +13730,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.5.1' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.6.1' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
@@ -15870,8 +15908,8 @@
             }]);
     }
 
-    function toV13(registry, metadata) {
-        return registry.createTypeUnsafe('MetadataV13', [metadata]);
+    function toV13(registry, v12) {
+        return registry.createTypeUnsafe('MetadataV13', [v12]);
     }
 
     const typesAlias = {
@@ -16211,8 +16249,12 @@
             }]);
     }
 
-    function toLatest(_registry, v14, _metaVersion) {
-        return v14;
+    function toV15(registry, v14, _) {
+        return registry.createTypeUnsafe('MetadataV15', [v14]);
+    }
+
+    function toLatest(_registry, v15, _metaVersion) {
+        return v15;
     }
 
     const MAGIC_NUMBER = 0x6174656d;
@@ -16225,8 +16267,9 @@
         }
     }
 
-    const KNOWN_VERSIONS = [14, 13, 12, 11, 10, 9];
+    const KNOWN_VERSIONS = [15, 14, 13, 12, 11, 10, 9];
     const LATEST_VERSION = KNOWN_VERSIONS[0];
+    const TO_CALLS_VERSION = 14;
     class MetadataVersioned extends Struct {
         constructor(registry, value) {
             super(registry, {
@@ -16241,14 +16284,14 @@
                 return this.version === version;
             };
             this.__internal__getVersion = (version, fromPrev) => {
-                const asCurr = `asV${version}`;
-                const asPrev = version === 'latest'
-                    ? `asV${LATEST_VERSION}`
-                    : `asV${version - 1}`;
                 if (version !== 'latest' && this.__internal__assertVersion(version)) {
+                    const asCurr = `asV${version}`;
                     return this.__internal__metadata()[asCurr];
                 }
                 if (!this.__internal__converted.has(version)) {
+                    const asPrev = version === 'latest'
+                        ? `asV${LATEST_VERSION}`
+                        : `asV${(version - 1)}`;
                     this.__internal__converted.set(version, fromPrev(this.registry, this[asPrev], this.version));
                 }
                 return this.__internal__converted.get(version);
@@ -16260,7 +16303,7 @@
         get asCallsOnly() {
             return new MetadataVersioned(this.registry, {
                 magicNumber: this.magicNumber,
-                metadata: this.registry.createTypeUnsafe('MetadataAll', [toCallsOnly(this.registry, this.asLatest), LATEST_VERSION])
+                metadata: this.registry.createTypeUnsafe('MetadataAll', [toCallsOnly(this.registry, this.asLatest), TO_CALLS_VERSION])
             });
         }
         get asV9() {
@@ -16281,6 +16324,9 @@
         }
         get asV14() {
             return this.__internal__getVersion(14, toV14);
+        }
+        get asV15() {
+            return this.__internal__getVersion(15, toV15);
         }
         get asLatest() {
             return this.__internal__getVersion('latest', toLatest);
@@ -16312,7 +16358,6 @@
             }
             catch {
                 u8a[VERSION_IDX] = 10;
-                return u8a;
             }
         }
         return u8a;

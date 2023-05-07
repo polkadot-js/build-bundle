@@ -1329,7 +1329,7 @@
         }
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.5.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.6.1' };
 
     var extendStatics = function(d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -3816,6 +3816,7 @@
             : hdr.number;
     }
 
+    new Map();
     const deriveNoopCache = {
         del: () => undefined,
         forEach: () => undefined,
@@ -7265,6 +7266,7 @@
                 OpenTip: 'OpenTipTo225',
                 RefCount: 'RefCountTo259',
                 ReferendumInfo: 'ReferendumInfoTo239',
+                Scheduled: 'ScheduledTo254',
                 SlashingSpans: 'SlashingSpansTo204',
                 StakingLedger: 'StakingLedgerTo223',
                 Votes: 'VotesTo230',
@@ -7284,6 +7286,7 @@
                 OpenTip: 'OpenTipTo225',
                 RefCount: 'RefCountTo259',
                 ReferendumInfo: 'ReferendumInfoTo239',
+                Scheduled: 'ScheduledTo254',
                 SlashingSpans: 'SlashingSpansTo204',
                 StakingLedger: 'StakingLedgerTo223',
                 Votes: 'VotesTo230',
@@ -7303,6 +7306,7 @@
                 OpenTip: 'OpenTipTo225',
                 RefCount: 'RefCountTo259',
                 ReferendumInfo: 'ReferendumInfoTo239',
+                Scheduled: 'ScheduledTo254',
                 StakingLedger: 'StakingLedgerTo223',
                 Votes: 'VotesTo230',
                 Weight: 'u32'
@@ -7320,6 +7324,7 @@
                 OpenTip: 'OpenTipTo225',
                 RefCount: 'RefCountTo259',
                 ReferendumInfo: 'ReferendumInfoTo239',
+                Scheduled: 'ScheduledTo254',
                 StakingLedger: 'StakingLedgerTo223',
                 Weight: 'u32'
             }
@@ -7336,6 +7341,7 @@
                 OpenTip: 'OpenTipTo225',
                 RefCount: 'RefCountTo259',
                 ReferendumInfo: 'ReferendumInfoTo239',
+                Scheduled: 'ScheduledTo254',
                 StakingLedger: 'StakingLedgerTo240',
                 Weight: 'u32'
             }
@@ -7351,6 +7357,7 @@
                 Multiplier: 'Fixed64',
                 OpenTip: 'OpenTipTo225',
                 RefCount: 'RefCountTo259',
+                Scheduled: 'ScheduledTo254',
                 StakingLedger: 'StakingLedgerTo240',
                 Weight: 'u32'
             }
@@ -7364,7 +7371,8 @@
                 DispatchInfo: 'DispatchInfoTo244',
                 Heartbeat: 'HeartbeatTo244',
                 OpenTip: 'OpenTipTo225',
-                RefCount: 'RefCountTo259'
+                RefCount: 'RefCountTo259',
+                Scheduled: 'ScheduledTo254'
             }
         },
         {
@@ -7529,7 +7537,9 @@
         },
         {
             minmax: [30, 9109],
-            types: { ...sharedTypes$3 }
+            types: {
+                ...sharedTypes$3
+            }
         },
         {
             minmax: [9110, undefined],
