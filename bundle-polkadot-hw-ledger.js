@@ -217,7 +217,7 @@
 	        step((generator = generator.apply(thisArg, _arguments || [])).next());
 	    });
 	};
-	var __generator$5 = (commonjsGlobal && commonjsGlobal.__generator) || function (thisArg, body) {
+	var __generator$1 = (commonjsGlobal && commonjsGlobal.__generator) || function (thisArg, body) {
 	    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
 	    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
 	    function verb(n) { return function (v) { return step([n, v]); }; }
@@ -293,7 +293,7 @@
 	    SubstrateApp.prototype.getVersion = function () {
 	        return __awaiter$5(this, void 0, void 0, function () {
 	            var e_1;
-	            return __generator$5(this, function (_a) {
+	            return __generator$1(this, function (_a) {
 	                switch (_a.label) {
 	                    case 0:
 	                        _a.trys.push([0, 2, , 3]);
@@ -309,7 +309,7 @@
 	    };
 	    SubstrateApp.prototype.appInfo = function () {
 	        return __awaiter$5(this, void 0, void 0, function () {
-	            return __generator$5(this, function (_a) {
+	            return __generator$1(this, function (_a) {
 	                return [2 , this.transport.send(0xb0, 0x01, 0, 0).then(function (response) {
 	                        var errorCodeData = response.slice(-2);
 	                        var returnCode = errorCodeData[0] * 256 + errorCodeData[1];
@@ -357,7 +357,7 @@
 	        if (scheme === void 0) { scheme = common_1.SCHEME.ED25519; }
 	        return __awaiter$5(this, void 0, void 0, function () {
 	            var bip44Path, p1, p2;
-	            return __generator$5(this, function (_a) {
+	            return __generator$1(this, function (_a) {
 	                bip44Path = SubstrateApp.serializePath(this.slip0044, account, change, addressIndex);
 	                p1 = 0;
 	                if (requireConfirmation)
@@ -382,7 +382,7 @@
 	        if (scheme === void 0) { scheme = common_1.SCHEME.ED25519; }
 	        return __awaiter$5(this, void 0, void 0, function () {
 	            var payloadType, p2;
-	            return __generator$5(this, function (_a) {
+	            return __generator$1(this, function (_a) {
 	                payloadType = common_1.PAYLOAD_TYPE.ADD;
 	                if (chunkIdx === 1) {
 	                    payloadType = common_1.PAYLOAD_TYPE.INIT;
@@ -418,11 +418,11 @@
 	        return __awaiter$5(this, void 0, void 0, function () {
 	            var chunks;
 	            var _this = this;
-	            return __generator$5(this, function (_a) {
+	            return __generator$1(this, function (_a) {
 	                chunks = SubstrateApp.signGetChunks(this.slip0044, account, change, addressIndex, message);
 	                return [2 , this.signSendChunk(1, chunks.length, chunks[0], scheme).then(function () { return __awaiter$5(_this, void 0, void 0, function () {
 	                        var result, i;
-	                        return __generator$5(this, function (_a) {
+	                        return __generator$1(this, function (_a) {
 	                            switch (_a.label) {
 	                                case 0:
 	                                    i = 1;
@@ -452,7 +452,7 @@
 	    };
 	    SubstrateApp.prototype.getAllowlistPubKey = function () {
 	        return __awaiter$5(this, void 0, void 0, function () {
-	            return __generator$5(this, function (_a) {
+	            return __generator$1(this, function (_a) {
 	                return [2 , this.transport.send(this.cla, common_1.INS.ALLOWLIST_GET_PUBKEY, 0, 0).then(function (response) {
 	                        var errorCodeData = response.slice(-2);
 	                        var returnCode = errorCodeData[0] * 256 + errorCodeData[1];
@@ -475,7 +475,7 @@
 	    };
 	    SubstrateApp.prototype.setAllowlistPubKey = function (pk) {
 	        return __awaiter$5(this, void 0, void 0, function () {
-	            return __generator$5(this, function (_a) {
+	            return __generator$1(this, function (_a) {
 	                return [2 , this.transport.send(this.cla, common_1.INS.ALLOWLIST_SET_PUBKEY, 0, 0, pk).then(function (response) {
 	                        var errorCodeData = response.slice(-2);
 	                        var returnCode = errorCodeData[0] * 256 + errorCodeData[1];
@@ -489,7 +489,7 @@
 	    };
 	    SubstrateApp.prototype.getAllowlistHash = function () {
 	        return __awaiter$5(this, void 0, void 0, function () {
-	            return __generator$5(this, function (_a) {
+	            return __generator$1(this, function (_a) {
 	                return [2 , this.transport.send(this.cla, common_1.INS.ALLOWLIST_GET_HASH, 0, 0).then(function (response) {
 	                        var errorCodeData = response.slice(-2);
 	                        var returnCode = errorCodeData[0] * 256 + errorCodeData[1];
@@ -513,7 +513,7 @@
 	    SubstrateApp.prototype.uploadSendChunk = function (chunkIdx, chunkNum, chunk) {
 	        return __awaiter$5(this, void 0, void 0, function () {
 	            var payloadType;
-	            return __generator$5(this, function (_a) {
+	            return __generator$1(this, function (_a) {
 	                payloadType = common_1.PAYLOAD_TYPE.ADD;
 	                if (chunkIdx === 1) {
 	                    payloadType = common_1.PAYLOAD_TYPE.INIT;
@@ -537,13 +537,13 @@
 	        return __awaiter$5(this, void 0, void 0, function () {
 	            var chunks;
 	            var _this = this;
-	            return __generator$5(this, function (_a) {
+	            return __generator$1(this, function (_a) {
 	                chunks = [];
 	                chunks.push(Buffer.from([0]));
 	                chunks.push.apply(chunks, SubstrateApp.GetChunks(message));
 	                return [2 , this.uploadSendChunk(1, chunks.length, chunks[0]).then(function (result) { return __awaiter$5(_this, void 0, void 0, function () {
 	                        var i;
-	                        return __generator$5(this, function (_a) {
+	                        return __generator$1(this, function (_a) {
 	                            switch (_a.label) {
 	                                case 0:
 	                                    if (result.return_code !== common_1.ERROR_CODE.NoError) {
@@ -982,22 +982,22 @@
 	        function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
 	    return extendStatics(d, b);
 	};
-	function __extends$4(d, b) {
+	function __extends(d, b) {
 	    if (typeof b !== "function" && b !== null)
 	        throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
 	    extendStatics(d, b);
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	}
-	var __assign$1 = function() {
-	    __assign$1 = Object.assign || function __assign(t) {
+	var __assign = function() {
+	    __assign = Object.assign || function __assign(t) {
 	        for (var s, i = 1, n = arguments.length; i < n; i++) {
 	            s = arguments[i];
 	            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
 	        }
 	        return t;
 	    };
-	    return __assign$1.apply(this, arguments);
+	    return __assign.apply(this, arguments);
 	};
 	function __rest(s, e) {
 	    var t = {};
@@ -1068,7 +1068,7 @@
 	        step((generator = generator.apply(thisArg, _arguments || [])).next());
 	    });
 	}
-	function __generator$4(thisArg, body) {
+	function __generator(thisArg, body) {
 	    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
 	    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
 	    function verb(n) { return function (v) { return step([n, v]); }; }
@@ -1109,7 +1109,7 @@
 	function __exportStar(m, o) {
 	    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(o, p)) __createBinding(o, m, p);
 	}
-	function __values$1(o) {
+	function __values(o) {
 	    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
 	    if (m) return m.call(o);
 	    if (o && typeof o.length === "number") return {
@@ -1120,7 +1120,7 @@
 	    };
 	    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 	}
-	function __read$2(o, n) {
+	function __read(o, n) {
 	    var m = typeof Symbol === "function" && o[Symbol.iterator];
 	    if (!m) return o;
 	    var i = m.call(o), r, ar = [], e;
@@ -1138,7 +1138,7 @@
 	}
 	function __spread() {
 	    for (var ar = [], i = 0; i < arguments.length; i++)
-	        ar = ar.concat(__read$2(arguments[i]));
+	        ar = ar.concat(__read(arguments[i]));
 	    return ar;
 	}
 	function __spreadArrays() {
@@ -1148,7 +1148,7 @@
 	            r[k] = a[j];
 	    return r;
 	}
-	function __spreadArray$1(to, from, pack) {
+	function __spreadArray(to, from, pack) {
 	    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
 	        if (ar || !(i in from)) {
 	            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
@@ -1179,7 +1179,7 @@
 	function __asyncValues(o) {
 	    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
 	    var m = o[Symbol.asyncIterator], i;
-	    return m ? m.call(o) : (o = typeof __values$1 === "function" ? __values$1(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+	    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
 	    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
 	    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 	}
@@ -1219,7 +1219,7 @@
 
 	const tslib_es6 = /*#__PURE__*/Object.freeze({
 		__proto__: null,
-		get __assign () { return __assign$1; },
+		get __assign () { return __assign; },
 		__asyncDelegator: __asyncDelegator,
 		__asyncGenerator: __asyncGenerator,
 		__asyncValues: __asyncValues,
@@ -1232,207 +1232,64 @@
 		__decorate: __decorate,
 		__esDecorate: __esDecorate,
 		__exportStar: __exportStar,
-		__extends: __extends$4,
-		__generator: __generator$4,
+		__extends: __extends,
+		__generator: __generator,
 		__importDefault: __importDefault,
 		__importStar: __importStar,
 		__makeTemplateObject: __makeTemplateObject,
 		__metadata: __metadata,
 		__param: __param,
 		__propKey: __propKey,
-		__read: __read$2,
+		__read: __read,
 		__rest: __rest,
 		__runInitializers: __runInitializers,
 		__setFunctionName: __setFunctionName,
 		__spread: __spread,
-		__spreadArray: __spreadArray$1,
+		__spreadArray: __spreadArray,
 		__spreadArrays: __spreadArrays,
-		__values: __values$1
+		__values: __values
 	});
 
 	const require$$0 = /*@__PURE__*/getAugmentedNamespace(tslib_es6);
 
 	const EventEmitter = {};
 
-	var __extends$3 = (global && global.__extends) || (function () {
-	    var extendStatics = function (d, b) {
-	        extendStatics = Object.setPrototypeOf ||
-	            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-	            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-	        return extendStatics(d, b);
-	    };
-	    return function (d, b) {
-	        if (typeof b !== "function" && b !== null)
-	            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-	        extendStatics(d, b);
-	        function __() { this.constructor = d; }
-	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	    };
-	})();
-	(global && global.__values) || function(o) {
-	    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-	    if (m) return m.call(o);
-	    if (o && typeof o.length === "number") return {
-	        next: function () {
-	            if (o && i >= o.length) o = void 0;
-	            return { value: o && o[i++], done: !o };
-	        }
-	    };
-	    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-	};
-	var createCustomErrorClass = function (name) {
-	    var CustomErrorClass =  (function (_super) {
-	        __extends$3(CustomErrorClass, _super);
-	        function CustomErrorClass(message, fields, options) {
-	            var _this =
-	            _super.call(this, message || name, options) || this;
-	            Object.setPrototypeOf(_this, CustomErrorClass.prototype);
-	            _this.name = name;
+	const createCustomErrorClass = (name) => {
+	    class CustomErrorClass extends Error {
+	        constructor(message, fields, options) {
+	            super(message || name, options);
+	            Object.setPrototypeOf(this, CustomErrorClass.prototype);
+	            this.name = name;
 	            if (fields) {
-	                for (var k in fields) {
-	                    _this[k] = fields[k];
+	                for (const k in fields) {
+	                    this[k] = fields[k];
 	                }
 	            }
 	            if (options &&
 	                isObject(options) &&
 	                "cause" in options &&
-	                !("cause" in _this)) {
-	                var cause = options.cause;
-	                _this.cause = cause;
+	                !("cause" in this)) {
+	                const cause = options.cause;
+	                this.cause = cause;
 	                if ("stack" in cause) {
-	                    _this.stack = _this.stack + "\nCAUSE: " + cause.stack;
+	                    this.stack = this.stack + "\nCAUSE: " + cause.stack;
 	                }
 	            }
-	            return _this;
 	        }
-	        return CustomErrorClass;
-	    }(Error));
+	    }
 	    return CustomErrorClass;
 	};
 	function isObject(value) {
 	    return typeof value === "object";
 	}
 
-	var __extends$2 = (global && global.__extends) || (function () {
-	    var extendStatics = function (d, b) {
-	        extendStatics = Object.setPrototypeOf ||
-	            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-	            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-	        return extendStatics(d, b);
-	    };
-	    return function (d, b) {
-	        if (typeof b !== "function" && b !== null)
-	            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-	        extendStatics(d, b);
-	        function __() { this.constructor = d; }
-	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	    };
-	})();
-	createCustomErrorClass("AccountNameRequired");
-	createCustomErrorClass("AccountNotSupported");
-	createCustomErrorClass("AmountRequired");
-	createCustomErrorClass("BluetoothRequired");
-	createCustomErrorClass("BtcUnmatchedApp");
-	createCustomErrorClass("CantOpenDevice");
-	createCustomErrorClass("CashAddrNotSupported");
-	createCustomErrorClass("CurrencyNotSupported");
-	createCustomErrorClass("DeviceAppVerifyNotSupported");
-	createCustomErrorClass("DeviceGenuineSocketEarlyClose");
-	createCustomErrorClass("DeviceNotGenuine");
-	createCustomErrorClass("DeviceOnDashboardExpected");
-	createCustomErrorClass("DeviceOnDashboardUnexpected");
-	createCustomErrorClass("DeviceInOSUExpected");
-	createCustomErrorClass("DeviceHalted");
-	createCustomErrorClass("DeviceNameInvalid");
-	createCustomErrorClass("DeviceSocketFail");
-	createCustomErrorClass("DeviceSocketNoBulkStatus");
-	var LockedDeviceError = createCustomErrorClass("LockedDeviceError");
-	var DisconnectedDevice = createCustomErrorClass("DisconnectedDevice");
-	var DisconnectedDeviceDuringOperation = createCustomErrorClass("DisconnectedDeviceDuringOperation");
-	createCustomErrorClass("DeviceExtractOnboardingStateError");
-	createCustomErrorClass("DeviceOnboardingStatePollingError");
-	createCustomErrorClass("EnpointConfig");
-	createCustomErrorClass("EthAppPleaseEnableContractData");
-	createCustomErrorClass("FeeEstimationFailed");
-	createCustomErrorClass("FirmwareNotRecognized");
-	createCustomErrorClass("HardResetFail");
-	createCustomErrorClass("InvalidXRPTag");
-	createCustomErrorClass("InvalidAddress");
-	createCustomErrorClass("InvalidAddressBecauseDestinationIsAlsoSource");
-	createCustomErrorClass("LatestMCUInstalledError");
-	createCustomErrorClass("UnknownMCU");
-	createCustomErrorClass("LedgerAPIError");
-	createCustomErrorClass("LedgerAPIErrorWithMessage");
-	createCustomErrorClass("LedgerAPINotAvailable");
-	createCustomErrorClass("ManagerAppAlreadyInstalled");
-	createCustomErrorClass("ManagerAppRelyOnBTC");
-	createCustomErrorClass("ManagerAppDepInstallRequired");
-	createCustomErrorClass("ManagerAppDepUninstallRequired");
-	createCustomErrorClass("ManagerDeviceLocked");
-	createCustomErrorClass("ManagerFirmwareNotEnoughSpace");
-	createCustomErrorClass("ManagerNotEnoughSpace");
-	createCustomErrorClass("ManagerUninstallBTCDep");
-	createCustomErrorClass("NetworkDown");
-	createCustomErrorClass("NoAddressesFound");
-	createCustomErrorClass("NotEnoughBalance");
-	createCustomErrorClass("NotEnoughBalanceToDelegate");
-	createCustomErrorClass("NotEnoughBalanceInParentAccount");
-	createCustomErrorClass("NotEnoughSpendableBalance");
-	createCustomErrorClass("NotEnoughBalanceBecauseDestinationNotCreated");
-	createCustomErrorClass("NoAccessToCamera");
-	createCustomErrorClass("NotEnoughGas");
-	createCustomErrorClass("NotSupportedLegacyAddress");
-	createCustomErrorClass("GasLessThanEstimate");
-	createCustomErrorClass("PriorityFeeTooLow");
-	createCustomErrorClass("PriorityFeeTooHigh");
-	createCustomErrorClass("PriorityFeeHigherThanMaxFee");
-	createCustomErrorClass("MaxFeeTooLow");
-	createCustomErrorClass("PasswordsDontMatch");
-	createCustomErrorClass("PasswordIncorrect");
-	createCustomErrorClass("RecommendSubAccountsToEmpty");
-	createCustomErrorClass("RecommendUndelegation");
-	createCustomErrorClass("TimeoutTagged");
-	createCustomErrorClass("UnexpectedBootloader");
-	createCustomErrorClass("MCUNotGenuineToDashboard");
-	createCustomErrorClass("RecipientRequired");
-	createCustomErrorClass("UnavailableTezosOriginatedAccountReceive");
-	createCustomErrorClass("UnavailableTezosOriginatedAccountSend");
-	createCustomErrorClass("UpdateFetchFileFail");
-	createCustomErrorClass("UpdateIncorrectHash");
-	createCustomErrorClass("UpdateIncorrectSig");
-	createCustomErrorClass("UpdateYourApp");
-	createCustomErrorClass("UserRefusedDeviceNameChange");
-	createCustomErrorClass("UserRefusedAddress");
-	createCustomErrorClass("UserRefusedFirmwareUpdate");
-	createCustomErrorClass("UserRefusedAllowManager");
-	createCustomErrorClass("UserRefusedOnDevice");
-	var TransportOpenUserCancelled = createCustomErrorClass("TransportOpenUserCancelled");
-	var TransportInterfaceNotAvailable = createCustomErrorClass("TransportInterfaceNotAvailable");
-	var TransportRaceCondition = createCustomErrorClass("TransportRaceCondition");
-	var TransportWebUSBGestureRequired = createCustomErrorClass("TransportWebUSBGestureRequired");
-	createCustomErrorClass("DeviceShouldStayInApp");
-	createCustomErrorClass("WebsocketConnectionError");
-	createCustomErrorClass("WebsocketConnectionFailed");
-	createCustomErrorClass("WrongDeviceForAccount");
-	createCustomErrorClass("WrongAppForCurrency");
-	createCustomErrorClass("ETHAddressNonEIP");
-	createCustomErrorClass("CantScanQRCode");
-	createCustomErrorClass("FeeNotLoaded");
-	createCustomErrorClass("FeeRequired");
-	createCustomErrorClass("FeeTooHigh");
-	createCustomErrorClass("PendingOperation");
-	createCustomErrorClass("SyncError");
-	createCustomErrorClass("PairingFailed");
-	createCustomErrorClass("GenuineCheckFailed");
-	createCustomErrorClass("LedgerAPI4xx");
-	createCustomErrorClass("LedgerAPI5xx");
-	createCustomErrorClass("FirmwareOrAppUpdateRequired");
-	createCustomErrorClass("OpReturnSizeLimit");
-	createCustomErrorClass("DustLimit");
-	createCustomErrorClass("LanguageNotFound");
-	createCustomErrorClass("NoDBPathGiven");
-	createCustomErrorClass("DBWrongPassword");
-	createCustomErrorClass("DBNotReset");
+	const LockedDeviceError = createCustomErrorClass("LockedDeviceError");
+	const DisconnectedDevice = createCustomErrorClass("DisconnectedDevice");
+	const DisconnectedDeviceDuringOperation = createCustomErrorClass("DisconnectedDeviceDuringOperation");
+	const TransportOpenUserCancelled = createCustomErrorClass("TransportOpenUserCancelled");
+	const TransportInterfaceNotAvailable = createCustomErrorClass("TransportInterfaceNotAvailable");
+	const TransportRaceCondition = createCustomErrorClass("TransportRaceCondition");
+	const TransportWebUSBGestureRequired = createCustomErrorClass("TransportWebUSBGestureRequired");
 	var HwTransportErrorType;
 	(function (HwTransportErrorType) {
 	    HwTransportErrorType["Unknown"] = "Unknown";
@@ -1440,32 +1297,17 @@
 	    HwTransportErrorType["LocationServicesUnauthorized"] = "LocationServicesUnauthorized";
 	    HwTransportErrorType["BluetoothScanStartFailed"] = "BluetoothScanStartFailed";
 	})(HwTransportErrorType || (HwTransportErrorType = {}));
-	((function (_super) {
-	    __extends$2(HwTransportError, _super);
-	    function HwTransportError(type, message) {
-	        var _this = _super.call(this, message) || this;
-	        _this.name = "HwTransportError";
-	        _this.type = type;
-	        Object.setPrototypeOf(_this, HwTransportError.prototype);
-	        return _this;
+	class TransportError extends Error {
+	    constructor(message, id) {
+	        const name = "TransportError";
+	        super(message || name);
+	        this.name = name;
+	        this.message = message;
+	        this.stack = new Error().stack;
+	        this.id = id;
 	    }
-	    return HwTransportError;
-	})(Error));
-	var TransportError =  (function (_super) {
-	    __extends$2(TransportError, _super);
-	    function TransportError(message, id) {
-	        var _this = this;
-	        var name = "TransportError";
-	        _this = _super.call(this, message || name) || this;
-	        _this.name = name;
-	        _this.message = message;
-	        _this.stack = new Error().stack;
-	        _this.id = id;
-	        return _this;
-	    }
-	    return TransportError;
-	}(Error));
-	var StatusCodes = {
+	}
+	const StatusCodes = {
 	    ACCESS_CONDITION_NOT_FULFILLED: 0x9804,
 	    ALGORITHM_NOT_SUPPORTED: 0x9484,
 	    CLA_NOT_SUPPORTED: 0x6e00,
@@ -1504,7 +1346,7 @@
 	    TECHNICAL_PROBLEM: 0x6f00,
 	    UNKNOWN_APDU: 0x6d02,
 	    USER_REFUSED_ON_DEVICE: 0x5501,
-	    NOT_ENOUGH_SPACE: 0x5102
+	    NOT_ENOUGH_SPACE: 0x5102,
 	};
 	function getAltStatusMessage(code) {
 	    switch (code) {
@@ -1528,11 +1370,11 @@
 	    }
 	}
 	function TransportStatusError(statusCode) {
-	    var statusText = Object.keys(StatusCodes).find(function (k) { return StatusCodes[k] === statusCode; }) ||
+	    const statusText = Object.keys(StatusCodes).find((k) => StatusCodes[k] === statusCode) ||
 	        "UNKNOWN_ERROR";
-	    var smsg = getAltStatusMessage(statusCode) || statusText;
-	    var statusCodeStr = statusCode.toString(16);
-	    var message = "Ledger device: ".concat(smsg, " (0x").concat(statusCodeStr, ")");
+	    const smsg = getAltStatusMessage(statusCode) || statusText;
+	    const statusCodeStr = statusCode.toString(16);
+	    const message = `Ledger device: ${smsg} (0x${statusCodeStr})`;
 	    if (statusCode === StatusCodes.LOCKED_DEVICE) {
 	        throw new LockedDeviceError(message);
 	    }
@@ -1553,349 +1395,196 @@
 	        step((generator = generator.apply(thisArg, _arguments || [])).next());
 	    });
 	};
-	var __generator$3 = (global && global.__generator) || function (thisArg, body) {
-	    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-	    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-	    function verb(n) { return function (v) { return step([n, v]); }; }
-	    function step(op) {
-	        if (f) throw new TypeError("Generator is already executing.");
-	        while (_) try {
-	            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-	            if (y = 0, t) op = [op[0] & 2, t.value];
-	            switch (op[0]) {
-	                case 0: case 1: t = op; break;
-	                case 4: _.label++; return { value: op[1], done: false };
-	                case 5: _.label++; y = op[1]; op = [0]; continue;
-	                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-	                default:
-	                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-	                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-	                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-	                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-	                    if (t[2]) _.ops.pop();
-	                    _.trys.pop(); continue;
-	            }
-	            op = body.call(thisArg, _);
-	        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-	        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-	    }
-	};
-	var __values = (global && global.__values) || function(o) {
-	    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-	    if (m) return m.call(o);
-	    if (o && typeof o.length === "number") return {
-	        next: function () {
-	            if (o && i >= o.length) o = void 0;
-	            return { value: o && o[i++], done: !o };
-	        }
-	    };
-	    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-	};
-	var __read$1 = (global && global.__read) || function (o, n) {
-	    var m = typeof Symbol === "function" && o[Symbol.iterator];
-	    if (!m) return o;
-	    var i = m.call(o), r, ar = [], e;
-	    try {
-	        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-	    }
-	    catch (error) { e = { error: error }; }
-	    finally {
-	        try {
-	            if (r && !r.done && (m = i["return"])) m.call(i);
-	        }
-	        finally { if (e) throw e.error; }
-	    }
-	    return ar;
-	};
-	var __spreadArray = (global && global.__spreadArray) || function (to, from, pack) {
-	    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-	        if (ar || !(i in from)) {
-	            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-	            ar[i] = from[i];
-	        }
-	    }
-	    return to.concat(ar || Array.prototype.slice.call(from));
-	};
-	var Transport =  (function () {
-	    function Transport() {
-	        var _this = this;
+	class Transport {
+	    constructor() {
 	        this.exchangeTimeout = 30000;
 	        this.unresponsiveTimeout = 15000;
 	        this.deviceModel = null;
 	        this._events = new EventEmitter();
-	        this.send = function (cla, ins, p1, p2, data, statusList) {
-	            if (data === void 0) { data = Buffer.alloc(0); }
-	            if (statusList === void 0) { statusList = [StatusCodes.OK]; }
-	            return __awaiter$3(_this, void 0, void 0, function () {
-	                var response, sw;
-	                return __generator$3(this, function (_a) {
-	                    switch (_a.label) {
-	                        case 0:
-	                            if (data.length >= 256) {
-	                                throw new TransportError("data.length exceed 256 bytes limit. Got: " + data.length, "DataLengthTooBig");
-	                            }
-	                            return [4 , this.exchange(Buffer.concat([
-	                                    Buffer.from([cla, ins, p1, p2]),
-	                                    Buffer.from([data.length]),
-	                                    data,
-	                                ]))];
-	                        case 1:
-	                            response = _a.sent();
-	                            sw = response.readUInt16BE(response.length - 2);
-	                            if (!statusList.some(function (s) { return s === sw; })) {
-	                                throw new TransportStatusError(sw);
-	                            }
-	                            return [2 , response];
-	                    }
-	                });
+	        this.send = (cla, ins, p1, p2, data = Buffer.alloc(0), statusList = [StatusCodes.OK]) => __awaiter$3(this, void 0, void 0, function* () {
+	            if (data.length >= 256) {
+	                throw new TransportError("data.length exceed 256 bytes limit. Got: " + data.length, "DataLengthTooBig");
+	            }
+	            const response = yield this.exchange(Buffer.concat([
+	                Buffer.from([cla, ins, p1, p2]),
+	                Buffer.from([data.length]),
+	                data,
+	            ]));
+	            const sw = response.readUInt16BE(response.length - 2);
+	            if (!statusList.some((s) => s === sw)) {
+	                throw new TransportStatusError(sw);
+	            }
+	            return response;
+	        });
+	        this.exchangeAtomicImpl = (f) => __awaiter$3(this, void 0, void 0, function* () {
+	            if (this.exchangeBusyPromise) {
+	                throw new TransportRaceCondition("An action was already pending on the Ledger device. Please deny or reconnect.");
+	            }
+	            let resolveBusy;
+	            const busyPromise = new Promise((r) => {
+	                resolveBusy = r;
 	            });
-	        };
-	        this.exchangeAtomicImpl = function (f) { return __awaiter$3(_this, void 0, void 0, function () {
-	            var resolveBusy, busyPromise, unresponsiveReached, timeout, res;
-	            var _this = this;
-	            return __generator$3(this, function (_a) {
-	                switch (_a.label) {
-	                    case 0:
-	                        if (this.exchangeBusyPromise) {
-	                            throw new TransportRaceCondition("An action was already pending on the Ledger device. Please deny or reconnect.");
-	                        }
-	                        busyPromise = new Promise(function (r) {
-	                            resolveBusy = r;
-	                        });
-	                        this.exchangeBusyPromise = busyPromise;
-	                        unresponsiveReached = false;
-	                        timeout = setTimeout(function () {
-	                            unresponsiveReached = true;
-	                            _this.emit("unresponsive");
-	                        }, this.unresponsiveTimeout);
-	                        _a.label = 1;
-	                    case 1:
-	                        _a.trys.push([1, , 3, 4]);
-	                        return [4 , f()];
-	                    case 2:
-	                        res = _a.sent();
-	                        if (unresponsiveReached) {
-	                            this.emit("responsive");
-	                        }
-	                        return [2 , res];
-	                    case 3:
-	                        clearTimeout(timeout);
-	                        if (resolveBusy)
-	                            resolveBusy();
-	                        this.exchangeBusyPromise = null;
-	                        return [7 ];
-	                    case 4: return [2 ];
+	            this.exchangeBusyPromise = busyPromise;
+	            let unresponsiveReached = false;
+	            const timeout = setTimeout(() => {
+	                unresponsiveReached = true;
+	                this.emit("unresponsive");
+	            }, this.unresponsiveTimeout);
+	            try {
+	                const res = yield f();
+	                if (unresponsiveReached) {
+	                    this.emit("responsive");
 	                }
-	            });
-	        }); };
+	                return res;
+	            }
+	            finally {
+	                clearTimeout(timeout);
+	                if (resolveBusy)
+	                    resolveBusy();
+	                this.exchangeBusyPromise = null;
+	            }
+	        });
 	        this._appAPIlock = null;
 	    }
-	    Transport.prototype.exchange = function (_apdu) {
+	    exchange(_apdu) {
 	        throw new Error("exchange not implemented");
-	    };
-	    Transport.prototype.exchangeBulk = function (apdus, observer) {
-	        var _this = this;
-	        var unsubscribed = false;
-	        var unsubscribe = function () {
+	    }
+	    exchangeBulk(apdus, observer) {
+	        let unsubscribed = false;
+	        const unsubscribe = () => {
 	            unsubscribed = true;
 	        };
-	        var main = function () { return __awaiter$3(_this, void 0, void 0, function () {
-	            var apdus_1, apdus_1_1, apdu, r, status_1, e_1_1;
-	            var e_1, _a;
-	            return __generator$3(this, function (_b) {
-	                switch (_b.label) {
-	                    case 0:
-	                        if (unsubscribed)
-	                            return [2 ];
-	                        _b.label = 1;
-	                    case 1:
-	                        _b.trys.push([1, 6, 7, 8]);
-	                        apdus_1 = __values(apdus), apdus_1_1 = apdus_1.next();
-	                        _b.label = 2;
-	                    case 2:
-	                        if (!!apdus_1_1.done) return [3 , 5];
-	                        apdu = apdus_1_1.value;
-	                        return [4 , this.exchange(apdu)];
-	                    case 3:
-	                        r = _b.sent();
-	                        if (unsubscribed)
-	                            return [2 ];
-	                        status_1 = r.readUInt16BE(r.length - 2);
-	                        if (status_1 !== StatusCodes.OK) {
-	                            throw new TransportStatusError(status_1);
-	                        }
-	                        observer.next(r);
-	                        _b.label = 4;
-	                    case 4:
-	                        apdus_1_1 = apdus_1.next();
-	                        return [3 , 2];
-	                    case 5: return [3 , 8];
-	                    case 6:
-	                        e_1_1 = _b.sent();
-	                        e_1 = { error: e_1_1 };
-	                        return [3 , 8];
-	                    case 7:
-	                        try {
-	                            if (apdus_1_1 && !apdus_1_1.done && (_a = apdus_1["return"])) _a.call(apdus_1);
-	                        }
-	                        finally { if (e_1) throw e_1.error; }
-	                        return [7 ];
-	                    case 8: return [2 ];
+	        const main = () => __awaiter$3(this, void 0, void 0, function* () {
+	            if (unsubscribed)
+	                return;
+	            for (const apdu of apdus) {
+	                const r = yield this.exchange(apdu);
+	                if (unsubscribed)
+	                    return;
+	                const status = r.readUInt16BE(r.length - 2);
+	                if (status !== StatusCodes.OK) {
+	                    throw new TransportStatusError(status);
 	                }
-	            });
-	        }); };
-	        main().then(function () { return !unsubscribed && observer.complete(); }, function (e) { return !unsubscribed && observer.error(e); });
-	        return { unsubscribe: unsubscribe };
-	    };
-	    Transport.prototype.setScrambleKey = function (_key) { };
-	    Transport.prototype.close = function () {
+	                observer.next(r);
+	            }
+	        });
+	        main().then(() => !unsubscribed && observer.complete(), (e) => !unsubscribed && observer.error(e));
+	        return { unsubscribe };
+	    }
+	    setScrambleKey(_key) { }
+	    close() {
 	        return Promise.resolve();
-	    };
-	    Transport.prototype.on = function (eventName, cb) {
+	    }
+	    on(eventName, cb) {
 	        this._events.on(eventName, cb);
-	    };
-	    Transport.prototype.off = function (eventName, cb) {
+	    }
+	    off(eventName, cb) {
 	        this._events.removeListener(eventName, cb);
-	    };
-	    Transport.prototype.emit = function (event) {
-	        var _a;
-	        var args = [];
-	        for (var _i = 1; _i < arguments.length; _i++) {
-	            args[_i - 1] = arguments[_i];
-	        }
-	        (_a = this._events).emit.apply(_a, __spreadArray([event], __read$1(args), false));
-	    };
-	    Transport.prototype.setDebugMode = function () {
+	    }
+	    emit(event, ...args) {
+	        this._events.emit(event, ...args);
+	    }
+	    setDebugMode() {
 	        console.warn("setDebugMode is deprecated. use @ledgerhq/logs instead. No logs are emitted in this anymore.");
-	    };
-	    Transport.prototype.setExchangeTimeout = function (exchangeTimeout) {
+	    }
+	    setExchangeTimeout(exchangeTimeout) {
 	        this.exchangeTimeout = exchangeTimeout;
-	    };
-	    Transport.prototype.setExchangeUnresponsiveTimeout = function (unresponsiveTimeout) {
+	    }
+	    setExchangeUnresponsiveTimeout(unresponsiveTimeout) {
 	        this.unresponsiveTimeout = unresponsiveTimeout;
-	    };
-	    Transport.create = function (openTimeout, listenTimeout) {
-	        var _this = this;
-	        if (openTimeout === void 0) { openTimeout = 3000; }
-	        return new Promise(function (resolve, reject) {
-	            var found = false;
-	            var sub = _this.listen({
-	                next: function (e) {
+	    }
+	    static create(openTimeout = 3000, listenTimeout) {
+	        return new Promise((resolve, reject) => {
+	            let found = false;
+	            const sub = this.listen({
+	                next: (e) => {
 	                    found = true;
 	                    if (sub)
 	                        sub.unsubscribe();
 	                    if (listenTimeoutId)
 	                        clearTimeout(listenTimeoutId);
-	                    _this.open(e.descriptor, openTimeout).then(resolve, reject);
+	                    this.open(e.descriptor, openTimeout).then(resolve, reject);
 	                },
-	                error: function (e) {
+	                error: (e) => {
 	                    if (listenTimeoutId)
 	                        clearTimeout(listenTimeoutId);
 	                    reject(e);
 	                },
-	                complete: function () {
+	                complete: () => {
 	                    if (listenTimeoutId)
 	                        clearTimeout(listenTimeoutId);
 	                    if (!found) {
-	                        reject(new TransportError(_this.ErrorMessage_NoDeviceFound, "NoDeviceFound"));
+	                        reject(new TransportError(this.ErrorMessage_NoDeviceFound, "NoDeviceFound"));
 	                    }
-	                }
+	                },
 	            });
-	            var listenTimeoutId = listenTimeout
-	                ? setTimeout(function () {
+	            const listenTimeoutId = listenTimeout
+	                ? setTimeout(() => {
 	                    sub.unsubscribe();
-	                    reject(new TransportError(_this.ErrorMessage_ListenTimeout, "ListenTimeout"));
+	                    reject(new TransportError(this.ErrorMessage_ListenTimeout, "ListenTimeout"));
 	                }, listenTimeout)
 	                : null;
 	        });
-	    };
-	    Transport.prototype.decorateAppAPIMethods = function (self, methods, scrambleKey) {
-	        var e_2, _a;
-	        try {
-	            for (var methods_1 = __values(methods), methods_1_1 = methods_1.next(); !methods_1_1.done; methods_1_1 = methods_1.next()) {
-	                var methodName = methods_1_1.value;
-	                self[methodName] = this.decorateAppAPIMethod(methodName, self[methodName], self, scrambleKey);
-	            }
+	    }
+	    decorateAppAPIMethods(self, methods, scrambleKey) {
+	        for (const methodName of methods) {
+	            self[methodName] = this.decorateAppAPIMethod(methodName, self[methodName], self, scrambleKey);
 	        }
-	        catch (e_2_1) { e_2 = { error: e_2_1 }; }
-	        finally {
+	    }
+	    decorateAppAPIMethod(methodName, f, ctx, scrambleKey) {
+	        return (...args) => __awaiter$3(this, void 0, void 0, function* () {
+	            const { _appAPIlock } = this;
+	            if (_appAPIlock) {
+	                return Promise.reject(new TransportError("Ledger Device is busy (lock " + _appAPIlock + ")", "TransportLocked"));
+	            }
 	            try {
-	                if (methods_1_1 && !methods_1_1.done && (_a = methods_1["return"])) _a.call(methods_1);
+	                this._appAPIlock = methodName;
+	                this.setScrambleKey(scrambleKey);
+	                return yield f.apply(ctx, args);
 	            }
-	            finally { if (e_2) throw e_2.error; }
-	        }
-	    };
-	    Transport.prototype.decorateAppAPIMethod = function (methodName, f, ctx, scrambleKey) {
-	        var _this = this;
-	        return function () {
-	            var args = [];
-	            for (var _i = 0; _i < arguments.length; _i++) {
-	                args[_i] = arguments[_i];
+	            finally {
+	                this._appAPIlock = null;
 	            }
-	            return __awaiter$3(_this, void 0, void 0, function () {
-	                var _appAPIlock;
-	                return __generator$3(this, function (_a) {
-	                    switch (_a.label) {
-	                        case 0:
-	                            _appAPIlock = this._appAPIlock;
-	                            if (_appAPIlock) {
-	                                return [2 , Promise.reject(new TransportError("Ledger Device is busy (lock " + _appAPIlock + ")", "TransportLocked"))];
-	                            }
-	                            _a.label = 1;
-	                        case 1:
-	                            _a.trys.push([1, , 3, 4]);
-	                            this._appAPIlock = methodName;
-	                            this.setScrambleKey(scrambleKey);
-	                            return [4 , f.apply(ctx, args)];
-	                        case 2: return [2 , _a.sent()];
-	                        case 3:
-	                            this._appAPIlock = null;
-	                            return [7 ];
-	                        case 4: return [2 ];
-	                    }
-	                });
-	            });
-	        };
-	    };
-	    Transport.ErrorMessage_ListenTimeout = "No Ledger device found (timeout)";
-	    Transport.ErrorMessage_NoDeviceFound = "No Ledger device found";
-	    return Transport;
-	}());
+	        });
+	    }
+	}
+	Transport.ErrorMessage_ListenTimeout = "No Ledger device found (timeout)";
+	Transport.ErrorMessage_NoDeviceFound = "No Ledger device found";
 
-	var Tag = 0x05;
+	const Tag = 0x05;
 	function asUInt16BE(value) {
-	    var b = Buffer.alloc(2);
+	    const b = Buffer.alloc(2);
 	    b.writeUInt16BE(value, 0);
 	    return b;
 	}
-	var initialAcc = {
+	const initialAcc = {
 	    data: Buffer.alloc(0),
 	    dataLength: 0,
-	    sequence: 0
+	    sequence: 0,
 	};
-	var createHIDframing = function (channel, packetSize) {
+	const createHIDframing = (channel, packetSize) => {
 	    return {
-	        makeBlocks: function (apdu) {
-	            var data = Buffer.concat([asUInt16BE(apdu.length), apdu]);
-	            var blockSize = packetSize - 5;
-	            var nbBlocks = Math.ceil(data.length / blockSize);
+	        makeBlocks(apdu) {
+	            let data = Buffer.concat([asUInt16BE(apdu.length), apdu]);
+	            const blockSize = packetSize - 5;
+	            const nbBlocks = Math.ceil(data.length / blockSize);
 	            data = Buffer.concat([
 	                data,
 	                Buffer.alloc(nbBlocks * blockSize - data.length + 1).fill(0),
 	            ]);
-	            var blocks = [];
-	            for (var i = 0; i < nbBlocks; i++) {
-	                var head = Buffer.alloc(5);
+	            const blocks = [];
+	            for (let i = 0; i < nbBlocks; i++) {
+	                const head = Buffer.alloc(5);
 	                head.writeUInt16BE(channel, 0);
 	                head.writeUInt8(Tag, 2);
 	                head.writeUInt16BE(i, 3);
-	                var chunk = data.slice(i * blockSize, (i + 1) * blockSize);
+	                const chunk = data.slice(i * blockSize, (i + 1) * blockSize);
 	                blocks.push(Buffer.concat([head, chunk]));
 	            }
 	            return blocks;
 	        },
-	        reduceResponse: function (acc, chunk) {
-	            var _a = acc || initialAcc, data = _a.data, dataLength = _a.dataLength, sequence = _a.sequence;
+	        reduceResponse(acc, chunk) {
+	            let { data, dataLength, sequence } = acc || initialAcc;
 	            if (chunk.readUInt16BE(0) !== channel) {
 	                throw new TransportError("Invalid channel", "InvalidChannel");
 	            }
@@ -1909,22 +1598,22 @@
 	                dataLength = chunk.readUInt16BE(5);
 	            }
 	            sequence++;
-	            var chunkData = chunk.slice(acc ? 5 : 7);
+	            const chunkData = chunk.slice(acc ? 5 : 7);
 	            data = Buffer.concat([data, chunkData]);
 	            if (data.length > dataLength) {
 	                data = data.slice(0, dataLength);
 	            }
 	            return {
-	                data: data,
-	                dataLength: dataLength,
-	                sequence: sequence
+	                data,
+	                dataLength,
+	                sequence,
 	            };
 	        },
-	        getReducedResult: function (acc) {
+	        getReducedResult(acc) {
 	            if (acc && acc.dataLength === acc.data.length) {
 	                return acc.data;
 	            }
-	        }
+	        },
 	    };
 	};
 
@@ -4260,18 +3949,6 @@
 	};
 	const semver$1 = getDefaultExportFromCjs(semver);
 
-	var __assign = (global && global.__assign) || function () {
-	    __assign = Object.assign || function(t) {
-	        for (var s, i = 1, n = arguments.length; i < n; i++) {
-	            s = arguments[i];
-	            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-	                t[p] = s[p];
-	        }
-	        return t;
-	    };
-	    return __assign.apply(this, arguments);
-	};
-	var _a;
 	var DeviceModelId;
 	(function (DeviceModelId) {
 	    DeviceModelId["blue"] = "blue";
@@ -4280,8 +3957,8 @@
 	    DeviceModelId["nanoX"] = "nanoX";
 	    DeviceModelId["stax"] = "stax";
 	})(DeviceModelId || (DeviceModelId = {}));
-	var devices = (_a = {},
-	    _a[DeviceModelId.blue] = {
+	const devices = {
+	    [DeviceModelId.blue]: {
 	        id: DeviceModelId.blue,
 	        productName: "Ledger Blue",
 	        productIdMM: 0x00,
@@ -4289,9 +3966,9 @@
 	        usbOnly: true,
 	        memorySize: 480 * 1024,
 	        masks: [0x31000000, 0x31010000],
-	        getBlockSize: function (_firwareVersion) { return 4 * 1024; }
+	        getBlockSize: (_firwareVersion) => 4 * 1024,
 	    },
-	    _a[DeviceModelId.nanoS] = {
+	    [DeviceModelId.nanoS]: {
 	        id: DeviceModelId.nanoS,
 	        productName: "Ledger Nano S",
 	        productIdMM: 0x10,
@@ -4299,14 +3976,14 @@
 	        usbOnly: true,
 	        memorySize: 320 * 1024,
 	        masks: [0x31100000],
-	        getBlockSize: function (firmwareVersion) {
+	        getBlockSize: (firmwareVersion) => {
 	            var _a;
 	            return semver$1.lt((_a = semver$1.coerce(firmwareVersion)) !== null && _a !== void 0 ? _a : "", "2.0.0")
 	                ? 4 * 1024
 	                : 2 * 1024;
-	        }
+	        },
 	    },
-	    _a[DeviceModelId.nanoSP] = {
+	    [DeviceModelId.nanoSP]: {
 	        id: DeviceModelId.nanoSP,
 	        productName: "Ledger Nano S Plus",
 	        productIdMM: 0x50,
@@ -4314,9 +3991,9 @@
 	        usbOnly: true,
 	        memorySize: 1536 * 1024,
 	        masks: [0x33100000],
-	        getBlockSize: function (_firmwareVersion) { return 32; }
+	        getBlockSize: (_firmwareVersion) => 32,
 	    },
-	    _a[DeviceModelId.nanoX] = {
+	    [DeviceModelId.nanoX]: {
 	        id: DeviceModelId.nanoX,
 	        productName: "Ledger Nano X",
 	        productIdMM: 0x40,
@@ -4324,17 +4001,17 @@
 	        usbOnly: false,
 	        memorySize: 2 * 1024 * 1024,
 	        masks: [0x33000000],
-	        getBlockSize: function (_firwareVersion) { return 4 * 1024; },
+	        getBlockSize: (_firwareVersion) => 4 * 1024,
 	        bluetoothSpec: [
 	            {
 	                serviceUuid: "13d63400-2c97-0004-0000-4c6564676572",
 	                notifyUuid: "13d63400-2c97-0004-0001-4c6564676572",
 	                writeUuid: "13d63400-2c97-0004-0002-4c6564676572",
-	                writeCmdUuid: "13d63400-2c97-0004-0003-4c6564676572"
+	                writeCmdUuid: "13d63400-2c97-0004-0003-4c6564676572",
 	            },
-	        ]
+	        ],
 	    },
-	    _a[DeviceModelId.stax] = {
+	    [DeviceModelId.stax]: {
 	        id: DeviceModelId.stax,
 	        productName: "Ledger Stax",
 	        productIdMM: 0x60,
@@ -4342,44 +4019,44 @@
 	        usbOnly: false,
 	        memorySize: 1536 * 1024,
 	        masks: [0x33200000],
-	        getBlockSize: function (_firmwareVersion) { return 32; },
+	        getBlockSize: (_firmwareVersion) => 32,
 	        bluetoothSpec: [
 	            {
 	                serviceUuid: "13d63400-2c97-6004-0000-4c6564676572",
 	                notifyUuid: "13d63400-2c97-6004-0001-4c6564676572",
 	                writeUuid: "13d63400-2c97-6004-0002-4c6564676572",
-	                writeCmdUuid: "13d63400-2c97-6004-0003-4c6564676572"
+	                writeCmdUuid: "13d63400-2c97-6004-0003-4c6564676572",
 	            },
-	        ]
+	        ],
 	    },
-	    _a);
+	};
 	({
 	    Blue: DeviceModelId.blue,
 	    "Nano S": DeviceModelId.nanoS,
 	    "Nano S Plus": DeviceModelId.nanoSP,
 	    "Nano X": DeviceModelId.nanoX,
-	    Stax: DeviceModelId.stax
+	    Stax: DeviceModelId.stax,
 	});
-	var devicesList = Object.values(devices);
-	var ledgerUSBVendorId = 0x2c97;
-	var identifyUSBProductId = function (usbProductId) {
-	    var legacy = devicesList.find(function (d) { return d.legacyUsbProductId === usbProductId; });
+	const devicesList = Object.values(devices);
+	const ledgerUSBVendorId = 0x2c97;
+	const identifyUSBProductId = (usbProductId) => {
+	    const legacy = devicesList.find((d) => d.legacyUsbProductId === usbProductId);
 	    if (legacy)
 	        return legacy;
-	    var mm = usbProductId >> 8;
-	    var deviceModel = devicesList.find(function (d) { return d.productIdMM === mm; });
+	    const mm = usbProductId >> 8;
+	    const deviceModel = devicesList.find((d) => d.productIdMM === mm);
 	    return deviceModel;
 	};
-	var bluetoothServices = [];
-	var serviceUuidToInfos = {};
-	for (var id$1 in devices) {
-	    var deviceModel = devices[id$1];
-	    var bluetoothSpec = deviceModel.bluetoothSpec;
+	const bluetoothServices = [];
+	const serviceUuidToInfos = {};
+	for (const id in devices) {
+	    const deviceModel = devices[id];
+	    const { bluetoothSpec } = deviceModel;
 	    if (bluetoothSpec) {
-	        for (var i = 0; i < bluetoothSpec.length; i++) {
-	            var spec = bluetoothSpec[i];
+	        for (let i = 0; i < bluetoothSpec.length; i++) {
+	            const spec = bluetoothSpec[i];
 	            bluetoothServices.push(spec.serviceUuid);
-	            serviceUuidToInfos[spec.serviceUuid] = serviceUuidToInfos[spec.serviceUuid.replace(/-/g, "")] = __assign({ deviceModel: deviceModel }, spec);
+	            serviceUuidToInfos[spec.serviceUuid] = serviceUuidToInfos[spec.serviceUuid.replace(/-/g, "")] = Object.assign({ deviceModel }, spec);
 	        }
 	    }
 	}
@@ -4422,21 +4099,6 @@
 	    window.__ledgerLogsListen = listen;
 	}
 
-	var __extends$1 = (global && global.__extends) || (function () {
-	    var extendStatics = function (d, b) {
-	        extendStatics = Object.setPrototypeOf ||
-	            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-	            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-	        return extendStatics(d, b);
-	    };
-	    return function (d, b) {
-	        if (typeof b !== "function" && b !== null)
-	            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-	        extendStatics(d, b);
-	        function __() { this.constructor = d; }
-	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	    };
-	})();
 	var __awaiter$2 = (global && global.__awaiter) || function (thisArg, _arguments, P, generator) {
 	    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
 	    return new (P || (P = Promise))(function (resolve, reject) {
@@ -4446,298 +4108,173 @@
 	        step((generator = generator.apply(thisArg, _arguments || [])).next());
 	    });
 	};
-	var __generator$2 = (global && global.__generator) || function (thisArg, body) {
-	    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-	    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-	    function verb(n) { return function (v) { return step([n, v]); }; }
-	    function step(op) {
-	        if (f) throw new TypeError("Generator is already executing.");
-	        while (_) try {
-	            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-	            if (y = 0, t) op = [op[0] & 2, t.value];
-	            switch (op[0]) {
-	                case 0: case 1: t = op; break;
-	                case 4: _.label++; return { value: op[1], done: false };
-	                case 5: _.label++; y = op[1]; op = [0]; continue;
-	                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-	                default:
-	                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-	                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-	                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-	                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-	                    if (t[2]) _.ops.pop();
-	                    _.trys.pop(); continue;
-	            }
-	            op = body.call(thisArg, _);
-	        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-	        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-	    }
-	};
-	var __read = (global && global.__read) || function (o, n) {
-	    var m = typeof Symbol === "function" && o[Symbol.iterator];
-	    if (!m) return o;
-	    var i = m.call(o), r, ar = [], e;
-	    try {
-	        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-	    }
-	    catch (error) { e = { error: error }; }
-	    finally {
-	        try {
-	            if (r && !r.done && (m = i["return"])) m.call(i);
-	        }
-	        finally { if (e) throw e.error; }
-	    }
-	    return ar;
-	};
-	var ledgerDevices$1 = [
+	const ledgerDevices$1 = [
 	    {
-	        vendorId: ledgerUSBVendorId
+	        vendorId: ledgerUSBVendorId,
 	    },
 	];
-	var isSupported$1 = function () {
-	    return Promise.resolve(!!(window.navigator && window.navigator.hid));
-	};
-	var getHID = function () {
-	    var hid = navigator.hid;
+	const isSupported$1 = () => Promise.resolve(!!(window.navigator && window.navigator.hid));
+	const getHID = () => {
+	    const { hid } = navigator;
 	    if (!hid)
 	        throw new TransportError("navigator.hid is not supported", "HIDNotSupported");
 	    return hid;
 	};
 	function requestLedgerDevices() {
-	    return __awaiter$2(this, void 0, void 0, function () {
-	        var device;
-	        return __generator$2(this, function (_a) {
-	            switch (_a.label) {
-	                case 0: return [4 , getHID().requestDevice({
-	                        filters: ledgerDevices$1
-	                    })];
-	                case 1:
-	                    device = _a.sent();
-	                    if (Array.isArray(device))
-	                        return [2 , device];
-	                    return [2 , [device]];
-	            }
+	    return __awaiter$2(this, void 0, void 0, function* () {
+	        const device = yield getHID().requestDevice({
+	            filters: ledgerDevices$1,
 	        });
+	        if (Array.isArray(device))
+	            return device;
+	        return [device];
 	    });
 	}
 	function getLedgerDevices$1() {
-	    return __awaiter$2(this, void 0, void 0, function () {
-	        var devices;
-	        return __generator$2(this, function (_a) {
-	            switch (_a.label) {
-	                case 0: return [4 , getHID().getDevices()];
-	                case 1:
-	                    devices = _a.sent();
-	                    return [2 , devices.filter(function (d) { return d.vendorId === ledgerUSBVendorId; })];
-	            }
-	        });
+	    return __awaiter$2(this, void 0, void 0, function* () {
+	        const devices = yield getHID().getDevices();
+	        return devices.filter((d) => d.vendorId === ledgerUSBVendorId);
 	    });
 	}
 	function getFirstLedgerDevice$1() {
-	    return __awaiter$2(this, void 0, void 0, function () {
-	        var existingDevices, devices;
-	        return __generator$2(this, function (_a) {
-	            switch (_a.label) {
-	                case 0: return [4 , getLedgerDevices$1()];
-	                case 1:
-	                    existingDevices = _a.sent();
-	                    if (existingDevices.length > 0)
-	                        return [2 , existingDevices[0]];
-	                    return [4 , requestLedgerDevices()];
-	                case 2:
-	                    devices = _a.sent();
-	                    return [2 , devices[0]];
-	            }
-	        });
+	    return __awaiter$2(this, void 0, void 0, function* () {
+	        const existingDevices = yield getLedgerDevices$1();
+	        if (existingDevices.length > 0)
+	            return existingDevices[0];
+	        const devices = yield requestLedgerDevices();
+	        return devices[0];
 	    });
 	}
-	var TransportWebHID =  (function (_super) {
-	    __extends$1(TransportWebHID, _super);
-	    function TransportWebHID(device) {
-	        var _this = _super.call(this) || this;
-	        _this.channel = Math.floor(Math.random() * 0xffff);
-	        _this.packetSize = 64;
-	        _this.inputs = [];
-	        _this.read = function () {
-	            if (_this.inputs.length) {
-	                return Promise.resolve(_this.inputs.shift());
+	class TransportWebHID extends Transport {
+	    constructor(device) {
+	        super();
+	        this.channel = Math.floor(Math.random() * 0xffff);
+	        this.packetSize = 64;
+	        this.inputs = [];
+	        this.read = () => {
+	            if (this.inputs.length) {
+	                return Promise.resolve(this.inputs.shift());
 	            }
-	            return new Promise(function (success) {
-	                _this.inputCallback = success;
+	            return new Promise((success) => {
+	                this.inputCallback = success;
 	            });
 	        };
-	        _this.onInputReport = function (e) {
-	            var buffer = Buffer.from(e.data.buffer);
-	            if (_this.inputCallback) {
-	                _this.inputCallback(buffer);
-	                _this.inputCallback = null;
+	        this.onInputReport = (e) => {
+	            const buffer = Buffer.from(e.data.buffer);
+	            if (this.inputCallback) {
+	                this.inputCallback(buffer);
+	                this.inputCallback = null;
 	            }
 	            else {
-	                _this.inputs.push(buffer);
+	                this.inputs.push(buffer);
 	            }
 	        };
-	        _this._disconnectEmitted = false;
-	        _this._emitDisconnect = function (e) {
-	            if (_this._disconnectEmitted)
+	        this._disconnectEmitted = false;
+	        this._emitDisconnect = (e) => {
+	            if (this._disconnectEmitted)
 	                return;
-	            _this._disconnectEmitted = true;
-	            _this.emit("disconnect", e);
+	            this._disconnectEmitted = true;
+	            this.emit("disconnect", e);
 	        };
-	        _this.exchange = function (apdu) { return __awaiter$2(_this, void 0, void 0, function () {
-	            var b;
-	            var _this = this;
-	            return __generator$2(this, function (_a) {
-	                switch (_a.label) {
-	                    case 0: return [4 , this.exchangeAtomicImpl(function () { return __awaiter$2(_this, void 0, void 0, function () {
-	                            var _a, channel, packetSize, framing, blocks, i, result, acc, buffer;
-	                            return __generator$2(this, function (_b) {
-	                                switch (_b.label) {
-	                                    case 0:
-	                                        _a = this, channel = _a.channel, packetSize = _a.packetSize;
-	                                        log("apdu", "=> " + apdu.toString("hex"));
-	                                        framing = createHIDframing(channel, packetSize);
-	                                        blocks = framing.makeBlocks(apdu);
-	                                        i = 0;
-	                                        _b.label = 1;
-	                                    case 1:
-	                                        if (!(i < blocks.length)) return [3 , 4];
-	                                        return [4 , this.device.sendReport(0, blocks[i])];
-	                                    case 2:
-	                                        _b.sent();
-	                                        _b.label = 3;
-	                                    case 3:
-	                                        i++;
-	                                        return [3 , 1];
-	                                    case 4:
-	                                        if (!!(result = framing.getReducedResult(acc))) return [3 , 6];
-	                                        return [4 , this.read()];
-	                                    case 5:
-	                                        buffer = _b.sent();
-	                                        acc = framing.reduceResponse(acc, buffer);
-	                                        return [3 , 4];
-	                                    case 6:
-	                                        log("apdu", "<= " + result.toString("hex"));
-	                                        return [2 , result];
-	                                }
-	                            });
-	                        }); })["catch"](function (e) {
-	                            if (e && e.message && e.message.includes("write")) {
-	                                _this._emitDisconnect(e);
-	                                throw new DisconnectedDeviceDuringOperation(e.message);
-	                            }
-	                            throw e;
-	                        })];
-	                    case 1:
-	                        b = _a.sent();
-	                        return [2 , b];
+	        this.exchange = (apdu) => __awaiter$2(this, void 0, void 0, function* () {
+	            const b = yield this.exchangeAtomicImpl(() => __awaiter$2(this, void 0, void 0, function* () {
+	                const { channel, packetSize } = this;
+	                log("apdu", "=> " + apdu.toString("hex"));
+	                const framing = createHIDframing(channel, packetSize);
+	                const blocks = framing.makeBlocks(apdu);
+	                for (let i = 0; i < blocks.length; i++) {
+	                    yield this.device.sendReport(0, blocks[i]);
 	                }
+	                let result;
+	                let acc;
+	                while (!(result = framing.getReducedResult(acc))) {
+	                    const buffer = yield this.read();
+	                    acc = framing.reduceResponse(acc, buffer);
+	                }
+	                log("apdu", "<= " + result.toString("hex"));
+	                return result;
+	            })).catch((e) => {
+	                if (e && e.message && e.message.includes("write")) {
+	                    this._emitDisconnect(e);
+	                    throw new DisconnectedDeviceDuringOperation(e.message);
+	                }
+	                throw e;
 	            });
-	        }); };
-	        _this.device = device;
-	        _this.deviceModel =
+	            return b;
+	        });
+	        this.device = device;
+	        this.deviceModel =
 	            typeof device.productId === "number"
 	                ? identifyUSBProductId(device.productId)
 	                : undefined;
-	        device.addEventListener("inputreport", _this.onInputReport);
-	        return _this;
+	        device.addEventListener("inputreport", this.onInputReport);
 	    }
-	    TransportWebHID.request = function () {
-	        return __awaiter$2(this, void 0, void 0, function () {
-	            var _a, device;
-	            return __generator$2(this, function (_b) {
-	                switch (_b.label) {
-	                    case 0: return [4 , requestLedgerDevices()];
-	                    case 1:
-	                        _a = __read.apply(void 0, [_b.sent(), 1]), device = _a[0];
-	                        return [2 , TransportWebHID.open(device)];
+	    static request() {
+	        return __awaiter$2(this, void 0, void 0, function* () {
+	            const [device] = yield requestLedgerDevices();
+	            return TransportWebHID.open(device);
+	        });
+	    }
+	    static openConnected() {
+	        return __awaiter$2(this, void 0, void 0, function* () {
+	            const devices = yield getLedgerDevices$1();
+	            if (devices.length === 0)
+	                return null;
+	            return TransportWebHID.open(devices[0]);
+	        });
+	    }
+	    static open(device) {
+	        return __awaiter$2(this, void 0, void 0, function* () {
+	            yield device.open();
+	            const transport = new TransportWebHID(device);
+	            const onDisconnect = (e) => {
+	                if (device === e.device) {
+	                    getHID().removeEventListener("disconnect", onDisconnect);
+	                    transport._emitDisconnect(new DisconnectedDevice());
 	                }
-	            });
+	            };
+	            getHID().addEventListener("disconnect", onDisconnect);
+	            return transport;
 	        });
-	    };
-	    TransportWebHID.openConnected = function () {
-	        return __awaiter$2(this, void 0, void 0, function () {
-	            var devices;
-	            return __generator$2(this, function (_a) {
-	                switch (_a.label) {
-	                    case 0: return [4 , getLedgerDevices$1()];
-	                    case 1:
-	                        devices = _a.sent();
-	                        if (devices.length === 0)
-	                            return [2 , null];
-	                        return [2 , TransportWebHID.open(devices[0])];
-	                }
-	            });
+	    }
+	    close() {
+	        return __awaiter$2(this, void 0, void 0, function* () {
+	            yield this.exchangeBusyPromise;
+	            this.device.removeEventListener("inputreport", this.onInputReport);
+	            yield this.device.close();
 	        });
-	    };
-	    TransportWebHID.open = function (device) {
-	        return __awaiter$2(this, void 0, void 0, function () {
-	            var transport, onDisconnect;
-	            return __generator$2(this, function (_a) {
-	                switch (_a.label) {
-	                    case 0: return [4 , device.open()];
-	                    case 1:
-	                        _a.sent();
-	                        transport = new TransportWebHID(device);
-	                        onDisconnect = function (e) {
-	                            if (device === e.device) {
-	                                getHID().removeEventListener("disconnect", onDisconnect);
-	                                transport._emitDisconnect(new DisconnectedDevice());
-	                            }
-	                        };
-	                        getHID().addEventListener("disconnect", onDisconnect);
-	                        return [2 , transport];
-	                }
-	            });
-	        });
-	    };
-	    TransportWebHID.prototype.close = function () {
-	        return __awaiter$2(this, void 0, void 0, function () {
-	            return __generator$2(this, function (_a) {
-	                switch (_a.label) {
-	                    case 0: return [4 , this.exchangeBusyPromise];
-	                    case 1:
-	                        _a.sent();
-	                        this.device.removeEventListener("inputreport", this.onInputReport);
-	                        return [4 , this.device.close()];
-	                    case 2:
-	                        _a.sent();
-	                        return [2 ];
-	                }
-	            });
-	        });
-	    };
-	    TransportWebHID.prototype.setScrambleKey = function () { };
-	    TransportWebHID.isSupported = isSupported$1;
-	    TransportWebHID.list = getLedgerDevices$1;
-	    TransportWebHID.listen = function (observer) {
-	        var unsubscribed = false;
-	        getFirstLedgerDevice$1().then(function (device) {
-	            if (!device) {
-	                observer.error(new TransportOpenUserCancelled("Access denied to use Ledger device"));
-	            }
-	            else if (!unsubscribed) {
-	                var deviceModel = typeof device.productId === "number"
-	                    ? identifyUSBProductId(device.productId)
-	                    : undefined;
-	                observer.next({
-	                    type: "add",
-	                    descriptor: device,
-	                    deviceModel: deviceModel
-	                });
-	                observer.complete();
-	            }
-	        }, function (error) {
-	            observer.error(new TransportOpenUserCancelled(error.message));
-	        });
-	        function unsubscribe() {
-	            unsubscribed = true;
+	    }
+	    setScrambleKey() { }
+	}
+	TransportWebHID.isSupported = isSupported$1;
+	TransportWebHID.list = getLedgerDevices$1;
+	TransportWebHID.listen = (observer) => {
+	    let unsubscribed = false;
+	    getFirstLedgerDevice$1().then((device) => {
+	        if (!device) {
+	            observer.error(new TransportOpenUserCancelled("Access denied to use Ledger device"));
 	        }
-	        return {
-	            unsubscribe: unsubscribe
-	        };
+	        else if (!unsubscribed) {
+	            const deviceModel = typeof device.productId === "number"
+	                ? identifyUSBProductId(device.productId)
+	                : undefined;
+	            observer.next({
+	                type: "add",
+	                descriptor: device,
+	                deviceModel,
+	            });
+	            observer.complete();
+	        }
+	    }, (error) => {
+	        observer.error(new TransportOpenUserCancelled(error.message));
+	    });
+	    function unsubscribe() {
+	        unsubscribed = true;
+	    }
+	    return {
+	        unsubscribe,
 	    };
-	    return TransportWebHID;
-	}(Transport));
+	};
 
 	const TransportWebHID$1 = /*#__PURE__*/Object.freeze({
 		__proto__: null,
@@ -4755,102 +4292,37 @@
 	        step((generator = generator.apply(thisArg, _arguments || [])).next());
 	    });
 	};
-	var __generator$1 = (global && global.__generator) || function (thisArg, body) {
-	    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-	    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-	    function verb(n) { return function (v) { return step([n, v]); }; }
-	    function step(op) {
-	        if (f) throw new TypeError("Generator is already executing.");
-	        while (_) try {
-	            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-	            if (y = 0, t) op = [op[0] & 2, t.value];
-	            switch (op[0]) {
-	                case 0: case 1: t = op; break;
-	                case 4: _.label++; return { value: op[1], done: false };
-	                case 5: _.label++; y = op[1]; op = [0]; continue;
-	                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-	                default:
-	                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-	                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-	                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-	                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-	                    if (t[2]) _.ops.pop();
-	                    _.trys.pop(); continue;
-	            }
-	            op = body.call(thisArg, _);
-	        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-	        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-	    }
-	};
-	var ledgerDevices = [
+	const ledgerDevices = [
 	    {
-	        vendorId: ledgerUSBVendorId
+	        vendorId: ledgerUSBVendorId,
 	    },
 	];
 	function requestLedgerDevice() {
-	    return __awaiter$1(this, void 0, void 0, function () {
-	        var device;
-	        return __generator$1(this, function (_a) {
-	            switch (_a.label) {
-	                case 0: return [4 , navigator.usb.requestDevice({
-	                        filters: ledgerDevices
-	                    })];
-	                case 1:
-	                    device = _a.sent();
-	                    return [2 , device];
-	            }
+	    return __awaiter$1(this, void 0, void 0, function* () {
+	        const device = yield navigator.usb.requestDevice({
+	            filters: ledgerDevices,
 	        });
+	        return device;
 	    });
 	}
 	function getLedgerDevices() {
-	    return __awaiter$1(this, void 0, void 0, function () {
-	        var devices;
-	        return __generator$1(this, function (_a) {
-	            switch (_a.label) {
-	                case 0: return [4 , navigator.usb.getDevices()];
-	                case 1:
-	                    devices = _a.sent();
-	                    return [2 , devices.filter(function (d) { return d.vendorId === ledgerUSBVendorId; })];
-	            }
-	        });
+	    return __awaiter$1(this, void 0, void 0, function* () {
+	        const devices = yield navigator.usb.getDevices();
+	        return devices.filter((d) => d.vendorId === ledgerUSBVendorId);
 	    });
 	}
 	function getFirstLedgerDevice() {
-	    return __awaiter$1(this, void 0, void 0, function () {
-	        var existingDevices;
-	        return __generator$1(this, function (_a) {
-	            switch (_a.label) {
-	                case 0: return [4 , getLedgerDevices()];
-	                case 1:
-	                    existingDevices = _a.sent();
-	                    if (existingDevices.length > 0)
-	                        return [2 , existingDevices[0]];
-	                    return [2 , requestLedgerDevice()];
-	            }
-	        });
+	    return __awaiter$1(this, void 0, void 0, function* () {
+	        const existingDevices = yield getLedgerDevices();
+	        if (existingDevices.length > 0)
+	            return existingDevices[0];
+	        return requestLedgerDevice();
 	    });
 	}
-	var isSupported = function () {
-	    return Promise.resolve(!!navigator &&
-	        !!navigator.usb &&
-	        typeof navigator.usb.getDevices === "function");
-	};
+	const isSupported = () => Promise.resolve(!!navigator &&
+	    !!navigator.usb &&
+	    typeof navigator.usb.getDevices === "function");
 
-	var __extends = (global && global.__extends) || (function () {
-	    var extendStatics = function (d, b) {
-	        extendStatics = Object.setPrototypeOf ||
-	            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-	            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-	        return extendStatics(d, b);
-	    };
-	    return function (d, b) {
-	        if (typeof b !== "function" && b !== null)
-	            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-	        extendStatics(d, b);
-	        function __() { this.constructor = d; }
-	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	    };
-	})();
 	var __awaiter = (global && global.__awaiter) || function (thisArg, _arguments, P, generator) {
 	    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
 	    return new (P || (P = Promise))(function (resolve, reject) {
@@ -4860,258 +4332,146 @@
 	        step((generator = generator.apply(thisArg, _arguments || [])).next());
 	    });
 	};
-	var __generator = (global && global.__generator) || function (thisArg, body) {
-	    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-	    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-	    function verb(n) { return function (v) { return step([n, v]); }; }
-	    function step(op) {
-	        if (f) throw new TypeError("Generator is already executing.");
-	        while (_) try {
-	            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-	            if (y = 0, t) op = [op[0] & 2, t.value];
-	            switch (op[0]) {
-	                case 0: case 1: t = op; break;
-	                case 4: _.label++; return { value: op[1], done: false };
-	                case 5: _.label++; y = op[1]; op = [0]; continue;
-	                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-	                default:
-	                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-	                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-	                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-	                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-	                    if (t[2]) _.ops.pop();
-	                    _.trys.pop(); continue;
-	            }
-	            op = body.call(thisArg, _);
-	        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-	        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-	    }
-	};
-	var configurationValue = 1;
-	var endpointNumber = 3;
-	var TransportWebUSB =  (function (_super) {
-	    __extends(TransportWebUSB, _super);
-	    function TransportWebUSB(device, interfaceNumber) {
-	        var _this = _super.call(this) || this;
-	        _this.channel = Math.floor(Math.random() * 0xffff);
-	        _this.packetSize = 64;
-	        _this._disconnectEmitted = false;
-	        _this._emitDisconnect = function (e) {
-	            if (_this._disconnectEmitted)
+	const configurationValue = 1;
+	const endpointNumber = 3;
+	class TransportWebUSB extends Transport {
+	    constructor(device, interfaceNumber) {
+	        super();
+	        this.channel = Math.floor(Math.random() * 0xffff);
+	        this.packetSize = 64;
+	        this._disconnectEmitted = false;
+	        this._emitDisconnect = (e) => {
+	            if (this._disconnectEmitted)
 	                return;
-	            _this._disconnectEmitted = true;
-	            _this.emit("disconnect", e);
+	            this._disconnectEmitted = true;
+	            this.emit("disconnect", e);
 	        };
-	        _this.device = device;
-	        _this.interfaceNumber = interfaceNumber;
-	        _this.deviceModel = identifyUSBProductId(device.productId);
-	        return _this;
+	        this.device = device;
+	        this.interfaceNumber = interfaceNumber;
+	        this.deviceModel = identifyUSBProductId(device.productId);
 	    }
-	    TransportWebUSB.request = function () {
-	        return __awaiter(this, void 0, void 0, function () {
-	            var device;
-	            return __generator(this, function (_a) {
-	                switch (_a.label) {
-	                    case 0: return [4 , requestLedgerDevice()];
-	                    case 1:
-	                        device = _a.sent();
-	                        return [2 , TransportWebUSB.open(device)];
-	                }
-	            });
+	    static request() {
+	        return __awaiter(this, void 0, void 0, function* () {
+	            const device = yield requestLedgerDevice();
+	            return TransportWebUSB.open(device);
 	        });
-	    };
-	    TransportWebUSB.openConnected = function () {
-	        return __awaiter(this, void 0, void 0, function () {
-	            var devices;
-	            return __generator(this, function (_a) {
-	                switch (_a.label) {
-	                    case 0: return [4 , getLedgerDevices()];
-	                    case 1:
-	                        devices = _a.sent();
-	                        if (devices.length === 0)
-	                            return [2 , null];
-	                        return [2 , TransportWebUSB.open(devices[0])];
-	                }
-	            });
+	    }
+	    static openConnected() {
+	        return __awaiter(this, void 0, void 0, function* () {
+	            const devices = yield getLedgerDevices();
+	            if (devices.length === 0)
+	                return null;
+	            return TransportWebUSB.open(devices[0]);
 	        });
-	    };
-	    TransportWebUSB.open = function (device) {
-	        return __awaiter(this, void 0, void 0, function () {
-	            var iface, interfaceNumber, e_1, transport, onDisconnect;
-	            return __generator(this, function (_a) {
-	                switch (_a.label) {
-	                    case 0: return [4 , device.open()];
-	                    case 1:
-	                        _a.sent();
-	                        if (!(device.configuration === null)) return [3 , 3];
-	                        return [4 , device.selectConfiguration(configurationValue)];
-	                    case 2:
-	                        _a.sent();
-	                        _a.label = 3;
-	                    case 3: return [4 , gracefullyResetDevice(device)];
-	                    case 4:
-	                        _a.sent();
-	                        iface = device.configurations[0].interfaces.find(function (_a) {
-	                            var alternates = _a.alternates;
-	                            return alternates.some(function (a) { return a.interfaceClass === 255; });
-	                        });
-	                        if (!iface) {
-	                            throw new TransportInterfaceNotAvailable("No WebUSB interface found for your Ledger device. Please upgrade firmware or contact techsupport.");
-	                        }
-	                        interfaceNumber = iface.interfaceNumber;
-	                        _a.label = 5;
-	                    case 5:
-	                        _a.trys.push([5, 7, , 9]);
-	                        return [4 , device.claimInterface(interfaceNumber)];
-	                    case 6:
-	                        _a.sent();
-	                        return [3 , 9];
-	                    case 7:
-	                        e_1 = _a.sent();
-	                        return [4 , device.close()];
-	                    case 8:
-	                        _a.sent();
-	                        throw new TransportInterfaceNotAvailable(e_1.message);
-	                    case 9:
-	                        transport = new TransportWebUSB(device, interfaceNumber);
-	                        onDisconnect = function (e) {
-	                            if (device === e.device) {
-	                                navigator.usb.removeEventListener("disconnect", onDisconnect);
-	                                transport._emitDisconnect(new DisconnectedDevice());
-	                            }
-	                        };
-	                        navigator.usb.addEventListener("disconnect", onDisconnect);
-	                        return [2 , transport];
-	                }
-	            });
-	        });
-	    };
-	    TransportWebUSB.prototype.close = function () {
-	        return __awaiter(this, void 0, void 0, function () {
-	            return __generator(this, function (_a) {
-	                switch (_a.label) {
-	                    case 0: return [4 , this.exchangeBusyPromise];
-	                    case 1:
-	                        _a.sent();
-	                        return [4 , this.device.releaseInterface(this.interfaceNumber)];
-	                    case 2:
-	                        _a.sent();
-	                        return [4 , gracefullyResetDevice(this.device)];
-	                    case 3:
-	                        _a.sent();
-	                        return [4 , this.device.close()];
-	                    case 4:
-	                        _a.sent();
-	                        return [2 ];
-	                }
-	            });
-	        });
-	    };
-	    TransportWebUSB.prototype.exchange = function (apdu) {
-	        return __awaiter(this, void 0, void 0, function () {
-	            var b;
-	            var _this = this;
-	            return __generator(this, function (_a) {
-	                switch (_a.label) {
-	                    case 0: return [4 , this.exchangeAtomicImpl(function () { return __awaiter(_this, void 0, void 0, function () {
-	                            var _a, channel, packetSize, framing, blocks, i, result, acc, r, buffer;
-	                            return __generator(this, function (_b) {
-	                                switch (_b.label) {
-	                                    case 0:
-	                                        _a = this, channel = _a.channel, packetSize = _a.packetSize;
-	                                        log("apdu", "=> " + apdu.toString("hex"));
-	                                        framing = createHIDframing(channel, packetSize);
-	                                        blocks = framing.makeBlocks(apdu);
-	                                        i = 0;
-	                                        _b.label = 1;
-	                                    case 1:
-	                                        if (!(i < blocks.length)) return [3 , 4];
-	                                        return [4 , this.device.transferOut(endpointNumber, blocks[i])];
-	                                    case 2:
-	                                        _b.sent();
-	                                        _b.label = 3;
-	                                    case 3:
-	                                        i++;
-	                                        return [3 , 1];
-	                                    case 4:
-	                                        if (!!(result = framing.getReducedResult(acc))) return [3 , 6];
-	                                        return [4 , this.device.transferIn(endpointNumber, packetSize)];
-	                                    case 5:
-	                                        r = _b.sent();
-	                                        buffer = Buffer.from(r.data.buffer);
-	                                        acc = framing.reduceResponse(acc, buffer);
-	                                        return [3 , 4];
-	                                    case 6:
-	                                        log("apdu", "<= " + result.toString("hex"));
-	                                        return [2 , result];
-	                                }
-	                            });
-	                        }); })["catch"](function (e) {
-	                            if (e && e.message && e.message.includes("disconnected")) {
-	                                _this._emitDisconnect(e);
-	                                throw new DisconnectedDeviceDuringOperation(e.message);
-	                            }
-	                            throw e;
-	                        })];
-	                    case 1:
-	                        b = _a.sent();
-	                        return [2 , b];
-	                }
-	            });
-	        });
-	    };
-	    TransportWebUSB.prototype.setScrambleKey = function () { };
-	    TransportWebUSB.isSupported = isSupported;
-	    TransportWebUSB.list = getLedgerDevices;
-	    TransportWebUSB.listen = function (observer) {
-	        var unsubscribed = false;
-	        getFirstLedgerDevice().then(function (device) {
-	            if (!unsubscribed) {
-	                var deviceModel = identifyUSBProductId(device.productId);
-	                observer.next({
-	                    type: "add",
-	                    descriptor: device,
-	                    deviceModel: deviceModel
-	                });
-	                observer.complete();
+	    }
+	    static open(device) {
+	        return __awaiter(this, void 0, void 0, function* () {
+	            yield device.open();
+	            if (device.configuration === null) {
+	                yield device.selectConfiguration(configurationValue);
 	            }
-	        }, function (error) {
-	            if (window.DOMException &&
-	                error instanceof window.DOMException &&
-	                error.code === 18) {
-	                observer.error(new TransportWebUSBGestureRequired(error.message));
+	            yield gracefullyResetDevice(device);
+	            const iface = device.configurations[0].interfaces.find(({ alternates }) => alternates.some((a) => a.interfaceClass === 255));
+	            if (!iface) {
+	                throw new TransportInterfaceNotAvailable("No WebUSB interface found for your Ledger device. Please upgrade firmware or contact techsupport.");
 	            }
-	            else {
-	                observer.error(new TransportOpenUserCancelled(error.message));
+	            const interfaceNumber = iface.interfaceNumber;
+	            try {
+	                yield device.claimInterface(interfaceNumber);
 	            }
+	            catch (e) {
+	                yield device.close();
+	                throw new TransportInterfaceNotAvailable(e.message);
+	            }
+	            const transport = new TransportWebUSB(device, interfaceNumber);
+	            const onDisconnect = (e) => {
+	                if (device === e.device) {
+	                    navigator.usb.removeEventListener("disconnect", onDisconnect);
+	                    transport._emitDisconnect(new DisconnectedDevice());
+	                }
+	            };
+	            navigator.usb.addEventListener("disconnect", onDisconnect);
+	            return transport;
 	        });
-	        function unsubscribe() {
-	            unsubscribed = true;
+	    }
+	    close() {
+	        return __awaiter(this, void 0, void 0, function* () {
+	            yield this.exchangeBusyPromise;
+	            yield this.device.releaseInterface(this.interfaceNumber);
+	            yield gracefullyResetDevice(this.device);
+	            yield this.device.close();
+	        });
+	    }
+	    exchange(apdu) {
+	        return __awaiter(this, void 0, void 0, function* () {
+	            const b = yield this.exchangeAtomicImpl(() => __awaiter(this, void 0, void 0, function* () {
+	                const { channel, packetSize } = this;
+	                log("apdu", "=> " + apdu.toString("hex"));
+	                const framing = createHIDframing(channel, packetSize);
+	                const blocks = framing.makeBlocks(apdu);
+	                for (let i = 0; i < blocks.length; i++) {
+	                    yield this.device.transferOut(endpointNumber, blocks[i]);
+	                }
+	                let result;
+	                let acc;
+	                while (!(result = framing.getReducedResult(acc))) {
+	                    const r = yield this.device.transferIn(endpointNumber, packetSize);
+	                    const buffer = Buffer.from(r.data.buffer);
+	                    acc = framing.reduceResponse(acc, buffer);
+	                }
+	                log("apdu", "<= " + result.toString("hex"));
+	                return result;
+	            })).catch((e) => {
+	                if (e && e.message && e.message.includes("disconnected")) {
+	                    this._emitDisconnect(e);
+	                    throw new DisconnectedDeviceDuringOperation(e.message);
+	                }
+	                throw e;
+	            });
+	            return b;
+	        });
+	    }
+	    setScrambleKey() { }
+	}
+	TransportWebUSB.isSupported = isSupported;
+	TransportWebUSB.list = getLedgerDevices;
+	TransportWebUSB.listen = (observer) => {
+	    let unsubscribed = false;
+	    getFirstLedgerDevice().then((device) => {
+	        if (!unsubscribed) {
+	            const deviceModel = identifyUSBProductId(device.productId);
+	            observer.next({
+	                type: "add",
+	                descriptor: device,
+	                deviceModel,
+	            });
+	            observer.complete();
 	        }
-	        return {
-	            unsubscribe: unsubscribe
-	        };
+	    }, (error) => {
+	        if (window.DOMException &&
+	            error instanceof window.DOMException &&
+	            error.code === 18) {
+	            observer.error(new TransportWebUSBGestureRequired(error.message));
+	        }
+	        else {
+	            observer.error(new TransportOpenUserCancelled(error.message));
+	        }
+	    });
+	    function unsubscribe() {
+	        unsubscribed = true;
+	    }
+	    return {
+	        unsubscribe,
 	    };
-	    return TransportWebUSB;
-	}(Transport));
+	};
 	function gracefullyResetDevice(device) {
-	    return __awaiter(this, void 0, void 0, function () {
-	        var err_1;
-	        return __generator(this, function (_a) {
-	            switch (_a.label) {
-	                case 0:
-	                    _a.trys.push([0, 2, , 3]);
-	                    return [4 , device.reset()];
-	                case 1:
-	                    _a.sent();
-	                    return [3 , 3];
-	                case 2:
-	                    err_1 = _a.sent();
-	                    console.warn(err_1);
-	                    return [3 , 3];
-	                case 3: return [2 ];
-	            }
-	        });
+	    return __awaiter(this, void 0, void 0, function* () {
+	        try {
+	            yield device.reset();
+	        }
+	        catch (err) {
+	            console.warn(err);
+	        }
 	    });
 	}
 
@@ -5148,7 +4508,7 @@
 		hasRequiredPackageInfo = 1;
 		Object.defineProperty(packageInfo$1, "__esModule", { value: true });
 		packageInfo$1.packageInfo = void 0;
-		packageInfo$1.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.1.2' };
+		packageInfo$1.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.2.1' };
 		return packageInfo$1;
 	}
 
@@ -5208,7 +4568,7 @@
 	    xxnetwork: 'XXNetwork'
 	};
 
-	const packageInfo = { name: '@polkadot/hw-ledger', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.1.2' };
+	const packageInfo = { name: '@polkadot/hw-ledger', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.2.1' };
 
 	async function wrapError(promise) {
 	    const result = await promise;

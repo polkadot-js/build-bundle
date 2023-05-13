@@ -2,6 +2,7 @@
 
 ## master
 
+- hw-ledger, keyring, util, util-crypto 12.2.1
 - wasm-crypto 7.2.1
 - api, api-contract, types 10.6.1
 - react-{identicon, qr}, ui-{keyring, settings}, vue-identicon 3.3.1

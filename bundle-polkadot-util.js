@@ -6,7 +6,7 @@
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
-    const packageInfo$3 = { name: '@polkadot/util', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.1.2' };
+    const packageInfo$3 = { name: '@polkadot/util', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.2.1' };
 
     function arrayChunk(array, chunkSize) {
         const outputSize = Math.ceil(array.length / chunkSize);
@@ -129,7 +129,7 @@
     const nMax =  createCmp((a, b) => a > b);
     const nMin =  createCmp((a, b) => a < b);
 
-    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.1.2' };
+    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.2.1' };
 
     function evaluateThis(fn) {
         return fn('return this');
@@ -188,36 +188,65 @@
 
     const U8_MAX = BigInt(256);
     const U16_MAX = BigInt(256 * 256);
+    const U64_MAX = BigInt('0x10000000000000000');
     function u8aToBigInt(value, { isLe = true, isNegative = false } = {}) {
-        if (!value || !value.length) {
-            return BigInt(0);
-        }
         const u8a = isLe
             ? value
-            : value.reverse();
-        const dvI = new DataView(u8a.buffer, u8a.byteOffset);
+            : value.slice().reverse();
         const count = u8a.length;
-        const mod = count % 2;
-        let result = BigInt(0);
         if (isNegative) {
+            switch (count) {
+                case 0:
+                    return BigInt(0);
+                case 1:
+                    return BigInt(((u8a[0] ^ 255) * -1) - 1);
+                case 2:
+                    return BigInt((((u8a[0] + (u8a[1] << 8)) ^ 65535) * -1) - 1);
+                case 4:
+                    return BigInt((((u8a[0] + (u8a[1] << 8) + (u8a[2] << 16) + (u8a[3] * 16777216)) ^ 4294967295) * -1) - 1);
+            }
+            const dvI = new DataView(u8a.buffer, u8a.byteOffset);
+            if (count === 8) {
+                return dvI.getBigInt64(0, true);
+            }
+            let result = BigInt(0);
+            const mod = count % 2;
             for (let i = count - 2; i >= mod; i -= 2) {
                 result = (result * U16_MAX) + BigInt(dvI.getUint16(i, true) ^ 0xffff);
             }
             if (mod) {
                 result = (result * U8_MAX) + BigInt(u8a[0] ^ 0xff);
             }
+            return (result * -_1n) - _1n;
         }
-        else {
-            for (let i = count - 2; i >= mod; i -= 2) {
-                result = (result * U16_MAX) + BigInt(dvI.getUint16(i, true));
-            }
-            if (mod) {
-                result = (result * U8_MAX) + BigInt(u8a[0]);
+        switch (count) {
+            case 0:
+                return BigInt(0);
+            case 1:
+                return BigInt(u8a[0]);
+            case 2:
+                return BigInt(u8a[0] + (u8a[1] << 8));
+            case 4:
+                return BigInt(u8a[0] + (u8a[1] << 8) + (u8a[2] << 16) + (u8a[3] * 16777216));
+        }
+        const dvI = new DataView(u8a.buffer, u8a.byteOffset);
+        switch (count) {
+            case 8:
+                return dvI.getBigUint64(0, true);
+            case 16:
+                return (dvI.getBigUint64(8, true) * U64_MAX) + dvI.getBigUint64(0, true);
+            default: {
+                let result = BigInt(0);
+                const mod = count % 2;
+                for (let i = count - 2; i >= mod; i -= 2) {
+                    result = (result * U16_MAX) + BigInt(dvI.getUint16(i, true));
+                }
+                if (mod) {
+                    result = (result * U8_MAX) + BigInt(u8a[0]);
+                }
+                return result;
             }
         }
-        return isNegative
-            ? ((result * -_1n) - _1n)
-            : result;
     }
 
     const CHR = '0123456789abcdef';
@@ -3092,7 +3121,7 @@
 
     Object.defineProperty(packageInfo$1, "__esModule", { value: true });
     packageInfo$1.packageInfo = void 0;
-    packageInfo$1.packageInfo = { name: '@polkadot/x-textencoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.1.2' };
+    packageInfo$1.packageInfo = { name: '@polkadot/x-textencoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.2.1' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -3226,71 +3255,70 @@
 
     function u8aToBn(value, { isLe = true, isNegative = false } = {}) {
         const count = value.length;
-        if (count <= 6) {
-            if (isNegative) {
-                let result = 0;
-                if (isLe) {
-                    switch (count) {
-                        case 0:
-                            return new BN(0);
-                        case 1:
-                            result = value[0] ^ 255;
-                            break;
-                        case 2:
-                            result = (value[0] + (value[1] << 8)) ^ 65535;
-                            break;
-                        case 3:
-                            result = (value[0] + (value[1] << 8) + (value[2] << 16)) ^ 16777215;
-                            break;
-                        case 4:
-                            result = (value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295;
-                            break;
-                        case 5:
-                            result = ((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) + ((value[4] ^ 0xff) * 4294967296);
-                            break;
-                        default:
-                            result = ((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) + (((value[4] + (value[5] << 8)) ^ 65535) * 4294967296);
-                            break;
-                    }
-                }
-                else {
-                    for (let i = 0; i < count; i++) {
-                        result = (result * 256) + (value[i] ^ 0xff);
-                    }
-                }
-                return count
-                    ? new BN((result * -1) - 1)
-                    : new BN(0);
-            }
-            else if (isLe) {
+        if (isNegative) {
+            if (isLe) {
                 switch (count) {
                     case 0:
                         return new BN(0);
                     case 1:
-                        return new BN(value[0]);
+                        return new BN(((value[0] ^ 255) * -1) - 1);
                     case 2:
-                        return new BN(value[0] + (value[1] << 8));
+                        return new BN((((value[0] + (value[1] << 8)) ^ 65535) * -1) - 1);
                     case 3:
-                        return new BN(value[0] + (value[1] << 8) + (value[2] << 16));
+                        return new BN((((value[0] + (value[1] << 8) + (value[2] << 16)) ^ 16777215) * -1) - 1);
                     case 4:
-                        return new BN(value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216));
+                        return new BN((((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) * -1) - 1);
                     case 5:
-                        return new BN(value[0] + (value[1] << 8) + (value[2] << 16) + ((value[3] + (value[4] << 8)) * 16777216));
+                        return new BN(((((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) + ((value[4] ^ 0xff) * 4294967296)) * -1) - 1);
+                    case 6:
+                        return new BN(((((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) + (((value[4] + (value[5] << 8)) ^ 65535) * 4294967296)) * -1) - 1);
                     default:
-                        return new BN(value[0] + (value[1] << 8) + (value[2] << 16) + ((value[3] + (value[4] << 8) + (value[5] << 16)) * 16777216));
+                        return new BN(value, 'le').fromTwos(value.length * 8);
                 }
             }
-            else {
-                let result = 0;
-                for (let i = 0; i < count; i++) {
-                    result = (result * 256) + value[i];
-                }
-                return new BN(result);
+            if (count === 0) {
+                return new BN(0);
+            }
+            else if (count > 6) {
+                return new BN(value, 'be').fromTwos(value.length * 8);
+            }
+            let result = 0;
+            for (let i = 0; i < count; i++) {
+                result = (result * 256) + (value[i] ^ 0xff);
+            }
+            return new BN((result * -1) - 1);
+        }
+        if (isLe) {
+            switch (count) {
+                case 0:
+                    return new BN(0);
+                case 1:
+                    return new BN(value[0]);
+                case 2:
+                    return new BN(value[0] + (value[1] << 8));
+                case 3:
+                    return new BN(value[0] + (value[1] << 8) + (value[2] << 16));
+                case 4:
+                    return new BN(value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216));
+                case 5:
+                    return new BN(value[0] + (value[1] << 8) + (value[2] << 16) + ((value[3] + (value[4] << 8)) * 16777216));
+                case 6:
+                    return new BN(value[0] + (value[1] << 8) + (value[2] << 16) + ((value[3] + (value[4] << 8) + (value[5] << 16)) * 16777216));
+                default:
+                    return new BN(value, 'le');
             }
         }
-        return isNegative
-            ? new BN(value, isLe ? 'le' : 'be').fromTwos(value.length * 8)
-            : new BN(value, isLe ? 'le' : 'be');
+        if (count === 0) {
+            return new BN(0);
+        }
+        else if (count > 6) {
+            return new BN(value, 'be');
+        }
+        let result = 0;
+        for (let i = 0; i < count; i++) {
+            result = (result * 256) + value[i];
+        }
+        return new BN(result);
     }
 
     function u8aToBuffer(value) {
@@ -3351,32 +3379,24 @@
     function u8aToNumber(value, { isNegative = false } = {}) {
         const count = value.length;
         if (isNegative) {
-            let result = 0;
             switch (count) {
                 case 0:
                     return 0;
                 case 1:
-                    result = value[0] ^ 255;
-                    break;
+                    return (((value[0] ^ 255) * -1) - 1);
                 case 2:
-                    result = (value[0] + (value[1] << 8)) ^ 65535;
-                    break;
+                    return ((((value[0] + (value[1] << 8)) ^ 65535) * -1) - 1);
                 case 3:
-                    result = (value[0] + (value[1] << 8) + (value[2] << 16)) ^ 16777215;
-                    break;
+                    return ((((value[0] + (value[1] << 8) + (value[2] << 16)) ^ 16777215) * -1) - 1);
                 case 4:
-                    result = (value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295;
-                    break;
+                    return ((((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) * -1) - 1);
                 case 5:
-                    result = ((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) + ((value[4] ^ 0xff) * 4294967296);
-                    break;
+                    return (((((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) + ((value[4] ^ 0xff) * 4294967296)) * -1) - 1);
                 case 6:
-                    result = ((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) + (((value[4] + (value[5] << 8)) ^ 65535) * 4294967296);
-                    break;
+                    return (((((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) + (((value[4] + (value[5] << 8)) ^ 65535) * 4294967296)) * -1) - 1);
                 default:
                     throw new Error('Value more than 48-bits cannot be reliably converted');
             }
-            return (result * -1) - 1;
         }
         switch (count) {
             case 0:
@@ -3421,7 +3441,7 @@
 
     Object.defineProperty(packageInfo, "__esModule", { value: true });
     packageInfo.packageInfo = void 0;
-    packageInfo.packageInfo = { name: '@polkadot/x-textdecoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.1.2' };
+    packageInfo.packageInfo = { name: '@polkadot/x-textdecoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.2.1' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
