@@ -7705,7 +7705,7 @@
             return super.get(key);
         }
         inspect(isBare) {
-            const inner = new Array();
+            const inner = [];
             for (const [k, v] of this.entries()) {
                 inner.push({
                     ...v.inspect(!isBare || util.isBoolean(isBare)
@@ -7840,7 +7840,7 @@
             return compareMap(this, other);
         }
         inspect() {
-            const inner = new Array();
+            const inner = [];
             for (const [k, v] of this.entries()) {
                 inner.push(k.inspect());
                 inner.push(v.inspect());
@@ -7885,7 +7885,7 @@
             return util.stringify(this.toJSON());
         }
         toU8a(isBare) {
-            const encoded = new Array();
+            const encoded = [];
             if (!isBare) {
                 encoded.push(util.compactToU8a(this.size));
             }
@@ -7978,7 +7978,7 @@
             return compareSet(this, other);
         }
         inspect() {
-            const inner = new Array();
+            const inner = [];
             for (const v of this.values()) {
                 inner.push(v.inspect());
             }
@@ -8018,7 +8018,7 @@
             return util.stringify(this.toJSON());
         }
         toU8a(isBare) {
-            const encoded = new Array();
+            const encoded = [];
             if (!isBare) {
                 encoded.push(util.compactToU8a(this.size));
             }
@@ -13730,7 +13730,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.7.1' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.7.2' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
