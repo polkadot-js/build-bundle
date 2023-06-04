@@ -977,247 +977,274 @@
 	var browser = {};
 
 	var extendStatics = function(d, b) {
-	    extendStatics = Object.setPrototypeOf ||
-	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-	        function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-	    return extendStatics(d, b);
+	  extendStatics = Object.setPrototypeOf ||
+	      ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	      function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+	  return extendStatics(d, b);
 	};
 	function __extends(d, b) {
-	    if (typeof b !== "function" && b !== null)
-	        throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-	    extendStatics(d, b);
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	  if (typeof b !== "function" && b !== null)
+	      throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+	  extendStatics(d, b);
+	  function __() { this.constructor = d; }
+	  d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	}
 	var __assign = function() {
-	    __assign = Object.assign || function __assign(t) {
-	        for (var s, i = 1, n = arguments.length; i < n; i++) {
-	            s = arguments[i];
-	            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-	        }
-	        return t;
-	    };
-	    return __assign.apply(this, arguments);
+	  __assign = Object.assign || function __assign(t) {
+	      for (var s, i = 1, n = arguments.length; i < n; i++) {
+	          s = arguments[i];
+	          for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+	      }
+	      return t;
+	  };
+	  return __assign.apply(this, arguments);
 	};
 	function __rest(s, e) {
-	    var t = {};
-	    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-	        t[p] = s[p];
-	    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-	        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-	            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-	                t[p[i]] = s[p[i]];
-	        }
-	    return t;
+	  var t = {};
+	  for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+	      t[p] = s[p];
+	  if (s != null && typeof Object.getOwnPropertySymbols === "function")
+	      for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+	          if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+	              t[p[i]] = s[p[i]];
+	      }
+	  return t;
 	}
 	function __decorate(decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	  var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	  if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	  else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	  return c > 3 && r && Object.defineProperty(target, key, r), r;
 	}
 	function __param(paramIndex, decorator) {
-	    return function (target, key) { decorator(target, key, paramIndex); }
+	  return function (target, key) { decorator(target, key, paramIndex); }
 	}
 	function __esDecorate(ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
-	    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
-	    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
-	    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
-	    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
-	    var _, done = false;
-	    for (var i = decorators.length - 1; i >= 0; i--) {
-	        var context = {};
-	        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
-	        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
-	        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
-	        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
-	        if (kind === "accessor") {
-	            if (result === void 0) continue;
-	            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
-	            if (_ = accept(result.get)) descriptor.get = _;
-	            if (_ = accept(result.set)) descriptor.set = _;
-	            if (_ = accept(result.init)) initializers.push(_);
-	        }
-	        else if (_ = accept(result)) {
-	            if (kind === "field") initializers.push(_);
-	            else descriptor[key] = _;
-	        }
-	    }
-	    if (target) Object.defineProperty(target, contextIn.name, descriptor);
-	    done = true;
+	  function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
+	  var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+	  var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+	  var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+	  var _, done = false;
+	  for (var i = decorators.length - 1; i >= 0; i--) {
+	      var context = {};
+	      for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+	      for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+	      context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
+	      var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+	      if (kind === "accessor") {
+	          if (result === void 0) continue;
+	          if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+	          if (_ = accept(result.get)) descriptor.get = _;
+	          if (_ = accept(result.set)) descriptor.set = _;
+	          if (_ = accept(result.init)) initializers.unshift(_);
+	      }
+	      else if (_ = accept(result)) {
+	          if (kind === "field") initializers.unshift(_);
+	          else descriptor[key] = _;
+	      }
+	  }
+	  if (target) Object.defineProperty(target, contextIn.name, descriptor);
+	  done = true;
 	}function __runInitializers(thisArg, initializers, value) {
-	    var useValue = arguments.length > 2;
-	    for (var i = 0; i < initializers.length; i++) {
-	        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
-	    }
-	    return useValue ? value : void 0;
+	  var useValue = arguments.length > 2;
+	  for (var i = 0; i < initializers.length; i++) {
+	      value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+	  }
+	  return useValue ? value : void 0;
 	}function __propKey(x) {
-	    return typeof x === "symbol" ? x : "".concat(x);
+	  return typeof x === "symbol" ? x : "".concat(x);
 	}function __setFunctionName(f, name, prefix) {
-	    if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
-	    return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
+	  if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
+	  return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
 	}function __metadata(metadataKey, metadataValue) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
+	  if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
 	}
 	function __awaiter$4(thisArg, _arguments, P, generator) {
-	    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-	    return new (P || (P = Promise))(function (resolve, reject) {
-	        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-	        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-	        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-	        step((generator = generator.apply(thisArg, _arguments || [])).next());
-	    });
+	  function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+	  return new (P || (P = Promise))(function (resolve, reject) {
+	      function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+	      function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+	      function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+	      step((generator = generator.apply(thisArg, _arguments || [])).next());
+	  });
 	}
 	function __generator(thisArg, body) {
-	    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-	    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-	    function verb(n) { return function (v) { return step([n, v]); }; }
-	    function step(op) {
-	        if (f) throw new TypeError("Generator is already executing.");
-	        while (g && (g = 0, op[0] && (_ = 0)), _) try {
-	            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-	            if (y = 0, t) op = [op[0] & 2, t.value];
-	            switch (op[0]) {
-	                case 0: case 1: t = op; break;
-	                case 4: _.label++; return { value: op[1], done: false };
-	                case 5: _.label++; y = op[1]; op = [0]; continue;
-	                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-	                default:
-	                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-	                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-	                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-	                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-	                    if (t[2]) _.ops.pop();
-	                    _.trys.pop(); continue;
-	            }
-	            op = body.call(thisArg, _);
-	        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-	        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-	    }
+	  var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+	  return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+	  function verb(n) { return function (v) { return step([n, v]); }; }
+	  function step(op) {
+	      if (f) throw new TypeError("Generator is already executing.");
+	      while (g && (g = 0, op[0] && (_ = 0)), _) try {
+	          if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+	          if (y = 0, t) op = [op[0] & 2, t.value];
+	          switch (op[0]) {
+	              case 0: case 1: t = op; break;
+	              case 4: _.label++; return { value: op[1], done: false };
+	              case 5: _.label++; y = op[1]; op = [0]; continue;
+	              case 7: op = _.ops.pop(); _.trys.pop(); continue;
+	              default:
+	                  if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+	                  if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+	                  if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+	                  if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+	                  if (t[2]) _.ops.pop();
+	                  _.trys.pop(); continue;
+	          }
+	          op = body.call(thisArg, _);
+	      } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+	      if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+	  }
 	}
 	var __createBinding = Object.create ? (function(o, m, k, k2) {
-	    if (k2 === undefined) k2 = k;
-	    var desc = Object.getOwnPropertyDescriptor(m, k);
-	    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-	        desc = { enumerable: true, get: function() { return m[k]; } };
-	    }
-	    Object.defineProperty(o, k2, desc);
+	  if (k2 === undefined) k2 = k;
+	  var desc = Object.getOwnPropertyDescriptor(m, k);
+	  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+	      desc = { enumerable: true, get: function() { return m[k]; } };
+	  }
+	  Object.defineProperty(o, k2, desc);
 	}) : (function(o, m, k, k2) {
-	    if (k2 === undefined) k2 = k;
-	    o[k2] = m[k];
+	  if (k2 === undefined) k2 = k;
+	  o[k2] = m[k];
 	});
 	function __exportStar(m, o) {
-	    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(o, p)) __createBinding(o, m, p);
+	  for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(o, p)) __createBinding(o, m, p);
 	}
 	function __values(o) {
-	    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-	    if (m) return m.call(o);
-	    if (o && typeof o.length === "number") return {
-	        next: function () {
-	            if (o && i >= o.length) o = void 0;
-	            return { value: o && o[i++], done: !o };
-	        }
-	    };
-	    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+	  var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+	  if (m) return m.call(o);
+	  if (o && typeof o.length === "number") return {
+	      next: function () {
+	          if (o && i >= o.length) o = void 0;
+	          return { value: o && o[i++], done: !o };
+	      }
+	  };
+	  throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 	}
 	function __read(o, n) {
-	    var m = typeof Symbol === "function" && o[Symbol.iterator];
-	    if (!m) return o;
-	    var i = m.call(o), r, ar = [], e;
-	    try {
-	        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-	    }
-	    catch (error) { e = { error: error }; }
-	    finally {
-	        try {
-	            if (r && !r.done && (m = i["return"])) m.call(i);
-	        }
-	        finally { if (e) throw e.error; }
-	    }
-	    return ar;
+	  var m = typeof Symbol === "function" && o[Symbol.iterator];
+	  if (!m) return o;
+	  var i = m.call(o), r, ar = [], e;
+	  try {
+	      while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+	  }
+	  catch (error) { e = { error: error }; }
+	  finally {
+	      try {
+	          if (r && !r.done && (m = i["return"])) m.call(i);
+	      }
+	      finally { if (e) throw e.error; }
+	  }
+	  return ar;
 	}
 	function __spread() {
-	    for (var ar = [], i = 0; i < arguments.length; i++)
-	        ar = ar.concat(__read(arguments[i]));
-	    return ar;
+	  for (var ar = [], i = 0; i < arguments.length; i++)
+	      ar = ar.concat(__read(arguments[i]));
+	  return ar;
 	}
 	function __spreadArrays() {
-	    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-	    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-	        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-	            r[k] = a[j];
-	    return r;
+	  for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+	  for (var r = Array(s), k = 0, i = 0; i < il; i++)
+	      for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+	          r[k] = a[j];
+	  return r;
 	}
 	function __spreadArray(to, from, pack) {
-	    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-	        if (ar || !(i in from)) {
-	            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-	            ar[i] = from[i];
-	        }
-	    }
-	    return to.concat(ar || Array.prototype.slice.call(from));
+	  if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+	      if (ar || !(i in from)) {
+	          if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+	          ar[i] = from[i];
+	      }
+	  }
+	  return to.concat(ar || Array.prototype.slice.call(from));
 	}
 	function __await(v) {
-	    return this instanceof __await ? (this.v = v, this) : new __await(v);
+	  return this instanceof __await ? (this.v = v, this) : new __await(v);
 	}
 	function __asyncGenerator(thisArg, _arguments, generator) {
-	    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-	    var g = generator.apply(thisArg, _arguments || []), i, q = [];
-	    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
-	    function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
-	    function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
-	    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
-	    function fulfill(value) { resume("next", value); }
-	    function reject(value) { resume("throw", value); }
-	    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
+	  if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+	  var g = generator.apply(thisArg, _arguments || []), i, q = [];
+	  return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
+	  function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+	  function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
+	  function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
+	  function fulfill(value) { resume("next", value); }
+	  function reject(value) { resume("throw", value); }
+	  function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
 	}
 	function __asyncDelegator(o) {
-	    var i, p;
-	    return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
-	    function verb(n, f) { i[n] = o[n] ? function (v) { return (p = !p) ? { value: __await(o[n](v)), done: false } : f ? f(v) : v; } : f; }
+	  var i, p;
+	  return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
+	  function verb(n, f) { i[n] = o[n] ? function (v) { return (p = !p) ? { value: __await(o[n](v)), done: false } : f ? f(v) : v; } : f; }
 	}
 	function __asyncValues(o) {
-	    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-	    var m = o[Symbol.asyncIterator], i;
-	    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-	    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-	    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+	  if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+	  var m = o[Symbol.asyncIterator], i;
+	  return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+	  function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+	  function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 	}
 	function __makeTemplateObject(cooked, raw) {
-	    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
-	    return cooked;
+	  if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+	  return cooked;
 	}var __setModuleDefault = Object.create ? (function(o, v) {
-	    Object.defineProperty(o, "default", { enumerable: true, value: v });
+	  Object.defineProperty(o, "default", { enumerable: true, value: v });
 	}) : function(o, v) {
-	    o["default"] = v;
+	  o["default"] = v;
 	};
 	function __importStar(mod) {
-	    if (mod && mod.__esModule) return mod;
-	    var result = {};
-	    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-	    __setModuleDefault(result, mod);
-	    return result;
+	  if (mod && mod.__esModule) return mod;
+	  var result = {};
+	  if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+	  __setModuleDefault(result, mod);
+	  return result;
 	}
 	function __importDefault(mod) {
-	    return (mod && mod.__esModule) ? mod : { default: mod };
+	  return (mod && mod.__esModule) ? mod : { default: mod };
 	}
 	function __classPrivateFieldGet(receiver, state, kind, f) {
-	    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-	    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-	    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+	  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+	  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+	  return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 	}
 	function __classPrivateFieldSet(receiver, state, value, kind, f) {
-	    if (kind === "m") throw new TypeError("Private method is not writable");
-	    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-	    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-	    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+	  if (kind === "m") throw new TypeError("Private method is not writable");
+	  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+	  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+	  return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
 	}
 	function __classPrivateFieldIn(state, receiver) {
-	    if (receiver === null || (typeof receiver !== "object" && typeof receiver !== "function")) throw new TypeError("Cannot use 'in' operator on non-object");
-	    return typeof state === "function" ? receiver === state : state.has(receiver);
+	  if (receiver === null || (typeof receiver !== "object" && typeof receiver !== "function")) throw new TypeError("Cannot use 'in' operator on non-object");
+	  return typeof state === "function" ? receiver === state : state.has(receiver);
 	}
+	const tslib_es6 = {
+	  __extends,
+	  __assign,
+	  __rest,
+	  __decorate,
+	  __param,
+	  __metadata,
+	  __awaiter: __awaiter$4,
+	  __generator,
+	  __createBinding,
+	  __exportStar,
+	  __values,
+	  __read,
+	  __spread,
+	  __spreadArrays,
+	  __spreadArray,
+	  __await,
+	  __asyncGenerator,
+	  __asyncDelegator,
+	  __asyncValues,
+	  __makeTemplateObject,
+	  __importStar,
+	  __importDefault,
+	  __classPrivateFieldGet,
+	  __classPrivateFieldSet,
+	  __classPrivateFieldIn,
+	};
 
-	const tslib_es6 = /*#__PURE__*/Object.freeze({
+	const tslib_es6$1 = /*#__PURE__*/Object.freeze({
 		__proto__: null,
 		get __assign () { return __assign; },
 		__asyncDelegator: __asyncDelegator,
@@ -1247,10 +1274,11 @@
 		__spread: __spread,
 		__spreadArray: __spreadArray,
 		__spreadArrays: __spreadArrays,
-		__values: __values
+		__values: __values,
+		default: tslib_es6
 	});
 
-	const require$$0 = /*@__PURE__*/getAugmentedNamespace(tslib_es6);
+	const require$$0 = /*@__PURE__*/getAugmentedNamespace(tslib_es6$1);
 
 	const EventEmitter = {};
 
@@ -1617,18 +1645,30 @@
 	    };
 	};
 
-	var re$3 = {exports: {}};
+	var re$2 = {exports: {}};
 
 	const SEMVER_SPEC_VERSION = '2.0.0';
-	const MAX_LENGTH$2 = 256;
+	const MAX_LENGTH$1 = 256;
 	const MAX_SAFE_INTEGER$1 = Number.MAX_SAFE_INTEGER ||
 	 9007199254740991;
 	const MAX_SAFE_COMPONENT_LENGTH = 16;
+	const RELEASE_TYPES = [
+	  'major',
+	  'premajor',
+	  'minor',
+	  'preminor',
+	  'patch',
+	  'prepatch',
+	  'prerelease',
+	];
 	var constants$1 = {
-	  SEMVER_SPEC_VERSION,
-	  MAX_LENGTH: MAX_LENGTH$2,
-	  MAX_SAFE_INTEGER: MAX_SAFE_INTEGER$1,
+	  MAX_LENGTH: MAX_LENGTH$1,
 	  MAX_SAFE_COMPONENT_LENGTH,
+	  MAX_SAFE_INTEGER: MAX_SAFE_INTEGER$1,
+	  RELEASE_TYPES,
+	  SEMVER_SPEC_VERSION,
+	  FLAG_INCLUDE_PRERELEASE: 0b001,
+	  FLAG_LOOSE: 0b010,
 	};
 	getDefaultExportFromCjs(constants$1);
 
@@ -1734,19 +1774,22 @@
 		createToken('STAR', '(<|>)?=?\\s*\\*');
 		createToken('GTE0', '^\\s*>=\\s*0\\.0\\.0\\s*$');
 		createToken('GTE0PRE', '^\\s*>=\\s*0\\.0\\.0-0\\s*$');
-	} (re$3, re$3.exports));
-	var reExports = re$3.exports;
+	} (re$2, re$2.exports));
+	var reExports = re$2.exports;
 	getDefaultExportFromCjs(reExports);
 
-	const opts = ['includePrerelease', 'loose', 'rtl'];
-	const parseOptions$2 = options =>
-	  !options ? {}
-	  : typeof options !== 'object' ? { loose: true }
-	  : opts.filter(k => options[k]).reduce((o, k) => {
-	    o[k] = true;
-	    return o
-	  }, {});
-	var parseOptions_1 = parseOptions$2;
+	const looseOption = Object.freeze({ loose: true });
+	const emptyOpts = Object.freeze({ });
+	const parseOptions$1 = options => {
+	  if (!options) {
+	    return emptyOpts
+	  }
+	  if (typeof options !== 'object') {
+	    return looseOption
+	  }
+	  return options
+	};
+	var parseOptions_1 = parseOptions$1;
 	getDefaultExportFromCjs(parseOptions_1);
 
 	const numeric = /^[0-9]+$/;
@@ -1771,13 +1814,13 @@
 	getDefaultExportFromCjs(identifiers$1);
 
 	const debug = debug_1;
-	const { MAX_LENGTH: MAX_LENGTH$1, MAX_SAFE_INTEGER } = constants$1;
-	const { re: re$2, t: t$2 } = reExports;
-	const parseOptions$1 = parseOptions_1;
+	const { MAX_LENGTH, MAX_SAFE_INTEGER } = constants$1;
+	const { re: re$1, t: t$1 } = reExports;
+	const parseOptions = parseOptions_1;
 	const { compareIdentifiers } = identifiers$1;
 	let SemVer$d = class SemVer {
 	  constructor (version, options) {
-	    options = parseOptions$1(options);
+	    options = parseOptions(options);
 	    if (version instanceof SemVer) {
 	      if (version.loose === !!options.loose &&
 	          version.includePrerelease === !!options.includePrerelease) {
@@ -1786,18 +1829,18 @@
 	        version = version.version;
 	      }
 	    } else if (typeof version !== 'string') {
-	      throw new TypeError(`Invalid Version: ${version}`)
+	      throw new TypeError(`Invalid version. Must be a string. Got type "${typeof version}".`)
 	    }
-	    if (version.length > MAX_LENGTH$1) {
+	    if (version.length > MAX_LENGTH) {
 	      throw new TypeError(
-	        `version is longer than ${MAX_LENGTH$1} characters`
+	        `version is longer than ${MAX_LENGTH} characters`
 	      )
 	    }
 	    debug('SemVer', version, options);
 	    this.options = options;
 	    this.loose = !!options.loose;
 	    this.includePrerelease = !!options.includePrerelease;
-	    const m = version.trim().match(options.loose ? re$2[t$2.LOOSE] : re$2[t$2.FULL]);
+	    const m = version.trim().match(options.loose ? re$1[t$1.LOOSE] : re$1[t$1.FULL]);
 	    if (!m) {
 	      throw new TypeError(`Invalid Version: ${version}`)
 	    }
@@ -1914,31 +1957,31 @@
 	      }
 	    } while (++i)
 	  }
-	  inc (release, identifier) {
+	  inc (release, identifier, identifierBase) {
 	    switch (release) {
 	      case 'premajor':
 	        this.prerelease.length = 0;
 	        this.patch = 0;
 	        this.minor = 0;
 	        this.major++;
-	        this.inc('pre', identifier);
+	        this.inc('pre', identifier, identifierBase);
 	        break
 	      case 'preminor':
 	        this.prerelease.length = 0;
 	        this.patch = 0;
 	        this.minor++;
-	        this.inc('pre', identifier);
+	        this.inc('pre', identifier, identifierBase);
 	        break
 	      case 'prepatch':
 	        this.prerelease.length = 0;
-	        this.inc('patch', identifier);
-	        this.inc('pre', identifier);
+	        this.inc('patch', identifier, identifierBase);
+	        this.inc('pre', identifier, identifierBase);
 	        break
 	      case 'prerelease':
 	        if (this.prerelease.length === 0) {
-	          this.inc('patch', identifier);
+	          this.inc('patch', identifier, identifierBase);
 	        }
-	        this.inc('pre', identifier);
+	        this.inc('pre', identifier, identifierBase);
 	        break
 	      case 'major':
 	        if (
@@ -1965,9 +2008,13 @@
 	        }
 	        this.prerelease = [];
 	        break
-	      case 'pre':
+	      case 'pre': {
+	        const base = Number(identifierBase) ? 1 : 0;
+	        if (!identifier && identifierBase === false) {
+	          throw new Error('invalid increment argument: identifier is empty')
+	        }
 	        if (this.prerelease.length === 0) {
-	          this.prerelease = [0];
+	          this.prerelease = [base];
 	        } else {
 	          let i = this.prerelease.length;
 	          while (--i >= 0) {
@@ -1977,19 +2024,27 @@
 	            }
 	          }
 	          if (i === -1) {
-	            this.prerelease.push(0);
+	            if (identifier === this.prerelease.join('.') && identifierBase === false) {
+	              throw new Error('invalid increment argument: identifier already exists')
+	            }
+	            this.prerelease.push(base);
 	          }
 	        }
 	        if (identifier) {
+	          let prerelease = [identifier, base];
+	          if (identifierBase === false) {
+	            prerelease = [identifier];
+	          }
 	          if (compareIdentifiers(this.prerelease[0], identifier) === 0) {
 	            if (isNaN(this.prerelease[1])) {
-	              this.prerelease = [identifier, 0];
+	              this.prerelease = prerelease;
 	            }
 	          } else {
-	            this.prerelease = [identifier, 0];
+	            this.prerelease = prerelease;
 	          }
 	        }
 	        break
+	      }
 	      default:
 	        throw new Error(`invalid increment argument: ${release}`)
 	    }
@@ -2001,29 +2056,18 @@
 	var semver$2 = SemVer$d;
 	getDefaultExportFromCjs(semver$2);
 
-	const { MAX_LENGTH } = constants$1;
-	const { re: re$1, t: t$1 } = reExports;
 	const SemVer$c = semver$2;
-	const parseOptions = parseOptions_1;
-	const parse$6 = (version, options) => {
-	  options = parseOptions(options);
+	const parse$6 = (version, options, throwErrors = false) => {
 	  if (version instanceof SemVer$c) {
 	    return version
-	  }
-	  if (typeof version !== 'string') {
-	    return null
-	  }
-	  if (version.length > MAX_LENGTH) {
-	    return null
-	  }
-	  const r = options.loose ? re$1[t$1.LOOSE] : re$1[t$1.FULL];
-	  if (!r.test(version)) {
-	    return null
 	  }
 	  try {
 	    return new SemVer$c(version, options)
 	  } catch (er) {
-	    return null
+	    if (!throwErrors) {
+	      return null
+	    }
+	    throw er
 	  }
 	};
 	var parse_1 = parse$6;
@@ -2046,8 +2090,9 @@
 	getDefaultExportFromCjs(clean_1);
 
 	const SemVer$b = semver$2;
-	const inc$1 = (version, release, options, identifier) => {
+	const inc$1 = (version, release, options, identifier, identifierBase) => {
 	  if (typeof (options) === 'string') {
+	    identifierBase = identifier;
 	    identifier = options;
 	    options = undefined;
 	  }
@@ -2055,7 +2100,7 @@
 	    return new SemVer$b(
 	      version instanceof SemVer$b ? version.version : version,
 	      options
-	    ).inc(release, identifier).version
+	    ).inc(release, identifier, identifierBase).version
 	  } catch (er) {
 	    return null
 	  }
@@ -2063,53 +2108,54 @@
 	var inc_1 = inc$1;
 	getDefaultExportFromCjs(inc_1);
 
-	const SemVer$a = semver$2;
-	const compare$b = (a, b, loose) =>
-	  new SemVer$a(a, loose).compare(new SemVer$a(b, loose));
-	var compare_1 = compare$b;
-	getDefaultExportFromCjs(compare_1);
-
-	const compare$a = compare_1;
-	const eq$3 = (a, b, loose) => compare$a(a, b, loose) === 0;
-	var eq_1 = eq$3;
-	getDefaultExportFromCjs(eq_1);
-
 	const parse$3 = parse_1;
-	const eq$2 = eq_1;
 	const diff$1 = (version1, version2) => {
-	  if (eq$2(version1, version2)) {
+	  const v1 = parse$3(version1, null, true);
+	  const v2 = parse$3(version2, null, true);
+	  const comparison = v1.compare(v2);
+	  if (comparison === 0) {
 	    return null
-	  } else {
-	    const v1 = parse$3(version1);
-	    const v2 = parse$3(version2);
-	    const hasPre = v1.prerelease.length || v2.prerelease.length;
-	    const prefix = hasPre ? 'pre' : '';
-	    const defaultResult = hasPre ? 'prerelease' : '';
-	    for (const key in v1) {
-	      if (key === 'major' || key === 'minor' || key === 'patch') {
-	        if (v1[key] !== v2[key]) {
-	          return prefix + key
-	        }
-	      }
-	    }
-	    return defaultResult
 	  }
+	  const v1Higher = comparison > 0;
+	  const highVersion = v1Higher ? v1 : v2;
+	  const lowVersion = v1Higher ? v2 : v1;
+	  const highHasPre = !!highVersion.prerelease.length;
+	  const prefix = highHasPre ? 'pre' : '';
+	  if (v1.major !== v2.major) {
+	    return prefix + 'major'
+	  }
+	  if (v1.minor !== v2.minor) {
+	    return prefix + 'minor'
+	  }
+	  if (v1.patch !== v2.patch) {
+	    return prefix + 'patch'
+	  }
+	  if (highHasPre) {
+	    return 'prerelease'
+	  }
+	  if (lowVersion.patch) {
+	    return 'patch'
+	  }
+	  if (lowVersion.minor) {
+	    return 'minor'
+	  }
+	  return 'major'
 	};
 	var diff_1 = diff$1;
 	getDefaultExportFromCjs(diff_1);
 
-	const SemVer$9 = semver$2;
-	const major$1 = (a, loose) => new SemVer$9(a, loose).major;
+	const SemVer$a = semver$2;
+	const major$1 = (a, loose) => new SemVer$a(a, loose).major;
 	var major_1 = major$1;
 	getDefaultExportFromCjs(major_1);
 
-	const SemVer$8 = semver$2;
-	const minor$1 = (a, loose) => new SemVer$8(a, loose).minor;
+	const SemVer$9 = semver$2;
+	const minor$1 = (a, loose) => new SemVer$9(a, loose).minor;
 	var minor_1 = minor$1;
 	getDefaultExportFromCjs(minor_1);
 
-	const SemVer$7 = semver$2;
-	const patch$1 = (a, loose) => new SemVer$7(a, loose).patch;
+	const SemVer$8 = semver$2;
+	const patch$1 = (a, loose) => new SemVer$8(a, loose).patch;
 	var patch_1 = patch$1;
 	getDefaultExportFromCjs(patch_1);
 
@@ -2121,13 +2167,19 @@
 	var prerelease_1 = prerelease$1;
 	getDefaultExportFromCjs(prerelease_1);
 
-	const compare$9 = compare_1;
-	const rcompare$1 = (a, b, loose) => compare$9(b, a, loose);
+	const SemVer$7 = semver$2;
+	const compare$b = (a, b, loose) =>
+	  new SemVer$7(a, loose).compare(new SemVer$7(b, loose));
+	var compare_1 = compare$b;
+	getDefaultExportFromCjs(compare_1);
+
+	const compare$a = compare_1;
+	const rcompare$1 = (a, b, loose) => compare$a(b, a, loose);
 	var rcompare_1 = rcompare$1;
 	getDefaultExportFromCjs(rcompare_1);
 
-	const compare$8 = compare_1;
-	const compareLoose$1 = (a, b) => compare$8(a, b, true);
+	const compare$9 = compare_1;
+	const compareLoose$1 = (a, b) => compare$9(a, b, true);
 	var compareLoose_1 = compareLoose$1;
 	getDefaultExportFromCjs(compareLoose_1);
 
@@ -2150,15 +2202,20 @@
 	var rsort_1 = rsort$1;
 	getDefaultExportFromCjs(rsort_1);
 
-	const compare$7 = compare_1;
-	const gt$4 = (a, b, loose) => compare$7(a, b, loose) > 0;
+	const compare$8 = compare_1;
+	const gt$4 = (a, b, loose) => compare$8(a, b, loose) > 0;
 	var gt_1 = gt$4;
 	getDefaultExportFromCjs(gt_1);
 
-	const compare$6 = compare_1;
-	const lt$3 = (a, b, loose) => compare$6(a, b, loose) < 0;
+	const compare$7 = compare_1;
+	const lt$3 = (a, b, loose) => compare$7(a, b, loose) < 0;
 	var lt_1 = lt$3;
 	getDefaultExportFromCjs(lt_1);
+
+	const compare$6 = compare_1;
+	const eq$2 = (a, b, loose) => compare$6(a, b, loose) === 0;
+	var eq_1 = eq$2;
+	getDefaultExportFromCjs(eq_1);
 
 	const compare$5 = compare_1;
 	const neq$2 = (a, b, loose) => compare$5(a, b, loose) !== 0;
@@ -2976,8 +3033,10 @@
 		  }
 		  parseRange (range) {
 		    range = range.trim();
-		    const memoOpts = Object.keys(this.options).join(',');
-		    const memoKey = `parseRange:${memoOpts}:${range}`;
+		    const memoOpts =
+		      (this.options.includePrerelease && FLAG_INCLUDE_PRERELEASE) |
+		      (this.options.loose && FLAG_LOOSE);
+		    const memoKey = memoOpts + ':' + range;
 		    const cached = cache.get(memoKey);
 		    if (cached) {
 		      return cached
@@ -3072,6 +3131,7 @@
 		  tildeTrimReplace,
 		  caretTrimReplace,
 		} = reExports;
+		const { FLAG_INCLUDE_PRERELEASE, FLAG_LOOSE } = constants$1;
 		const isNullSet = c => c.value === '<0.0.0-0';
 		const isAny = c => c.value === '';
 		const isSatisfiable = (comparators, options) => {
@@ -3375,12 +3435,6 @@
 		    if (!(comp instanceof Comparator)) {
 		      throw new TypeError('a Comparator is required')
 		    }
-		    if (!options || typeof options !== 'object') {
-		      options = {
-		        loose: !!options,
-		        includePrerelease: false,
-		      };
-		    }
 		    if (this.operator === '') {
 		      if (this.value === '') {
 		        return true
@@ -3392,31 +3446,35 @@
 		      }
 		      return new Range(this.value, options).test(comp.semver)
 		    }
-		    const sameDirectionIncreasing =
-		      (this.operator === '>=' || this.operator === '>') &&
-		      (comp.operator === '>=' || comp.operator === '>');
-		    const sameDirectionDecreasing =
-		      (this.operator === '<=' || this.operator === '<') &&
-		      (comp.operator === '<=' || comp.operator === '<');
-		    const sameSemVer = this.semver.version === comp.semver.version;
-		    const differentDirectionsInclusive =
-		      (this.operator === '>=' || this.operator === '<=') &&
-		      (comp.operator === '>=' || comp.operator === '<=');
-		    const oppositeDirectionsLessThan =
-		      cmp(this.semver, '<', comp.semver, options) &&
-		      (this.operator === '>=' || this.operator === '>') &&
-		        (comp.operator === '<=' || comp.operator === '<');
-		    const oppositeDirectionsGreaterThan =
-		      cmp(this.semver, '>', comp.semver, options) &&
-		      (this.operator === '<=' || this.operator === '<') &&
-		        (comp.operator === '>=' || comp.operator === '>');
-		    return (
-		      sameDirectionIncreasing ||
-		      sameDirectionDecreasing ||
-		      (sameSemVer && differentDirectionsInclusive) ||
-		      oppositeDirectionsLessThan ||
-		      oppositeDirectionsGreaterThan
-		    )
+		    options = parseOptions(options);
+		    if (options.includePrerelease &&
+		      (this.value === '<0.0.0-0' || comp.value === '<0.0.0-0')) {
+		      return false
+		    }
+		    if (!options.includePrerelease &&
+		      (this.value.startsWith('<0.0.0') || comp.value.startsWith('<0.0.0'))) {
+		      return false
+		    }
+		    if (this.operator.startsWith('>') && comp.operator.startsWith('>')) {
+		      return true
+		    }
+		    if (this.operator.startsWith('<') && comp.operator.startsWith('<')) {
+		      return true
+		    }
+		    if (
+		      (this.semver.version === comp.semver.version) &&
+		      this.operator.includes('=') && comp.operator.includes('=')) {
+		      return true
+		    }
+		    if (cmp(this.semver, '<', comp.semver, options) &&
+		      this.operator.startsWith('>') && comp.operator.startsWith('<')) {
+		      return true
+		    }
+		    if (cmp(this.semver, '>', comp.semver, options) &&
+		      this.operator.startsWith('<') && comp.operator.startsWith('>')) {
+		      return true
+		    }
+		    return false
 		  }
 		}
 		comparator = Comparator;
@@ -3638,7 +3696,7 @@
 	const intersects$1 = (r1, r2, options) => {
 	  r1 = new Range$2(r1, options);
 	  r2 = new Range$2(r2, options);
-	  return r1.intersects(r2)
+	  return r1.intersects(r2, options)
 	};
 	var intersects_1 = intersects$1;
 	getDefaultExportFromCjs(intersects_1);
@@ -3714,6 +3772,8 @@
 	  }
 	  return true
 	};
+	const minimumVersionWithPreRelease = [new Comparator$1('>=0.0.0-0')];
+	const minimumVersion = [new Comparator$1('>=0.0.0')];
 	const simpleSubset = (sub, dom, options) => {
 	  if (sub === dom) {
 	    return true
@@ -3722,16 +3782,16 @@
 	    if (dom.length === 1 && dom[0].semver === ANY) {
 	      return true
 	    } else if (options.includePrerelease) {
-	      sub = [new Comparator$1('>=0.0.0-0')];
+	      sub = minimumVersionWithPreRelease;
 	    } else {
-	      sub = [new Comparator$1('>=0.0.0')];
+	      sub = minimumVersion;
 	    }
 	  }
 	  if (dom.length === 1 && dom[0].semver === ANY) {
 	    if (options.includePrerelease) {
 	      return true
 	    } else {
-	      dom = [new Comparator$1('>=0.0.0')];
+	      dom = minimumVersion;
 	    }
 	  }
 	  const eqSet = new Set();
@@ -3944,6 +4004,7 @@
 	  src: internalRe.src,
 	  tokens: internalRe.t,
 	  SEMVER_SPEC_VERSION: constants.SEMVER_SPEC_VERSION,
+	  RELEASE_TYPES: constants.RELEASE_TYPES,
 	  compareIdentifiers: identifiers.compareIdentifiers,
 	  rcompareIdentifiers: identifiers.rcompareIdentifiers,
 	};
@@ -4508,7 +4569,7 @@
 		hasRequiredPackageInfo = 1;
 		Object.defineProperty(packageInfo$1, "__esModule", { value: true });
 		packageInfo$1.packageInfo = void 0;
-		packageInfo$1.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.2.1' };
+		packageInfo$1.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.2.2' };
 		return packageInfo$1;
 	}
 
@@ -4568,7 +4629,7 @@
 	    xxnetwork: 'XXNetwork'
 	};
 
-	const packageInfo = { name: '@polkadot/hw-ledger', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.2.1' };
+	const packageInfo = { name: '@polkadot/hw-ledger', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.2.2' };
 
 	async function wrapError(promise) {
 	    const result = await promise;

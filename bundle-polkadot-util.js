@@ -6,7 +6,7 @@
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
-    const packageInfo$3 = { name: '@polkadot/util', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.2.1' };
+    const packageInfo$3 = { name: '@polkadot/util', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.2.2' };
 
     function arrayChunk(array, chunkSize) {
         const outputSize = Math.ceil(array.length / chunkSize);
@@ -27,21 +27,22 @@
     }
 
     function arrayFlatten(arrays) {
-        if (arrays.length === 0) {
+        const num = arrays.length;
+        if (num === 0) {
             return [];
         }
-        else if (arrays.length === 1) {
+        else if (num === 1) {
             return arrays[0];
         }
         let size = 0;
-        for (let i = 0; i < arrays.length; i++) {
+        for (let i = 0; i < num; i++) {
             size += arrays[i].length;
         }
         const output = new Array(size);
         let i = -1;
-        for (let j = 0; j < arrays.length; j++) {
+        for (let j = 0; j < num; j++) {
             const a = arrays[j];
-            for (let e = 0; e < a.length; e++) {
+            for (let e = 0, count = a.length; e < count; e++) {
                 output[++i] = a[e];
             }
         }
@@ -113,11 +114,12 @@
 
     function createCmp(cmp) {
         return (...items) => {
-            if (items.length === 0) {
+            const count = items.length;
+            if (count === 0) {
                 throw new Error('Must provide one or more arguments');
             }
             let result = items[0];
-            for (let i = 1; i < items.length; i++) {
+            for (let i = 1; i < count; i++) {
                 if (cmp(items[i], result)) {
                     result = items[i];
                 }
@@ -129,7 +131,7 @@
     const nMax =  createCmp((a, b) => a > b);
     const nMin =  createCmp((a, b) => a < b);
 
-    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.2.1' };
+    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.2.2' };
 
     function evaluateThis(fn) {
         return fn('return this');
@@ -252,7 +254,7 @@
     const CHR = '0123456789abcdef';
     const U8$1 = new Uint8Array(256);
     const U16$1 = new Uint8Array(256 * 256);
-    for (let i = 0; i < CHR.length; i++) {
+    for (let i = 0, count = CHR.length; i < count; i++) {
         U8$1[CHR[i].charCodeAt(0) | 0] = i | 0;
         if (i > 9) {
             U8$1[CHR[i].toUpperCase().charCodeAt(0) | 0] = i | 0;
@@ -3121,7 +3123,7 @@
 
     Object.defineProperty(packageInfo$1, "__esModule", { value: true });
     packageInfo$1.packageInfo = void 0;
-    packageInfo$1.packageInfo = { name: '@polkadot/x-textencoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.2.1' };
+    packageInfo$1.packageInfo = { name: '@polkadot/x-textencoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.2.2' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -3189,14 +3191,15 @@
         return u8aConcatStrict(u8as, length);
     }
     function u8aConcatStrict(u8as, length = 0) {
+        const count = u8as.length;
         let offset = 0;
         if (!length) {
-            for (let i = 0; i < u8as.length; i++) {
+            for (let i = 0; i < count; i++) {
                 length += u8as[i].length;
             }
         }
         const result = new Uint8Array(length);
-        for (let i = 0; i < u8as.length; i++) {
+        for (let i = 0; i < count; i++) {
             result.set(u8as[i], offset);
             offset += u8as[i].length;
         }
@@ -3226,7 +3229,7 @@
                     return false;
                 }
             }
-            for (let i = length; i < u8aa.length; i++) {
+            for (let i = length, count = u8aa.length; i < count; i++) {
                 if (u8aa[i] !== u8ab[i]) {
                     return false;
                 }
@@ -3425,11 +3428,12 @@
     Object.defineProperty(fallback, "__esModule", { value: true });
     fallback.TextDecoder = void 0;
     class TextDecoder {
-        constructor(_) {
+        constructor(encoding) {
+            this.__encoding = encoding;
         }
         decode(value) {
             let result = '';
-            for (let i = 0; i < value.length; i++) {
+            for (let i = 0, count = value.length; i < count; i++) {
                 result += String.fromCharCode(value[i]);
             }
             return result;
@@ -3441,7 +3445,7 @@
 
     Object.defineProperty(packageInfo, "__esModule", { value: true });
     packageInfo.packageInfo = void 0;
-    packageInfo.packageInfo = { name: '@polkadot/x-textdecoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.2.1' };
+    packageInfo.packageInfo = { name: '@polkadot/x-textdecoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.2.2' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -3834,7 +3838,7 @@
         { power: 24, text: 'Yotta', value: 'Y' }
     ];
     function findSi(type) {
-        for (let i = 0; i < SI.length; i++) {
+        for (let i = 0, count = SI.length; i < count; i++) {
             if (SI[i].value === type) {
                 return SI[i];
             }
@@ -3996,8 +4000,7 @@
     }
 
     function isAsciiStr(str) {
-        const count = str.length | 0;
-        for (let i = 0; i < count; i++) {
+        for (let i = 0, count = str.length; i < count; i++) {
             const b = str.charCodeAt(i);
             if (b < 32 || b > 126) {
                 return false;
@@ -4006,8 +4009,7 @@
         return true;
     }
     function isAsciiBytes(u8a) {
-        const count = u8a.length | 0;
-        for (let i = 0; i < count; i++) {
+        for (let i = 0, count = u8a.length; i < count; i++) {
             const b = u8a[i] | 0;
             if (b < 32 || b > 126) {
                 return false;
@@ -4285,7 +4287,7 @@
         });
     }
     function lazyMethods(result, items, creator, getName) {
-        for (let i = 0; i < items.length; i++) {
+        for (let i = 0, count = items.length; i < count; i++) {
             lazyMethod(result, items[i], creator, getName, i);
         }
         return result;
@@ -4448,14 +4450,14 @@
 
     function objectClear(value) {
         const keys = Object.keys(value);
-        for (let i = 0; i < keys.length; i++) {
+        for (let i = 0, count = keys.length; i < count; i++) {
             delete value[keys[i]];
         }
         return value;
     }
 
     function objectSpread(dest, ...sources) {
-        for (let i = 0; i < sources.length; i++) {
+        for (let i = 0, count = sources.length; i < count; i++) {
             const src = sources[i];
             if (src) {
                 if (typeof src.entries === 'function') {
@@ -4497,7 +4499,7 @@
         }
     }
     function objectProperties(that, keys, getter, getName) {
-        for (let i = 0; i < keys.length; i++) {
+        for (let i = 0, count = keys.length; i < count; i++) {
             objectProperty(that, keys[i], getter, getName, i);
         }
     }
@@ -4521,7 +4523,7 @@
 
     const CC_TO_UP = new Array(256);
     const CC_TO_LO = new Array(256);
-    for (let i = 0; i < CC_TO_UP.length; i++) {
+    for (let i = 0, count = CC_TO_UP.length; i < count; i++) {
         CC_TO_LO[i] = String.fromCharCode(i).toLowerCase();
         CC_TO_UP[i] = String.fromCharCode(i).toUpperCase();
     }
@@ -4534,9 +4536,8 @@
                 .replace(/[-_., ]+/g, ' ')
                 .trim()
                 .split(' ');
-            const count = parts.length;
             let result = '';
-            for (let i = 0; i < count; i++) {
+            for (let i = 0, count = parts.length; i < count; i++) {
                 const w = parts[i];
                 result += format(/^[\dA-Z]+$/.test(w)
                     ? w.toLowerCase()

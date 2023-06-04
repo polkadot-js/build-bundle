@@ -6,7 +6,7 @@
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
-    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.2.1' };
+    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.2.2' };
 
     function evaluateThis(fn) {
         return fn('return this');
@@ -86,7 +86,7 @@
 
     Object.defineProperty(packageInfo$1, "__esModule", { value: true });
     packageInfo$1.packageInfo = void 0;
-    packageInfo$1.packageInfo = { name: '@polkadot/x-randomvalues', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.2.1' };
+    packageInfo$1.packageInfo = { name: '@polkadot/x-randomvalues', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.2.2' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -709,7 +709,7 @@
     cryptoWaitReady().catch(() => {
     });
 
-    const packageInfo = { name: '@polkadot/util-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.2.1' };
+    const packageInfo = { name: '@polkadot/util-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.2.2' };
 
     /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
     function assertNumber(n) {
@@ -1123,7 +1123,7 @@
             else if (ipfs && ipfsCompat && value[0] !== ipfs) {
                 throw new Error(`Expected ipfs-compatible ${type} to start with '${ipfs}'`);
             }
-            for (let i = (ipfsCompat ? 1 : 0); i < value.length; i++) {
+            for (let i = (ipfsCompat ? 1 : 0), count = value.length; i < count; i++) {
                 if (!(chars.includes(value[i]) || (value[i] === '=' && ((i === value.length - 1) ||
                     !chars.includes(value[i + 1]))))) {
                     throw new Error(`Invalid ${type} character "${value[i]}" (0x${value.charCodeAt(i).toString(16)}) at index ${i}`);
@@ -1154,9 +1154,9 @@
     }
     function bytes(b, ...lengths) {
         if (!(b instanceof Uint8Array))
-            throw new TypeError('Expected Uint8Array');
+            throw new Error('Expected Uint8Array');
         if (lengths.length > 0 && !lengths.includes(b.length))
-            throw new TypeError(`Expected Uint8Array of length ${lengths}, not of length=${b.length}`);
+            throw new Error(`Expected Uint8Array of length ${lengths}, not of length=${b.length}`);
     }
     function hash(hash) {
         if (typeof hash !== 'function' || typeof hash.create !== 'function')
@@ -1189,6 +1189,7 @@
     const crypto = typeof globalThis === 'object' && 'crypto' in globalThis ? globalThis.crypto : undefined;
 
     /*! noble-hashes - MIT License (c) 2022 Paul Miller (paulmillr.com) */
+    const u8a$1 = (a) => a instanceof Uint8Array;
     const u32 = (arr) => new Uint32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4));
     const createView = (arr) => new DataView(arr.buffer, arr.byteOffset, arr.byteLength);
     const rotr = (word, shift) => (word << (32 - shift)) | (word >>> shift);
@@ -1197,31 +1198,27 @@
         throw new Error('Non little-endian hardware is not supported');
     Array.from({ length: 256 }, (v, i) => i.toString(16).padStart(2, '0'));
     function utf8ToBytes$1(str) {
-        if (typeof str !== 'string') {
-            throw new TypeError(`utf8ToBytes expected string, got ${typeof str}`);
-        }
-        return new TextEncoder().encode(str);
+        if (typeof str !== 'string')
+            throw new Error(`utf8ToBytes expected string, got ${typeof str}`);
+        return new Uint8Array(new TextEncoder().encode(str));
     }
     function toBytes(data) {
         if (typeof data === 'string')
             data = utf8ToBytes$1(data);
-        if (!(data instanceof Uint8Array))
-            throw new TypeError(`Expected input type is Uint8Array (got ${typeof data})`);
+        if (!u8a$1(data))
+            throw new Error(`expected Uint8Array, got ${typeof data}`);
         return data;
     }
     function concatBytes$1(...arrays) {
-        if (!arrays.every((a) => a instanceof Uint8Array))
-            throw new Error('Uint8Array list expected');
-        if (arrays.length === 1)
-            return arrays[0];
-        const length = arrays.reduce((a, arr) => a + arr.length, 0);
-        const result = new Uint8Array(length);
-        for (let i = 0, pad = 0; i < arrays.length; i++) {
-            const arr = arrays[i];
-            result.set(arr, pad);
-            pad += arr.length;
-        }
-        return result;
+        const r = new Uint8Array(arrays.reduce((sum, a) => sum + a.length, 0));
+        let pad = 0;
+        arrays.forEach((a) => {
+            if (!u8a$1(a))
+                throw new Error('Uint8Array expected');
+            r.set(a, pad);
+            pad += a.length;
+        });
+        return r;
     }
     class Hash {
         clone() {
@@ -1231,19 +1228,27 @@
     const isPlainObject = (obj) => Object.prototype.toString.call(obj) === '[object Object]' && obj.constructor === Object;
     function checkOpts(defaults, opts) {
         if (opts !== undefined && (typeof opts !== 'object' || !isPlainObject(opts)))
-            throw new TypeError('Options should be object or undefined');
+            throw new Error('Options should be object or undefined');
         const merged = Object.assign(defaults, opts);
         return merged;
     }
-    function wrapConstructor(hashConstructor) {
-        const hashC = (message) => hashConstructor().update(toBytes(message)).digest();
-        const tmp = hashConstructor();
+    function wrapConstructor(hashCons) {
+        const hashC = (msg) => hashCons().update(toBytes(msg)).digest();
+        const tmp = hashCons();
         hashC.outputLen = tmp.outputLen;
         hashC.blockLen = tmp.blockLen;
-        hashC.create = () => hashConstructor();
+        hashC.create = () => hashCons();
         return hashC;
     }
     function wrapConstructorWithOpts(hashCons) {
+        const hashC = (msg, opts) => hashCons(opts).update(toBytes(msg)).digest();
+        const tmp = hashCons({});
+        hashC.outputLen = tmp.outputLen;
+        hashC.blockLen = tmp.blockLen;
+        hashC.create = (opts) => hashCons(opts);
+        return hashC;
+    }
+    function wrapXOFConstructorWithOpts(hashCons) {
         const hashC = (msg, opts) => hashCons(opts).update(toBytes(msg)).digest();
         const tmp = hashCons({});
         hashC.outputLen = tmp.outputLen;
@@ -1299,15 +1304,17 @@
             const { blockLen, buffer, buffer32 } = this;
             data = toBytes(data);
             const len = data.length;
+            const offset = data.byteOffset;
+            const buf = data.buffer;
             for (let pos = 0; pos < len;) {
                 if (this.pos === blockLen) {
                     this.compress(buffer32, 0, false);
                     this.pos = 0;
                 }
                 const take = Math.min(blockLen - this.pos, len - pos);
-                const dataOffset = data.byteOffset + pos;
+                const dataOffset = offset + pos;
                 if (take === blockLen && !(dataOffset % 4) && pos + take < len) {
-                    const data32 = new Uint32Array(data.buffer, dataOffset, Math.floor((len - pos) / 4));
+                    const data32 = new Uint32Array(buf, dataOffset, Math.floor((len - pos) / 4));
                     for (let pos32 = 0; pos + blockLen < len; pos32 += buffer32.length, pos += blockLen) {
                         this.length += blockLen;
                         this.compress(data32, pos32, false);
@@ -3947,15 +3954,16 @@
     function hexToBytes(hex) {
         if (typeof hex !== 'string')
             throw new Error('hex string expected, got ' + typeof hex);
-        if (hex.length % 2)
-            throw new Error('hex string is invalid: unpadded ' + hex.length);
-        const array = new Uint8Array(hex.length / 2);
+        const len = hex.length;
+        if (len % 2)
+            throw new Error('padded hex string expected, got unpadded hex of length ' + len);
+        const array = new Uint8Array(len / 2);
         for (let i = 0; i < array.length; i++) {
             const j = i * 2;
             const hexByte = hex.slice(j, j + 2);
             const byte = Number.parseInt(hexByte, 16);
             if (Number.isNaN(byte) || byte < 0)
-                throw new Error('invalid byte sequence');
+                throw new Error('Invalid byte sequence');
             array[i] = byte;
         }
         return array;
@@ -3968,9 +3976,15 @@
             throw new Error('Uint8Array expected');
         return hexToNumber(bytesToHex(Uint8Array.from(bytes).reverse()));
     }
-    const numberToBytesBE = (n, len) => hexToBytes(n.toString(16).padStart(len * 2, '0'));
-    const numberToBytesLE = (n, len) => numberToBytesBE(n, len).reverse();
-    const numberToVarBytesBE = (n) => hexToBytes(numberToHexUnpadded(n));
+    function numberToBytesBE(n, len) {
+        return hexToBytes(n.toString(16).padStart(len * 2, '0'));
+    }
+    function numberToBytesLE(n, len) {
+        return numberToBytesBE(n, len).reverse();
+    }
+    function numberToVarBytesBE(n) {
+        return hexToBytes(numberToHexUnpadded(n));
+    }
     function ensureBytes(title, hex, expectedLength) {
         let res;
         if (typeof hex === 'string') {
@@ -3992,10 +4006,10 @@
             throw new Error(`${title} expected ${expectedLength} bytes, got ${len}`);
         return res;
     }
-    function concatBytes(...arrs) {
-        const r = new Uint8Array(arrs.reduce((sum, a) => sum + a.length, 0));
+    function concatBytes(...arrays) {
+        const r = new Uint8Array(arrays.reduce((sum, a) => sum + a.length, 0));
         let pad = 0;
-        arrs.forEach((a) => {
+        arrays.forEach((a) => {
             if (!u8a(a))
                 throw new Error('Uint8Array expected');
             r.set(a, pad);
@@ -4012,10 +4026,9 @@
         return true;
     }
     function utf8ToBytes(str) {
-        if (typeof str !== 'string') {
+        if (typeof str !== 'string')
             throw new Error(`utf8ToBytes expected string, got ${typeof str}`);
-        }
-        return new TextEncoder().encode(str);
+        return new Uint8Array(new TextEncoder().encode(str));
     }
     function bitLen(n) {
         let len;
@@ -4023,8 +4036,12 @@
             ;
         return len;
     }
-    const bitGet = (n, pos) => (n >> BigInt(pos)) & _1n$8;
-    const bitSet = (n, pos, value) => n | ((value ? _1n$8 : _0n$8) << BigInt(pos));
+    function bitGet(n, pos) {
+        return (n >> BigInt(pos)) & _1n$8;
+    }
+    const bitSet = (n, pos, value) => {
+        return n | ((value ? _1n$8 : _0n$8) << BigInt(pos));
+    };
     const bitMask = (n) => (_2n$6 << BigInt(n - 1)) - _1n$8;
     const u8n = (data) => new Uint8Array(data);
     const u8fr = (arr) => Uint8Array.from(arr);
@@ -5137,7 +5154,8 @@
         const defaultVerOpts = { lowS: CURVE.lowS, prehash: false };
         function sign(msgHash, privKey, opts = defaultSigOpts) {
             const { seed, k2sig } = prepSig(msgHash, privKey, opts);
-            const drbg = createHmacDrbg(CURVE.hash.outputLen, CURVE.nByteLength, CURVE.hmac);
+            const C = CURVE;
+            const drbg = createHmacDrbg(C.hash.outputLen, C.nByteLength, C.hmac);
             return drbg(seed, k2sig);
         }
         Point.BASE._setWindowSize(8);
@@ -5207,10 +5225,12 @@
         for (let o = q - _1n$5; o % _2n$4 === _0n$5; o /= _2n$4)
             l += _1n$5;
         const c1 = l;
-        const c2 = (q - _1n$5) / _2n$4 ** c1;
+        const _2n_pow_c1_1 = _2n$4 << (c1 - _1n$5 - _1n$5);
+        const _2n_pow_c1 = _2n_pow_c1_1 * _2n$4;
+        const c2 = (q - _1n$5) / _2n_pow_c1;
         const c3 = (c2 - _1n$5) / _2n$4;
-        const c4 = _2n$4 ** c1 - _1n$5;
-        const c5 = _2n$4 ** (c1 - _1n$5);
+        const c4 = _2n_pow_c1 - _1n$5;
+        const c5 = _2n_pow_c1_1;
         const c6 = Fp.pow(Z, c2);
         const c7 = Fp.pow(Z, (c2 + _1n$5) / _2n$4);
         let sqrtRatio = (u, v) => {
@@ -5231,7 +5251,8 @@
             tv3 = Fp.cmov(tv2, tv3, isQR);
             tv4 = Fp.cmov(tv5, tv4, isQR);
             for (let i = c1; i > _1n$5; i--) {
-                let tv5 = _2n$4 ** (i - _2n$4);
+                let tv5 = i - _2n$4;
+                tv5 = _2n$4 << (tv5 - _1n$5);
                 let tvv5 = Fp.pow(tv4, tv5);
                 const e1 = Fp.eql(tvv5, Fp.ONE);
                 tv2 = Fp.mul(tv3, tv1);
@@ -5451,7 +5472,7 @@
             const key = toBytes(_key);
             this.iHash = hash.create();
             if (typeof this.iHash.update !== 'function')
-                throw new TypeError('Expected instance of class which extends utils.Hash');
+                throw new Error('Expected instance of class which extends utils.Hash');
             this.blockLen = this.iHash.blockLen;
             this.outputLen = this.iHash.outputLen;
             const blockLen = this.blockLen;
@@ -5666,7 +5687,7 @@
             return false;
         }
     }
-    ({
+    (() => ({
         getPublicKey: schnorrGetPublicKey,
         sign: schnorrSign,
         verify: schnorrVerify,
@@ -5679,8 +5700,8 @@
             taggedHash,
             mod,
         },
-    });
-    const isoMap = isogenyMap(Fp$1, [
+    }))();
+    const isoMap =  (() => isogenyMap(Fp$1, [
         [
             '0x8e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38daaaaa8c7',
             '0x7d3d4c80bc321d5b9f315cea7fd44c5d595d2fc0bf63b92dfff1044f17c6581',
@@ -5704,13 +5725,13 @@
             '0x6484aa716545ca2cf3a70c3fa8fe337e0a3d21162f0d6299a7bf8192bfd2a76f',
             '0x0000000000000000000000000000000000000000000000000000000000000001',
         ],
-    ].map((i) => i.map((j) => BigInt(j))));
-    const mapSWU = mapToCurveSimpleSWU(Fp$1, {
+    ].map((i) => i.map((j) => BigInt(j)))))();
+    const mapSWU =  (() => mapToCurveSimpleSWU(Fp$1, {
         A: BigInt('0x3f8731abdd661adca08a5558f0f5d272e953d363cb6f0e5d405447c01a444533'),
         B: BigInt('1771'),
         Z: Fp$1.create(BigInt('-11')),
-    });
-    createHasher(secp256k1.ProjectivePoint, (scalars) => {
+    }))();
+    (() => createHasher(secp256k1.ProjectivePoint, (scalars) => {
         const { x, y } = mapSWU(Fp$1.create(scalars[0]));
         return isoMap(x, y);
     }, {
@@ -5721,7 +5742,7 @@
         k: 128,
         expand: 'xmd',
         hash: sha256,
-    });
+    }))();
 
     function secp256k1PairFromSeed(seed, onlyJs) {
         if (seed.length !== 32) {
@@ -5999,7 +6020,7 @@
     function twistedEdwards(curveDef) {
         const CURVE = validateOpts$1(curveDef);
         const { Fp, n: CURVE_ORDER, prehash: prehash, hash: cHash, randomBytes, nByteLength, h: cofactor, } = CURVE;
-        const MASK = _2n$2 ** BigInt(nByteLength * 8);
+        const MASK = _2n$2 << (BigInt(nByteLength * 8) - _1n$3);
         const modP = Fp.create;
         const uvRatio = CURVE.uvRatio ||
             ((u, v) => {
@@ -6228,6 +6249,8 @@
                     throw new Error('Point.fromHex: invalid y coordinate');
                 const isXOdd = (x & _1n$3) === _1n$3;
                 const isLastByteOdd = (lastByte & 0x80) !== 0;
+                if (!zip215 && x === _0n$3 && isLastByteOdd)
+                    throw new Error('Point.fromHex: x=0 and x_0=1');
                 if (isLastByteOdd !== isXOdd)
                     x = modP(-x);
                 return Point.fromAffine({ x, y });
@@ -6304,6 +6327,8 @@
             catch (error) {
                 return false;
             }
+            if (!zip215 && A.isSmallOrder())
+                return false;
             const k = hashDomainToScalar(context, R.toRawBytes(), A.toRawBytes(), msg);
             const RkA = R.add(A.multiplyUnsafe(k));
             return RkA.subtract(SB).clearCofactor().equals(Point.ZERO);
@@ -6520,7 +6545,7 @@
         domain: ed25519_domain,
         prehash: sha512,
     });
-    montgomery({
+    (() => montgomery({
         P: ED25519_P,
         a: BigInt(486662),
         montgomeryBits: 255,
@@ -6533,7 +6558,7 @@
         },
         adjustScalarBytes,
         randomBytes,
-    });
+    }))();
     const ELL2_C1 = (Fp.ORDER + BigInt(3)) / BigInt(8);
     const ELL2_C2 = Fp.pow(_2n$1, ELL2_C1);
     const ELL2_C3 = Fp.sqrt(Fp.neg(Fp.ONE));
@@ -6597,7 +6622,7 @@
         const inv = Fp.invertBatch([xd, yd]);
         return { x: Fp.mul(xn, inv[0]), y: Fp.mul(yn, inv[1]) };
     }
-    createHasher(ed25519.ExtendedPoint, (scalars) => map_to_curve_elligator2_edwards25519(scalars[0]), {
+    (() => createHasher(ed25519.ExtendedPoint, (scalars) => map_to_curve_elligator2_edwards25519(scalars[0]), {
         DST: 'edwards25519_XMD:SHA-512_ELL2_RO_',
         encodeDST: 'edwards25519_XMD:SHA-512_ELL2_NU_',
         p: Fp.ORDER,
@@ -6605,12 +6630,12 @@
         k: 128,
         expand: 'xmd',
         hash: sha512,
-    });
+    }))();
     function assertRstPoint(other) {
-        if (!(other instanceof RistrettoPoint))
+        if (!(other instanceof RistPoint))
             throw new Error('RistrettoPoint expected');
     }
-    const SQRT_M1 = BigInt('19681161376707505956807079304988542015446066515923890162744021073123829784752');
+    const SQRT_M1 = ED25519_SQRT_M1;
     const SQRT_AD_MINUS_ONE = BigInt('25063068953384623474111414158702152701244531502492656460079210482610430750235');
     const INVSQRT_A_MINUS_D = BigInt('54469307008909316920995813868745141605393597292927456921205312896311721017578');
     const ONE_MINUS_D_SQ = BigInt('1159843021668779879193775521855586647937357759715417654439879720876111806838');
@@ -6642,12 +6667,12 @@
         const W3 = mod(_1n$1 + s2);
         return new ed25519.ExtendedPoint(mod(W0 * W3), mod(W2 * W1), mod(W1 * W3), mod(W0 * W2));
     }
-    class RistrettoPoint {
+    class RistPoint {
         constructor(ep) {
             this.ep = ep;
         }
         static fromAffine(ap) {
-            return new RistrettoPoint(ed25519.ExtendedPoint.fromAffine(ap));
+            return new RistPoint(ed25519.ExtendedPoint.fromAffine(ap));
         }
         static hashToCurve(hex) {
             hex = ensureBytes('ristrettoHash', hex, 64);
@@ -6655,7 +6680,7 @@
             const R1 = calcElligatorRistrettoMap(r1);
             const r2 = bytes255ToNumberLE(hex.slice(32, 64));
             const R2 = calcElligatorRistrettoMap(r2);
-            return new RistrettoPoint(R1.add(R2));
+            return new RistPoint(R1.add(R2));
         }
         static fromHex(hex) {
             hex = ensureBytes('ristrettoHex', hex, 32);
@@ -6682,7 +6707,7 @@
             const t = mod(x * y);
             if (!isValid || isNegativeLE(t, P) || y === _0n$1)
                 throw new Error(emsg);
-            return new RistrettoPoint(new ed25519.ExtendedPoint(x, y, _1n$1, t));
+            return new RistPoint(new ed25519.ExtendedPoint(x, y, _1n$1, t));
         }
         toRawBytes() {
             let { ex: x, ey: y, ez: z, et: t } = this.ep;
@@ -6730,21 +6755,26 @@
         }
         add(other) {
             assertRstPoint(other);
-            return new RistrettoPoint(this.ep.add(other.ep));
+            return new RistPoint(this.ep.add(other.ep));
         }
         subtract(other) {
             assertRstPoint(other);
-            return new RistrettoPoint(this.ep.subtract(other.ep));
+            return new RistPoint(this.ep.subtract(other.ep));
         }
         multiply(scalar) {
-            return new RistrettoPoint(this.ep.multiply(scalar));
+            return new RistPoint(this.ep.multiply(scalar));
         }
         multiplyUnsafe(scalar) {
-            return new RistrettoPoint(this.ep.multiplyUnsafe(scalar));
+            return new RistPoint(this.ep.multiplyUnsafe(scalar));
         }
     }
-    RistrettoPoint.BASE = new RistrettoPoint(ed25519.ExtendedPoint.BASE);
-    RistrettoPoint.ZERO = new RistrettoPoint(ed25519.ExtendedPoint.ZERO);
+    (() => {
+        if (!RistPoint.BASE)
+            RistPoint.BASE = new RistPoint(ed25519.ExtendedPoint.BASE);
+        if (!RistPoint.ZERO)
+            RistPoint.ZERO = new RistPoint(ed25519.ExtendedPoint.ZERO);
+        return RistPoint;
+    })();
 
     function ed25519PairFromSeed(seed, onlyJs) {
         if (!util.hasBigInt || (!onlyJs && isReady())) {
@@ -7173,7 +7203,7 @@
     const keccak_256 = gen(0x01, 136, 256 / 8);
     gen(0x01, 104, 384 / 8);
     const keccak_512 = gen(0x01, 72, 512 / 8);
-    const genShake = (suffix, blockLen, outputLen) => wrapConstructorWithOpts((opts = {}) => new Keccak(blockLen, suffix, opts.dkLen === undefined ? outputLen : opts.dkLen, true));
+    const genShake = (suffix, blockLen, outputLen) => wrapXOFConstructorWithOpts((opts = {}) => new Keccak(blockLen, suffix, opts.dkLen === undefined ? outputLen : opts.dkLen, true));
     genShake(0x1f, 168, 128 / 8);
     genShake(0x1f, 136, 256 / 8);
 
