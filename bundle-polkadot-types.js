@@ -10215,6 +10215,15 @@
             args: 'Vec<ContractMessageParamSpecV2>',
             docs: 'Vec<Text>'
         },
+        ContractConstructorSpecV4: {
+            label: 'Text',
+            selector: 'ContractSelector',
+            payable: 'bool',
+            args: 'Vec<ContractMessageParamSpecV2>',
+            docs: 'Vec<Text>',
+            default: 'bool',
+            returnType: 'Option<ContractTypeSpec>'
+        },
         ContractContractSpecV0: {
             constructors: 'Vec<ContractConstructorSpecV0>',
             messages: 'Vec<ContractMessageSpecV0>',
@@ -10239,7 +10248,13 @@
             events: 'Vec<ContractEventSpecV2>',
             docs: 'Vec<Text>'
         },
-        ContractContractSpecV4: 'ContractContractSpecV3',
+        ContractContractSpecV4: {
+            constructors: 'Vec<ContractConstructorSpecV4>',
+            messages: 'Vec<ContractMessageSpecV3>',
+            events: 'Vec<ContractEventSpecV2>',
+            docs: 'Vec<Text>',
+            environment: 'ContractEnvironmentV4'
+        },
         ContractDisplayName: 'SiPath',
         ContractEventParamSpecV0: {
             name: 'Text',
@@ -10303,6 +10318,16 @@
             returnType: 'Option<ContractTypeSpec>',
             docs: 'Vec<Text>'
         },
+        ContractMessageSpecV3: {
+            label: 'Text',
+            selector: 'ContractSelector',
+            mutates: 'bool',
+            payable: 'bool',
+            args: 'Vec<ContractMessageParamSpecV2>',
+            returnType: 'Option<ContractTypeSpec>',
+            docs: 'Vec<Text>',
+            default: 'bool'
+        },
         ContractSelector: '[u8; 4]',
         ContractTypeSpec: {
             type: 'SiLookupTypeId',
@@ -10310,11 +10335,11 @@
         }
     };
     const latest = {
-        ContractConstructorSpecLatest: 'ContractConstructorSpecV3',
+        ContractConstructorSpecLatest: 'ContractConstructorSpecV4',
         ContractEventSpecLatest: 'ContractEventSpecV2',
         ContractEventParamSpecLatest: 'ContractEventParamSpecV2',
         ContractMessageParamSpecLatest: 'ContractMessageParamSpecV2',
-        ContractMessageSpecLatest: 'ContractMessageSpecV2',
+        ContractMessageSpecLatest: 'ContractMessageSpecV3',
         ContractMetadataLatest: 'ContractMetadataV4'
     };
     const definitions$c = {
@@ -10344,7 +10369,10 @@
                 types: 'Vec<PortableType>',
                 spec: 'ContractContractSpecV3'
             },
-            ContractMetadataV4: 'ContractMetadataV3',
+            ContractMetadataV4: {
+                types: 'Vec<PortableType>',
+                spec: 'ContractContractSpecV4'
+            },
             ContractMetadata: {
                 _enum: {
                     V0: 'ContractMetadataV0',
@@ -10383,6 +10411,17 @@
                 language: 'Text',
                 compiler: 'Text',
                 wasm: 'Raw'
+            },
+            ContractEnvironmentV4: {
+                _alias: {
+                    hashType: 'hash'
+                },
+                accountId: 'Option<ContractTypeSpec>',
+                balance: 'Option<ContractTypeSpec>',
+                blockNumber: 'Option<ContractTypeSpec>',
+                hashType: 'Option<ContractTypeSpec>',
+                timestamp: 'Option<ContractTypeSpec>',
+                maxEventTopics: 'Option<u32>'
             }
         }
     };
@@ -13730,7 +13769,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.7.3' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.8.1' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {

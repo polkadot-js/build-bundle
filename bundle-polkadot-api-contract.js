@@ -89,8 +89,13 @@
         }));
     }
 
-    function v3ToV4(_registry, v3) {
-        return v3;
+    function v3ToV4(registry, v3) {
+        return registry.createType('ContractMetadataV4', util.objectSpread({}, v3, {
+            spec: util.objectSpread({}, v3.spec, {
+                constructors: v3.spec.constructors.map((c) => registry.createType('ContractConstructorSpecV4', util.objectSpread({}, c))),
+                messages: v3.spec.messages.map((m) => registry.createType('ContractMessageSpecV3', util.objectSpread({}, m)))
+            })
+        }));
     }
 
     const enumVersions = ['V4', 'V3', 'V2', 'V1'];
@@ -151,8 +156,15 @@
         lookup.types.forEach(({ id }) => lookup.getTypeDef(id));
         return [json, registry, latest, info];
     }
+    function isTypeSpec(value) {
+        return !!value && value instanceof Map && !util.isUndefined(value.type) && !util.isUndefined(value.displayName);
+    }
+    function isOption(value) {
+        return !!value && value instanceof types.Option;
+    }
     class Abi {
         constructor(abiJson, chainProperties) {
+            this.environment = new Map();
             this.__internal__createArgs = (args, spec) => {
                 return args.map(({ label, type }, index) => {
                     try {
@@ -213,6 +225,7 @@
                     }),
                     identifier,
                     index,
+                    isDefault: spec.default.isTrue,
                     method: util.stringCamelCase(identifier),
                     path: identifier.split('::').map((s) => util.stringCamelCase(s)),
                     selector: spec.selector,
@@ -248,19 +261,40 @@
                 : abiJson, chainProperties);
             this.constructors = this.metadata.spec.constructors.map((spec, index) => this.__internal__createMessage(spec, index, {
                 isConstructor: true,
-                isPayable: spec.payable.isTrue
+                isDefault: spec.default.isTrue,
+                isPayable: spec.payable.isTrue,
+                returnType: spec.returnType.isSome
+                    ? this.registry.lookup.getTypeDef(spec.returnType.unwrap().type)
+                    : null
             }));
             this.events = this.metadata.spec.events.map((spec, index) => this.__internal__createEvent(spec, index));
-            this.messages = this.metadata.spec.messages.map((spec, index) => {
-                const typeSpec = spec.returnType.unwrapOr(null);
-                return this.__internal__createMessage(spec, index, {
-                    isMutating: spec.mutates.isTrue,
-                    isPayable: spec.payable.isTrue,
-                    returnType: typeSpec
-                        ? this.registry.lookup.getTypeDef(typeSpec.type)
-                        : null
-                });
-            });
+            this.messages = this.metadata.spec.messages.map((spec, index) => this.__internal__createMessage(spec, index, {
+                isDefault: spec.default.isTrue,
+                isMutating: spec.mutates.isTrue,
+                isPayable: spec.payable.isTrue,
+                returnType: spec.returnType.isSome
+                    ? this.registry.lookup.getTypeDef(spec.returnType.unwrap().type)
+                    : null
+            }));
+            for (const [key, opt] of this.metadata.spec.environment.entries()) {
+                if (isOption(opt)) {
+                    if (opt.isSome) {
+                        const value = opt.unwrap();
+                        if (util.isBn(value)) {
+                            this.environment.set(key, value);
+                        }
+                        else if (isTypeSpec(value)) {
+                            this.environment.set(key, this.registry.lookup.getTypeDef(value.type));
+                        }
+                        else {
+                            throw new Error(`Invalid environment definition for ${key}:: Expected either Number or ContractTypeSpec`);
+                        }
+                    }
+                }
+                else {
+                    throw new Error(`Expected Option<*> definition for ${key} in ContractEnvironment`);
+                }
+            }
         }
         decodeEvent(data) {
             const index = data[0];
@@ -284,7 +318,7 @@
         }
     }
 
-    const packageInfo = { name: '@polkadot/api-contract', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.7.3' };
+    const packageInfo = { name: '@polkadot/api-contract', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.8.1' };
 
     function applyOnEvent(result, types, fn) {
         if (result.isInBlock || result.isFinalized) {
@@ -320,53 +354,53 @@
     }
 
     var extendStatics = function(d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
+      extendStatics = Object.setPrototypeOf ||
+          ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+          function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+      return extendStatics(d, b);
     };
     function __extends(d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+      if (typeof b !== "function" && b !== null)
+          throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+      extendStatics(d, b);
+      function __() { this.constructor = d; }
+      d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     }
     function __values(o) {
-        var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-        if (m) return m.call(o);
-        if (o && typeof o.length === "number") return {
-            next: function () {
-                if (o && i >= o.length) o = void 0;
-                return { value: o && o[i++], done: !o };
-            }
-        };
-        throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+      var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+      if (m) return m.call(o);
+      if (o && typeof o.length === "number") return {
+          next: function () {
+              if (o && i >= o.length) o = void 0;
+              return { value: o && o[i++], done: !o };
+          }
+      };
+      throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
     }
     function __read(o, n) {
-        var m = typeof Symbol === "function" && o[Symbol.iterator];
-        if (!m) return o;
-        var i = m.call(o), r, ar = [], e;
-        try {
-            while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-        }
-        catch (error) { e = { error: error }; }
-        finally {
-            try {
-                if (r && !r.done && (m = i["return"])) m.call(i);
-            }
-            finally { if (e) throw e.error; }
-        }
-        return ar;
+      var m = typeof Symbol === "function" && o[Symbol.iterator];
+      if (!m) return o;
+      var i = m.call(o), r, ar = [], e;
+      try {
+          while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+      }
+      catch (error) { e = { error: error }; }
+      finally {
+          try {
+              if (r && !r.done && (m = i["return"])) m.call(i);
+          }
+          finally { if (e) throw e.error; }
+      }
+      return ar;
     }
     function __spreadArray(to, from, pack) {
-        if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-            if (ar || !(i in from)) {
-                if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-                ar[i] = from[i];
-            }
-        }
-        return to.concat(ar || Array.prototype.slice.call(from));
+      if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+          if (ar || !(i in from)) {
+              if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+              ar[i] = from[i];
+          }
+      }
+      return to.concat(ar || Array.prototype.slice.call(from));
     }
 
     function isFunction(value) {
