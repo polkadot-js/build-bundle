@@ -3776,7 +3776,7 @@
 	}
 	const QrNetworkSpecs = r.memo(DisplayNetworkSpecs);
 
-	const packageInfo = { name: '@polkadot/react-qr', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-qr.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-qr.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-qr.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-qr.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.4.2' };
+	const packageInfo = { name: '@polkadot/react-qr', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-qr.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-qr.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-qr.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-react-qr.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.5.1' };
 
 	var propTypes = {exports: {}};
 
@@ -9578,13 +9578,16 @@
 	    const _onScan = r.useCallback((data) => {
 	        if (data) {
 	            try {
-	                let prefix, content, genesisHash, name;
+	                let prefix;
+	                let content;
+	                let genesisHash;
+	                let name;
 	                if (!isEthereum) {
 	                    [prefix, content, genesisHash, ...name] = data.split(':');
 	                }
 	                else {
 	                    [prefix, content, ...name] = data.split(':');
-	                    genesisHash = '';
+	                    genesisHash = null;
 	                    content = content.substring(0, 42);
 	                }
 	                const expectedPrefix = (isEthereum ? 'ethereum' : ADDRESS_PREFIX);
@@ -9596,7 +9599,7 @@
 	                if (isAddress && !isEthereum) {
 	                    utilCrypto.decodeAddress(content);
 	                }
-	                onScan({ content, genesisHash, isAddress, name: name?.length ? name.join(':') : undefined });
+	                onScan({ content, genesisHash: genesisHash, isAddress, name: name?.length ? name.join(':') : undefined });
 	            }
 	            catch (error) {
 	                onError && onError(error);
