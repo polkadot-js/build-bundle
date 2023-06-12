@@ -1329,7 +1329,7 @@
         }
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.8.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.9.1' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -3900,7 +3900,7 @@
         return memo(instanceId, () => {
             const results = [undefined, [], [], [], undefined];
             const calls = [
-                (api.query.phragmenElection || api.query.electionsPhragmen || api.query.elections)?.members,
+                (api.query.elections || api.query['phragmenElection'] || api.query['electionsPhragmen'])?.members,
                 api.query.council?.members,
                 api.query.technicalCommittee?.members,
                 api.query.society?.members,
@@ -4061,10 +4061,10 @@
     }
 
     function retrieveNick(api, accountId) {
-        return (accountId && api.query.nicks?.nameOf
-            ? api.query.nicks.nameOf(accountId)
+        return (accountId && api.query['nicks']?.['nameOf']
+            ? api.query['nicks']['nameOf'](accountId)
             : of(undefined)).pipe(map((nameOf) => nameOf?.isSome
-            ? util.u8aToString(nameOf.unwrap()[0]).substring(0, api.consts.nicks.maxLength.toNumber())
+            ? util.u8aToString(nameOf.unwrap()[0]).substring(0, api.consts['nicks']['maxLength'].toNumber())
             : undefined));
     }
     function info$4(instanceId, api) {
@@ -4170,9 +4170,9 @@
 
     function getQueryInterface(api) {
         return (
-        api.query.voterBagsList ||
-            api.query.bagsList ||
-            api.query.voterList);
+        api.query.voterList ||
+            api.query['voterBagsList'] ||
+            api.query['bagsList']);
     }
 
     function orderBags(ids, bags) {
@@ -4311,7 +4311,7 @@
     function queryOld(api, accountId) {
         return combineLatest([
             api.query.balances.locks(accountId),
-            api.query.balances.vesting(accountId)
+            api.query.balances['vesting'](accountId)
         ]).pipe(map(([locks, optVesting]) => {
             let vestingNew = null;
             if (optVesting.isSome) {
@@ -4398,9 +4398,9 @@
     }
     function queryBalancesFree(api, accountId) {
         return combineLatest([
-            api.query.balances.freeBalance(accountId),
-            api.query.balances.reservedBalance(accountId),
-            api.query.system.accountNonce(accountId)
+            api.query.balances['freeBalance'](accountId),
+            api.query.balances['reservedBalance'](accountId),
+            api.query.system['accountNonce'](accountId)
         ]).pipe(map(([freeBalance, reservedBalance, accountNonce]) => [
             accountNonce,
             [[freeBalance, reservedBalance, zeroBalance(api), zeroBalance(api)]]
@@ -4413,8 +4413,8 @@
         ];
         return util.isFunction(api.query.system.account)
             ? api.query.system.account(accountId).pipe(map(({ nonce }) => fill(nonce)))
-            : util.isFunction(api.query.system.accountNonce)
-                ? api.query.system.accountNonce(accountId).pipe(map((nonce) => fill(nonce)))
+            : util.isFunction(api.query.system['accountNonce'])
+                ? api.query.system['accountNonce'](accountId).pipe(map((nonce) => fill(nonce)))
                 : of(fill(api.registry.createType('Index')));
     }
     function queryBalancesAccount(api, accountId, modules = ['balances']) {
@@ -4432,7 +4432,7 @@
                     ...balances.map((c) => c(accountId))
                 ]).pipe(map(([{ nonce }, ...balances]) => extract(nonce, balances)))
                 : combineLatest([
-                    api.query.system.accountNonce(accountId),
+                    api.query.system['accountNonce'](accountId),
                     ...balances.map((c) => c(accountId))
                 ]).pipe(map(([nonce, ...balances]) => extract(nonce, balances)))
             : queryNonceOnly(api, accountId);
@@ -4468,7 +4468,7 @@
                         ? querySystemAccount(api, accountId)
                         : util.isFunction(api.query.balances?.account)
                             ? queryBalancesAccount(api, accountId)
-                            : util.isFunction(api.query.balances?.freeBalance)
+                            : util.isFunction(api.query.balances?.['freeBalance'])
                                 ? queryBalancesFree(api, accountId)
                                 : queryNonceOnly(api, accountId)
             ])
@@ -4555,19 +4555,19 @@
         const loggedAuthor = (log && ((log.isConsensus && log.asConsensus[0].isNimbus && log.asConsensus[1]) ||
             (log.isPreRuntime && log.asPreRuntime[0].isNimbus && log.asPreRuntime[1])));
         if (loggedAuthor) {
-            if (queryAt.authorMapping?.mappingWithDeposit) {
+            if (queryAt['authorMapping']?.['mappingWithDeposit']) {
                 return combineLatest([
                     of(header),
                     validators,
-                    queryAt.authorMapping.mappingWithDeposit(loggedAuthor).pipe(map((o) => o.unwrapOr({ account: null }).account))
+                    queryAt['authorMapping']['mappingWithDeposit'](loggedAuthor).pipe(map((o) => o.unwrapOr({ account: null }).account))
                 ]);
             }
-            if (queryAt.parachainStaking?.selectedCandidates && queryAt.session?.nextKeys) {
+            if (queryAt['parachainStaking']?.['selectedCandidates'] && queryAt.session?.nextKeys) {
                 const loggedHex = loggedAuthor.toHex();
                 return combineLatest([
                     of(header),
                     validators,
-                    queryAt.parachainStaking.selectedCandidates().pipe(mergeMap((selectedCandidates) => combineLatest([
+                    queryAt['parachainStaking']['selectedCandidates']().pipe(mergeMap((selectedCandidates) => combineLatest([
                         of(selectedCandidates),
                         queryAt.session.nextKeys.multi(selectedCandidates).pipe(map((nextKeys) => nextKeys.findIndex((o) => o.unwrapOrDefault().nimbus.toHex() === loggedHex)))
                     ])), map(([selectedCandidates, index]) => index === -1
@@ -4747,16 +4747,16 @@
 
     function queryConstants(api) {
         return of([
-            api.consts.contracts.callBaseFee || api.registry.createType('Balance'),
-            api.consts.contracts.contractFee || api.registry.createType('Balance'),
-            api.consts.contracts.creationFee || api.registry.createType('Balance'),
-            api.consts.contracts.transactionBaseFee || api.registry.createType('Balance'),
-            api.consts.contracts.transactionByteFee || api.registry.createType('Balance'),
-            api.consts.contracts.transferFee || api.registry.createType('Balance'),
-            api.consts.contracts.rentByteFee,
-            api.consts.contracts.rentDepositOffset,
-            api.consts.contracts.surchargeReward,
-            api.consts.contracts.tombstoneDeposit
+            api.consts.contracts['callBaseFee'] || api.registry.createType('Balance'),
+            api.consts.contracts['contractFee'] || api.registry.createType('Balance'),
+            api.consts.contracts['creationFee'] || api.registry.createType('Balance'),
+            api.consts.contracts['transactionBaseFee'] || api.registry.createType('Balance'),
+            api.consts.contracts['transactionByteFee'] || api.registry.createType('Balance'),
+            api.consts.contracts['transferFee'] || api.registry.createType('Balance'),
+            api.consts.contracts['rentByteFee'] || api.registry.createType('Balance'),
+            api.consts.contracts['rentDepositOffset'] || api.registry.createType('Balance'),
+            api.consts.contracts['surchargeReward'] || api.registry.createType('Balance'),
+            api.consts.contracts['tombstoneDeposit'] || api.registry.createType('Balance')
         ]);
     }
     function fees(instanceId, api) {
@@ -4785,10 +4785,10 @@
         return !Array.isArray(value);
     }
     function retrieveStakeOf(elections) {
-        return elections.stakeOf.entries().pipe(map((entries) => entries.map(([{ args: [accountId] }, stake]) => [accountId, stake])));
+        return elections['stakeOf'].entries().pipe(map((entries) => entries.map(([{ args: [accountId] }, stake]) => [accountId, stake])));
     }
     function retrieveVoteOf(elections) {
-        return elections.votesOf.entries().pipe(map((entries) => entries.map(([{ args: [accountId] }, votes]) => [accountId, votes])));
+        return elections['votesOf'].entries().pipe(map((entries) => entries.map(([{ args: [accountId] }, votes]) => [accountId, votes])));
     }
     function retrievePrev(api, elections) {
         return combineLatest([
@@ -4820,9 +4820,9 @@
         ])));
     }
     function votes(instanceId, api) {
-        const elections = api.query.phragmenElection || api.query.electionsPhragmen || api.query.elections;
+        const elections = api.query.elections || api.query['phragmenElection'] || api.query['electionsPhragmen'];
         return memo(instanceId, () => elections
-            ? elections.stakeOf
+            ? elections['stakeOf']
                 ? retrievePrev(api, elections)
                 : retrieveCurrent(elections)
             : of([]));
@@ -4858,7 +4858,7 @@
         return util.u8aToHex(util.u8aConcat(':child_storage:default:', utilCrypto.blake2AsU8a(util.u8aConcat('crowdloan', (info.fundIndex || info.trieIndex).toU8a()))));
     }
     function childKey(instanceId, api) {
-        return memo(instanceId, (paraId) => api.query.crowdloan.funds(paraId).pipe(map((optInfo) => optInfo.isSome
+        return memo(instanceId, (paraId) => api.query['crowdloan']['funds'](paraId).pipe(map((optInfo) => optInfo.isSome
             ? createChildKey(optInfo.unwrap())
             : null)));
     }
@@ -5120,7 +5120,7 @@
         return call.isInline || call.isLegacy || call.isLookup;
     }
     function queryQueue(api) {
-        return api.query.democracy.dispatchQueue().pipe(switchMap((dispatches) => combineLatest([
+        return api.query.democracy['dispatchQueue']().pipe(switchMap((dispatches) => combineLatest([
             of(dispatches),
             api.derive.democracy.preimages(dispatches.map(([, hash]) => hash))
         ])), map(([dispatches, images]) => dispatches.map(([at, imageHash, index], dispatchIndex) => ({
@@ -5173,7 +5173,7 @@
     function dispatchQueue(instanceId, api) {
         return memo(instanceId, () => util.isFunction(api.query.scheduler?.agenda)
             ? queryScheduler(api)
-            : api.query.democracy.dispatchQueue
+            : api.query.democracy['dispatchQueue']
                 ? queryQueue(api)
                 : of([]));
     }
@@ -5246,7 +5246,7 @@
     }
 
     function isDemocracyPreimage(api, imageOpt) {
-        return !!imageOpt && !api.query.democracy.dispatchQueue;
+        return !!imageOpt && !api.query.democracy['dispatchQueue'];
     }
     function constructProposal(api, [bytes, proposer, balance, at]) {
         let proposal;
@@ -5292,7 +5292,7 @@
     }
     function getDemocracyImages(api, bounded) {
         const hashes = bounded.map((b) => getImageHashBounded(b));
-        return api.query.democracy.preimages.multi(hashes).pipe(map((images) => images.map((imageOpt) => parseDemocracy(api, imageOpt))));
+        return api.query.democracy['preimages'].multi(hashes).pipe(map((images) => images.map((imageOpt) => parseDemocracy(api, imageOpt))));
     }
     function getImages(api, bounded) {
         const hashes = bounded.map((b) => getImageHashBounded(b));
@@ -5320,7 +5320,7 @@
     }
     function preimages(instanceId, api) {
         return memo(instanceId, (hashes) => hashes.length
-            ? util.isFunction(api.query.democracy.preimages)
+            ? util.isFunction(api.query.democracy['preimages'])
                 ? getDemocracyImages(api, hashes)
                 : util.isFunction(api.query.preimage.preimageFor)
                     ? getImages(api, hashes)
@@ -5393,10 +5393,10 @@
     }
 
     function votesPrev(api, referendumId) {
-        return api.query.democracy.votersFor(referendumId).pipe(switchMap((votersFor) => combineLatest([
+        return api.query.democracy['votersFor'](referendumId).pipe(switchMap((votersFor) => combineLatest([
             of(votersFor),
             votersFor.length
-                ? api.query.democracy.voteOf.multi(votersFor.map((accountId) => [referendumId, accountId]))
+                ? api.query.democracy['voteOf'].multi(votersFor.map((accountId) => [referendumId, accountId]))
                 : of([]),
             api.derive.balances.votingBalances(votersFor)
         ])), map(([votersFor, votes, balances]) => votersFor.map((accountId, index) => ({
@@ -5529,15 +5529,17 @@
                 desiredRunnersUp: api.consts[elections].desiredRunnersUp,
                 desiredSeats: api.consts[elections].desiredMembers,
                 termDuration: api.consts[elections].termDuration,
-                votingBond: api.consts[elections].votingBond
+                votingBond: api.consts[elections]['votingBond'],
+                votingBondBase: api.consts[elections].votingBondBase,
+                votingBondFactor: api.consts[elections].votingBondFactor
             }
             : {};
     }
     function getModules(api) {
         const [council] = api.registry.getModuleInstances(api.runtimeVersion.specName, 'council') || ['council'];
-        const elections = api.query.phragmenElection
+        const elections = api.query['phragmenElection']
             ? 'phragmenElection'
-            : api.query.electionsPhragmen
+            : api.query['electionsPhragmen']
                 ? 'electionsPhragmen'
                 : api.query.elections
                     ? 'elections'
@@ -5677,22 +5679,22 @@
         };
     }
     function info$2(instanceId, api) {
-        return memo(instanceId, (id) => api.query.registrar && api.query.parachains
+        return memo(instanceId, (id) => api.query['registrar'] && api.query['parachains']
             ? api.queryMulti([
-                api.query.registrar.active,
-                api.query.registrar.retryQueue,
-                api.query.registrar.selectedThreads,
-                api.query.parachains.didUpdate,
-                [api.query.registrar.paras, id],
-                [api.query.registrar.pendingSwap, id],
-                [api.query.parachains.heads, id],
-                [api.query.parachains.relayDispatchQueue, id]
+                api.query['registrar']['active'],
+                api.query['registrar']['retryQueue'],
+                api.query['registrar']['selectedThreads'],
+                api.query['parachains']['didUpdate'],
+                [api.query['registrar']['paras'], id],
+                [api.query['registrar']['pendingSwap'], id],
+                [api.query['parachains']['heads'], id],
+                [api.query['parachains']['relayDispatchQueue'], id]
             ])
                 .pipe(map((result) => parse$2(api.registry.createType('ParaId', id), result)))
             : of(null));
     }
 
-    function parse$1([ids, didUpdate, infos, pendingSwaps, relayDispatchQueueSizes]) {
+    function parse$1([ids, didUpdate, relayDispatchQueueSizes, infos, pendingSwaps]) {
         return ids.map((id, index) => ({
             didUpdate: didUpdateToBool(didUpdate, id),
             id,
@@ -5702,13 +5704,13 @@
         }));
     }
     function overview$1(instanceId, api) {
-        return memo(instanceId, () => api.query.registrar?.parachains && api.query.parachains
-            ? api.query.registrar.parachains().pipe(switchMap((paraIds) => combineLatest([
+        return memo(instanceId, () => api.query['registrar']?.['parachains'] && api.query['parachains']
+            ? api.query['registrar']['parachains']().pipe(switchMap((paraIds) => combineLatest([
                 of(paraIds),
-                api.query.parachains.didUpdate(),
-                api.query.registrar.paras.multi(paraIds),
-                api.query.registrar.pendingSwap.multi(paraIds),
-                api.query.parachains.relayDispatchQueueSize.multi(paraIds)
+                api.query['parachains']['didUpdate'](),
+                api.query['parachains']['relayDispatchQueueSize'].multi(paraIds),
+                api.query['registrar']['paras'].multi(paraIds),
+                api.query['registrar']['pendingSwap'].multi(paraIds)
             ])), map(parse$1))
             : of([]));
     }
@@ -6065,7 +6067,7 @@
             api.query.staking.activeEra(),
             api.consts.staking.historyDepth
                 ? of(api.consts.staking.historyDepth)
-                : api.query.staking.historyDepth()
+                : api.query.staking['historyDepth']()
         ]).pipe(map(([activeEraOpt, historyDepth]) => {
             const result = [];
             const max = historyDepth.toNumber();
@@ -6197,8 +6199,8 @@
         return memo(instanceId, (stashIds) => stashIds.length
             ? api.query.session.queuedKeys().pipe(switchMap((queuedKeys) => combineLatest([
                 of(queuedKeys),
-                api.consts.session?.dedupKeyPrefix
-                    ? api.query.session.nextKeys.multi(stashIds.map((s) => [api.consts.session.dedupKeyPrefix, s]))
+                api.consts['session']?.['dedupKeyPrefix']
+                    ? api.query.session.nextKeys.multi(stashIds.map((s) => [api.consts['session']['dedupKeyPrefix'], s]))
                     : combineLatest(stashIds.map((s) => api.query.session.nextKeys(s)))
             ])), map(([queuedKeys, nextKeys]) => stashIds.map((stashId, index) => extractsIds(stashId, queuedKeys, nextKeys[index]))))
             : of([]));
@@ -6516,7 +6518,7 @@
         return memo(instanceId, () => api.query.staking.erasStakers
             ? api.derive.session.indexes().pipe(
             switchMap(({ currentEra }) => api.query.staking.erasStakers.keys(currentEra)), map((keys) => keys.map(({ args: [, accountId] }) => accountId)))
-            : api.query.staking.currentElected());
+            : api.query.staking['currentElected']());
     }
     function validators(instanceId, api) {
         return memo(instanceId, () =>
