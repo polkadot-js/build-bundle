@@ -18,10 +18,7 @@
 		if (typeof f == "function") {
 			var a = function a () {
 				if (this instanceof a) {
-					var args = [null];
-					args.push.apply(args, arguments);
-					var Ctor = Function.bind.apply(f, args);
-					return new Ctor();
+	        return Reflect.construct(f, arguments, this.constructor);
 				}
 				return f.apply(this, arguments);
 			};
@@ -51,114 +48,53 @@
 	var common = {};
 
 	(function (exports) {
-		var __awaiter = (commonjsGlobal && commonjsGlobal.__awaiter) || function (thisArg, _arguments, P, generator) {
-		    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-		    return new (P || (P = Promise))(function (resolve, reject) {
-		        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-		        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-		        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-		        step((generator = generator.apply(thisArg, _arguments || [])).next());
-		    });
-		};
-		var __generator = (commonjsGlobal && commonjsGlobal.__generator) || function (thisArg, body) {
-		    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-		    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-		    function verb(n) { return function (v) { return step([n, v]); }; }
-		    function step(op) {
-		        if (f) throw new TypeError("Generator is already executing.");
-		        while (g && (g = 0, op[0] && (_ = 0)), _) try {
-		            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-		            if (y = 0, t) op = [op[0] & 2, t.value];
-		            switch (op[0]) {
-		                case 0: case 1: t = op; break;
-		                case 4: _.label++; return { value: op[1], done: false };
-		                case 5: _.label++; y = op[1]; op = [0]; continue;
-		                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-		                default:
-		                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-		                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-		                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-		                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-		                    if (t[2]) _.ops.pop();
-		                    _.trys.pop(); continue;
-		            }
-		            op = body.call(thisArg, _);
-		        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-		        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-		    }
-		};
 		Object.defineProperty(exports, "__esModule", { value: true });
-		exports.getVersion = exports.processErrorResponse = exports.errorCodeToString = exports.ERROR_DESCRIPTION = exports.ERROR_CODE = exports.SCHEME = exports.P1_VALUES = exports.PAYLOAD_TYPE = exports.INS = exports.CHUNK_SIZE = void 0;
+		exports.getVersion = exports.processErrorResponse = exports.errorCodeToString = exports.ERROR_DESCRIPTION = exports.CHUNK_SIZE = void 0;
 		exports.CHUNK_SIZE = 250;
-		exports.INS = {
-		    GET_VERSION: 0x00,
-		    GET_ADDR: 0x01,
-		    SIGN: 0x02,
-		    ALLOWLIST_GET_PUBKEY: 0x90,
-		    ALLOWLIST_SET_PUBKEY: 0x91,
-		    ALLOWLIST_GET_HASH: 0x92,
-		    ALLOWLIST_UPLOAD: 0x93,
-		};
-		exports.PAYLOAD_TYPE = {
-		    INIT: 0x00,
-		    ADD: 0x01,
-		    LAST: 0x02,
-		};
-		exports.P1_VALUES = {
-		    ONLY_RETRIEVE: 0x00,
-		    SHOW_ADDRESS_IN_DEVICE: 0x01,
-		};
-		exports.SCHEME = {
-		    ED25519: 0x00,
-		    SR25519: 0x01,
-		};
-		exports.ERROR_CODE = {
-		    NoError: 0x9000,
-		};
 		exports.ERROR_DESCRIPTION = {
-		    1: 'U2F: Unknown',
-		    2: 'U2F: Bad request',
-		    3: 'U2F: Configuration unsupported',
-		    4: 'U2F: Device Ineligible',
-		    5: 'U2F: Timeout',
-		    14: 'Timeout',
-		    0x9000: 'No errors',
-		    0x9001: 'Device is busy',
-		    0x6802: 'Error deriving keys',
-		    0x6400: 'Execution Error',
-		    0x6700: 'Wrong Length',
-		    0x6982: 'Empty Buffer',
-		    0x6983: 'Output buffer too small',
-		    0x6984: 'Data is invalid',
-		    0x6985: 'Conditions not satisfied',
-		    0x6986: 'Transaction rejected',
-		    0x6a80: 'Bad key handle',
-		    0x6b00: 'Invalid P1/P2',
-		    0x6d00: 'Instruction not supported',
-		    0x6e00: 'App does not seem to be open',
-		    0x6f00: 'Unknown error',
-		    0x6f01: 'Sign/verify error',
+		    1: "U2F: Unknown",
+		    2: "U2F: Bad request",
+		    3: "U2F: Configuration unsupported",
+		    4: "U2F: Device Ineligible",
+		    5: "U2F: Timeout",
+		    14: "Timeout",
+		    0x9000: "No errors",
+		    0x9001: "Device is busy",
+		    0x6802: "Error deriving keys",
+		    0x6400: "Execution Error",
+		    0x6700: "Wrong Length",
+		    0x6982: "Empty Buffer",
+		    0x6983: "Output buffer too small",
+		    0x6984: "Data is invalid",
+		    0x6985: "Conditions not satisfied",
+		    0x6986: "Transaction rejected",
+		    0x6a80: "Bad key handle",
+		    0x6b00: "Invalid P1/P2",
+		    0x6d00: "Instruction not supported",
+		    0x6e01: "App does not seem to be open",
+		    0x6f00: "Unknown error",
+		    0x6f01: "Sign/verify error",
 		};
 		function errorCodeToString(statusCode) {
 		    if (statusCode in exports.ERROR_DESCRIPTION)
 		        return exports.ERROR_DESCRIPTION[statusCode];
-		    return "Unknown Status Code: ".concat(statusCode);
+		    return `Unknown Status Code: ${statusCode}`;
 		}
 		exports.errorCodeToString = errorCodeToString;
 		function isDict(v) {
-		    return typeof v === 'object' && v !== null && !(v instanceof Array) && !(v instanceof Date);
+		    return typeof v === "object" && v !== null && !(v instanceof Array) && !(v instanceof Date);
 		}
 		function processErrorResponse(response) {
-		    if (response) {
+		    if (response != null) {
 		        if (isDict(response)) {
-		            if (Object.prototype.hasOwnProperty.call(response, 'statusCode')) {
+		            if (Object.prototype.hasOwnProperty.call(response, "statusCode")) {
 		                return {
 		                    return_code: response.statusCode,
 		                    error_message: errorCodeToString(response.statusCode),
 		                };
 		            }
-		            if (Object.prototype.hasOwnProperty.call(response, 'return_code') &&
-		                Object.prototype.hasOwnProperty.call(response, 'error_message')) {
+		            if (Object.prototype.hasOwnProperty.call(response, "return_code") &&
+		                Object.prototype.hasOwnProperty.call(response, "error_message")) {
 		                return response;
 		            }
 		        }
@@ -173,429 +109,315 @@
 		    };
 		}
 		exports.processErrorResponse = processErrorResponse;
-		function getVersion(transport, cla) {
-		    return __awaiter(this, void 0, void 0, function () {
-		        return __generator(this, function (_a) {
-		            return [2 , transport.send(cla, exports.INS.GET_VERSION, 0, 0).then(function (response) {
-		                    var errorCodeData = response.slice(-2);
-		                    var returnCode = errorCodeData[0] * 256 + errorCodeData[1];
-		                    if (response.length !== 14) {
-		                        return {
-		                            return_code: 0x6984,
-		                            error_message: errorCodeToString(0x6984),
-		                        };
-		                    }
-		                    var major = response[1] * 256 + response[2];
-		                    var minor = response[3] * 256 + response[4];
-		                    var patch = response[5] * 256 + response[6];
-		                    var deviceLocked = response[7] === 1;
-		                    var targetId = (response[8] << 24) + (response[9] << 16) + (response[10] << 8) + (response[11] << 0);
-		                    return {
-		                        return_code: returnCode,
-		                        error_message: errorCodeToString(returnCode),
-		                        test_mode: response[0] !== 0,
-		                        major: major,
-		                        minor: minor,
-		                        patch: patch,
-		                        deviceLocked: deviceLocked,
-		                        target_id: targetId.toString(16),
-		                    };
-		                }, processErrorResponse)];
-		        });
-		    });
+		async function getVersion(transport, cla) {
+		    return await transport.send(cla, 0 , 0, 0).then((response) => {
+		        const errorCodeData = response.subarray(-2);
+		        const returnCode = errorCodeData[0] * 256 + errorCodeData[1];
+		        if (response.length !== 14) {
+		            return {
+		                return_code: 0x6984,
+		                error_message: errorCodeToString(0x6984),
+		            };
+		        }
+		        const major = response[1] * 256 + response[2];
+		        const minor = response[3] * 256 + response[4];
+		        const patch = response[5] * 256 + response[6];
+		        const deviceLocked = response[7] === 1;
+		        const targetId = (response[8] << 24) + (response[9] << 16) + (response[10] << 8) + (response[11] << 0);
+		        return {
+		            return_code: returnCode,
+		            error_message: errorCodeToString(returnCode),
+		            test_mode: response[0] !== 0,
+		            major,
+		            minor,
+		            patch,
+		            deviceLocked,
+		            target_id: targetId.toString(16),
+		        };
+		    }, processErrorResponse);
 		}
 		exports.getVersion = getVersion;
 	} (common));
 	getDefaultExportFromCjs(common);
 
-	var __awaiter$5 = (commonjsGlobal && commonjsGlobal.__awaiter) || function (thisArg, _arguments, P, generator) {
-	    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-	    return new (P || (P = Promise))(function (resolve, reject) {
-	        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-	        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-	        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-	        step((generator = generator.apply(thisArg, _arguments || [])).next());
-	    });
-	};
-	var __generator$1 = (commonjsGlobal && commonjsGlobal.__generator) || function (thisArg, body) {
-	    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-	    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-	    function verb(n) { return function (v) { return step([n, v]); }; }
-	    function step(op) {
-	        if (f) throw new TypeError("Generator is already executing.");
-	        while (g && (g = 0, op[0] && (_ = 0)), _) try {
-	            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-	            if (y = 0, t) op = [op[0] & 2, t.value];
-	            switch (op[0]) {
-	                case 0: case 1: t = op; break;
-	                case 4: _.label++; return { value: op[1], done: false };
-	                case 5: _.label++; y = op[1]; op = [0]; continue;
-	                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-	                default:
-	                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-	                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-	                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-	                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-	                    if (t[2]) _.ops.pop();
-	                    _.trys.pop(); continue;
-	            }
-	            op = body.call(thisArg, _);
-	        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-	        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-	    }
-	};
 	Object.defineProperty(substrate_app, "__esModule", { value: true });
 	substrate_app.SubstrateApp = void 0;
-	var common_1 = common;
-	var SubstrateApp =  (function () {
-	    function SubstrateApp(transport, cla, slip0044) {
-	        if (!transport) {
-	            throw new Error('Transport has not been defined');
+	const common_1 = common;
+	class SubstrateApp {
+	    constructor(transport, cla, slip0044) {
+	        if (transport == null) {
+	            throw new Error("Transport has not been defined");
 	        }
 	        this.transport = transport;
 	        this.cla = cla;
 	        this.slip0044 = slip0044;
 	    }
-	    SubstrateApp.serializePath = function (slip0044, account, change, addressIndex) {
+	    static serializePath(slip0044, account, change, addressIndex) {
 	        if (!Number.isInteger(account))
-	            throw new Error('Input must be an integer');
+	            throw new Error("Input must be an integer");
 	        if (!Number.isInteger(change))
-	            throw new Error('Input must be an integer');
+	            throw new Error("Input must be an integer");
 	        if (!Number.isInteger(addressIndex))
-	            throw new Error('Input must be an integer');
-	        var buf = Buffer.alloc(20);
+	            throw new Error("Input must be an integer");
+	        const buf = Buffer.alloc(20);
 	        buf.writeUInt32LE(0x8000002c, 0);
 	        buf.writeUInt32LE(slip0044, 4);
 	        buf.writeUInt32LE(account, 8);
 	        buf.writeUInt32LE(change, 12);
 	        buf.writeUInt32LE(addressIndex, 16);
 	        return buf;
-	    };
-	    SubstrateApp.GetChunks = function (message) {
-	        var chunks = [];
-	        var buffer = Buffer.from(message);
-	        for (var i = 0; i < buffer.length; i += common_1.CHUNK_SIZE) {
-	            var end = i + common_1.CHUNK_SIZE;
+	    }
+	    static GetChunks(message) {
+	        const chunks = [];
+	        const buffer = Buffer.from(message);
+	        for (let i = 0; i < buffer.length; i += common_1.CHUNK_SIZE) {
+	            let end = i + common_1.CHUNK_SIZE;
 	            if (i > buffer.length) {
 	                end = buffer.length;
 	            }
-	            chunks.push(buffer.slice(i, end));
+	            chunks.push(buffer.subarray(i, end));
 	        }
 	        return chunks;
-	    };
-	    SubstrateApp.signGetChunks = function (slip0044, account, change, addressIndex, message) {
-	        var chunks = [];
-	        var bip44Path = SubstrateApp.serializePath(slip0044, account, change, addressIndex);
+	    }
+	    static signGetChunks(slip0044, account, change, addressIndex, message) {
+	        const chunks = [];
+	        const bip44Path = SubstrateApp.serializePath(slip0044, account, change, addressIndex);
 	        chunks.push(bip44Path);
-	        chunks.push.apply(chunks, SubstrateApp.GetChunks(message));
+	        chunks.push(...SubstrateApp.GetChunks(message));
 	        return chunks;
-	    };
-	    SubstrateApp.prototype.getVersion = function () {
-	        return __awaiter$5(this, void 0, void 0, function () {
-	            var e_1;
-	            return __generator$1(this, function (_a) {
-	                switch (_a.label) {
-	                    case 0:
-	                        _a.trys.push([0, 2, , 3]);
-	                        return [4 , (0, common_1.getVersion)(this.transport, this.cla)];
-	                    case 1: return [2 , _a.sent()];
-	                    case 2:
-	                        e_1 = _a.sent();
-	                        return [2 , (0, common_1.processErrorResponse)(e_1)];
-	                    case 3: return [2 ];
+	    }
+	    async getVersion() {
+	        try {
+	            return await (0, common_1.getVersion)(this.transport, this.cla);
+	        }
+	        catch (e) {
+	            return (0, common_1.processErrorResponse)(e);
+	        }
+	    }
+	    async appInfo() {
+	        return await this.transport.send(0xb0, 0x01, 0, 0).then((response) => {
+	            const errorCodeData = response.subarray(-2);
+	            const returnCode = errorCodeData[0] * 256 + errorCodeData[1];
+	            let appName = "";
+	            let appVersion = "";
+	            let flagLen = 0;
+	            let flagsValue = 0;
+	            if (response[0] !== 1) {
+	                return {
+	                    return_code: 0x9001,
+	                    error_message: "response format ID not recognized",
+	                };
+	            }
+	            else {
+	                const appNameLen = response[1];
+	                appName = response.subarray(2, 2 + appNameLen).toString("ascii");
+	                let idx = 2 + appNameLen;
+	                const appVersionLen = response[idx];
+	                idx += 1;
+	                appVersion = response.subarray(idx, idx + appVersionLen).toString("ascii");
+	                idx += appVersionLen;
+	                const appFlagsLen = response[idx];
+	                idx += 1;
+	                flagLen = appFlagsLen;
+	                flagsValue = response[idx];
+	            }
+	            return {
+	                return_code: returnCode,
+	                error_message: (0, common_1.errorCodeToString)(returnCode),
+	                appName: appName === "" || "err",
+	                appVersion: appVersion === "" || "err",
+	                flagLen,
+	                flagsValue,
+	                flag_recovery: (flagsValue & 1) !== 0,
+	                flag_signed_mcu_code: (flagsValue & 2) !== 0,
+	                flag_onboarded: (flagsValue & 4) !== 0,
+	                flag_pin_validated: (flagsValue & 128) !== 0,
+	            };
+	        }, common_1.processErrorResponse);
+	    }
+	    async getAddress(account, change, addressIndex, requireConfirmation = false, scheme = 0 ) {
+	        const bip44Path = SubstrateApp.serializePath(this.slip0044, account, change, addressIndex);
+	        let p1 = 0;
+	        if (requireConfirmation)
+	            p1 = 1;
+	        let p2 = 0;
+	        if (!isNaN(scheme))
+	            p2 = scheme;
+	        return await this.transport.send(this.cla, 1 , p1, p2, bip44Path).then((response) => {
+	            const errorCodeData = response.subarray(-2);
+	            const errorCode = errorCodeData[0] * 256 + errorCodeData[1];
+	            return {
+	                pubKey: response.subarray(0, 32).toString("hex"),
+	                address: response.subarray(32, response.length - 2).toString("ascii"),
+	                return_code: errorCode,
+	                error_message: (0, common_1.errorCodeToString)(errorCode),
+	            };
+	        }, common_1.processErrorResponse);
+	    }
+	    async signSendChunk(chunkIdx, chunkNum, chunk, scheme = 0 , ins = 2 ) {
+	        let payloadType = 1 ;
+	        if (chunkIdx === 1) {
+	            payloadType = 0 ;
+	        }
+	        if (chunkIdx === chunkNum) {
+	            payloadType = 2 ;
+	        }
+	        let p2 = 0;
+	        if (!isNaN(scheme))
+	            p2 = scheme;
+	        return await this.transport
+	            .send(this.cla, ins, payloadType, p2, chunk, [36864 , 0x6984, 0x6a80])
+	            .then((response) => {
+	            const errorCodeData = response.subarray(-2);
+	            const returnCode = errorCodeData[0] * 256 + errorCodeData[1];
+	            let errorMessage = (0, common_1.errorCodeToString)(returnCode);
+	            let signature = null;
+	            if (returnCode === 0x6a80 || returnCode === 0x6984) {
+	                errorMessage = response.subarray(0, response.length - 2).toString("ascii");
+	            }
+	            else if (response.length > 2) {
+	                signature = response.subarray(0, response.length - 2);
+	            }
+	            return {
+	                signature,
+	                return_code: returnCode,
+	                error_message: errorMessage,
+	            };
+	        }, common_1.processErrorResponse);
+	    }
+	    async signImpl(account, change, addressIndex, message, ins, scheme = 0 ) {
+	        const chunks = SubstrateApp.signGetChunks(this.slip0044, account, change, addressIndex, message);
+	        return await this.signSendChunk(1, chunks.length, chunks[0], scheme, ins).then(async () => {
+	            let result;
+	            for (let i = 1; i < chunks.length; i += 1) {
+	                result = await this.signSendChunk(1 + i, chunks.length, chunks[i], scheme, ins);
+	                if (result.return_code !== 36864 ) {
+	                    break;
 	                }
-	            });
-	        });
-	    };
-	    SubstrateApp.prototype.appInfo = function () {
-	        return __awaiter$5(this, void 0, void 0, function () {
-	            return __generator$1(this, function (_a) {
-	                return [2 , this.transport.send(0xb0, 0x01, 0, 0).then(function (response) {
-	                        var errorCodeData = response.slice(-2);
-	                        var returnCode = errorCodeData[0] * 256 + errorCodeData[1];
-	                        var appName = '';
-	                        var appVersion = '';
-	                        var flagLen = 0;
-	                        var flagsValue = 0;
-	                        if (response[0] !== 1) {
-	                            return {
-	                                return_code: 0x9001,
-	                                error_message: 'response format ID not recognized',
-	                            };
-	                        }
-	                        else {
-	                            var appNameLen = response[1];
-	                            appName = response.slice(2, 2 + appNameLen).toString('ascii');
-	                            var idx = 2 + appNameLen;
-	                            var appVersionLen = response[idx];
-	                            idx += 1;
-	                            appVersion = response.slice(idx, idx + appVersionLen).toString('ascii');
-	                            idx += appVersionLen;
-	                            var appFlagsLen = response[idx];
-	                            idx += 1;
-	                            flagLen = appFlagsLen;
-	                            flagsValue = response[idx];
-	                        }
-	                        return {
-	                            return_code: returnCode,
-	                            error_message: (0, common_1.errorCodeToString)(returnCode),
-	                            appName: appName ? appName : 'err',
-	                            appVersion: appVersion ? appVersion : 'err',
-	                            flagLen: flagLen,
-	                            flagsValue: flagsValue,
-	                            flag_recovery: (flagsValue & 1) !== 0,
-	                            flag_signed_mcu_code: (flagsValue & 2) !== 0,
-	                            flag_onboarded: (flagsValue & 4) !== 0,
-	                            flag_pin_validated: (flagsValue & 128) !== 0,
-	                        };
-	                    }, common_1.processErrorResponse)];
-	            });
-	        });
-	    };
-	    SubstrateApp.prototype.getAddress = function (account, change, addressIndex, requireConfirmation, scheme) {
-	        if (requireConfirmation === void 0) { requireConfirmation = false; }
-	        if (scheme === void 0) { scheme = common_1.SCHEME.ED25519; }
-	        return __awaiter$5(this, void 0, void 0, function () {
-	            var bip44Path, p1, p2;
-	            return __generator$1(this, function (_a) {
-	                bip44Path = SubstrateApp.serializePath(this.slip0044, account, change, addressIndex);
-	                p1 = 0;
-	                if (requireConfirmation)
-	                    p1 = 1;
-	                p2 = 0;
-	                if (!isNaN(scheme))
-	                    p2 = scheme;
-	                return [2 , this.transport.send(this.cla, common_1.INS.GET_ADDR, p1, p2, bip44Path).then(function (response) {
-	                        var errorCodeData = response.slice(-2);
-	                        var errorCode = errorCodeData[0] * 256 + errorCodeData[1];
-	                        return {
-	                            pubKey: response.slice(0, 32).toString('hex'),
-	                            address: response.slice(32, response.length - 2).toString('ascii'),
-	                            return_code: errorCode,
-	                            error_message: (0, common_1.errorCodeToString)(errorCode),
-	                        };
-	                    }, common_1.processErrorResponse)];
-	            });
-	        });
-	    };
-	    SubstrateApp.prototype.signSendChunk = function (chunkIdx, chunkNum, chunk, scheme) {
-	        if (scheme === void 0) { scheme = common_1.SCHEME.ED25519; }
-	        return __awaiter$5(this, void 0, void 0, function () {
-	            var payloadType, p2;
-	            return __generator$1(this, function (_a) {
-	                payloadType = common_1.PAYLOAD_TYPE.ADD;
-	                if (chunkIdx === 1) {
-	                    payloadType = common_1.PAYLOAD_TYPE.INIT;
+	            }
+	            return {
+	                return_code: result.return_code,
+	                error_message: result.error_message,
+	                signature: result.signature,
+	            };
+	        }, common_1.processErrorResponse);
+	    }
+	    async sign(account, change, addressIndex, message, scheme = 0 ) {
+	        return await this.signImpl(account, change, addressIndex, message, 2 , scheme);
+	    }
+	    async signRaw(account, change, addressIndex, message, scheme = 0 ) {
+	        return await this.signImpl(account, change, addressIndex, message, 3 , scheme);
+	    }
+	    async getAllowlistPubKey() {
+	        return await this.transport.send(this.cla, 144 , 0, 0).then((response) => {
+	            const errorCodeData = response.subarray(-2);
+	            const returnCode = errorCodeData[0] * 256 + errorCodeData[1];
+	            console.log(response);
+	            const pubkey = response.subarray(0, 32);
+	            if (response.length !== 34) {
+	                return {
+	                    return_code: 0x6984,
+	                    error_message: (0, common_1.errorCodeToString)(0x6984),
+	                };
+	            }
+	            return {
+	                return_code: returnCode,
+	                error_message: (0, common_1.errorCodeToString)(returnCode),
+	                pubkey,
+	            };
+	        }, common_1.processErrorResponse);
+	    }
+	    async setAllowlistPubKey(pk) {
+	        return await this.transport.send(this.cla, 145 , 0, 0, pk).then((response) => {
+	            const errorCodeData = response.subarray(-2);
+	            const returnCode = errorCodeData[0] * 256 + errorCodeData[1];
+	            return {
+	                return_code: returnCode,
+	                error_message: (0, common_1.errorCodeToString)(returnCode),
+	            };
+	        }, common_1.processErrorResponse);
+	    }
+	    async getAllowlistHash() {
+	        return await this.transport.send(this.cla, 146 , 0, 0).then((response) => {
+	            const errorCodeData = response.subarray(-2);
+	            const returnCode = errorCodeData[0] * 256 + errorCodeData[1];
+	            console.log(response);
+	            const hash = response.subarray(0, 32);
+	            if (response.length !== 34) {
+	                return {
+	                    return_code: 0x6984,
+	                    error_message: (0, common_1.errorCodeToString)(0x6984),
+	                };
+	            }
+	            return {
+	                return_code: returnCode,
+	                error_message: (0, common_1.errorCodeToString)(returnCode),
+	                hash,
+	            };
+	        }, common_1.processErrorResponse);
+	    }
+	    async uploadSendChunk(chunkIdx, chunkNum, chunk) {
+	        let payloadType = 1 ;
+	        if (chunkIdx === 1) {
+	            payloadType = 0 ;
+	        }
+	        if (chunkIdx === chunkNum) {
+	            payloadType = 2 ;
+	        }
+	        return await this.transport
+	            .send(this.cla, 147 , payloadType, 0, chunk, [36864 ])
+	            .then((response) => {
+	            const errorCodeData = response.subarray(-2);
+	            const returnCode = errorCodeData[0] * 256 + errorCodeData[1];
+	            const errorMessage = (0, common_1.errorCodeToString)(returnCode);
+	            return {
+	                return_code: returnCode,
+	                error_message: errorMessage,
+	            };
+	        }, common_1.processErrorResponse);
+	    }
+	    async uploadAllowlist(message) {
+	        const chunks = [];
+	        chunks.push(Buffer.from([0]));
+	        chunks.push(...SubstrateApp.GetChunks(message));
+	        return await this.uploadSendChunk(1, chunks.length, chunks[0]).then(async (result) => {
+	            if (result.return_code !== 36864 ) {
+	                return {
+	                    return_code: result.return_code,
+	                    error_message: result.error_message,
+	                };
+	            }
+	            for (let i = 1; i < chunks.length; i += 1) {
+	                result = await this.uploadSendChunk(1 + i, chunks.length, chunks[i]);
+	                if (result.return_code !== 36864 ) {
+	                    break;
 	                }
-	                if (chunkIdx === chunkNum) {
-	                    payloadType = common_1.PAYLOAD_TYPE.LAST;
-	                }
-	                p2 = 0;
-	                if (!isNaN(scheme))
-	                    p2 = scheme;
-	                return [2 , this.transport.send(this.cla, common_1.INS.SIGN, payloadType, p2, chunk, [common_1.ERROR_CODE.NoError, 0x6984, 0x6a80]).then(function (response) {
-	                        var errorCodeData = response.slice(-2);
-	                        var returnCode = errorCodeData[0] * 256 + errorCodeData[1];
-	                        var errorMessage = (0, common_1.errorCodeToString)(returnCode);
-	                        var signature = null;
-	                        if (returnCode === 0x6a80 || returnCode === 0x6984) {
-	                            errorMessage = response.slice(0, response.length - 2).toString('ascii');
-	                        }
-	                        else if (response.length > 2) {
-	                            signature = response.slice(0, response.length - 2);
-	                        }
-	                        return {
-	                            signature: signature,
-	                            return_code: returnCode,
-	                            error_message: errorMessage,
-	                        };
-	                    }, common_1.processErrorResponse)];
-	            });
-	        });
-	    };
-	    SubstrateApp.prototype.sign = function (account, change, addressIndex, message, scheme) {
-	        if (scheme === void 0) { scheme = common_1.SCHEME.ED25519; }
-	        return __awaiter$5(this, void 0, void 0, function () {
-	            var chunks;
-	            var _this = this;
-	            return __generator$1(this, function (_a) {
-	                chunks = SubstrateApp.signGetChunks(this.slip0044, account, change, addressIndex, message);
-	                return [2 , this.signSendChunk(1, chunks.length, chunks[0], scheme).then(function () { return __awaiter$5(_this, void 0, void 0, function () {
-	                        var result, i;
-	                        return __generator$1(this, function (_a) {
-	                            switch (_a.label) {
-	                                case 0:
-	                                    i = 1;
-	                                    _a.label = 1;
-	                                case 1:
-	                                    if (!(i < chunks.length)) return [3 , 4];
-	                                    return [4 , this.signSendChunk(1 + i, chunks.length, chunks[i], scheme)];
-	                                case 2:
-	                                    result = _a.sent();
-	                                    if (result.return_code !== common_1.ERROR_CODE.NoError) {
-	                                        return [3 , 4];
-	                                    }
-	                                    _a.label = 3;
-	                                case 3:
-	                                    i += 1;
-	                                    return [3 , 1];
-	                                case 4: return [2 , {
-	                                        return_code: result.return_code,
-	                                        error_message: result.error_message,
-	                                        signature: result.signature,
-	                                    }];
-	                            }
-	                        });
-	                    }); }, common_1.processErrorResponse)];
-	            });
-	        });
-	    };
-	    SubstrateApp.prototype.getAllowlistPubKey = function () {
-	        return __awaiter$5(this, void 0, void 0, function () {
-	            return __generator$1(this, function (_a) {
-	                return [2 , this.transport.send(this.cla, common_1.INS.ALLOWLIST_GET_PUBKEY, 0, 0).then(function (response) {
-	                        var errorCodeData = response.slice(-2);
-	                        var returnCode = errorCodeData[0] * 256 + errorCodeData[1];
-	                        console.log(response);
-	                        var pubkey = response.slice(0, 32);
-	                        if (response.length !== 34) {
-	                            return {
-	                                return_code: 0x6984,
-	                                error_message: (0, common_1.errorCodeToString)(0x6984),
-	                            };
-	                        }
-	                        return {
-	                            return_code: returnCode,
-	                            error_message: (0, common_1.errorCodeToString)(returnCode),
-	                            pubkey: pubkey,
-	                        };
-	                    }, common_1.processErrorResponse)];
-	            });
-	        });
-	    };
-	    SubstrateApp.prototype.setAllowlistPubKey = function (pk) {
-	        return __awaiter$5(this, void 0, void 0, function () {
-	            return __generator$1(this, function (_a) {
-	                return [2 , this.transport.send(this.cla, common_1.INS.ALLOWLIST_SET_PUBKEY, 0, 0, pk).then(function (response) {
-	                        var errorCodeData = response.slice(-2);
-	                        var returnCode = errorCodeData[0] * 256 + errorCodeData[1];
-	                        return {
-	                            return_code: returnCode,
-	                            error_message: (0, common_1.errorCodeToString)(returnCode),
-	                        };
-	                    }, common_1.processErrorResponse)];
-	            });
-	        });
-	    };
-	    SubstrateApp.prototype.getAllowlistHash = function () {
-	        return __awaiter$5(this, void 0, void 0, function () {
-	            return __generator$1(this, function (_a) {
-	                return [2 , this.transport.send(this.cla, common_1.INS.ALLOWLIST_GET_HASH, 0, 0).then(function (response) {
-	                        var errorCodeData = response.slice(-2);
-	                        var returnCode = errorCodeData[0] * 256 + errorCodeData[1];
-	                        console.log(response);
-	                        var hash = response.slice(0, 32);
-	                        if (response.length !== 34) {
-	                            return {
-	                                return_code: 0x6984,
-	                                error_message: (0, common_1.errorCodeToString)(0x6984),
-	                            };
-	                        }
-	                        return {
-	                            return_code: returnCode,
-	                            error_message: (0, common_1.errorCodeToString)(returnCode),
-	                            hash: hash,
-	                        };
-	                    }, common_1.processErrorResponse)];
-	            });
-	        });
-	    };
-	    SubstrateApp.prototype.uploadSendChunk = function (chunkIdx, chunkNum, chunk) {
-	        return __awaiter$5(this, void 0, void 0, function () {
-	            var payloadType;
-	            return __generator$1(this, function (_a) {
-	                payloadType = common_1.PAYLOAD_TYPE.ADD;
-	                if (chunkIdx === 1) {
-	                    payloadType = common_1.PAYLOAD_TYPE.INIT;
-	                }
-	                if (chunkIdx === chunkNum) {
-	                    payloadType = common_1.PAYLOAD_TYPE.LAST;
-	                }
-	                return [2 , this.transport.send(this.cla, common_1.INS.ALLOWLIST_UPLOAD, payloadType, 0, chunk, [common_1.ERROR_CODE.NoError]).then(function (response) {
-	                        var errorCodeData = response.slice(-2);
-	                        var returnCode = errorCodeData[0] * 256 + errorCodeData[1];
-	                        var errorMessage = (0, common_1.errorCodeToString)(returnCode);
-	                        return {
-	                            return_code: returnCode,
-	                            error_message: errorMessage,
-	                        };
-	                    }, common_1.processErrorResponse)];
-	            });
-	        });
-	    };
-	    SubstrateApp.prototype.uploadAllowlist = function (message) {
-	        return __awaiter$5(this, void 0, void 0, function () {
-	            var chunks;
-	            var _this = this;
-	            return __generator$1(this, function (_a) {
-	                chunks = [];
-	                chunks.push(Buffer.from([0]));
-	                chunks.push.apply(chunks, SubstrateApp.GetChunks(message));
-	                return [2 , this.uploadSendChunk(1, chunks.length, chunks[0]).then(function (result) { return __awaiter$5(_this, void 0, void 0, function () {
-	                        var i;
-	                        return __generator$1(this, function (_a) {
-	                            switch (_a.label) {
-	                                case 0:
-	                                    if (result.return_code !== common_1.ERROR_CODE.NoError) {
-	                                        return [2 , {
-	                                                return_code: result.return_code,
-	                                                error_message: result.error_message,
-	                                            }];
-	                                    }
-	                                    i = 1;
-	                                    _a.label = 1;
-	                                case 1:
-	                                    if (!(i < chunks.length)) return [3 , 4];
-	                                    return [4 , this.uploadSendChunk(1 + i, chunks.length, chunks[i])];
-	                                case 2:
-	                                    result = _a.sent();
-	                                    if (result.return_code !== common_1.ERROR_CODE.NoError) {
-	                                        return [3 , 4];
-	                                    }
-	                                    _a.label = 3;
-	                                case 3:
-	                                    i += 1;
-	                                    return [3 , 1];
-	                                case 4: return [2 , {
-	                                        return_code: result.return_code,
-	                                        error_message: result.error_message,
-	                                    }];
-	                            }
-	                        });
-	                    }); }, common_1.processErrorResponse)];
-	            });
-	        });
-	    };
-	    return SubstrateApp;
-	}());
+	            }
+	            return {
+	                return_code: result.return_code,
+	                error_message: result.error_message,
+	            };
+	        }, common_1.processErrorResponse);
+	    }
+	}
 	substrate_app.SubstrateApp = SubstrateApp;
 
 	(function (exports) {
 		Object.defineProperty(exports, "__esModule", { value: true });
 		exports.supportedApps = exports.getAppParams = exports.newSubstrateApp = void 0;
-		var substrate_app_1 = substrate_app;
+		const substrate_app_1 = substrate_app;
 		function newSubstrateApp(transport, chainName) {
-		    var requestedApp = exports.supportedApps.find(function (app) {
+		    const requestedApp = exports.supportedApps.find((app) => {
 		        return app.name.toLowerCase() === chainName.toLowerCase();
 		    });
-		    if (requestedApp) {
+		    if (requestedApp != null) {
 		        return new substrate_app_1.SubstrateApp(transport, requestedApp.cla, requestedApp.slip0044);
 		    }
-		    throw new Error("Error: ".concat(chainName, " not supported"));
+		    throw new Error(`Error: ${chainName} not supported`);
 		}
 		exports.newSubstrateApp = newSubstrateApp;
 		function getAppParams(chainName) {
-		    var params = exports.supportedApps.find(function (app) {
+		    const params = exports.supportedApps.find((app) => {
 		        return app.name.toLowerCase() === chainName.toLowerCase();
 		    });
 		    return params;
@@ -603,238 +425,244 @@
 		exports.getAppParams = getAppParams;
 		exports.supportedApps = [
 		    {
-		        name: 'Polkadot',
+		        name: "Polkadot",
 		        cla: 0x90,
 		        slip0044: 0x80000162,
 		        ss58_addr_type: 0,
 		    },
 		    {
-		        name: 'Polymesh',
+		        name: "Polymesh",
 		        cla: 0x91,
 		        slip0044: 0x80000253,
 		        ss58_addr_type: 12,
 		    },
 		    {
-		        name: 'Dock',
+		        name: "Dock",
 		        cla: 0x92,
 		        slip0044: 0x80000252,
 		        ss58_addr_type: 22,
 		    },
 		    {
-		        name: 'Centrifuge',
+		        name: "Centrifuge",
 		        cla: 0x93,
 		        slip0044: 0x800002eb,
 		        ss58_addr_type: 36,
 		    },
 		    {
-		        name: 'Edgeware',
+		        name: "Edgeware",
 		        cla: 0x94,
 		        slip0044: 0x8000020b,
 		        ss58_addr_type: 7,
 		    },
 		    {
-		        name: 'Equilibrium',
+		        name: "Equilibrium",
 		        cla: 0x95,
 		        slip0044: 0x85f5e0fd,
 		        ss58_addr_type: 67,
 		    },
 		    {
-		        name: 'Statemint',
+		        name: "Statemint",
 		        cla: 0x96,
 		        slip0044: 0x80000162,
 		        ss58_addr_type: 0,
 		    },
 		    {
-		        name: 'Statemine',
+		        name: "Statemine",
 		        cla: 0x97,
 		        slip0044: 0x800001b2,
 		        ss58_addr_type: 2,
 		    },
 		    {
-		        name: 'Nodle',
+		        name: "Nodle",
 		        cla: 0x98,
 		        slip0044: 0x800003eb,
 		        ss58_addr_type: 37,
 		    },
 		    {
-		        name: 'Kusama',
+		        name: "Kusama",
 		        cla: 0x99,
 		        slip0044: 0x800001b2,
 		        ss58_addr_type: 2,
 		    },
 		    {
-		        name: 'Karura',
+		        name: "Karura",
 		        cla: 0x9a,
 		        slip0044: 0x800002ae,
 		        ss58_addr_type: 8,
 		    },
 		    {
-		        name: 'Acala',
+		        name: "Acala",
 		        cla: 0x9b,
 		        slip0044: 0x80000313,
 		        ss58_addr_type: 10,
 		    },
 		    {
-		        name: 'VTB',
+		        name: "VTB",
 		        cla: 0x9c,
 		        slip0044: 0x800002b6,
 		        ss58_addr_type: 42,
 		    },
 		    {
-		        name: 'Peer',
+		        name: "Peer",
 		        cla: 0x9d,
 		        slip0044: 0x800002ce,
 		        ss58_addr_type: 42,
 		    },
 		    {
-		        name: 'Genshiro',
+		        name: "Genshiro",
 		        cla: 0x9e,
 		        slip0044: 0x85f5e0fc,
 		        ss58_addr_type: 67,
 		    },
 		    {
-		        name: 'Sora',
+		        name: "Sora",
 		        cla: 0x9f,
 		        slip0044: 0x80000269,
 		        ss58_addr_type: 69,
 		    },
 		    {
-		        name: 'Polkadex',
+		        name: "Polkadex",
 		        cla: 0xa0,
 		        slip0044: 0x8000031f,
 		        ss58_addr_type: 88,
 		    },
 		    {
-		        name: 'Bifrost',
+		        name: "Bifrost",
 		        cla: 0xa1,
 		        slip0044: 0x80000314,
 		        ss58_addr_type: 6,
 		    },
 		    {
-		        name: 'Reef',
+		        name: "Reef",
 		        cla: 0xa2,
 		        slip0044: 0x80000333,
 		        ss58_addr_type: 42,
 		    },
 		    {
-		        name: 'XXNetwork',
+		        name: "XXNetwork",
 		        cla: 0xa3,
 		        slip0044: 0x800007a3,
 		        ss58_addr_type: 55,
 		    },
 		    {
-		        name: 'AlephZero',
+		        name: "AlephZero",
 		        cla: 0xa4,
 		        slip0044: 0x80000283,
 		        ss58_addr_type: 42,
 		    },
 		    {
-		        name: 'Interlay',
+		        name: "Interlay",
 		        cla: 0xa5,
 		        slip0044: 0x80000162,
 		        ss58_addr_type: 2032,
 		    },
 		    {
-		        name: 'Parallel',
+		        name: "Parallel",
 		        cla: 0xa6,
 		        slip0044: 0x80000162,
 		        ss58_addr_type: 172,
 		    },
 		    {
-		        name: 'Picasso',
+		        name: "Picasso",
 		        cla: 0xa7,
 		        slip0044: 0x800001b2,
 		        ss58_addr_type: 49,
 		    },
 		    {
-		        name: 'Composable',
+		        name: "Composable",
 		        cla: 0xa8,
 		        slip0044: 0x80000162,
 		        ss58_addr_type: 49,
 		    },
 		    {
-		        name: 'Astar',
+		        name: "Astar",
 		        cla: 0xa9,
 		        slip0044: 0x8000032a,
 		        ss58_addr_type: 5,
 		    },
 		    {
-		        name: 'OriginTrail',
+		        name: "OriginTrail",
 		        cla: 0xaa,
 		        slip0044: 0x80000162,
 		        ss58_addr_type: 101,
 		    },
 		    {
-		        name: 'HydraDX',
+		        name: "HydraDX",
 		        cla: 0xab,
 		        slip0044: 0x80000162,
 		        ss58_addr_type: 63,
 		    },
 		    {
-		        name: 'Stafi',
+		        name: "Stafi",
 		        cla: 0xac,
 		        slip0044: 0x8000038b,
 		        ss58_addr_type: 20,
 		    },
 		    {
-		        name: 'Unique',
+		        name: "Unique",
 		        cla: 0xad,
 		        slip0044: 0x80000162,
 		        ss58_addr_type: 7391,
 		    },
 		    {
-		        name: 'BifrostKusama',
+		        name: "BifrostKusama",
 		        cla: 0xae,
 		        slip0044: 0x80000314,
 		        ss58_addr_type: 6,
 		    },
 		    {
-		        name: 'Phala',
+		        name: "Phala",
 		        cla: 0xaf,
 		        slip0044: 0x80000162,
 		        ss58_addr_type: 30,
 		    },
 		    {
-		        name: 'Khala',
+		        name: "Khala",
 		        cla: 0xb1,
 		        slip0044: 0x800001b2,
 		        ss58_addr_type: 30,
 		    },
 		    {
-		        name: 'Darwinia',
+		        name: "Darwinia",
 		        cla: 0xb2,
 		        slip0044: 0x80000162,
 		        ss58_addr_type: 18,
 		    },
 		    {
-		        name: 'Ajuna',
+		        name: "Ajuna",
 		        cla: 0xb3,
 		        slip0044: 0x80000162,
 		        ss58_addr_type: 1328,
 		    },
 		    {
-		        name: 'Bittensor',
+		        name: "Bittensor",
 		        cla: 0xb4,
 		        slip0044: 0x800003ed,
 		        ss58_addr_type: 42,
 		    },
 		    {
-		        name: 'Ternoa',
+		        name: "Ternoa",
 		        cla: 0xb5,
 		        slip0044: 0x800003e3,
 		        ss58_addr_type: 42,
 		    },
 		    {
-		        name: 'Pendulum',
+		        name: "Pendulum",
 		        cla: 0xb6,
 		        slip0044: 0x80000162,
 		        ss58_addr_type: 56,
 		    },
 		    {
-		        name: 'Zeitgeist',
+		        name: "Zeitgeist",
 		        cla: 0xb7,
 		        slip0044: 0x80000162,
 		        ss58_addr_type: 73,
+		    },
+		    {
+		        name: "Joystream",
+		        cla: 0xb8,
+		        slip0044: 0x80000219,
+		        ss58_addr_type: 126,
 		    },
 		];
 	} (supported_apps));
@@ -842,109 +670,109 @@
 
 	Object.defineProperty(legacy_apps, "__esModule", { value: true });
 	legacy_apps.newBifrostKusamaApp = legacy_apps.newUniqueApp = legacy_apps.newInterlayApp = legacy_apps.newAlephZeroApp = legacy_apps.newStafiApp = legacy_apps.newComposableApp = legacy_apps.newAstarApp = legacy_apps.newParallelApp = legacy_apps.newXXNetworkApp = legacy_apps.newAcalaApp = legacy_apps.newReefApp = legacy_apps.newKaruraApp = legacy_apps.newBifrostApp = legacy_apps.newPolkadexApp = legacy_apps.newSoraApp = legacy_apps.newNodleApp = legacy_apps.newStatemineApp = legacy_apps.newStatemintApp = legacy_apps.newGenshiroApp = legacy_apps.newEquilibriumApp = legacy_apps.newEdgewareApp = legacy_apps.newCentrifugeApp = legacy_apps.newDockApp = legacy_apps.newPolymeshApp = legacy_apps.newPolkadotApp = legacy_apps.newKusamaApp = void 0;
-	var supported_apps_1 = supported_apps;
+	const supported_apps_1 = supported_apps;
 	function newKusamaApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Kusama');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Kusama");
 	}
 	legacy_apps.newKusamaApp = newKusamaApp;
 	function newPolkadotApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Polkadot');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Polkadot");
 	}
 	legacy_apps.newPolkadotApp = newPolkadotApp;
 	function newPolymeshApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Polymesh');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Polymesh");
 	}
 	legacy_apps.newPolymeshApp = newPolymeshApp;
 	function newDockApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Dock');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Dock");
 	}
 	legacy_apps.newDockApp = newDockApp;
 	function newCentrifugeApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Centrifuge');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Centrifuge");
 	}
 	legacy_apps.newCentrifugeApp = newCentrifugeApp;
 	function newEdgewareApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Edgeware');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Edgeware");
 	}
 	legacy_apps.newEdgewareApp = newEdgewareApp;
 	function newEquilibriumApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Equilibrium');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Equilibrium");
 	}
 	legacy_apps.newEquilibriumApp = newEquilibriumApp;
 	function newGenshiroApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Genshiro');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Genshiro");
 	}
 	legacy_apps.newGenshiroApp = newGenshiroApp;
 	function newStatemintApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Statemint');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Statemint");
 	}
 	legacy_apps.newStatemintApp = newStatemintApp;
 	function newStatemineApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Statemine');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Statemine");
 	}
 	legacy_apps.newStatemineApp = newStatemineApp;
 	function newNodleApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Nodle');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Nodle");
 	}
 	legacy_apps.newNodleApp = newNodleApp;
 	function newSoraApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Sora');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Sora");
 	}
 	legacy_apps.newSoraApp = newSoraApp;
 	function newPolkadexApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Polkadex');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Polkadex");
 	}
 	legacy_apps.newPolkadexApp = newPolkadexApp;
 	function newBifrostApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Bifrost');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Bifrost");
 	}
 	legacy_apps.newBifrostApp = newBifrostApp;
 	function newKaruraApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Karura');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Karura");
 	}
 	legacy_apps.newKaruraApp = newKaruraApp;
 	function newReefApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Reef');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Reef");
 	}
 	legacy_apps.newReefApp = newReefApp;
 	function newAcalaApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Acala');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Acala");
 	}
 	legacy_apps.newAcalaApp = newAcalaApp;
 	function newXXNetworkApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'XXNetwork');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "XXNetwork");
 	}
 	legacy_apps.newXXNetworkApp = newXXNetworkApp;
 	function newParallelApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Parallel');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Parallel");
 	}
 	legacy_apps.newParallelApp = newParallelApp;
 	function newAstarApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Astar');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Astar");
 	}
 	legacy_apps.newAstarApp = newAstarApp;
 	function newComposableApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Composable');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Composable");
 	}
 	legacy_apps.newComposableApp = newComposableApp;
 	function newStafiApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Stafi');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Stafi");
 	}
 	legacy_apps.newStafiApp = newStafiApp;
 	function newAlephZeroApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'AlephZero');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "AlephZero");
 	}
 	legacy_apps.newAlephZeroApp = newAlephZeroApp;
 	function newInterlayApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Interlay');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Interlay");
 	}
 	legacy_apps.newInterlayApp = newInterlayApp;
 	function newUniqueApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'Unique');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "Unique");
 	}
 	legacy_apps.newUniqueApp = newUniqueApp;
 	function newBifrostKusamaApp(transport) {
-	    return (0, supported_apps_1.newSubstrateApp)(transport, 'BifrostKusama');
+	    return (0, supported_apps_1.newSubstrateApp)(transport, "BifrostKusama");
 	}
 	legacy_apps.newBifrostKusamaApp = newBifrostKusamaApp;
 
@@ -1216,6 +1044,50 @@
 	  if (receiver === null || (typeof receiver !== "object" && typeof receiver !== "function")) throw new TypeError("Cannot use 'in' operator on non-object");
 	  return typeof state === "function" ? receiver === state : state.has(receiver);
 	}
+	function __addDisposableResource(env, value, async) {
+	  if (value !== null && value !== void 0) {
+	    if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+	    var dispose;
+	    if (async) {
+	        if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+	        dispose = value[Symbol.asyncDispose];
+	    }
+	    if (dispose === void 0) {
+	        if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+	        dispose = value[Symbol.dispose];
+	    }
+	    if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+	    env.stack.push({ value: value, dispose: dispose, async: async });
+	  }
+	  else if (async) {
+	    env.stack.push({ async: true });
+	  }
+	  return value;
+	}
+	var _SuppressedError = typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+	  var e = new Error(message);
+	  return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+	};
+	function __disposeResources(env) {
+	  function fail(e) {
+	    env.error = env.hasError ? new _SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+	    env.hasError = true;
+	  }
+	  function next() {
+	    while (env.stack.length) {
+	      var rec = env.stack.pop();
+	      try {
+	        var result = rec.dispose && rec.dispose.call(rec.value);
+	        if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+	      }
+	      catch (e) {
+	          fail(e);
+	      }
+	    }
+	    if (env.hasError) throw env.error;
+	  }
+	  return next();
+	}
 	const tslib_es6 = {
 	  __extends,
 	  __assign,
@@ -1242,10 +1114,13 @@
 	  __classPrivateFieldGet,
 	  __classPrivateFieldSet,
 	  __classPrivateFieldIn,
+	  __addDisposableResource,
+	  __disposeResources,
 	};
 
 	const tslib_es6$1 = /*#__PURE__*/Object.freeze({
 		__proto__: null,
+		__addDisposableResource: __addDisposableResource,
 		get __assign () { return __assign; },
 		__asyncDelegator: __asyncDelegator,
 		__asyncGenerator: __asyncGenerator,
@@ -1257,6 +1132,7 @@
 		__classPrivateFieldSet: __classPrivateFieldSet,
 		__createBinding: __createBinding,
 		__decorate: __decorate,
+		__disposeResources: __disposeResources,
 		__esDecorate: __esDecorate,
 		__exportStar: __exportStar,
 		__extends: __extends,
@@ -1293,10 +1169,7 @@
 	                    this[k] = fields[k];
 	                }
 	            }
-	            if (options &&
-	                isObject(options) &&
-	                "cause" in options &&
-	                !("cause" in this)) {
+	            if (options && isObject(options) && "cause" in options && !("cause" in this)) {
 	                const cause = options.cause;
 	                this.cause = cause;
 	                if ("stack" in cause) {
@@ -1331,7 +1204,7 @@
 	        super(message || name);
 	        this.name = name;
 	        this.message = message;
-	        this.stack = new Error().stack;
+	        this.stack = new Error(message).stack;
 	        this.id = id;
 	    }
 	}
@@ -1398,8 +1271,7 @@
 	    }
 	}
 	function TransportStatusError(statusCode) {
-	    const statusText = Object.keys(StatusCodes).find((k) => StatusCodes[k] === statusCode) ||
-	        "UNKNOWN_ERROR";
+	    const statusText = Object.keys(StatusCodes).find(k => StatusCodes[k] === statusCode) || "UNKNOWN_ERROR";
 	    const smsg = getAltStatusMessage(statusCode) || statusText;
 	    const statusCodeStr = statusCode.toString(16);
 	    const message = `Ledger device: ${smsg} (0x${statusCodeStr})`;
@@ -1408,7 +1280,7 @@
 	    }
 	    this.name = "TransportStatusError";
 	    this.message = message;
-	    this.stack = new Error().stack;
+	    this.stack = new Error(message).stack;
 	    this.statusCode = statusCode;
 	    this.statusText = statusText;
 	}
@@ -1433,13 +1305,9 @@
 	            if (data.length >= 256) {
 	                throw new TransportError("data.length exceed 256 bytes limit. Got: " + data.length, "DataLengthTooBig");
 	            }
-	            const response = yield this.exchange(Buffer.concat([
-	                Buffer.from([cla, ins, p1, p2]),
-	                Buffer.from([data.length]),
-	                data,
-	            ]));
+	            const response = yield this.exchange(Buffer.concat([Buffer.from([cla, ins, p1, p2]), Buffer.from([data.length]), data]));
 	            const sw = response.readUInt16BE(response.length - 2);
-	            if (!statusList.some((s) => s === sw)) {
+	            if (!statusList.some(s => s === sw)) {
 	                throw new TransportStatusError(sw);
 	            }
 	            return response;
@@ -1449,7 +1317,7 @@
 	                throw new TransportRaceCondition("An action was already pending on the Ledger device. Please deny or reconnect.");
 	            }
 	            let resolveBusy;
-	            const busyPromise = new Promise((r) => {
+	            const busyPromise = new Promise(r => {
 	                resolveBusy = r;
 	            });
 	            this.exchangeBusyPromise = busyPromise;
@@ -1496,7 +1364,7 @@
 	                observer.next(r);
 	            }
 	        });
-	        main().then(() => !unsubscribed && observer.complete(), (e) => !unsubscribed && observer.error(e));
+	        main().then(() => !unsubscribed && observer.complete(), e => !unsubscribed && observer.error(e));
 	        return { unsubscribe };
 	    }
 	    setScrambleKey(_key) { }
@@ -1525,7 +1393,7 @@
 	        return new Promise((resolve, reject) => {
 	            let found = false;
 	            const sub = this.listen({
-	                next: (e) => {
+	                next: e => {
 	                    found = true;
 	                    if (sub)
 	                        sub.unsubscribe();
@@ -1533,7 +1401,7 @@
 	                        clearTimeout(listenTimeoutId);
 	                    this.open(e.descriptor, openTimeout).then(resolve, reject);
 	                },
-	                error: (e) => {
+	                error: e => {
 	                    if (listenTimeoutId)
 	                        clearTimeout(listenTimeoutId);
 	                    reject(e);
@@ -1652,6 +1520,7 @@
 	const MAX_SAFE_INTEGER$1 = Number.MAX_SAFE_INTEGER ||
 	 9007199254740991;
 	const MAX_SAFE_COMPONENT_LENGTH = 16;
+	const MAX_SAFE_BUILD_LENGTH = MAX_LENGTH$1 - 6;
 	const RELEASE_TYPES = [
 	  'major',
 	  'premajor',
@@ -1664,6 +1533,7 @@
 	var constants$1 = {
 	  MAX_LENGTH: MAX_LENGTH$1,
 	  MAX_SAFE_COMPONENT_LENGTH,
+	  MAX_SAFE_BUILD_LENGTH,
 	  MAX_SAFE_INTEGER: MAX_SAFE_INTEGER$1,
 	  RELEASE_TYPES,
 	  SEMVER_SPEC_VERSION,
@@ -1683,23 +1553,44 @@
 	getDefaultExportFromCjs(debug_1);
 
 	(function (module, exports) {
-		const { MAX_SAFE_COMPONENT_LENGTH } = constants$1;
+		const {
+		  MAX_SAFE_COMPONENT_LENGTH,
+		  MAX_SAFE_BUILD_LENGTH,
+		  MAX_LENGTH,
+		} = constants$1;
 		const debug = debug_1;
 		exports = module.exports = {};
 		const re = exports.re = [];
+		const safeRe = exports.safeRe = [];
 		const src = exports.src = [];
 		const t = exports.t = {};
 		let R = 0;
+		const LETTERDASHNUMBER = '[a-zA-Z0-9-]';
+		const safeRegexReplacements = [
+		  ['\\s', 1],
+		  ['\\d', MAX_LENGTH],
+		  [LETTERDASHNUMBER, MAX_SAFE_BUILD_LENGTH],
+		];
+		const makeSafeRegex = (value) => {
+		  for (const [token, max] of safeRegexReplacements) {
+		    value = value
+		      .split(`${token}*`).join(`${token}{0,${max}}`)
+		      .split(`${token}+`).join(`${token}{1,${max}}`);
+		  }
+		  return value
+		};
 		const createToken = (name, value, isGlobal) => {
+		  const safe = makeSafeRegex(value);
 		  const index = R++;
 		  debug(name, index, value);
 		  t[name] = index;
 		  src[index] = value;
 		  re[index] = new RegExp(value, isGlobal ? 'g' : undefined);
+		  safeRe[index] = new RegExp(safe, isGlobal ? 'g' : undefined);
 		};
 		createToken('NUMERICIDENTIFIER', '0|[1-9]\\d*');
-		createToken('NUMERICIDENTIFIERLOOSE', '[0-9]+');
-		createToken('NONNUMERICIDENTIFIER', '\\d*[a-zA-Z-][a-zA-Z0-9-]*');
+		createToken('NUMERICIDENTIFIERLOOSE', '\\d+');
+		createToken('NONNUMERICIDENTIFIER', `\\d*[a-zA-Z-]${LETTERDASHNUMBER}*`);
 		createToken('MAINVERSION', `(${src[t.NUMERICIDENTIFIER]})\\.` +
 		                   `(${src[t.NUMERICIDENTIFIER]})\\.` +
 		                   `(${src[t.NUMERICIDENTIFIER]})`);
@@ -1714,7 +1605,7 @@
 	}(?:\\.${src[t.PRERELEASEIDENTIFIER]})*))`);
 		createToken('PRERELEASELOOSE', `(?:-?(${src[t.PRERELEASEIDENTIFIERLOOSE]
 	}(?:\\.${src[t.PRERELEASEIDENTIFIERLOOSE]})*))`);
-		createToken('BUILDIDENTIFIER', '[0-9A-Za-z-]+');
+		createToken('BUILDIDENTIFIER', `${LETTERDASHNUMBER}+`);
 		createToken('BUILD', `(?:\\+(${src[t.BUILDIDENTIFIER]
 	}(?:\\.${src[t.BUILDIDENTIFIER]})*))`);
 		createToken('FULLPLAIN', `v?${src[t.MAINVERSION]
@@ -1815,7 +1706,7 @@
 
 	const debug = debug_1;
 	const { MAX_LENGTH, MAX_SAFE_INTEGER } = constants$1;
-	const { re: re$1, t: t$1 } = reExports;
+	const { safeRe: re$1, t: t$1 } = reExports;
 	const parseOptions = parseOptions_1;
 	const { compareIdentifiers } = identifiers$1;
 	let SemVer$d = class SemVer {
@@ -2048,8 +1939,10 @@
 	      default:
 	        throw new Error(`invalid increment argument: ${release}`)
 	    }
-	    this.format();
-	    this.raw = this.version;
+	    this.raw = this.format();
+	    if (this.build.length) {
+	      this.raw += `+${this.build.join('.')}`;
+	    }
 	    return this
 	  }
 	};
@@ -2120,6 +2013,19 @@
 	  const highVersion = v1Higher ? v1 : v2;
 	  const lowVersion = v1Higher ? v2 : v1;
 	  const highHasPre = !!highVersion.prerelease.length;
+	  const lowHasPre = !!lowVersion.prerelease.length;
+	  if (lowHasPre && !highHasPre) {
+	    if (!lowVersion.patch && !lowVersion.minor) {
+	      return 'major'
+	    }
+	    if (highVersion.patch) {
+	      return 'patch'
+	    }
+	    if (highVersion.minor) {
+	      return 'minor'
+	    }
+	    return 'major'
+	  }
 	  const prefix = highHasPre ? 'pre' : '';
 	  if (v1.major !== v2.major) {
 	    return prefix + 'major'
@@ -2130,16 +2036,7 @@
 	  if (v1.patch !== v2.patch) {
 	    return prefix + 'patch'
 	  }
-	  if (highHasPre) {
-	    return 'prerelease'
-	  }
-	  if (lowVersion.patch) {
-	    return 'patch'
-	  }
-	  if (lowVersion.minor) {
-	    return 'minor'
-	  }
-	  return 'major'
+	  return 'prerelease'
 	};
 	var diff_1 = diff$1;
 	getDefaultExportFromCjs(diff_1);
@@ -2279,7 +2176,7 @@
 
 	const SemVer$5 = semver$2;
 	const parse$1 = parse_1;
-	const { re, t } = reExports;
+	const { safeRe: re, t } = reExports;
 	const coerce$1 = (version, options) => {
 	  if (version instanceof SemVer$5) {
 	    return version
@@ -2995,13 +2892,16 @@
 		    this.options = options;
 		    this.loose = !!options.loose;
 		    this.includePrerelease = !!options.includePrerelease;
-		    this.raw = range;
-		    this.set = range
+		    this.raw = range
+		      .trim()
+		      .split(/\s+/)
+		      .join(' ');
+		    this.set = this.raw
 		      .split('||')
 		      .map(r => this.parseRange(r.trim()))
 		      .filter(c => c.length);
 		    if (!this.set.length) {
-		      throw new TypeError(`Invalid SemVer Range: ${range}`)
+		      throw new TypeError(`Invalid SemVer Range: ${this.raw}`)
 		    }
 		    if (this.set.length > 1) {
 		      const first = this.set[0];
@@ -3021,9 +2921,7 @@
 		  }
 		  format () {
 		    this.range = this.set
-		      .map((comps) => {
-		        return comps.join(' ').trim()
-		      })
+		      .map((comps) => comps.join(' ').trim())
 		      .join('||')
 		      .trim();
 		    return this.range
@@ -3032,7 +2930,6 @@
 		    return this.range
 		  }
 		  parseRange (range) {
-		    range = range.trim();
 		    const memoOpts =
 		      (this.options.includePrerelease && FLAG_INCLUDE_PRERELEASE) |
 		      (this.options.loose && FLAG_LOOSE);
@@ -3048,8 +2945,9 @@
 		    range = range.replace(re[t.COMPARATORTRIM], comparatorTrimReplace);
 		    debug('comparator trim', range);
 		    range = range.replace(re[t.TILDETRIM], tildeTrimReplace);
+		    debug('tilde trim', range);
 		    range = range.replace(re[t.CARETTRIM], caretTrimReplace);
-		    range = range.split(/\s+/).join(' ');
+		    debug('caret trim', range);
 		    let rangeList = range
 		      .split(' ')
 		      .map(comp => parseComparator(comp, this.options))
@@ -3125,7 +3023,7 @@
 		const debug = debug_1;
 		const SemVer = semver$2;
 		const {
-		  re,
+		  safeRe: re,
 		  t,
 		  comparatorTrimReplace,
 		  tildeTrimReplace,
@@ -3159,10 +3057,13 @@
 		  return comp
 		};
 		const isX = id => !id || id.toLowerCase() === 'x' || id === '*';
-		const replaceTildes = (comp, options) =>
-		  comp.trim().split(/\s+/).map((c) => {
-		    return replaceTilde(c, options)
-		  }).join(' ');
+		const replaceTildes = (comp, options) => {
+		  return comp
+		    .trim()
+		    .split(/\s+/)
+		    .map((c) => replaceTilde(c, options))
+		    .join(' ')
+		};
 		const replaceTilde = (comp, options) => {
 		  const r = options.loose ? re[t.TILDELOOSE] : re[t.TILDE];
 		  return comp.replace(r, (_, M, m, p, pr) => {
@@ -3186,10 +3087,13 @@
 		    return ret
 		  })
 		};
-		const replaceCarets = (comp, options) =>
-		  comp.trim().split(/\s+/).map((c) => {
-		    return replaceCaret(c, options)
-		  }).join(' ');
+		const replaceCarets = (comp, options) => {
+		  return comp
+		    .trim()
+		    .split(/\s+/)
+		    .map((c) => replaceCaret(c, options))
+		    .join(' ')
+		};
 		const replaceCaret = (comp, options) => {
 		  debug('caret', comp, options);
 		  const r = options.loose ? re[t.CARETLOOSE] : re[t.CARET];
@@ -3242,9 +3146,10 @@
 		};
 		const replaceXRanges = (comp, options) => {
 		  debug('replaceXRanges', comp, options);
-		  return comp.split(/\s+/).map((c) => {
-		    return replaceXRange(c, options)
-		  }).join(' ')
+		  return comp
+		    .split(/\s+/)
+		    .map((c) => replaceXRange(c, options))
+		    .join(' ')
 		};
 		const replaceXRange = (comp, options) => {
 		  comp = comp.trim();
@@ -3304,11 +3209,14 @@
 		};
 		const replaceStars = (comp, options) => {
 		  debug('replaceStars', comp, options);
-		  return comp.trim().replace(re[t.STAR], '')
+		  return comp
+		    .trim()
+		    .replace(re[t.STAR], '')
 		};
 		const replaceGTE0 = (comp, options) => {
 		  debug('replaceGTE0', comp, options);
-		  return comp.trim()
+		  return comp
+		    .trim()
 		    .replace(re[options.includePrerelease ? t.GTE0PRE : t.GTE0], '')
 		};
 		const hyphenReplace = incPr => ($0,
@@ -3338,7 +3246,7 @@
 		  } else {
 		    to = `<=${to}`;
 		  }
-		  return (`${from} ${to}`).trim()
+		  return `${from} ${to}`.trim()
 		};
 		const testSet = (set, version, options) => {
 		  for (let i = 0; i < set.length; i++) {
@@ -3387,6 +3295,7 @@
 		        comp = comp.value;
 		      }
 		    }
+		    comp = comp.trim().split(/\s+/).join(' ');
 		    debug('comparator', comp, options);
 		    this.options = options;
 		    this.loose = !!options.loose;
@@ -3479,7 +3388,7 @@
 		}
 		comparator = Comparator;
 		const parseOptions = parseOptions_1;
-		const { re, t } = reExports;
+		const { safeRe: re, t } = reExports;
 		const cmp = cmp_1;
 		const debug = debug_1;
 		const SemVer = semver$2;
@@ -4037,12 +3946,7 @@
 	        usbOnly: true,
 	        memorySize: 320 * 1024,
 	        masks: [0x31100000],
-	        getBlockSize: (firmwareVersion) => {
-	            var _a;
-	            return semver$1.lt((_a = semver$1.coerce(firmwareVersion)) !== null && _a !== void 0 ? _a : "", "2.0.0")
-	                ? 4 * 1024
-	                : 2 * 1024;
-	        },
+	        getBlockSize: (firmwareVersion) => { var _a; return semver$1.lt((_a = semver$1.coerce(firmwareVersion)) !== null && _a !== void 0 ? _a : "", "2.0.0") ? 4 * 1024 : 2 * 1024; },
 	    },
 	    [DeviceModelId.nanoSP]: {
 	        id: DeviceModelId.nanoSP,
@@ -4101,11 +4005,11 @@
 	const devicesList = Object.values(devices);
 	const ledgerUSBVendorId = 0x2c97;
 	const identifyUSBProductId = (usbProductId) => {
-	    const legacy = devicesList.find((d) => d.legacyUsbProductId === usbProductId);
+	    const legacy = devicesList.find(d => d.legacyUsbProductId === usbProductId);
 	    if (legacy)
 	        return legacy;
 	    const mm = usbProductId >> 8;
-	    const deviceModel = devicesList.find((d) => d.productIdMM === mm);
+	    const deviceModel = devicesList.find(d => d.productIdMM === mm);
 	    return deviceModel;
 	};
 	const bluetoothServices = [];
@@ -4194,7 +4098,7 @@
 	function getLedgerDevices$1() {
 	    return __awaiter$2(this, void 0, void 0, function* () {
 	        const devices = yield getHID().getDevices();
-	        return devices.filter((d) => d.vendorId === ledgerUSBVendorId);
+	        return devices.filter(d => d.vendorId === ledgerUSBVendorId);
 	    });
 	}
 	function getFirstLedgerDevice$1() {
@@ -4216,7 +4120,7 @@
 	            if (this.inputs.length) {
 	                return Promise.resolve(this.inputs.shift());
 	            }
-	            return new Promise((success) => {
+	            return new Promise(success => {
 	                this.inputCallback = success;
 	            });
 	        };
@@ -4254,7 +4158,7 @@
 	                }
 	                log("apdu", "<= " + result.toString("hex"));
 	                return result;
-	            })).catch((e) => {
+	            })).catch(e => {
 	                if (e && e.message && e.message.includes("write")) {
 	                    this._emitDisconnect(e);
 	                    throw new DisconnectedDeviceDuringOperation(e.message);
@@ -4265,9 +4169,7 @@
 	        });
 	        this.device = device;
 	        this.deviceModel =
-	            typeof device.productId === "number"
-	                ? identifyUSBProductId(device.productId)
-	                : undefined;
+	            typeof device.productId === "number" ? identifyUSBProductId(device.productId) : undefined;
 	        device.addEventListener("inputreport", this.onInputReport);
 	    }
 	    static request() {
@@ -4288,7 +4190,7 @@
 	        return __awaiter$2(this, void 0, void 0, function* () {
 	            yield device.open();
 	            const transport = new TransportWebHID(device);
-	            const onDisconnect = (e) => {
+	            const onDisconnect = e => {
 	                if (device === e.device) {
 	                    getHID().removeEventListener("disconnect", onDisconnect);
 	                    transport._emitDisconnect(new DisconnectedDevice());
@@ -4311,7 +4213,7 @@
 	TransportWebHID.list = getLedgerDevices$1;
 	TransportWebHID.listen = (observer) => {
 	    let unsubscribed = false;
-	    getFirstLedgerDevice$1().then((device) => {
+	    getFirstLedgerDevice$1().then(device => {
 	        if (!device) {
 	            observer.error(new TransportOpenUserCancelled("Access denied to use Ledger device"));
 	        }
@@ -4326,7 +4228,7 @@
 	            });
 	            observer.complete();
 	        }
-	    }, (error) => {
+	    }, error => {
 	        observer.error(new TransportOpenUserCancelled(error.message));
 	    });
 	    function unsubscribe() {
@@ -4369,7 +4271,7 @@
 	function getLedgerDevices() {
 	    return __awaiter$1(this, void 0, void 0, function* () {
 	        const devices = yield navigator.usb.getDevices();
-	        return devices.filter((d) => d.vendorId === ledgerUSBVendorId);
+	        return devices.filter(d => d.vendorId === ledgerUSBVendorId);
 	    });
 	}
 	function getFirstLedgerDevice() {
@@ -4380,9 +4282,7 @@
 	        return requestLedgerDevice();
 	    });
 	}
-	const isSupported = () => Promise.resolve(!!navigator &&
-	    !!navigator.usb &&
-	    typeof navigator.usb.getDevices === "function");
+	const isSupported = () => Promise.resolve(!!navigator && !!navigator.usb && typeof navigator.usb.getDevices === "function");
 
 	var __awaiter = (global && global.__awaiter) || function (thisArg, _arguments, P, generator) {
 	    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -4432,7 +4332,7 @@
 	                yield device.selectConfiguration(configurationValue);
 	            }
 	            yield gracefullyResetDevice(device);
-	            const iface = device.configurations[0].interfaces.find(({ alternates }) => alternates.some((a) => a.interfaceClass === 255));
+	            const iface = device.configurations[0].interfaces.find(({ alternates }) => alternates.some(a => a.interfaceClass === 255));
 	            if (!iface) {
 	                throw new TransportInterfaceNotAvailable("No WebUSB interface found for your Ledger device. Please upgrade firmware or contact techsupport.");
 	            }
@@ -4445,7 +4345,7 @@
 	                throw new TransportInterfaceNotAvailable(e.message);
 	            }
 	            const transport = new TransportWebUSB(device, interfaceNumber);
-	            const onDisconnect = (e) => {
+	            const onDisconnect = e => {
 	                if (device === e.device) {
 	                    navigator.usb.removeEventListener("disconnect", onDisconnect);
 	                    transport._emitDisconnect(new DisconnectedDevice());
@@ -4482,7 +4382,7 @@
 	                }
 	                log("apdu", "<= " + result.toString("hex"));
 	                return result;
-	            })).catch((e) => {
+	            })).catch(e => {
 	                if (e && e.message && e.message.includes("disconnected")) {
 	                    this._emitDisconnect(e);
 	                    throw new DisconnectedDeviceDuringOperation(e.message);
@@ -4498,7 +4398,7 @@
 	TransportWebUSB.list = getLedgerDevices;
 	TransportWebUSB.listen = (observer) => {
 	    let unsubscribed = false;
-	    getFirstLedgerDevice().then((device) => {
+	    getFirstLedgerDevice().then(device => {
 	        if (!unsubscribed) {
 	            const deviceModel = identifyUSBProductId(device.productId);
 	            observer.next({
@@ -4508,10 +4408,8 @@
 	            });
 	            observer.complete();
 	        }
-	    }, (error) => {
-	        if (window.DOMException &&
-	            error instanceof window.DOMException &&
-	            error.code === 18) {
+	    }, error => {
+	        if (window.DOMException && error instanceof window.DOMException && error.code === 18) {
 	            observer.error(new TransportWebUSBGestureRequired(error.message));
 	        }
 	        else {
@@ -4569,7 +4467,7 @@
 		hasRequiredPackageInfo = 1;
 		Object.defineProperty(packageInfo$1, "__esModule", { value: true });
 		packageInfo$1.packageInfo = void 0;
-		packageInfo$1.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.3.2' };
+		packageInfo$1.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.4.1' };
 		return packageInfo$1;
 	}
 
@@ -4630,7 +4528,7 @@
 	    zeitgeist: 'Zeitgeist'
 	};
 
-	const packageInfo = { name: '@polkadot/hw-ledger', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.3.2' };
+	const packageInfo = { name: '@polkadot/hw-ledger', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.4.1' };
 
 	async function wrapError(promise) {
 	    const result = await promise;
@@ -4638,6 +4536,14 @@
 	        throw new Error(result.error_message);
 	    }
 	    return result;
+	}
+	function sign(method, message, accountOffset = 0, addressOffset = 0, { account = LEDGER_DEFAULT_ACCOUNT, addressIndex = LEDGER_DEFAULT_INDEX, change = LEDGER_DEFAULT_CHANGE } = {}) {
+	    return async (app) => {
+	        const { signature } = await wrapError(app[method](account + accountOffset, change, addressIndex + addressOffset, util$1.u8aToBuffer(message)));
+	        return {
+	            signature: util$1.hexAddPrefix(signature.toString('hex'))
+	        };
+	    };
 	}
 	class Ledger {
 	    constructor(transport, chain) {
@@ -4672,14 +4578,11 @@
 	            };
 	        });
 	    }
-	    async sign(message, accountOffset = 0, addressOffset = 0, { account = LEDGER_DEFAULT_ACCOUNT, addressIndex = LEDGER_DEFAULT_INDEX, change = LEDGER_DEFAULT_CHANGE } = {}) {
-	        return this.withApp(async (app) => {
-	            const buffer = util$1.u8aToBuffer(message);
-	            const { signature } = await wrapError(app.sign(account + accountOffset, change, addressIndex + addressOffset, buffer));
-	            return {
-	                signature: util$1.hexAddPrefix(signature.toString('hex'))
-	            };
-	        });
+	    async sign(message, accountOffset, addressOffset, options) {
+	        return this.withApp(sign('sign', message, accountOffset, addressOffset, options));
+	    }
+	    async signRaw(message, accountOffset, addressOffset, options) {
+	        return this.withApp(sign('signRaw', util$1.u8aWrapBytes(message), accountOffset, addressOffset, options));
 	    }
 	    async withApp(fn) {
 	        try {
