@@ -112,6 +112,10 @@
     function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
   }
+  typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+  };
 
   function isFunction$2(value) {
       return typeof value === 'function';
@@ -2543,7 +2547,9 @@
           return Object
               .keys(available)
               .map((address) => this.getAddress(address, 'account'))
-              .filter((account) => env.isDevelopment() || account.meta.isTesting !== true);
+              .filter((account) => !!account &&
+              (env.isDevelopment() ||
+                  account.meta.isTesting !== true));
       }
       getAddress(_address, type = null) {
           const address = util$7.isString(_address)
@@ -2564,7 +2570,8 @@
           const available = this.addresses.subject.getValue();
           return Object
               .keys(available)
-              .map((address) => this.getAddress(address));
+              .map((address) => this.getAddress(address))
+              .filter((account) => !!account);
       }
       getContract(address) {
           return this.getAddress(address, 'contract');
@@ -2574,10 +2581,11 @@
           return Object
               .entries(available)
               .filter(([, { json: { meta: { contract } } }]) => !!contract && contract.genesisHash === this.genesisHash)
-              .map(([address]) => this.getContract(address));
+              .map(([address]) => this.getContract(address))
+              .filter((account) => !!account);
       }
       rewriteKey(json, key, hexAddr, creator) {
-          if (hexAddr.substring(0, 2) === '0x') {
+          if (hexAddr.startsWith('0x')) {
               return;
           }
           this._store.remove(key);
@@ -2609,7 +2617,7 @@
       loadContract(json, key) {
           const address = this.encodeAddress(this.decodeAddress(json.address));
           const [, hexAddr] = key.split(':');
-          json.meta.genesisHash = json.meta.genesisHash || (json.meta.contract && json.meta.contract.genesisHash);
+          json.meta.genesisHash = json.meta.genesisHash || (json.meta.contract?.genesisHash);
           this.contracts.add(this._store, address, json);
           this.rewriteKey(json, key, hexAddr, contractKey);
       }
@@ -2622,7 +2630,7 @@
           this.accounts.add(this._store, pair.address, json, pair.type);
       }
       allowGenesis(json) {
-          if (json && json.meta && this.genesisHash) {
+          if (json?.meta && this.genesisHash) {
               const hashes = Object.values(uiSettings.chains).find((hashes) => hashes.includes(this.genesisHash || '')) || [this.genesisHash];
               if (json.meta.genesisHash) {
                   return hashes.includes(json.meta.genesisHash) || this.genesisHashes.includes(json.meta.genesisHash);
@@ -2699,7 +2707,7 @@
       }
       saveAddress(address, meta, type = 'address') {
           const available = this.addresses.subject.getValue();
-          const json = (available[address] && available[address].json) || {
+          const json = available[address]?.json || {
               address,
               meta: {
                   isRecent: undefined,
@@ -2732,7 +2740,7 @@
       }
   }
 
-  const packageInfo = { name: '@polkadot/ui-keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.5.1' };
+  const packageInfo = { name: '@polkadot/ui-keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.6.1' };
 
   const keyring = new Keyring();
 
