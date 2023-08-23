@@ -6,7 +6,7 @@
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
-    const packageInfo$3 = { name: '@polkadot/util', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.4.1' };
+    const packageInfo$3 = { name: '@polkadot/util', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.4.2' };
 
     function arrayChunk(array, chunkSize) {
         const outputSize = Math.ceil(array.length / chunkSize);
@@ -131,7 +131,7 @@
     const nMax =  createCmp((a, b) => a > b);
     const nMin =  createCmp((a, b) => a < b);
 
-    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.4.1' };
+    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.4.2' };
 
     function evaluateThis(fn) {
         return fn('return this');
@@ -192,22 +192,22 @@
     const U16_MAX = BigInt(256 * 256);
     const U64_MAX = BigInt('0x10000000000000000');
     function u8aToBigInt(value, { isLe = true, isNegative = false } = {}) {
-        const u8a = isLe
-            ? value
-            : value.slice().reverse();
-        const count = u8a.length;
-        if (isNegative) {
+        if (!isLe) {
+            value = value.slice().reverse();
+        }
+        const count = value.length;
+        if (isNegative && count && (value[count - 1] & 0x80)) {
             switch (count) {
                 case 0:
                     return BigInt(0);
                 case 1:
-                    return BigInt(((u8a[0] ^ 255) * -1) - 1);
+                    return BigInt(((value[0] ^ 255) * -1) - 1);
                 case 2:
-                    return BigInt((((u8a[0] + (u8a[1] << 8)) ^ 65535) * -1) - 1);
+                    return BigInt((((value[0] + (value[1] << 8)) ^ 65535) * -1) - 1);
                 case 4:
-                    return BigInt((((u8a[0] + (u8a[1] << 8) + (u8a[2] << 16) + (u8a[3] * 16777216)) ^ 4294967295) * -1) - 1);
+                    return BigInt((((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) * -1) - 1);
             }
-            const dvI = new DataView(u8a.buffer, u8a.byteOffset);
+            const dvI = new DataView(value.buffer, value.byteOffset);
             if (count === 8) {
                 return dvI.getBigInt64(0, true);
             }
@@ -217,7 +217,7 @@
                 result = (result * U16_MAX) + BigInt(dvI.getUint16(i, true) ^ 0xffff);
             }
             if (mod) {
-                result = (result * U8_MAX) + BigInt(u8a[0] ^ 0xff);
+                result = (result * U8_MAX) + BigInt(value[0] ^ 0xff);
             }
             return (result * -_1n) - _1n;
         }
@@ -225,13 +225,13 @@
             case 0:
                 return BigInt(0);
             case 1:
-                return BigInt(u8a[0]);
+                return BigInt(value[0]);
             case 2:
-                return BigInt(u8a[0] + (u8a[1] << 8));
+                return BigInt(value[0] + (value[1] << 8));
             case 4:
-                return BigInt(u8a[0] + (u8a[1] << 8) + (u8a[2] << 16) + (u8a[3] * 16777216));
+                return BigInt(value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216));
         }
-        const dvI = new DataView(u8a.buffer, u8a.byteOffset);
+        const dvI = new DataView(value.buffer, value.byteOffset);
         switch (count) {
             case 8:
                 return dvI.getBigUint64(0, true);
@@ -244,7 +244,7 @@
                     result = (result * U16_MAX) + BigInt(dvI.getUint16(i, true));
                 }
                 if (mod) {
-                    result = (result * U8_MAX) + BigInt(u8a[0]);
+                    result = (result * U8_MAX) + BigInt(value[0]);
                 }
                 return result;
             }
@@ -3120,7 +3120,7 @@
 
     Object.defineProperty(packageInfo$1, "__esModule", { value: true });
     packageInfo$1.packageInfo = void 0;
-    packageInfo$1.packageInfo = { name: '@polkadot/x-textencoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.4.1' };
+    packageInfo$1.packageInfo = { name: '@polkadot/x-textencoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.4.2' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -3254,75 +3254,54 @@
     }
 
     function u8aToBn(value, { isLe = true, isNegative = false } = {}) {
-        const count = value.length;
-        if (isNegative) {
-            if (isLe) {
-                switch (count) {
-                    case 0:
-                        return new BN(0);
-                    case 1:
-                        return new BN(((value[0] ^ 255) * -1) - 1);
-                    case 2:
-                        return new BN((((value[0] + (value[1] << 8)) ^ 65535) * -1) - 1);
-                    case 3:
-                        return new BN((((value[0] + (value[1] << 8) + (value[2] << 16)) ^ 16777215) * -1) - 1);
-                    case 4:
-                        return new BN((((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) * -1) - 1);
-                    case 5:
-                        return new BN(((((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) + ((value[4] ^ 0xff) * 4294967296)) * -1) - 1);
-                    case 6:
-                        return new BN(((((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) + (((value[4] + (value[5] << 8)) ^ 65535) * 4294967296)) * -1) - 1);
-                    default:
-                        return new BN(value, 'le').fromTwos(value.length * 8);
-                }
-            }
-            if (count === 0) {
-                return new BN(0);
-            }
-            else if (count > 6) {
-                return new BN(value, 'be').fromTwos(value.length * 8);
-            }
-            let result = 0;
-            for (let i = 0; i < count; i++) {
-                result = (result * 256) + (value[i] ^ 0xff);
-            }
-            return new BN((result * -1) - 1);
+        if (!isLe) {
+            value = value.slice().reverse();
         }
-        if (isLe) {
+        const count = value.length;
+        if (isNegative && count && (value[count - 1] & 0x80)) {
             switch (count) {
                 case 0:
                     return new BN(0);
                 case 1:
-                    return new BN(value[0]);
+                    return new BN(((value[0] ^ 255) * -1) - 1);
                 case 2:
-                    return new BN(value[0] + (value[1] << 8));
+                    return new BN((((value[0] + (value[1] << 8)) ^ 65535) * -1) - 1);
                 case 3:
-                    return new BN(value[0] + (value[1] << 8) + (value[2] << 16));
+                    return new BN((((value[0] + (value[1] << 8) + (value[2] << 16)) ^ 16777215) * -1) - 1);
                 case 4:
-                    return new BN(value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216));
+                    return new BN((((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) * -1) - 1);
                 case 5:
-                    return new BN(value[0] + (value[1] << 8) + (value[2] << 16) + ((value[3] + (value[4] << 8)) * 16777216));
+                    return new BN(((((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) + ((value[4] ^ 0xff) * 4294967296)) * -1) - 1);
                 case 6:
-                    return new BN(value[0] + (value[1] << 8) + (value[2] << 16) + ((value[3] + (value[4] << 8) + (value[5] << 16)) * 16777216));
+                    return new BN(((((value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216)) ^ 4294967295) + (((value[4] + (value[5] << 8)) ^ 65535) * 4294967296)) * -1) - 1);
                 default:
-                    return new BN(value, 'le');
+                    return new BN(value, 'le').fromTwos(count * 8);
             }
         }
-        if (count === 0) {
-            return new BN(0);
+        switch (count) {
+            case 0:
+                return new BN(0);
+            case 1:
+                return new BN(value[0]);
+            case 2:
+                return new BN(value[0] + (value[1] << 8));
+            case 3:
+                return new BN(value[0] + (value[1] << 8) + (value[2] << 16));
+            case 4:
+                return new BN(value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] * 16777216));
+            case 5:
+                return new BN(value[0] + (value[1] << 8) + (value[2] << 16) + ((value[3] + (value[4] << 8)) * 16777216));
+            case 6:
+                return new BN(value[0] + (value[1] << 8) + (value[2] << 16) + ((value[3] + (value[4] << 8) + (value[5] << 16)) * 16777216));
+            default:
+                return new BN(value, 'le');
         }
-        else if (count > 6) {
-            return new BN(value, 'be');
-        }
-        let result = 0;
-        for (let i = 0; i < count; i++) {
-            result = (result * 256) + value[i];
-        }
-        return new BN(result);
     }
 
     function u8aToBuffer(value) {
-        return xglobal.Buffer.from(value || []);
+        return hasBuffer
+            ? xglobal.Buffer.from(value || [])
+            : new Uint8Array(value || []);
     }
 
     function u8aToFloat(value, { bitLength = 32, isLe = true } = {}) {
@@ -3376,9 +3355,12 @@
         return hex(value, empty);
     }
 
-    function u8aToNumber(value, { isNegative = false } = {}) {
+    function u8aToNumber(value, { isLe = true, isNegative = false } = {}) {
+        if (!isLe) {
+            value = value.slice().reverse();
+        }
         const count = value.length;
-        if (isNegative) {
+        if (isNegative && count && (value[count - 1] & 0x80)) {
             switch (count) {
                 case 0:
                     return 0;
@@ -3442,7 +3424,7 @@
 
     Object.defineProperty(packageInfo, "__esModule", { value: true });
     packageInfo.packageInfo = void 0;
-    packageInfo.packageInfo = { name: '@polkadot/x-textdecoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.4.1' };
+    packageInfo.packageInfo = { name: '@polkadot/x-textdecoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.4.2' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -3491,12 +3473,13 @@
     const NEG_MASK = BigInt(0xff);
     function toU8a(value, isLe, isNegative) {
         const arr = [];
-        if (isNegative) {
+        const withSigned = isNegative && (value < _0n);
+        if (withSigned) {
             value = (value + _1n) * -_1n;
         }
         while (value !== _0n) {
             const mod = value % DIV;
-            const val = Number(isNegative
+            const val = Number(withSigned
                 ? mod ^ NEG_MASK
                 : mod);
             if (isLe) {
