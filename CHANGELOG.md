@@ -2,6 +2,7 @@
 
 ## master
 
+- react-{identicon, qr}, ui-{keyring, settings}, vue-identicon 3.6.2
 - hw-ledger, keyring, util, util-crypto 12.4.2
 - react-{identicon, qr}, ui-{keyring, settings}, vue-identicon 3.6.1
 - hw-ledger, keyring, util, util-crypto 12.4.1
