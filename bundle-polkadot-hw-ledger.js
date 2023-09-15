@@ -6,6 +6,7 @@
 
 	const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
+	var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
 	var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 	function getDefaultExportFromCjs (x) {
@@ -664,6 +665,18 @@
 		        slip0044: 0x80000219,
 		        ss58_addr_type: 126,
 		    },
+		    {
+		        name: "Enjin",
+		        cla: 0xb9,
+		        slip0044: 0x80000483,
+		        ss58_addr_type: 2135,
+		    },
+		    {
+		        name: "Matrixchain",
+		        cla: 0xba,
+		        slip0044: 0x80000483,
+		        ss58_addr_type: 1110,
+		    }
 		];
 	} (supported_apps));
 	getDefaultExportFromCjs(supported_apps);
@@ -4467,7 +4480,7 @@
 		hasRequiredPackageInfo = 1;
 		Object.defineProperty(packageInfo$1, "__esModule", { value: true });
 		packageInfo$1.packageInfo = void 0;
-		packageInfo$1.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.4.2' };
+		packageInfo$1.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.5.1' };
 		return packageInfo$1;
 	}
 
@@ -4501,6 +4514,7 @@
 	    darwinia: 'Darwinia',
 	    'dock-mainnet': 'Dock',
 	    edgeware: 'Edgeware',
+	    enjin: 'Enjin',
 	    equilibrium: 'Equilibrium',
 	    genshiro: 'Genshiro',
 	    hydradx: 'HydraDX',
@@ -4508,6 +4522,7 @@
 	    karura: 'Karura',
 	    khala: 'Khala',
 	    kusama: 'Kusama',
+	    matrixchain: 'Matrixchain',
 	    nodle: 'Nodle',
 	    origintrail: 'OriginTrail',
 	    parallel: 'Parallel',
@@ -4528,7 +4543,7 @@
 	    zeitgeist: 'Zeitgeist'
 	};
 
-	const packageInfo = { name: '@polkadot/hw-ledger', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.4.2' };
+	const packageInfo = { name: '@polkadot/hw-ledger', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.5.1' };
 
 	async function wrapError(promise) {
 	    const result = await promise;
