@@ -6,6 +6,7 @@
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
+    var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
     const AllHashers = {
         Blake2_128: null,
         Blake2_256: null,
@@ -23,7 +24,7 @@
             type: 'OpaqueMetadata'
         }
     };
-    const runtime$s = {
+    const runtime$t = {
         Metadata: [
             {
                 methods: {
@@ -486,6 +487,26 @@
     };
 
     const v15 = {
+        CustomMetadata15: {
+            map: 'BTreeMap<Text, CustomValueMetadata15>'
+        },
+        CustomValueMetadata15: {
+            type: 'SiLookupTypeId',
+            value: 'Bytes'
+        },
+        ExtrinsicMetadataV15: {
+            version: 'u8',
+            addressType: 'SiLookupTypeId',
+            callType: 'SiLookupTypeId',
+            signatureType: 'SiLookupTypeId',
+            extraType: 'SiLookupTypeId',
+            signedExtensions: 'Vec<SignedExtensionMetadataV14>'
+        },
+        OuterEnums15: {
+            callType: 'SiLookupTypeId',
+            eventType: 'SiLookupTypeId',
+            errorType: 'SiLookupTypeId'
+        },
         PalletMetadataV15: {
             name: 'Text',
             storage: 'Option<PalletStorageMetadataV14>',
@@ -514,15 +535,17 @@
         MetadataV15: {
             lookup: 'PortableRegistry',
             pallets: 'Vec<PalletMetadataV15>',
-            extrinsic: 'ExtrinsicMetadataV14',
+            extrinsic: 'ExtrinsicMetadataV15',
             type: 'SiLookupTypeId',
-            apis: 'Vec<RuntimeApiMetadataV15>'
+            apis: 'Vec<RuntimeApiMetadataV15>',
+            outerEnums: 'OuterEnums15',
+            custom: 'CustomMetadata15'
         }
     };
 
-    const definitions$16 = {
+    const definitions$17 = {
         rpc: {},
-        runtime: runtime$s,
+        runtime: runtime$t,
         types: {
             ...v9,
             ...v10,
@@ -533,7 +556,7 @@
             ...v15,
             ErrorMetadataLatest: 'ErrorMetadataV14',
             EventMetadataLatest: 'EventMetadataV14',
-            ExtrinsicMetadataLatest: 'ExtrinsicMetadataV14',
+            ExtrinsicMetadataLatest: 'ExtrinsicMetadataV15',
             FunctionArgumentMetadataLatest: 'FunctionArgumentMetadataV14',
             FunctionMetadataLatest: 'FunctionMetadataV14',
             MetadataLatest: 'MetadataV15',
@@ -605,7 +628,7 @@
             type: 'Null'
         }
     };
-    const runtime$r = {
+    const runtime$s = {
         Core: [
             {
                 methods: {
@@ -683,9 +706,9 @@
         Authority: 'AuthorityOrigin',
         GeneralCouncil: 'CollectiveOrigin'
     };
-    const definitions$15 = {
+    const definitions$16 = {
         rpc: {},
-        runtime: runtime$r,
+        runtime: runtime$s,
         types: {
             ...numberTypes,
             AccountId: 'AccountId32',
@@ -929,7 +952,7 @@
         }
     };
 
-    const definitions$14 = {
+    const definitions$15 = {
         rpc: {},
         types: {
             ...v0$1,
@@ -950,6 +973,80 @@
             SiTypeDefVariant: 'Si1TypeDefVariant',
             SiVariant: 'Si1Variant'
         }
+    };
+
+    const runtime$r = {
+        AssetConversionApi: [
+            {
+                methods: {
+                    get_reserves: {
+                        description: 'Get pool reserves',
+                        params: [
+                            {
+                                name: 'asset1',
+                                type: 'XcmV3MultiLocation'
+                            },
+                            {
+                                name: 'asset2',
+                                type: 'XcmV3MultiLocation'
+                            }
+                        ],
+                        type: 'Option<(Balance,Balance)>'
+                    },
+                    quote_price_exact_tokens_for_tokens: {
+                        description: 'Quote price: exact tokens for tokens',
+                        params: [
+                            {
+                                name: 'asset1',
+                                type: 'XcmV3MultiLocation'
+                            },
+                            {
+                                name: 'asset2',
+                                type: 'XcmV3MultiLocation'
+                            },
+                            {
+                                name: 'amount',
+                                type: 'u128'
+                            },
+                            {
+                                name: 'include_fee',
+                                type: 'bool'
+                            }
+                        ],
+                        type: 'Option<(Balance)>'
+                    },
+                    quote_price_tokens_for_exact_tokens: {
+                        description: 'Quote price: tokens for exact tokens',
+                        params: [
+                            {
+                                name: 'asset1',
+                                type: 'XcmV3MultiLocation'
+                            },
+                            {
+                                name: 'asset2',
+                                type: 'XcmV3MultiLocation'
+                            },
+                            {
+                                name: 'amount',
+                                type: 'u128'
+                            },
+                            {
+                                name: 'include_fee',
+                                type: 'bool'
+                            }
+                        ],
+                        type: 'Option<(Balance)>'
+                    }
+                },
+                version: 1
+            }
+        ]
+    };
+
+    const definitions$14 = {
+        rpc: {},
+        runtime: runtime$r,
+        types: {}
     };
 
     const runtime$q = {
@@ -1329,7 +1426,7 @@
         }
     };
 
-    const BEEFY_V1_V2 = {
+    const BEEFY_V1_V3 = {
         beefy_genesis: {
             description: 'Return the block number where BEEFY consensus is enabled/started',
             params: [],
@@ -1384,11 +1481,15 @@
     const runtime$n = {
         BeefyApi: [
             {
-                methods: BEEFY_V1_V2,
+                methods: BEEFY_V1_V3,
+                version: 3
+            },
+            {
+                methods: BEEFY_V1_V3,
                 version: 2
             },
             {
-                methods: BEEFY_V1_V2,
+                methods: BEEFY_V1_V3,
                 version: 1
             }
         ],
@@ -2639,6 +2740,20 @@
                 usedGas: 'U256',
                 logs: 'Vec<EvmLog>'
             },
+            EvmCallInfoV2: {
+                exitReason: 'ExitReason',
+                value: 'Bytes',
+                usedGas: 'U256',
+                weightInfo: 'Option<EvmWeightInfo>',
+                logs: 'Vec<EvmLog>'
+            },
+            EvmCreateInfoV2: {
+                exitReason: 'ExitReason',
+                value: 'H160',
+                usedGas: 'U256',
+                weightInfo: 'Option<EvmWeightInfo>',
+                logs: 'Vec<EvmLog>'
+            },
             EvmLog: {
                 address: 'H160',
                 topics: 'Vec<H256>',
@@ -2647,6 +2762,12 @@
             EvmVicinity: {
                 gasPrice: 'u256',
                 origin: 'H160'
+            },
+            EvmWeightInfo: {
+                refTimeLimit: 'Option<u64>',
+                proofSizeLimit: 'Option<u64>',
+                refTimeUsage: 'Option<u64>',
+                proofSizeUsage: 'Option<u64>'
             },
             ExitError: {
                 _enum: {
@@ -2738,6 +2859,21 @@
                     }
                 },
                 version: 1
+            },
+            {
+                methods: {
+                    query_account_balances: {
+                        description: 'Returns the list of all `MultiAsset` that an `AccountId` has',
+                        params: [
+                            {
+                                name: 'account',
+                                type: 'AccountId'
+                            }
+                        ],
+                        type: 'Result<XcmVersionedMultiAssets, FungiblesAccessError>'
+                    }
+                },
+                version: 2
             }
         ]
     };
@@ -5233,8 +5369,49 @@
             type: 'Option<ExecutorParams>'
         }
     };
+    const PH_V5 = {
+        key_ownership_proof: {
+            description: 'Returns a merkle proof of a validator session key',
+            params: [
+                {
+                    name: 'validatorId',
+                    type: 'ValidatorId'
+                }
+            ],
+            type: 'Option<OpaqueKeyOwnershipProof>'
+        },
+        submit_report_dispute_lost: {
+            description: 'Submit an unsigned extrinsic to slash validators who lost a dispute about a candidate of a past session',
+            params: [
+                {
+                    name: 'disputeProof',
+                    type: 'DisputeProof'
+                },
+                {
+                    name: 'keyOwnershipProof',
+                    type: 'OpaqueKeyOwnershipProof'
+                }
+            ],
+            type: 'Option<Null>'
+        },
+        unapplied_slashes: {
+            description: 'Returns a list of validators that lost a past session dispute and need to be slashed',
+            params: [],
+            type: 'Vec<(SessionIndex, CandidateHash, PendingSlashes)>'
+        }
+    };
     const runtime$6 = {
         ParachainHost: [
+            {
+                methods: {
+                    ...PH_V1_TO_V2,
+                    ...PH_V2_TO_V3,
+                    ...PH_V3,
+                    ...PH_V4,
+                    ...PH_V5
+                },
+                version: 5
+            },
             {
                 methods: {
                     ...PH_V1_TO_V2,
@@ -5550,6 +5727,16 @@
                     Free: 'Null'
                 }
             },
+            DisputeProof: {
+                timeSlot: 'DisputesTimeSlot',
+                kind: 'SlashingOffenceKind',
+                validatorIndex: 'ValidatorIndex',
+                validatorId: 'ValidatorId'
+            },
+            DisputesTimeSlot: {
+                sessionIndex: 'SessionIndex',
+                candidateHash: 'CandidateHash'
+            },
             DoubleVoteReport: {
                 identity: 'ValidatorId',
                 first: '(Statement, ValidatorSignature)',
@@ -5647,6 +5834,13 @@
             OutboundHrmpMessage: {
                 recipient: 'u32',
                 data: 'Bytes'
+            },
+            PendingSlashes: {
+                _alias: {
+                    slashKeys: 'keys'
+                },
+                slashKeys: 'BTreeMap<ValidatorIndex, ValidatorId>',
+                kind: 'SlashingOffenceKind'
             },
             ParachainDispatchOrigin: {
                 _enum: ['Signed', 'Parachain', 'Root']
@@ -5774,6 +5968,9 @@
             SigningContext: {
                 sessionIndex: 'SessionIndex',
                 parentHash: 'Hash'
+            },
+            SlashingOffenceKind: {
+                _enum: ['ForInvalid', 'AgainstValid']
             },
             Statement: {
                 _enum: {
@@ -6785,7 +6982,7 @@
     }
     function getEntryType(def, checkIdx) {
         const values = Object.values(def);
-        for (let i = 0; i < values.length; i++) {
+        for (let i = 0, count = values.length; i < count; i++) {
             const { Type, index } = values[i];
             if (index === checkIdx) {
                 return Type;
@@ -7502,7 +7699,7 @@
     }
 
     function decodeBitVecU8a(value) {
-        if (!value || !value.length) {
+        if (!value?.length) {
             return [0, new Uint8Array()];
         }
         const [offset, length] = util.compactFromU8aLim(value);
@@ -8128,7 +8325,7 @@
             this.registry = registry;
         }
         get encodedLength() {
-            return 1;
+            return 1 | 0;
         }
         get hash() {
             return this.registry.hash(this.toU8a());
@@ -8188,7 +8385,7 @@
             this.initialU8aLength = 1;
         }
         get encodedLength() {
-            return 1;
+            return 1 | 0;
         }
         get isFalse() {
             return this.isSome
@@ -8538,7 +8735,7 @@
             util.objectProperties(this, decoded.map(([k]) => k), (k) => this.get(k));
         }
         get encodedLength() {
-            return 0;
+            return 0 | 0;
         }
         get hash() {
             return this.registry.hash(this.toU8a());
@@ -8905,7 +9102,7 @@
     function getTypeString(typeOrObj) {
         return util.isString(typeOrObj)
             ? typeOrObj.toString()
-            : JSON.stringify(typeOrObj);
+            : util.stringify(typeOrObj);
     }
     function isRustEnum(details) {
         const values = Object.values(details);
@@ -9040,7 +9237,7 @@
         return value;
     }
     function hasWrapper(type, [start, end]) {
-        return (type.substring(0, start.length) === start) && (type.slice(-1 * end.length) === end);
+        return (type.startsWith(start)) && (type.slice(-1 * end.length) === end);
     }
     const nestedExtraction = [
         ['[', ']', exports.TypeDefInfo.VecFixed, _decodeFixedVec],
@@ -9109,7 +9306,11 @@
         const subs = getSubDefArray(value);
         const map = {};
         for (let i = 0, count = subs.length; i < count; i++) {
-            map[subs[i].name] = getTypeDefType(subs[i]);
+            const sub = subs[i];
+            if (!sub.name) {
+                throw new Error(`No name found in definition ${util.stringify(sub)}`);
+            }
+            map[sub.name] = getTypeDefType(sub);
         }
         return map;
     }
@@ -9138,6 +9339,9 @@
             const subs = getSubDefArray(value);
             return Enum.with(subs.every(({ type }) => type === 'Null')
                 ? subs.reduce((out, { index, name }, count) => {
+                    if (!name) {
+                        throw new Error('No name found in sub definition');
+                    }
                     out[name] = index || count;
                     return out;
                 }, {})
@@ -9168,6 +9372,9 @@
             return Result.with({ Err, Ok });
         },
         [exports.TypeDefInfo.Set]: (_registry, value) => CodecSet.with(getSubDefArray(value).reduce((result, { index, name }) => {
+            if (!name || !util.isNumber(index)) {
+                throw new Error('No name found in sub definition');
+            }
             result[name] = index;
             return result;
         }, {}), value.length),
@@ -9266,7 +9473,7 @@
         catch (error) {
             firstError = new Error(`createType(${type}):: ${error.message}`);
         }
-        if (Clazz && Clazz.__fallbackType) {
+        if (Clazz?.__fallbackType) {
             try {
                 Clazz = createClassUnsafe(registry, Clazz.__fallbackType);
                 return initType(registry, Clazz, params, options);
@@ -9311,6 +9518,9 @@
         const inner = util.objectSpread({}, extra);
         for (let i = 0, count = sub.length; i < count; i++) {
             const def = sub[i];
+            if (!def.name) {
+                throw new Error(`No name found in ${util.stringify(def)}`);
+            }
             inner[def.name] = encodeTypeDef(registry, def);
         }
         return util.stringify(asEnum
@@ -10926,6 +11136,270 @@
         }
     };
 
+    const ethMethodsV4 = {
+        account_basic: {
+            description: 'Returns pallet_evm::Accounts by address.',
+            params: [
+                {
+                    name: 'address',
+                    type: 'H160'
+                }
+            ],
+            type: 'EvmAccount'
+        },
+        account_code_at: {
+            description: 'For a given account address, returns pallet_evm::AccountCodes.',
+            params: [
+                {
+                    name: 'address',
+                    type: 'H160'
+                }
+            ],
+            type: 'Bytes'
+        },
+        author: {
+            description: 'Returns the converted FindAuthor::find_author authority id.',
+            params: [],
+            type: 'H160'
+        },
+        call: {
+            description: 'Returns a frame_ethereum::call response. If `estimate` is true,',
+            params: [
+                {
+                    name: 'from',
+                    type: 'H160'
+                },
+                {
+                    name: 'to',
+                    type: 'H160'
+                },
+                {
+                    name: 'data',
+                    type: 'Vec<u8>'
+                },
+                {
+                    name: 'value',
+                    type: 'U256'
+                },
+                {
+                    name: 'gasLimit',
+                    type: 'U256'
+                },
+                {
+                    name: 'maxFeePerGas',
+                    type: 'Option<U256>'
+                },
+                {
+                    name: 'maxPriorityFeePerGas',
+                    type: 'Option<U256>'
+                },
+                {
+                    name: 'nonce',
+                    type: 'Option<U256>'
+                },
+                {
+                    name: 'estimate',
+                    type: 'bool'
+                },
+                {
+                    name: 'accessList',
+                    type: 'Option<Vec<(H160, Vec<H256>)>>'
+                }
+            ],
+            type: 'Result<EvmCallInfo, DispatchError>'
+        },
+        chain_id: {
+            description: 'Returns runtime defined pallet_evm::ChainId.',
+            params: [],
+            type: 'u64'
+        },
+        create: {
+            description: 'Returns a frame_ethereum::call response. If `estimate` is true,',
+            params: [
+                {
+                    name: 'from',
+                    type: 'H160'
+                },
+                {
+                    name: 'data',
+                    type: 'Vec<u8>'
+                },
+                {
+                    name: 'value',
+                    type: 'U256'
+                },
+                {
+                    name: 'gasLimit',
+                    type: 'U256'
+                },
+                {
+                    name: 'maxFeePerGas',
+                    type: 'Option<U256>'
+                },
+                {
+                    name: 'maxPriorityFeePerGas',
+                    type: 'Option<U256>'
+                },
+                {
+                    name: 'nonce',
+                    type: 'Option<U256>'
+                },
+                {
+                    name: 'estimate',
+                    type: 'bool'
+                },
+                {
+                    name: 'accessList',
+                    type: 'Option<Vec<(H160, Vec<H256>)>>'
+                }
+            ],
+            type: 'Result<EvmCreateInfo, DispatchError>'
+        },
+        current_all: {
+            description: 'Return all the current data for a block in a single runtime call.',
+            params: [],
+            type: '(Option<BlockV2>, Option<Vec<EthReceiptV3>>, Option<Vec<EthTransactionStatus>>)'
+        },
+        current_block: {
+            description: 'Return the current block.',
+            params: [],
+            type: 'BlockV2'
+        },
+        current_receipts: {
+            description: 'Return the current receipt.',
+            params: [],
+            type: 'Option<Vec<EthReceiptV3>>'
+        },
+        current_transaction_statuses: {
+            description: 'Return the current transaction status.',
+            params: [],
+            type: 'Option<Vec<EthTransactionStatus>>'
+        },
+        elasticity: {
+            description: 'Return the elasticity multiplier.',
+            params: [],
+            type: 'Option<Permill>'
+        },
+        extrinsic_filter: {
+            description: 'Receives a `Vec<OpaqueExtrinsic>` and filters all the ethereum transactions.',
+            params: [
+                {
+                    name: 'xts',
+                    type: 'Vec<Extrinsic>'
+                }
+            ],
+            type: 'Vec<TransactionV2>'
+        },
+        gas_price: {
+            description: 'Returns FixedGasPrice::min_gas_price',
+            params: [],
+            type: 'u256'
+        },
+        storage_at: {
+            description: 'For a given account address and index, returns pallet_evm::AccountStorages.',
+            params: [
+                {
+                    name: 'address',
+                    type: 'H160'
+                },
+                {
+                    name: 'index',
+                    type: 'u256'
+                }
+            ],
+            type: 'H256'
+        }
+    };
+    const ethMethodsV5 = {
+        call: {
+            description: 'Returns a frame_ethereum::call response. If `estimate` is true,',
+            params: [
+                {
+                    name: 'from',
+                    type: 'H160'
+                },
+                {
+                    name: 'to',
+                    type: 'H160'
+                },
+                {
+                    name: 'data',
+                    type: 'Vec<u8>'
+                },
+                {
+                    name: 'value',
+                    type: 'U256'
+                },
+                {
+                    name: 'gasLimit',
+                    type: 'U256'
+                },
+                {
+                    name: 'maxFeePerGas',
+                    type: 'Option<U256>'
+                },
+                {
+                    name: 'maxPriorityFeePerGas',
+                    type: 'Option<U256>'
+                },
+                {
+                    name: 'nonce',
+                    type: 'Option<U256>'
+                },
+                {
+                    name: 'estimate',
+                    type: 'bool'
+                },
+                {
+                    name: 'accessList',
+                    type: 'Option<Vec<(H160, Vec<H256>)>>'
+                }
+            ],
+            type: 'Result<EvmCallInfoV2, DispatchError>'
+        },
+        create: {
+            description: 'Returns a frame_ethereum::call response. If `estimate` is true,',
+            params: [
+                {
+                    name: 'from',
+                    type: 'H160'
+                },
+                {
+                    name: 'data',
+                    type: 'Vec<u8>'
+                },
+                {
+                    name: 'value',
+                    type: 'U256'
+                },
+                {
+                    name: 'gasLimit',
+                    type: 'U256'
+                },
+                {
+                    name: 'maxFeePerGas',
+                    type: 'Option<U256>'
+                },
+                {
+                    name: 'maxPriorityFeePerGas',
+                    type: 'Option<U256>'
+                },
+                {
+                    name: 'nonce',
+                    type: 'Option<U256>'
+                },
+                {
+                    name: 'estimate',
+                    type: 'bool'
+                },
+                {
+                    name: 'accessList',
+                    type: 'Option<Vec<(H160, Vec<H256>)>>'
+                }
+            ],
+            type: 'Result<EvmCreateInfoV2, DispatchError>'
+        }
+    };
     const runtime$5 = {
         ConvertTransactionRuntimeApi: [
             {
@@ -10982,180 +11456,16 @@
         EthereumRuntimeRPCApi: [
             {
                 methods: {
-                    account_basic: {
-                        description: 'Returns pallet_evm::Accounts by address.',
-                        params: [
-                            {
-                                name: 'address',
-                                type: 'H160'
-                            }
-                        ],
-                        type: 'EvmAccount'
-                    },
-                    account_code_at: {
-                        description: 'For a given account address, returns pallet_evm::AccountCodes.',
-                        params: [
-                            {
-                                name: 'address',
-                                type: 'H160'
-                            }
-                        ],
-                        type: 'Bytes'
-                    },
-                    author: {
-                        description: 'Returns the converted FindAuthor::find_author authority id.',
-                        params: [],
-                        type: 'H160'
-                    },
-                    call: {
-                        description: 'Returns a frame_ethereum::call response. If `estimate` is true,',
-                        params: [
-                            {
-                                name: 'from',
-                                type: 'H160'
-                            },
-                            {
-                                name: 'to',
-                                type: 'H160'
-                            },
-                            {
-                                name: 'data',
-                                type: 'Vec<u8>'
-                            },
-                            {
-                                name: 'value',
-                                type: 'U256'
-                            },
-                            {
-                                name: 'gasLimit',
-                                type: 'U256'
-                            },
-                            {
-                                name: 'maxFeePerGas',
-                                type: 'Option<U256>'
-                            },
-                            {
-                                name: 'maxPriorityFeePerGas',
-                                type: 'Option<U256>'
-                            },
-                            {
-                                name: 'nonce',
-                                type: 'Option<U256>'
-                            },
-                            {
-                                name: 'estimate',
-                                type: 'bool'
-                            },
-                            {
-                                name: 'accessList',
-                                type: 'Option<Vec<(H160, Vec<H256>)>>'
-                            }
-                        ],
-                        type: 'Result<EvmCallInfo, DispatchError>'
-                    },
-                    chain_id: {
-                        description: 'Returns runtime defined pallet_evm::ChainId.',
-                        params: [],
-                        type: 'u64'
-                    },
-                    create: {
-                        description: 'Returns a frame_ethereum::call response. If `estimate` is true,',
-                        params: [
-                            {
-                                name: 'from',
-                                type: 'H160'
-                            },
-                            {
-                                name: 'data',
-                                type: 'Vec<u8>'
-                            },
-                            {
-                                name: 'value',
-                                type: 'U256'
-                            },
-                            {
-                                name: 'gasLimit',
-                                type: 'U256'
-                            },
-                            {
-                                name: 'maxFeePerGas',
-                                type: 'Option<U256>'
-                            },
-                            {
-                                name: 'maxPriorityFeePerGas',
-                                type: 'Option<U256>'
-                            },
-                            {
-                                name: 'nonce',
-                                type: 'Option<U256>'
-                            },
-                            {
-                                name: 'estimate',
-                                type: 'bool'
-                            },
-                            {
-                                name: 'accessList',
-                                type: 'Option<Vec<(H160, Vec<H256>)>>'
-                            }
-                        ],
-                        type: 'Result<EvmCreateInfo, DispatchError>'
-                    },
-                    current_all: {
-                        description: 'Return all the current data for a block in a single runtime call.',
-                        params: [],
-                        type: '(Option<BlockV2>, Option<Vec<EthReceiptV3>>, Option<Vec<EthTransactionStatus>>)'
-                    },
-                    current_block: {
-                        description: 'Return the current block.',
-                        params: [],
-                        type: 'BlockV2'
-                    },
-                    current_receipts: {
-                        description: 'Return the current receipt.',
-                        params: [],
-                        type: 'Option<Vec<EthReceiptV3>>'
-                    },
-                    current_transaction_statuses: {
-                        description: 'Return the current transaction status.',
-                        params: [],
-                        type: 'Option<Vec<EthTransactionStatus>>'
-                    },
-                    elasticity: {
-                        description: 'Return the elasticity multiplier.',
-                        params: [],
-                        type: 'Option<Permill>'
-                    },
-                    extrinsic_filter: {
-                        description: 'Receives a `Vec<OpaqueExtrinsic>` and filters all the ethereum transactions.',
-                        params: [
-                            {
-                                name: 'xts',
-                                type: 'Vec<Extrinsic>'
-                            }
-                        ],
-                        type: 'Vec<TransactionV2>'
-                    },
-                    gas_price: {
-                        description: 'Returns FixedGasPrice::min_gas_price',
-                        params: [],
-                        type: 'u256'
-                    },
-                    storage_at: {
-                        description: 'For a given account address and index, returns pallet_evm::AccountStorages.',
-                        params: [
-                            {
-                                name: 'address',
-                                type: 'H160'
-                            },
-                            {
-                                name: 'index',
-                                type: 'u256'
-                            }
-                        ],
-                        type: 'H256'
-                    }
+                    ...ethMethodsV4
                 },
                 version: 4
+            },
+            {
+                methods: {
+                    ...ethMethodsV4,
+                    ...ethMethodsV5
+                },
+                version: 5
             }
         ]
     };
@@ -12838,6 +13148,7 @@
 
     const definitions = /*#__PURE__*/Object.freeze({
         __proto__: null,
+        assetConversion: definitions$14,
         assets: definitions$13,
         attestations: definitions$m,
         aura: definitions$12,
@@ -12874,7 +13185,7 @@
         identity: definitions$J,
         imOnline: definitions$I,
         lottery: definitions$H,
-        metadata: definitions$16,
+        metadata: definitions$17,
         mmr: definitions$G,
         nfts: definitions$F,
         nimbus: definitions$a,
@@ -12891,8 +13202,8 @@
         purchase: definitions$e,
         recovery: definitions$A,
         rpc: definitions$7,
-        runtime: definitions$15,
-        scaleInfo: definitions$14,
+        runtime: definitions$16,
+        scaleInfo: definitions$15,
         scheduler: definitions$z,
         session: definitions$y,
         society: definitions$x,
@@ -12953,7 +13264,9 @@
         'ink::env::types::*',
         'ink::primitives::types::*',
         'ink_env::types::*',
-        'ink_primitives::types::*'
+        'ink_primitives::types::*',
+        'np_runtime::accountname::AccountName',
+        'np_runtime::universaladdress::UniversalAddress'
     ]);
     const PATHS_SET = splitNamespace([
         'pallet_identity::types::BitFlags'
@@ -13231,6 +13544,9 @@
         }
         get names() {
             return Object.values(this.__internal__names).sort();
+        }
+        get paramTypes() {
+            return this.__internal__params;
         }
         get types() {
             return this.getT('types');
@@ -13769,7 +14085,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.9.1' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.10.1' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
@@ -14049,7 +14365,7 @@
     }
 
     function decodeEvent(registry, value) {
-        if (!value || !value.length) {
+        if (!value?.length) {
             return { DataType: Null };
         }
         const index = value.subarray(0, 2);
@@ -14457,7 +14773,7 @@
             }, decodeMortalEra(registry, value));
         }
         get encodedLength() {
-            return 2;
+            return 2 | 0;
         }
         get period() {
             return this[0];
@@ -14673,10 +14989,9 @@
             const keys = Object.keys(this.__internal__extraTypes);
             for (let i = 0, count = keys.length; i < count; i++) {
                 const key = keys[i];
-                const value = this.get(key);
-                const isOption = value instanceof Option;
-                if (!isOption || value.isSome) {
-                    result[key] = value.toHex();
+                const value = this.getT(key);
+                if (!(value instanceof Option) || value.isSome) {
+                    result[key] = value.toJSON();
                 }
             }
             return util.objectSpread(result, {
@@ -14830,7 +15145,7 @@
             }));
         }
         sign(method, account, options) {
-            if (!account || !account.addressRaw) {
+            if (!account?.addressRaw) {
                 throw new Error(`Expected a valid keypair for signing, found ${util.stringify(account)}`);
             }
             const payload = this.createPayload(method, options);
@@ -15139,7 +15454,9 @@
                 ? createValue(registry, 'Option<Vec<u32>>', value)
                 : key === 'tokenSymbol'
                     ? createValue(registry, 'Option<Vec<Text>>', value)
-                    : value;
+                    : key === 'isEthereum'
+                        ? createValue(registry, 'Bool', value, false)
+                        : value;
     }
     function decode(registry, value) {
         return (
@@ -15149,6 +15466,7 @@
             all[key] = decodeValue(registry, key, value);
             return all;
         }, {
+            isEthereum: registry.createTypeUnsafe('Bool', []),
             ss58Format: registry.createTypeUnsafe('Option<u32>', []),
             tokenDecimals: registry.createTypeUnsafe('Option<Vec<u32>>', []),
             tokenSymbol: registry.createTypeUnsafe('Option<Vec<Text>>', [])
@@ -15157,6 +15475,9 @@
     class GenericChainProperties extends Json {
         constructor(registry, value) {
             super(registry, decode(registry, value));
+        }
+        get isEthereum() {
+            return this.getT('isEthereum');
         }
         get ss58Format() {
             return this.getT('ss58Format');
@@ -16289,7 +16610,23 @@
     }
 
     function toV15(registry, v14, _) {
-        return registry.createTypeUnsafe('MetadataV15', [v14]);
+        const unchecked = v14.lookup.paramTypes.SpRuntimeUncheckedExtrinsic;
+        return registry.createTypeUnsafe('MetadataV15', [
+            util.objectSpread({}, v14, {
+                extrinsic: registry.createTypeUnsafe('ExtrinsicMetadataV15', [
+                    util.objectSpread({}, v14.extrinsic, {
+                        addressType: unchecked?.[0].type.unwrapOr(0),
+                        callType: unchecked?.[1].type.unwrapOr(0),
+                        extraType: unchecked?.[3].type.unwrapOr(0),
+                        signatureType: unchecked?.[2].type.unwrapOr(0)
+                    })
+                ]),
+                outerEnums: registry.createTypeUnsafe('OuterEnums15', [{
+                        callType: unchecked?.[1].type.unwrapOr(0),
+                        eventType: v14.lookup.paramTypes.FrameSystemEventRecord?.[0].type.unwrapOr(0)
+                    }])
+            })
+        ]);
     }
 
     function toLatest(_registry, v15, _metaVersion) {
@@ -16827,8 +17164,8 @@
         if (!ss58Format) {
             return original;
         }
-        const { tokenDecimals, tokenSymbol } = original || {};
-        return registry.createTypeUnsafe('ChainProperties', [{ ss58Format, tokenDecimals, tokenSymbol }]);
+        const { isEthereum, tokenDecimals, tokenSymbol } = original || {};
+        return registry.createTypeUnsafe('ChainProperties', [{ isEthereum, ss58Format, tokenDecimals, tokenSymbol }]);
     }
     class TypeRegistry {
         constructor(createdAtHash) {
@@ -16900,6 +17237,9 @@
                 }
             }
             return [12];
+        }
+        get chainIsEthereum() {
+            return this.__internal__chainProperties?.isEthereum.isTrue || false;
         }
         get chainSS58() {
             return this.__internal__chainProperties?.ss58Format.isSome

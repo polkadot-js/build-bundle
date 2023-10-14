@@ -6,6 +6,7 @@
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
+    var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
     var TypeDefInfo;
     (function (TypeDefInfo) {
         TypeDefInfo[TypeDefInfo["BTreeMap"] = 0] = "BTreeMap";
@@ -318,7 +319,7 @@
         }
     }
 
-    const packageInfo = { name: '@polkadot/api-contract', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.9.1' };
+    const packageInfo = { name: '@polkadot/api-contract', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.10.1' };
 
     function applyOnEvent(result, types, fn) {
         if (result.isInBlock || result.isFinalized) {
@@ -402,6 +403,10 @@
       }
       return to.concat(ar || Array.prototype.slice.call(from));
     }
+    typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+      var e = new Error(message);
+      return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+    };
 
     function isFunction(value) {
         return typeof value === 'function';
@@ -868,7 +873,7 @@
     function encodeSalt(salt = utilCrypto.randomAsU8a()) {
         return salt instanceof types.Bytes
             ? salt
-            : salt && salt.length
+            : salt?.length
                 ? util.compactAddLength(util.u8aToU8a(salt))
                 : EMPTY_SALT;
     }
@@ -1005,6 +1010,9 @@
             this.contract = contract;
         }
     }
+    function isValidCode(code) {
+        return util.isWasm(code) || util.isRiscV(code);
+    }
     class Code extends Base {
         constructor(api, abi, wasm, decorateMethod) {
             super(api, abi, decorateMethod);
@@ -1019,11 +1027,11 @@
                         ? [new Blueprint(this.api, this.abi, event.data[0], this._decorateMethod), contract]
                         : [blueprint, contract], [undefined, undefined])) || [undefined, undefined])));
             };
-            this.code = util.isWasm(this.abi.info.source.wasm)
+            this.code = isValidCode(this.abi.info.source.wasm)
                 ? this.abi.info.source.wasm
                 : util.u8aToU8a(wasm);
-            if (!util.isWasm(this.code)) {
-                throw new Error('No WASM code provided');
+            if (!isValidCode(this.code)) {
+                throw new Error('Invalid code provided');
             }
             this.abi.constructors.forEach((c) => {
                 if (util.isUndefined(this.__internal__tx[c.method])) {

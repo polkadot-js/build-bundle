@@ -6,6 +6,7 @@
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
+    var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
     function evaluateThis(fn) {
         return fn('return this');
     }
@@ -226,7 +227,7 @@
             };
         }
         get hasSubscriptions() {
-            return false;
+            return !!false;
         }
         clone() {
             return new HttpProvider(this.__internal__endpoint, this.__internal__headers);
@@ -239,10 +240,10 @@
             return this.__internal__stats;
         }
         get isClonable() {
-            return true;
+            return !!true;
         }
         get isConnected() {
-            return true;
+            return !!true;
         }
         on(_type, _sub) {
             l$7.error('HTTP Provider does not have \'on\' emitters, use WebSockets instead');
@@ -714,10 +715,10 @@
             this.__internal__wellKnownChains = new Set(Object.values(Sc.WellKnownChain));
         }
         get hasSubscriptions() {
-            return true;
+            return !!true;
         }
         get isClonable() {
-            return false;
+            return !!false;
         }
         get isConnected() {
             return !!this.__internal__chain && this.__internal__isChainReady;
@@ -788,11 +789,11 @@
                     const { id, unsubscribeMethod } = stale;
                     Promise
                         .race([
-                        this.send(unsubscribeMethod, [id]).catch(() => undefined),
+                        this.send(unsubscribeMethod, [id]).catch(util.noop),
                         new Promise((resolve) => setTimeout(resolve, 500))
                     ])
                         .then(killStaleSubscriptions)
-                        .catch(() => undefined);
+                        .catch(util.noop);
                 };
                 hc.start((health) => {
                     const isReady = !health.isSyncing && (health.peers > 0 || !health.shouldHavePeers);
@@ -1022,8 +1023,7 @@
                 this.__internal__emit('disconnected');
                 if (this.__internal__autoConnectMs > 0) {
                     setTimeout(() => {
-                        this.connectWithRetry().catch(() => {
-                        });
+                        this.connectWithRetry().catch(util.noop);
                     }, this.__internal__autoConnectMs);
                 }
             };
@@ -1070,7 +1070,10 @@
                 delete this.__internal__handlers[response.id];
             };
             this.__internal__onSocketMessageSubscribe = (response) => {
-                const method = ALIASES[response.method] || response.method || 'invalid';
+                if (!response.method) {
+                    throw new Error('No method found in JSONRPC response');
+                }
+                const method = ALIASES[response.method] || response.method;
                 const subId = `${method}::${response.params.subscription}`;
                 const handler = this.__internal__subscriptions[subId];
                 if (!handler) {
@@ -1157,8 +1160,7 @@
             this.__internal__endpointStats = defaultEndpointStats();
             this.__internal__timeout = timeout || DEFAULT_TIMEOUT_MS;
             if (autoConnectMs && autoConnectMs > 0) {
-                this.connectWithRetry().catch(() => {
-                });
+                this.connectWithRetry().catch(util.noop);
             }
             this.__internal__isReadyPromise = new Promise((resolve) => {
                 this.__internal__eventemitter.once('connected', () => {
@@ -1167,10 +1169,10 @@
             });
         }
         get hasSubscriptions() {
-            return true;
+            return !!true;
         }
         get isClonable() {
-            return true;
+            return !!true;
         }
         get isConnected() {
             return this.__internal__isConnected;
@@ -1219,8 +1221,7 @@
                 }
                 catch {
                     setTimeout(() => {
-                        this.connectWithRetry().catch(() => {
-                        });
+                        this.connectWithRetry().catch(util.noop);
                     }, this.__internal__autoConnectMs);
                 }
             }
@@ -1329,7 +1330,7 @@
         }
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.9.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.10.1' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -1437,6 +1438,10 @@
       function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
       function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
     }
+    typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+      var e = new Error(message);
+      return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+    };
 
     function isFunction(value) {
         return typeof value === 'function';
@@ -3529,6 +3534,8 @@
     class RpcCore {
         constructor(instanceId, registry, { isPedantic = true, provider, userRpc = {} }) {
             this.__internal__storageCache = new Map();
+            this.__internal__storageCacheHits = 0;
+            this.__internal__storageCacheSize = 0;
             this.mapping = new Map();
             this.sections = [];
             if (!provider || !util.isFunction(provider.send)) {
@@ -3550,6 +3557,18 @@
         }
         disconnect() {
             return this.provider.disconnect();
+        }
+        get stats() {
+            const stats = this.provider.stats;
+            return stats
+                ? {
+                    ...stats,
+                    core: {
+                        cacheHits: this.__internal__storageCacheHits,
+                        cacheSize: this.__internal__storageCacheSize
+                    }
+                }
+                : undefined;
         }
         setRegistrySwap(registrySwap) {
             this.__internal__getBlockRegistry = util.memoize(registrySwap, {
@@ -3771,6 +3790,7 @@
             if (isNotFound && withCache) {
                 const cached = this.__internal__storageCache.get(hexKey);
                 if (cached) {
+                    this.__internal__storageCacheHits++;
                     return cached;
                 }
             }
@@ -3783,6 +3803,7 @@
                 : util.u8aToU8a(value);
             const codec = this._newType(registry, blockHash, key, input, isEmpty, entryIndex);
             this.__internal__storageCache.set(hexKey, codec);
+            this.__internal__storageCacheSize++;
             return codec;
         }
         _newType(registry, blockHash, key, input, isEmpty, entryIndex = -1) {
@@ -3887,7 +3908,7 @@
     }
 
     function parseFlags(address, [electionsMembers, councilMembers, technicalCommitteeMembers, societyMembers, sudoKey]) {
-        const addrStr = address && address.toString();
+        const addrStr = address?.toString();
         const isIncluded = (id) => id.toString() === addrStr;
         return {
             isCouncil: (electionsMembers?.map((r) => Array.isArray(r) ? r[0] : r.who) || councilMembers || []).some(isIncluded),
@@ -3976,7 +3997,7 @@
             judgements,
             legal: dataAsString(info.legal),
             other: extractOther(info.additional),
-            parent: superOf && superOf[0],
+            parent: superOf?.[0],
             pgp: info.pgpFingerprint.unwrapOr(UNDEF_HEX).toHex(),
             riot: dataAsString(info.riot),
             twitter: dataAsString(info.twitter),
@@ -4031,7 +4052,7 @@
     }
 
     function idToIndex(instanceId, api) {
-        return memo(instanceId, (accountId) => api.derive.accounts.indexes().pipe(map((indexes) => (indexes || {})[accountId.toString()])));
+        return memo(instanceId, (accountId) => api.derive.accounts.indexes().pipe(map((indexes) => indexes[accountId.toString()])));
     }
 
     let indicesCache = null;
@@ -4095,7 +4116,7 @@
 
     function getInstance(api, section) {
         const instances = api.registry.getModuleInstances(api.runtimeVersion.specName, section);
-        const name = instances && instances.length
+        const name = instances?.length
             ? instances[0]
             : section;
         return api.query[name];
@@ -4479,7 +4500,7 @@
     }
 
     function votingBalances(instanceId, api) {
-        return memo(instanceId, (addresses) => !addresses || !addresses.length
+        return memo(instanceId, (addresses) => !addresses?.length
             ? of([])
             : combineLatest(addresses.map((accountId) => api.derive.balances.account(accountId))));
     }
@@ -4701,6 +4722,10 @@
         return memo(instanceId, (blockHash) => api.rpc.chain.getHeader(blockHash).pipe(switchMap((header) => getAuthorDetails(api, header, blockHash)), map(([header, validators, author]) => createHeaderExtended((validators || header).registry, header, validators, author))));
     }
 
+    function subscribeFinalizedBlocks(instanceId, api) {
+        return memo(instanceId, () => api.derive.chain.subscribeFinalizedHeads().pipe(switchMap((header) => api.derive.chain.getBlock(header.createdAtHash || header.hash))));
+    }
+
     function _getHeaderRange(instanceId, api) {
         return memo(instanceId, (startHash, endHash, prev = []) => api.rpc.chain.getHeader(startHash).pipe(switchMap((header) => header.parentHash.eq(endHash)
             ? of([header, ...prev])
@@ -4740,6 +4765,7 @@
         getBlock: getBlock,
         getBlockByNumber: getBlockByNumber,
         getHeader: getHeader,
+        subscribeFinalizedBlocks: subscribeFinalizedBlocks,
         subscribeFinalizedHeads: subscribeFinalizedHeads,
         subscribeNewBlocks: subscribeNewBlocks,
         subscribeNewHeads: subscribeNewHeads
@@ -5842,31 +5868,51 @@
         sessionProgress: sessionProgress
     });
 
-    function candidates(instanceId, api) {
-        return memo(instanceId, () => api.query.society.candidates().pipe(switchMap((candidates) => combineLatest([
+    function getPrev(api) {
+        return api.query.society.candidates().pipe(switchMap((candidates) => combineLatest([
             of(candidates),
-            api.query.society.suspendedCandidates.multi(candidates.map(({ who }) => who))
+            api.query.society['suspendedCandidates'].multi(candidates.map(({ who }) => who))
         ])), map(([candidates, suspended]) => candidates.map(({ kind, value, who }, index) => ({
             accountId: who,
             isSuspended: suspended[index].isSome,
             kind,
             value
-        })))));
+        }))));
+    }
+    function getCurr(api) {
+        return api.query.society.candidates.entries().pipe(map((entries) => entries
+            .filter(([, opt]) => opt.isSome)
+            .map(([{ args: [accountId] }, opt]) => [accountId, opt.unwrap()])
+            .map(([accountId, { bid, kind }]) => ({
+            accountId,
+            isSuspended: false,
+            kind,
+            value: bid
+        }))));
+    }
+    function candidates(instanceId, api) {
+        return memo(instanceId, () => api.query.society['suspendedCandidates'] && api.query.society.candidates.creator.meta.type.isPlain
+            ? getPrev(api)
+            : getCurr(api));
     }
 
     function info(instanceId, api) {
-        return memo(instanceId, () => api.queryMulti([
-            api.query.society.bids,
-            api.query.society.defender,
-            api.query.society.founder,
-            api.query.society.head,
-            api.query.society.maxMembers,
-            api.query.society.pot
+        return memo(instanceId, () => combineLatest([
+            api.query.society.bids(),
+            api.query.society['defender']
+                ? api.query.society['defender']()
+                : of(undefined),
+            api.query.society.founder(),
+            api.query.society.head(),
+            api.query.society['maxMembers']
+                ? api.query.society['maxMembers']()
+                : of(undefined),
+            api.query.society.pot()
         ]).pipe(map(([bids, defender, founder, head, maxMembers, pot]) => ({
             bids,
-            defender: defender.unwrapOr(undefined),
+            defender: defender?.unwrapOr(undefined),
             founder: founder.unwrapOr(undefined),
-            hasDefender: (defender.isSome && head.isSome && !head.eq(defender)) || false,
+            hasDefender: (defender?.isSome && head.isSome && !head.eq(defender)) || false,
             head: head.unwrapOr(undefined),
             maxMembers,
             pot
@@ -5877,14 +5923,14 @@
         return memo(instanceId, (accountId) => api.derive.society._members([accountId]).pipe(map(([result]) => result)));
     }
 
-    function _members(instanceId, api) {
-        return memo(instanceId, (accountIds) => combineLatest([
+    function _membersPrev(api, accountIds) {
+        return combineLatest([
             of(accountIds),
             api.query.society.payouts.multi(accountIds),
-            api.query.society.strikes.multi(accountIds),
+            api.query.society['strikes'].multi(accountIds),
             api.query.society.defenderVotes.multi(accountIds),
             api.query.society.suspendedMembers.multi(accountIds),
-            api.query.society.vouching.multi(accountIds)
+            api.query.society['vouching'].multi(accountIds)
         ]).pipe(map(([accountIds, payouts, strikes, defenderVotes, suspended, vouching]) => accountIds.map((accountId, index) => ({
             accountId,
             isDefenderVoter: defenderVotes[index].isSome,
@@ -5893,10 +5939,46 @@
             strikes: strikes[index],
             vote: defenderVotes[index].unwrapOr(undefined),
             vouching: vouching[index].unwrapOr(undefined)
-        })))));
+        }))));
+    }
+    function _membersCurr(api, accountIds) {
+        return combineLatest([
+            of(accountIds),
+            api.query.society.members.multi(accountIds),
+            api.query.society.payouts.multi(accountIds),
+            api.query.society.defenderVotes.multi(accountIds),
+            api.query.society.suspendedMembers.multi(accountIds)
+        ]).pipe(map(([accountIds, members, payouts, defenderVotes, suspendedMembers]) => accountIds
+            .map((accountId, index) => members[index].isSome
+            ? {
+                accountId,
+                isDefenderVoter: defenderVotes[index].isSome
+                    ? defenderVotes[index].unwrap().approve.isTrue
+                    : false,
+                isSuspended: suspendedMembers[index].isSome,
+                member: members[index].unwrap(),
+                payouts: payouts[index].payouts
+            }
+            : null)
+            .filter((m) => !!m)
+            .map(({ accountId, isDefenderVoter, isSuspended, member, payouts }) => ({
+            accountId,
+            isDefenderVoter,
+            isSuspended,
+            payouts,
+            strikes: member.strikes,
+            vouching: member.vouching.unwrapOr(undefined)
+        }))));
+    }
+    function _members(instanceId, api) {
+        return memo(instanceId, (accountIds) => api.query.society.members.creator.meta.type.isMap
+            ? _membersCurr(api, accountIds)
+            : _membersPrev(api, accountIds));
     }
     function members$1(instanceId, api) {
-        return memo(instanceId, () => api.query.society.members().pipe(switchMap((members) => api.derive.society._members(members))));
+        return memo(instanceId, () => api.query.society.members.creator.meta.type.isMap
+            ? api.query.society.members.keys().pipe(switchMap((keys) => api.derive.society._members(keys.map(({ args: [accountId] }) => accountId))))
+            : api.query.society.members().pipe(switchMap((members) => api.derive.society._members(members))));
     }
 
     const society = /*#__PURE__*/Object.freeze({
@@ -5995,8 +6077,10 @@
         return values;
     }
     function filterCachedEras(eras, cached, query) {
-        return eras.map((e) => cached.find(({ era }) => e.eq(era)) ||
-            query.find(({ era }) => e.eq(era)));
+        return eras
+            .map((e) => cached.find(({ era }) => e.eq(era)) ||
+            query.find(({ era }) => e.eq(era)))
+            .filter((e) => !!e);
     }
 
     const ERA_CHUNK_SIZE = 14;
@@ -6246,7 +6330,7 @@
     function parseDetails(stashId, controllerIdOpt, nominatorsOpt, rewardDestination, validatorPrefs, exposure, stakingLedgerOpt) {
         return {
             accountId: stashId,
-            controllerId: controllerIdOpt && controllerIdOpt.unwrapOr(null),
+            controllerId: controllerIdOpt?.unwrapOr(null) || null,
             exposure,
             nominators: nominatorsOpt.isSome
                 ? nominatorsOpt.unwrap().targets
@@ -6462,10 +6546,12 @@
                 return of(allRewards);
             }
             const [allValidators, stashValidators] = allUniqValidators(allRewards);
-            return api.derive.staking.queryMulti(allValidators, { withLedger: true }).pipe(map((queriedVals) => queries.map(({ stakingLedger }, index) => filterRewards(eras, stashValidators[index].map((validatorId) => [
+            return api.derive.staking.queryMulti(allValidators, { withLedger: true }).pipe(map((queriedVals) => queries.map(({ stakingLedger }, index) => filterRewards(eras, stashValidators[index]
+                .map((validatorId) => [
                 validatorId,
                 queriedVals.find((q) => q.accountId.eq(validatorId))
-            ]), {
+            ])
+                .filter((v) => !!v[1]), {
                 rewards: allRewards[index],
                 stakingLedger
             }))));
@@ -19378,7 +19464,7 @@
                 l.warn('Api will be available in a limited mode since the provider does not support subscriptions');
             }
             if (this._rpcCore.provider.isConnected) {
-                this.__internal__onProviderConnect();
+                this.__internal__onProviderConnect().catch(util.noop);
             }
         }
         _initRegistry(registry, chain, version, metadata, chainProps) {
@@ -19407,7 +19493,11 @@
         async _createBlockRegistry(blockHash, header, version) {
             const registry = new types.TypeRegistry(blockHash);
             const metadata = new types.Metadata(registry, await firstValueFrom(this._rpcCore.state.getMetadata.raw(header.parentHash)));
-            this._initRegistry(registry, this._runtimeChain, version, metadata);
+            const runtimeChain = this._runtimeChain;
+            if (!runtimeChain) {
+                throw new Error('Invalid initializion order, runtimeChain is not available');
+            }
+            this._initRegistry(registry, runtimeChain, version, metadata);
             const result = { counter: 0, lastBlockHash: blockHash, metadata, registry, runtimeVersion: version };
             this.__internal__registries.push(result);
             return result;
@@ -19502,9 +19592,13 @@
                     this._runtimeVersion = version;
                     this._rx.runtimeVersion = version;
                     const thisRegistry = this._getDefaultRegistry();
+                    const runtimeChain = this._runtimeChain;
+                    if (!runtimeChain) {
+                        throw new Error('Invalid initializion order, runtimeChain is not available');
+                    }
                     thisRegistry.metadata = metadata;
                     thisRegistry.runtimeVersion = version;
-                    this._initRegistry(this.registry, this._runtimeChain, version, metadata);
+                    this._initRegistry(this.registry, runtimeChain, version, metadata);
                     this._injectMetadata(thisRegistry, true);
                     return true;
                 })))).subscribe();
@@ -19524,7 +19618,7 @@
             this._runtimeVersion = runtimeVersion;
             this._rx.runtimeVersion = runtimeVersion;
             const metadataKey = `${genesisHash.toHex() || '0x'}-${runtimeVersion.specVersion.toString()}`;
-            const metadata = chainMetadata || (optMetadata && optMetadata[metadataKey]
+            const metadata = chainMetadata || (optMetadata?.[metadataKey]
                 ? new types.Metadata(this.registry, optMetadata[metadataKey])
                 : await firstValueFrom(this._rpcCore.state.getMetadata()));
             this._initRegistry(this.registry, chain, runtimeVersion, metadata, chainProps);
@@ -19537,10 +19631,14 @@
             return [genesisHash, metadata];
         }
         _initFromMeta(metadata) {
+            const runtimeVersion = this._runtimeVersion;
+            if (!runtimeVersion) {
+                throw new Error('Invalid initializion order, runtimeVersion is not available');
+            }
             this._extrinsicType = metadata.asLatest.extrinsic.version.toNumber();
             this._rx.extrinsicType = this._extrinsicType;
             this._rx.genesisHash = this._genesisHash;
-            this._rx.runtimeVersion = this._runtimeVersion;
+            this._rx.runtimeVersion = runtimeVersion;
             this._injectMetadata(this._getDefaultRegistry(), true);
             this._rx.derive = this._decorateDeriveRx(this._rxDecorateMethod);
             this._derive = this._decorateDerive(this._decorateMethod);
@@ -19550,7 +19648,7 @@
             this._unsubscribeHealth();
             this.__internal__healthTimer = this.hasSubscriptions
                 ? setInterval(() => {
-                    firstValueFrom(this._rpcCore.system.health.raw()).catch(() => undefined);
+                    firstValueFrom(this._rpcCore.system.health.raw()).catch(util.noop);
                 }, KEEPALIVE_INTERVAL)
                 : null;
         }
@@ -19656,7 +19754,7 @@
             return assertResult(this._rx);
         }
         get stats() {
-            return this._rpcCore.provider.stats;
+            return this._rpcCore.stats;
         }
         get type() {
             return this._type;
@@ -19689,7 +19787,7 @@
         async sign(address, data, { signer } = {}) {
             if (util.isString(address)) {
                 const _signer = signer || this._rx.signer;
-                if (!_signer || !_signer.signRaw) {
+                if (!_signer?.signRaw) {
                     throw new Error('No signer exists with a signRaw interface. You possibly need to pass through an explicit keypair for the origin so it can be used for signing.');
                 }
                 return (await _signer.signRaw(util.objectSpread({ type: 'bytes' }, data, { address }))).signature;
@@ -19732,7 +19830,9 @@
                 return;
             }
             try {
-                this.__internal__callback(this.__internal__results);
+                Promise
+                    .resolve(this.__internal__callback(this.__internal__results))
+                    .catch(util.noop);
             }
             catch {
             }
@@ -19742,7 +19842,7 @@
                 return;
             }
             this.__internal__isActive = false;
-            this.__internal__subscriptions.forEach(async (subscription) => {
+            this.__internal__subscriptions.map(async (subscription) => {
                 try {
                     const unsubscribe = await subscription;
                     if (util.isFunction(unsubscribe)) {
@@ -19805,7 +19905,7 @@
         });
     }
     function toPromiseMethod(method, options) {
-        const needsCallback = !!(options && options.methodName && options.methodName.includes('subscribe'));
+        const needsCallback = !!(options?.methodName && options.methodName.includes('subscribe'));
         return function (...args) {
             const [actualArgs, resultCb] = extractArgs(args, needsCallback);
             return resultCb
@@ -19831,8 +19931,7 @@
             if (options && options.throwOnConnect) {
                 return instance.isReadyOrError;
             }
-            instance.isReadyOrError.catch(() => {
-            });
+            instance.isReadyOrError.catch(util.noop);
             return instance.isReady;
         }
         get isReady() {
