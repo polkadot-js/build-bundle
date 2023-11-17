@@ -6,6 +6,7 @@
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
+    var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
     function evaluateThis(fn) {
         return fn('return this');
     }
@@ -27,42 +28,53 @@
     const DEFAULT_CRYPTO = { getRandomValues };
     const DEFAULT_SELF = { crypto: DEFAULT_CRYPTO };
     class Wbg {
+        __internal__bridge;
         constructor(bridge) {
-            this.abort = () => {
-                throw new Error('abort');
-            };
-            this.__wbindgen_is_undefined = (idx) => {
-                return this.__internal__bridge.getObject(idx) === undefined;
-            };
-            this.__wbindgen_throw = (ptr, len) => {
-                throw new Error(this.__internal__bridge.getString(ptr, len));
-            };
-            this.__wbg_self_1b7a39e3a92c949c = () => {
-                return this.__internal__bridge.addObject(DEFAULT_SELF);
-            };
-            this.__wbg_require_604837428532a733 = (ptr, len) => {
-                throw new Error(`Unable to require ${this.__internal__bridge.getString(ptr, len)}`);
-            };
-            this.__wbg_crypto_968f1772287e2df0 = (_idx) => {
-                return this.__internal__bridge.addObject(DEFAULT_CRYPTO);
-            };
-            this.__wbg_getRandomValues_a3d34b4fee3c2869 = (_idx) => {
-                return this.__internal__bridge.addObject(DEFAULT_CRYPTO.getRandomValues);
-            };
-            this.__wbg_getRandomValues_f5e14ab7ac8e995d = (_arg0, ptr, len) => {
-                DEFAULT_CRYPTO.getRandomValues(this.__internal__bridge.getU8a(ptr, len));
-            };
-            this.__wbg_randomFillSync_d5bd2d655fdf256a = (_idx, _ptr, _len) => {
-                throw new Error('randomFillsync is not available');
-            };
-            this.__wbindgen_object_drop_ref = (idx) => {
-                this.__internal__bridge.takeObject(idx);
-            };
             this.__internal__bridge = bridge;
         }
+        abort = () => {
+            throw new Error('abort');
+        };
+        __wbindgen_is_undefined = (idx) => {
+            return this.__internal__bridge.getObject(idx) === undefined;
+        };
+        __wbindgen_throw = (ptr, len) => {
+            throw new Error(this.__internal__bridge.getString(ptr, len));
+        };
+        __wbg_self_1b7a39e3a92c949c = () => {
+            return this.__internal__bridge.addObject(DEFAULT_SELF);
+        };
+        __wbg_require_604837428532a733 = (ptr, len) => {
+            throw new Error(`Unable to require ${this.__internal__bridge.getString(ptr, len)}`);
+        };
+        __wbg_crypto_968f1772287e2df0 = (_idx) => {
+            return this.__internal__bridge.addObject(DEFAULT_CRYPTO);
+        };
+        __wbg_getRandomValues_a3d34b4fee3c2869 = (_idx) => {
+            return this.__internal__bridge.addObject(DEFAULT_CRYPTO.getRandomValues);
+        };
+        __wbg_getRandomValues_f5e14ab7ac8e995d = (_arg0, ptr, len) => {
+            DEFAULT_CRYPTO.getRandomValues(this.__internal__bridge.getU8a(ptr, len));
+        };
+        __wbg_randomFillSync_d5bd2d655fdf256a = (_idx, _ptr, _len) => {
+            throw new Error('randomFillsync is not available');
+        };
+        __wbindgen_object_drop_ref = (idx) => {
+            this.__internal__bridge.takeObject(idx);
+        };
     }
 
     class Bridge {
+        __internal__createWasm;
+        __internal__heap;
+        __internal__wbg;
+        __internal__cachegetInt32;
+        __internal__cachegetUint8;
+        __internal__heapNext;
+        __internal__wasm;
+        __internal__wasmError;
+        __internal__wasmPromise;
+        __internal__type;
         constructor(createWasm) {
             this.__internal__createWasm = createWasm;
             this.__internal__cachegetInt32 = null;
@@ -467,7 +479,7 @@
         return bridge.init(createWasm);
     }
 
-    const packageInfo = { name: '@polkadot/wasm-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (document.currentScript && document.currentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '7.2.2' };
+    const packageInfo = { name: '@polkadot/wasm-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '7.3.1' };
 
     function withWasm(fn) {
         return (...params) => {
