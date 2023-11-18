@@ -1164,6 +1164,20 @@
 	        : fallback;
 	}
 	class Settings {
+	    __internal__emitter;
+	    __internal__apiType;
+	    __internal__apiUrl;
+	    __internal__camera;
+	    __internal__i18nLang;
+	    __internal__icon;
+	    __internal__ledgerConn;
+	    __internal__locking;
+	    __internal__metadataUp;
+	    __internal__prefix;
+	    __internal__storage;
+	    __internal__uiMode;
+	    __internal__uiTheme;
+	    __internal__notification;
 	    constructor() {
 	        const settings = store.get('settings') || {};
 	        this.__internal__emitter = new EventEmitter();
@@ -1304,7 +1318,7 @@
 	    .filter((n) => n.genesisHash.length)
 	    .reduce((chains, { genesisHash, network }) => util$7.objectSpread(chains, { [network]: genesisHash }), {});
 
-	const packageInfo = { name: '@polkadot/ui-settings', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.6.3' };
+	const packageInfo = { name: '@polkadot/ui-settings', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.6.4' };
 
 	exports.ENDPOINT_DEFAULT = ENDPOINT_DEFAULT;
 	exports.ICON_DEFAULT = ICON_DEFAULT;
