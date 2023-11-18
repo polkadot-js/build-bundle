@@ -7,7 +7,7 @@
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
     var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
-    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.5.1' };
+    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.6.1' };
 
     function evaluateThis(fn) {
         return fn('return this');
@@ -84,7 +84,7 @@
 
     Object.defineProperty(packageInfo$1, "__esModule", { value: true });
     packageInfo$1.packageInfo = void 0;
-    packageInfo$1.packageInfo = { name: '@polkadot/x-randomvalues', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.5.1' };
+    packageInfo$1.packageInfo = { name: '@polkadot/x-randomvalues', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.6.1' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -103,42 +103,53 @@
     const DEFAULT_CRYPTO = { getRandomValues: browser.getRandomValues };
     const DEFAULT_SELF = { crypto: DEFAULT_CRYPTO };
     class Wbg {
+        __internal__bridge;
         constructor(bridge) {
-            this.abort = () => {
-                throw new Error('abort');
-            };
-            this.__wbindgen_is_undefined = (idx) => {
-                return this.__internal__bridge.getObject(idx) === undefined;
-            };
-            this.__wbindgen_throw = (ptr, len) => {
-                throw new Error(this.__internal__bridge.getString(ptr, len));
-            };
-            this.__wbg_self_1b7a39e3a92c949c = () => {
-                return this.__internal__bridge.addObject(DEFAULT_SELF);
-            };
-            this.__wbg_require_604837428532a733 = (ptr, len) => {
-                throw new Error(`Unable to require ${this.__internal__bridge.getString(ptr, len)}`);
-            };
-            this.__wbg_crypto_968f1772287e2df0 = (_idx) => {
-                return this.__internal__bridge.addObject(DEFAULT_CRYPTO);
-            };
-            this.__wbg_getRandomValues_a3d34b4fee3c2869 = (_idx) => {
-                return this.__internal__bridge.addObject(DEFAULT_CRYPTO.getRandomValues);
-            };
-            this.__wbg_getRandomValues_f5e14ab7ac8e995d = (_arg0, ptr, len) => {
-                DEFAULT_CRYPTO.getRandomValues(this.__internal__bridge.getU8a(ptr, len));
-            };
-            this.__wbg_randomFillSync_d5bd2d655fdf256a = (_idx, _ptr, _len) => {
-                throw new Error('randomFillsync is not available');
-            };
-            this.__wbindgen_object_drop_ref = (idx) => {
-                this.__internal__bridge.takeObject(idx);
-            };
             this.__internal__bridge = bridge;
         }
+        abort = () => {
+            throw new Error('abort');
+        };
+        __wbindgen_is_undefined = (idx) => {
+            return this.__internal__bridge.getObject(idx) === undefined;
+        };
+        __wbindgen_throw = (ptr, len) => {
+            throw new Error(this.__internal__bridge.getString(ptr, len));
+        };
+        __wbg_self_1b7a39e3a92c949c = () => {
+            return this.__internal__bridge.addObject(DEFAULT_SELF);
+        };
+        __wbg_require_604837428532a733 = (ptr, len) => {
+            throw new Error(`Unable to require ${this.__internal__bridge.getString(ptr, len)}`);
+        };
+        __wbg_crypto_968f1772287e2df0 = (_idx) => {
+            return this.__internal__bridge.addObject(DEFAULT_CRYPTO);
+        };
+        __wbg_getRandomValues_a3d34b4fee3c2869 = (_idx) => {
+            return this.__internal__bridge.addObject(DEFAULT_CRYPTO.getRandomValues);
+        };
+        __wbg_getRandomValues_f5e14ab7ac8e995d = (_arg0, ptr, len) => {
+            DEFAULT_CRYPTO.getRandomValues(this.__internal__bridge.getU8a(ptr, len));
+        };
+        __wbg_randomFillSync_d5bd2d655fdf256a = (_idx, _ptr, _len) => {
+            throw new Error('randomFillsync is not available');
+        };
+        __wbindgen_object_drop_ref = (idx) => {
+            this.__internal__bridge.takeObject(idx);
+        };
     }
 
     class Bridge {
+        __internal__createWasm;
+        __internal__heap;
+        __internal__wbg;
+        __internal__cachegetInt32;
+        __internal__cachegetUint8;
+        __internal__heapNext;
+        __internal__wasm;
+        __internal__wasmError;
+        __internal__wasmPromise;
+        __internal__type;
         constructor(createWasm) {
             this.__internal__createWasm = createWasm;
             this.__internal__cachegetInt32 = null;
@@ -707,7 +718,7 @@
     cryptoWaitReady().catch(() => {
     });
 
-    const packageInfo = { name: '@polkadot/util-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.5.1' };
+    const packageInfo = { name: '@polkadot/util-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.6.1' };
 
     /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
     function assertNumber(n) {
@@ -2088,12 +2099,16 @@
     	},
     	{
     		"prefix": 41,
-    		"network": "poli",
-    		"displayName": "Polimec Chain",
-    		"symbols": [],
-    		"decimals": [],
+    		"network": "polimec",
+    		"displayName": "Polimec Protocol",
+    		"symbols": [
+    			"PLMC"
+    		],
+    		"decimals": [
+    			10
+    		],
     		"standardAccount": "*25519",
-    		"website": "https://polimec.io/"
+    		"website": "https://www.polimec.org/"
     	},
     	{
     		"prefix": 42,
@@ -3514,6 +3529,9 @@
         polymesh: [
             '0x6fbd74e5e1d0a61d52ccfe9d4adaed16dd3a7caa37c6bc4d0c2fa12e8b2f4063'
         ],
+        quartz: [
+            '0xcd4d732201ebe5d6b014edda071c4203e16867305332301dc8d092044b28e554'
+        ],
         rococo: [
             '0x6408de7737c59c238890533af25896a2c20608d8b380bb01029acb392781063e',
             '0xaaf2cd1b74b5f726895921259421b534124726263982522174147046b8827897',
@@ -3604,12 +3622,13 @@
         polkadex: 0x0000031f,
         polkadot: 0x00000162,
         polymesh: 0x00000253,
+        quartz: 0x00000277,
         sora: 0x00000269,
         stafi: 0x0000038b,
         statemine: 0x000001b2,
         statemint: 0x00000162,
         ternoa: 0x00003e3,
-        unique: 0x00000162,
+        unique: 0x00000295,
         vtb: 0x000002b6,
         xxnetwork: 0x000007a3,
         zeitgeist: 0x00000162
@@ -3731,10 +3750,8 @@
     const RE_NUMBER = /^\d+$/;
     const JUNCTION_ID_LEN = 32;
     class DeriveJunction {
-        constructor() {
-            this.__internal__chainCode = new Uint8Array(32);
-            this.__internal__isHard = false;
-        }
+        __internal__chainCode = new Uint8Array(32);
+        __internal__isHard = false;
         static from(value) {
             const result = new DeriveJunction();
             const [code, isHard] = value.startsWith('/')

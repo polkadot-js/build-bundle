@@ -207,9 +207,7 @@
     const DEV_SEED = '0xfac7959dbfe72f052e5a0c3c8d6530f202b02fd8f9f5ca3580ec8deb7797479e';
 
     class Pairs {
-        constructor() {
-            this.__internal__map = {};
-        }
+        __internal__map = {};
         add(pair) {
             this.__internal__map[utilCrypto.decodeAddress(pair.address).toString()] = pair;
             return pair;
@@ -241,13 +239,11 @@
         return publicKey;
     }
     class Keyring {
+        __internal__pairs;
+        __internal__type;
+        __internal__ss58;
+        decodeAddress = utilCrypto.decodeAddress;
         constructor(options = {}) {
-            this.decodeAddress = utilCrypto.decodeAddress;
-            this.encodeAddress = (address, ss58Format) => {
-                return this.type === 'ethereum'
-                    ? utilCrypto.ethereumEncode(address)
-                    : utilCrypto.encodeAddress(address, ss58Format ?? this.__internal__ss58);
-            };
             options.type = options.type || 'ed25519';
             if (!['ecdsa', 'ethereum', 'ed25519', 'sr25519'].includes(options.type || 'undefined')) {
                 throw new Error(`Expected a keyring type of either 'ed25519', 'sr25519', 'ethereum' or 'ecdsa', found '${options.type || 'unknown'}`);
@@ -342,6 +338,11 @@
                 : utilCrypto.keyFromPath(PairFromSeed[type](seed), path, type);
             return createPair({ toSS58: this.encodeAddress, type }, derived, meta, null);
         }
+        encodeAddress = (address, ss58Format) => {
+            return this.type === 'ethereum'
+                ? utilCrypto.ethereumEncode(address)
+                : utilCrypto.encodeAddress(address, ss58Format ?? this.__internal__ss58);
+        };
         getPair(address) {
             return this.__internal__pairs.get(address);
         }
@@ -362,7 +363,7 @@
         }
     }
 
-    const packageInfo = { name: '@polkadot/keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.5.1' };
+    const packageInfo = { name: '@polkadot/keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.6.1' };
 
     const PAIRSSR25519 = [
         {
