@@ -1046,7 +1046,9 @@
     const definitions$14 = {
         rpc: {},
         runtime: runtime$r,
-        types: {}
+        types: {
+            TAssetConversion: 'Option<MultiLocation>'
+        }
     };
 
     const runtime$q = {
@@ -1415,14 +1417,14 @@
             type: 'H256'
         },
         subscribeJustifications: {
-            description: 'Returns the block most recently finalized by BEEFY, alongside side its justification.',
+            description: 'Returns the block most recently finalized by BEEFY, alongside its justification.',
             params: [],
             pubsub: [
                 'justifications',
                 'subscribeJustifications',
                 'unsubscribeJustifications'
             ],
-            type: 'BeefySignedCommitment'
+            type: 'BeefyVersionedFinalityProof'
         }
     };
 
@@ -1523,6 +1525,12 @@
             BeefySignedCommitment: {
                 commitment: 'BeefyCommitment',
                 signatures: 'Vec<Option<EcdsaSignature>>'
+            },
+            BeefyVersionedFinalityProof: {
+                _enum: {
+                    V0: 'Null',
+                    V1: 'BeefySignedCommitment'
+                }
             },
             BeefyNextAuthoritySet: {
                 id: 'u64',
@@ -6091,6 +6099,10 @@
     }
 
     class AbstractArray extends Array {
+        registry;
+        createdAtHash;
+        initialU8aLength;
+        isStorageFallback;
         static get [Symbol.species]() {
             return Array;
         }
@@ -6187,6 +6199,11 @@
     }
 
     class AbstractBase {
+        registry;
+        createdAtHash;
+        initialU8aLength;
+        isStorageFallback;
+        __internal__raw;
         constructor(registry, value, initialU8aLength) {
             this.initialU8aLength = initialU8aLength;
             this.__internal__raw = value;
@@ -6286,6 +6303,13 @@
         throw new Error(`Unable to create BN from unknown type ${typeof value}`);
     }
     class AbstractInt extends util.BN {
+        registry;
+        encodedLength;
+        isUnsigned;
+        createdAtHash;
+        initialU8aLength;
+        isStorageFallback;
+        __internal__bitLength;
         constructor(registry, value = 0, bitLength = DEFAULT_UINT_BITS, isSigned = false) {
             super(
             util.isU8a(value)
@@ -6773,6 +6797,12 @@
         return [new Type(registry, value), 0];
     }
     class Compact {
+        registry;
+        createdAtHash;
+        initialU8aLength;
+        isStorageFallback;
+        __internal__Type;
+        __internal__raw;
         constructor(registry, Type, value = 0, { definition, setDefinition = util.identity } = {}) {
             this.registry = registry;
             this.__internal__Type = definition || setDefinition(typeToConstructor(registry, Type));
@@ -6847,6 +6877,10 @@
     }
 
     class DoNotConstruct {
+        registry;
+        createdAtHash;
+        isStorageFallback;
+        __internal__neverError;
         constructor(registry, typeName = 'DoNotConstruct') {
             this.registry = registry;
             this.__internal__neverError = new Error(`DoNotConstruct: Cannot construct unknown type ${typeName}`);
@@ -6898,10 +6932,13 @@
     }
 
     class Null {
+        encodedLength = 0;
+        isEmpty = true;
+        registry;
+        createdAtHash;
+        initialU8aLength = 0;
+        isStorageFallback;
         constructor(registry) {
-            this.encodedLength = 0;
-            this.isEmpty = true;
-            this.initialU8aLength = 0;
             this.registry = registry;
         }
         get hash() {
@@ -7046,6 +7083,16 @@
         return createFromValue(registry, def, Object.values(def)[0].index);
     }
     class Enum {
+        registry;
+        createdAtHash;
+        initialU8aLength;
+        isStorageFallback;
+        __internal__def;
+        __internal__entryIndex;
+        __internal__indexes;
+        __internal__isBasic;
+        __internal__isIndexed;
+        __internal__raw;
         constructor(registry, Types, value, index, { definition, setDefinition = util.identity } = {}) {
             const { def, isBasic, isIndexed } = definition || setDefinition(extractDef(registry, Types));
             const decoded = util.isU8a(value) && value.length && !util.isNumber(index)
@@ -7063,15 +7110,10 @@
             }
         }
         static with(Types) {
-            var _a;
             let definition;
             const setDefinition = (d) => definition = d;
-            return _a = class extends Enum {
-                    constructor(registry, value, index) {
-                        super(registry, Types, value, index, { definition, setDefinition });
-                    }
-                },
-                (() => {
+            return class extends Enum {
+                static {
                     const keys = Array.isArray(Types)
                         ? Types
                         : Object.keys(Types);
@@ -7083,15 +7125,18 @@
                         asKeys[i] = `as${name}`;
                         isKeys[i] = `is${name}`;
                     }
-                    util.objectProperties(_a.prototype, isKeys, (_, i, self) => self.type === keys[i]);
-                    util.objectProperties(_a.prototype, asKeys, (k, i, self) => {
+                    util.objectProperties(this.prototype, isKeys, (_, i, self) => self.type === keys[i]);
+                    util.objectProperties(this.prototype, asKeys, (k, i, self) => {
                         if (self.type !== keys[i]) {
                             throw new Error(`Cannot convert '${self.type}' via ${k}`);
                         }
                         return self.value;
                     });
-                })(),
-                _a;
+                }
+                constructor(registry, value, index) {
+                    super(registry, Types, value, index, { definition, setDefinition });
+                }
+            };
         }
         get encodedLength() {
             return 1 + this.__internal__raw.encodedLength;
@@ -7257,6 +7302,12 @@
         return new Type(registry, value);
     }
     class Option {
+        registry;
+        createdAtHash;
+        initialU8aLength;
+        isStorageFallback;
+        __internal__Type;
+        __internal__raw;
         constructor(registry, typeName, value, { definition, setDefinition = util.identity } = {}) {
             const Type = definition || setDefinition(typeToConstructor(registry, typeName));
             const decoded = util.isU8a(value) && value.length && !util.isCodec(value)
@@ -7440,6 +7491,7 @@
         throw new Error(`Expected array input to Tuple decoding, found ${typeof value}: ${util.stringify(value)}`);
     }
     class Tuple extends AbstractArray {
+        __internal__Types;
         constructor(registry, Types, value, { definition, setDefinition = util.identity } = {}) {
             const Classes = definition || setDefinition(Array.isArray(Types)
                 ? [typesToConstructors(registry, Types), []]
@@ -7545,6 +7597,7 @@
         return decodeU8aVec(registry, result, util.u8aToU8a(value), startAt, Type);
     }
     class Vec extends AbstractArray {
+        __internal__Type;
         constructor(registry, Type, value = [], { definition, setDefinition = util.identity } = {}) {
             const [decodeFrom, length, startAt] = decodeVecLength(value);
             super(registry, length);
@@ -7582,6 +7635,7 @@
     }
 
     class VecFixed extends AbstractArray {
+        __internal__Type;
         constructor(registry, Type, length, value = [], { definition, setDefinition = util.identity } = {}) {
             super(registry, length);
             this.__internal__Type = definition || setDefinition(typeToConstructor(registry, Type));
@@ -7625,6 +7679,10 @@
     }
 
     class Raw extends Uint8Array {
+        registry;
+        createdAtHash;
+        initialU8aLength;
+        isStorageFallback;
         static get [Symbol.species]() {
             return Uint8Array;
         }
@@ -7717,6 +7775,8 @@
         return decodeBitVecU8a(value);
     }
     class BitVec extends Raw {
+        __internal__decodedLength;
+        __internal__isMsb;
         constructor(registry, value, isMsb = false) {
             const [decodedLength, u8a] = decodeBitVec(value);
             super(registry, u8a);
@@ -7832,6 +7892,12 @@
         return [raw, 0];
     }
     class Struct extends Map {
+        registry;
+        createdAtHash;
+        initialU8aLength;
+        isStorageFallback;
+        __internal__jsonMap;
+        __internal__Types;
         constructor(registry, Types, value, jsonMap = new Map(), { definition, setDefinition = noopSetDefinition } = {}) {
             const typeMap = definition || setDefinition(mapToTypeMap(registry, Types));
             const [decoded, decodedLength] = util.isU8a(value) || util.isHex(value)
@@ -7846,19 +7912,17 @@
             this.__internal__Types = typeMap;
         }
         static with(Types, jsonMap) {
-            var _a;
             let definition;
             const setDefinition = (d) => definition = d;
-            return _a = class extends Struct {
-                    constructor(registry, value) {
-                        super(registry, Types, value, jsonMap, { definition, setDefinition });
-                    }
-                },
-                (() => {
+            return class extends Struct {
+                static {
                     const keys = Object.keys(Types);
-                    util.objectProperties(_a.prototype, keys, (k, _, self) => self.get(k));
-                })(),
-                _a;
+                    util.objectProperties(this.prototype, keys, (k, _, self) => self.get(k));
+                }
+                constructor(registry, value) {
+                    super(registry, Types, value, jsonMap, { definition, setDefinition });
+                }
+            };
         }
         get defKeys() {
             return this.__internal__Types[1];
@@ -8011,6 +8075,13 @@
         throw new Error('Map: cannot decode type');
     }
     class CodecMap extends Map {
+        registry;
+        createdAtHash;
+        initialU8aLength;
+        isStorageFallback;
+        __internal__KeyClass;
+        __internal__ValClass;
+        __internal__type;
         constructor(registry, keyType, valType, rawValue, type = 'HashMap') {
             const [KeyClass, ValClass, decoded, decodedLength] = decodeMap(registry, keyType, valType, rawValue);
             super(type === 'BTreeMap' ? sortMap(decoded) : decoded);
@@ -8141,6 +8212,11 @@
         throw new Error('BTreeSet: cannot decode type');
     }
     class BTreeSet extends Set {
+        registry;
+        createdAtHash;
+        initialU8aLength;
+        isStorageFallback;
+        __internal__ValClass;
         constructor(registry, valType, rawValue) {
             const [ValClass, values, decodedLength] = decodeSet$1(registry, valType, rawValue);
             super(sortSet(values));
@@ -8315,13 +8391,16 @@
     }
 
     class bool extends Boolean {
+        registry;
+        createdAtHash;
+        initialU8aLength = 1;
+        isStorageFallback;
         constructor(registry, value = false) {
             super(util.isU8a(value)
                 ? value[0] === 1
                 : value instanceof Boolean
                     ? value.valueOf()
                     : !!value);
-            this.initialU8aLength = 1;
             this.registry = registry;
         }
         get encodedLength() {
@@ -8416,6 +8495,7 @@
     }
 
     class Range extends Tuple {
+        __internal__rangeName;
         constructor(registry, Type, value, { rangeName = 'Range' } = {}) {
             super(registry, [Type, Type], value);
             this.__internal__rangeName = rangeName;
@@ -8476,10 +8556,14 @@
         return [value ? value.toString() : '', 0];
     }
     class Text extends String {
+        registry;
+        createdAtHash;
+        initialU8aLength;
+        isStorageFallback;
+        __internal__override = null;
         constructor(registry, value) {
             const [str, decodedLength] = decodeText(value);
             super(str);
-            this.__internal__override = null;
             this.registry = registry;
             this.initialU8aLength = decodedLength;
         }
@@ -8597,6 +8681,9 @@
         return [Type, instance, util.compactAddLength(instance.toU8a())];
     }
     class WrapperKeepOpaque extends Bytes {
+        __internal__Type;
+        __internal__decoded;
+        __internal__opaqueName;
         constructor(registry, typeName, value, { opaqueName = 'WrapperKeepOpaque' } = {}) {
             const [Type, decoded, u8a] = decodeRaw(registry, typeName, value);
             super(registry, u8a);
@@ -8667,6 +8754,12 @@
     }
 
     class Float extends Number {
+        encodedLength;
+        registry;
+        createdAtHash;
+        initialU8aLength;
+        isStorageFallback;
+        __internal__bitLength;
         constructor(registry, value, { bitLength = 32 } = {}) {
             super(util.isU8a(value) || util.isHex(value)
                 ? value.length === 0
@@ -8728,6 +8821,10 @@
         return Object.entries(value || {});
     }
     class Json extends Map {
+        registry;
+        createdAtHash;
+        initialU8aLength;
+        isStorageFallback;
         constructor(registry, value) {
             const decoded = decodeJson(value);
             super(decoded);
@@ -8845,36 +8942,33 @@
         return decodeSetNumber(setValues, value);
     }
     class CodecSet extends Set {
+        registry;
+        createdAtHash;
+        initialU8aLength;
+        isStorageFallback;
+        __internal__allowed;
+        __internal__byteLength;
         constructor(registry, setValues, value, bitLength = 8) {
             super(decodeSet(setValues, value, bitLength));
-            this.add = (key) => {
-                if (this.__internal__allowed && util.isUndefined(this.__internal__allowed[key])) {
-                    throw new Error(`Set: Invalid key '${key}' on add`);
-                }
-                super.add(key);
-                return this;
-            };
             this.registry = registry;
             this.__internal__allowed = setValues;
             this.__internal__byteLength = bitLength / 8;
         }
         static with(values, bitLength) {
-            var _a;
-            return _a = class extends CodecSet {
-                    constructor(registry, value) {
-                        super(registry, values, value, bitLength);
-                    }
-                },
-                (() => {
+            return class extends CodecSet {
+                static {
                     const keys = Object.keys(values);
                     const count = keys.length;
                     const isKeys = new Array(count);
                     for (let i = 0; i < count; i++) {
                         isKeys[i] = `is${util.stringPascalCase(keys[i])}`;
                     }
-                    util.objectProperties(_a.prototype, isKeys, (_, i, self) => self.strings.includes(keys[i]));
-                })(),
-                _a;
+                    util.objectProperties(this.prototype, isKeys, (_, i, self) => self.strings.includes(keys[i]));
+                }
+                constructor(registry, value) {
+                    super(registry, values, value, bitLength);
+                }
+            };
         }
         get encodedLength() {
             return this.__internal__byteLength;
@@ -8891,6 +8985,13 @@
         get valueEncoded() {
             return encodeSet(this.__internal__allowed, this.strings);
         }
+        add = (key) => {
+            if (this.__internal__allowed && util.isUndefined(this.__internal__allowed[key])) {
+                throw new Error(`Set: Invalid key '${key}' on add`);
+            }
+            super.add(key);
+            return this;
+        };
         eq(other) {
             if (Array.isArray(other)) {
                 return compareArray(this.strings.sort(), other.sort());
@@ -8938,59 +9039,35 @@
     }
 
     class f32 extends Float.with(32) {
-        constructor() {
-            super(...arguments);
-            this.__FloatType = 'f32';
-        }
+        __FloatType = 'f32';
     }
 
     class f64 extends Float.with(64) {
-        constructor() {
-            super(...arguments);
-            this.__FloatType = 'f64';
-        }
+        __FloatType = 'f64';
     }
 
     class i8 extends Int.with(8) {
-        constructor() {
-            super(...arguments);
-            this.__IntType = 'i8';
-        }
+        __IntType = 'i8';
     }
 
     class i16 extends Int.with(16) {
-        constructor() {
-            super(...arguments);
-            this.__IntType = 'i16';
-        }
+        __IntType = 'i16';
     }
 
     class i32 extends Int.with(32) {
-        constructor() {
-            super(...arguments);
-            this.__IntType = 'i32';
-        }
+        __IntType = 'i32';
     }
 
     class i64 extends Int.with(64) {
-        constructor() {
-            super(...arguments);
-            this.__IntType = 'i64';
-        }
+        __IntType = 'i64';
     }
 
     class i128 extends Int.with(128) {
-        constructor() {
-            super(...arguments);
-            this.__IntType = 'i128';
-        }
+        __IntType = 'i128';
     }
 
     class i256 extends Int.with(256) {
-        constructor() {
-            super(...arguments);
-            this.__IntType = 'i256';
-        }
+        __IntType = 'i256';
     }
 
     class isize extends i32 {
@@ -9001,45 +9078,27 @@
     }
 
     class u8 extends UInt.with(8) {
-        constructor() {
-            super(...arguments);
-            this.__UIntType = 'u8';
-        }
+        __UIntType = 'u8';
     }
 
     class u16 extends UInt.with(16) {
-        constructor() {
-            super(...arguments);
-            this.__UIntType = 'u16';
-        }
+        __UIntType = 'u16';
     }
 
     class u32 extends UInt.with(32) {
-        constructor() {
-            super(...arguments);
-            this.__UIntType = 'u32';
-        }
+        __UIntType = 'u32';
     }
 
     class u64 extends UInt.with(64) {
-        constructor() {
-            super(...arguments);
-            this.__UIntType = 'u64';
-        }
+        __UIntType = 'u64';
     }
 
     class u128 extends UInt.with(128) {
-        constructor() {
-            super(...arguments);
-            this.__UIntType = 'u128';
-        }
+        __UIntType = 'u128';
     }
 
     class u256 extends UInt.with(256) {
-        constructor() {
-            super(...arguments);
-            this.__UIntType = 'u256';
-        }
+        __UIntType = 'u256';
     }
 
     class usize extends u32 {
@@ -13530,11 +13589,16 @@
         return { lookups, names, params, types };
     }
     class PortableRegistry extends Struct {
+        __internal__alias;
+        __internal__lookups;
+        __internal__names;
+        __internal__params;
+        __internal__typeDefs = {};
+        __internal__types;
         constructor(registry, value, isContract) {
             super(registry, {
                 types: 'Vec<PortableType>'
             }, value);
-            this.__internal__typeDefs = {};
             const { lookups, names, params, types } = extractTypeInfo(this, this.types);
             this.__internal__alias = extractAliases(params, isContract);
             this.__internal__lookups = lookups;
@@ -14085,7 +14149,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.10.1' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.11.1' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
@@ -14283,7 +14347,7 @@
         ChargeAssetTxPayment: {
             extrinsic: {
                 tip: 'Compact<Balance>',
-                assetId: 'Option<AssetId>'
+                assetId: 'TAssetConversion'
             },
             payload: {}
         }
@@ -14297,13 +14361,14 @@
             blockHash: 'Hash'
         }
     };
-    const substrate$1 = {
-        ChargeTransactionPayment: {
-            extrinsic: {
-                tip: 'Compact<Balance>'
-            },
-            payload: {}
+    const ChargeTransactionPayment = {
+        extrinsic: {
+            tip: 'Compact<Balance>'
         },
+        payload: {}
+    };
+    const substrate$1 = {
+        ChargeTransactionPayment,
         CheckBlockGasLimit: emptyCheck,
         CheckEra: CheckMortality,
         CheckGenesis: {
@@ -14340,6 +14405,7 @@
         },
         CheckWeight: emptyCheck,
         LockStakingStatus: emptyCheck,
+        SkipCheckIfFeeless: ChargeTransactionPayment,
         ValidateEquivocationReport: emptyCheck
     };
 
@@ -14378,10 +14444,14 @@
         };
     }
     class GenericEventData extends Tuple {
+        __internal__meta;
+        __internal__method;
+        __internal__names = null;
+        __internal__section;
+        __internal__typeDef;
         constructor(registry, value, meta, section = '<unknown>', method = '<unknown>') {
             const fields = meta?.fields || [];
             super(registry, fields.map(({ type }) => registry.createLookupType(type)), value);
-            this.__internal__names = null;
             this.__internal__meta = meta;
             this.__internal__method = method;
             this.__internal__section = section;
@@ -14618,6 +14688,8 @@
         }
     }
     class GenericExtrinsic extends ExtrinsicBase {
+        __internal__hashCache;
+        static LATEST_EXTRINSIC_VERSION = EXTRINSIC_VERSION;
         constructor(registry, value, { version } = {}) {
             super(registry, decodeExtrinsic(registry, value, version));
         }
@@ -14687,7 +14759,6 @@
             ];
         }
     }
-    GenericExtrinsic.LATEST_EXTRINSIC_VERSION = EXTRINSIC_VERSION;
 
     function getTrailingZeros(period) {
         const binary = period.toString(2);
@@ -14939,6 +15010,7 @@
         version: 'u8'
     };
     class GenericSignerPayload extends Struct {
+        __internal__extraTypes;
         constructor(registry, value) {
             const extensionTypes = util.objectSpread({}, registry.getSignedExtensionTypes(), registry.getSignedExtensionExtra());
             super(registry, util.objectSpread({}, extensionTypes, knownTypes), value);
@@ -15030,6 +15102,7 @@
     }
 
     class GenericExtrinsicPayloadV4 extends Struct {
+        __internal__signOptions;
         constructor(registry, value) {
             super(registry, util.objectSpread({ method: 'Bytes' }, registry.getSignedExtensionTypes(), registry.getSignedExtensionExtra()), value);
             this.__internal__signOptions = {
@@ -15076,6 +15149,7 @@
         return registry.createTypeUnsafe('Address', [util.isU8a(address) ? util.u8aToHex(address) : address]);
     }
     class GenericExtrinsicSignatureV4 extends Struct {
+        __internal__signKeys;
         constructor(registry, value, { isSigned } = {}) {
             const signTypes = registry.getSignedExtensionTypes();
             super(registry, util.objectSpread(
@@ -15366,6 +15440,7 @@
         }
     }
     class GenericCall extends Struct {
+        _meta;
         constructor(registry, value, meta) {
             const decoded = decodeCall(registry, value, meta);
             try {
@@ -15714,6 +15789,8 @@
         return decodeVoteType(registry, value);
     }
     class GenericVote extends U8aFixed {
+        __internal__aye;
+        __internal__conviction;
         constructor(registry, value) {
             const decoded = decodeVote(registry, value);
             super(registry, decoded, 8);
@@ -16035,6 +16112,11 @@
         return 'Raw';
     }
     class StorageKey extends Bytes {
+        __internal__args;
+        __internal__meta;
+        __internal__outputType;
+        __internal__method;
+        __internal__section;
         constructor(registry, value, override = {}) {
             const { key, method, section } = decodeStorageKey(value);
             super(registry, key);
@@ -16648,35 +16730,35 @@
     const TO_CALLS_VERSION = 14;
 
     class MetadataVersioned extends Struct {
+        __internal__converted = new Map();
         constructor(registry, value) {
             super(registry, {
                 magicNumber: MagicNumber,
                 metadata: 'MetadataAll'
             }, value);
-            this.__internal__converted = new Map();
-            this.__internal__assertVersion = (version) => {
-                if (this.version > version) {
-                    throw new Error(`Cannot convert metadata from version ${this.version} to ${version}`);
-                }
-                return this.version === version;
-            };
-            this.__internal__getVersion = (version, fromPrev) => {
-                if (version !== 'latest' && this.__internal__assertVersion(version)) {
-                    const asCurr = `asV${version}`;
-                    return this.__internal__metadata()[asCurr];
-                }
-                if (!this.__internal__converted.has(version)) {
-                    const asPrev = version === 'latest'
-                        ? `asV${LATEST_VERSION}`
-                        : `asV${(version - 1)}`;
-                    this.__internal__converted.set(version, fromPrev(this.registry, this[asPrev], this.version));
-                }
-                return this.__internal__converted.get(version);
-            };
-            this.__internal__metadata = () => {
-                return this.getT('metadata');
-            };
         }
+        __internal__assertVersion = (version) => {
+            if (this.version > version) {
+                throw new Error(`Cannot convert metadata from version ${this.version} to ${version}`);
+            }
+            return this.version === version;
+        };
+        __internal__getVersion = (version, fromPrev) => {
+            if (version !== 'latest' && this.__internal__assertVersion(version)) {
+                const asCurr = `asV${version}`;
+                return this.__internal__metadata()[asCurr];
+            }
+            if (!this.__internal__converted.has(version)) {
+                const asPrev = version === 'latest'
+                    ? `asV${LATEST_VERSION}`
+                    : `asV${(version - 1)}`;
+                this.__internal__converted.set(version, fromPrev(this.registry, this[asPrev], this.version));
+            }
+            return this.__internal__converted.get(version);
+        };
+        __internal__metadata = () => {
+            return this.getT('metadata');
+        };
         get asCallsOnly() {
             return new MetadataVersioned(this.registry, {
                 magicNumber: this.magicNumber,
@@ -17024,6 +17106,10 @@
         heapPages: createSubstrateFn('heapPages', ':heappages', {
             docs: 'Number of wasm linear memory pages required for execution of the runtime.',
             type: 'u64'
+        }),
+        intrablockEntropy: createSubstrateFn('intrablockEntropy', ':intrablock_entropy', {
+            docs: 'Current intra-block entropy (a universally unique `[u8; 32]` value) is stored here.',
+            type: '[u8; 32]'
         })
     };
 
@@ -17168,56 +17254,27 @@
         return registry.createTypeUnsafe('ChainProperties', [{ isEthereum, ss58Format, tokenDecimals, tokenSymbol }]);
     }
     class TypeRegistry {
+        __internal__chainProperties;
+        __internal__classes = new Map();
+        __internal__definitions = new Map();
+        __internal__firstCallIndex = null;
+        __internal__hasher = utilCrypto.blake2AsU8a;
+        __internal__knownTypes = {};
+        __internal__lookup;
+        __internal__metadata;
+        __internal__metadataVersion = 0;
+        __internal__signedExtensions = fallbackExtensions;
+        __internal__unknownTypes = new Map();
+        __internal__userExtensions;
+        __internal__knownDefaults;
+        __internal__knownDefaultsEntries;
+        __internal__knownDefinitions;
+        __internal__metadataCalls = {};
+        __internal__metadataErrors = {};
+        __internal__metadataEvents = {};
+        __internal__moduleMap = {};
+        createdAtHash;
         constructor(createdAtHash) {
-            this.__internal__classes = new Map();
-            this.__internal__definitions = new Map();
-            this.__internal__firstCallIndex = null;
-            this.__internal__hasher = utilCrypto.blake2AsU8a;
-            this.__internal__knownTypes = {};
-            this.__internal__metadataVersion = 0;
-            this.__internal__signedExtensions = fallbackExtensions;
-            this.__internal__unknownTypes = new Map();
-            this.__internal__metadataCalls = {};
-            this.__internal__metadataErrors = {};
-            this.__internal__metadataEvents = {};
-            this.__internal__moduleMap = {};
-            this.__internal__registerObject = (obj) => {
-                const entries = Object.entries(obj);
-                for (let e = 0, count = entries.length; e < count; e++) {
-                    const [name, type] = entries[e];
-                    if (util.isFunction(type)) {
-                        this.__internal__classes.set(name, type);
-                    }
-                    else {
-                        const def = util.isString(type)
-                            ? type
-                            : util.stringify(type);
-                        if (name === def) {
-                            throw new Error(`Unable to register circular ${name} === ${def}`);
-                        }
-                        if (this.__internal__classes.has(name)) {
-                            this.__internal__classes.delete(name);
-                        }
-                        this.__internal__definitions.set(name, def);
-                    }
-                }
-            };
-            this.__internal__registerLookup = (lookup) => {
-                this.setLookup(lookup);
-                let Weight = null;
-                if (this.hasType('SpWeightsWeightV2Weight')) {
-                    const weightv2 = this.createType('SpWeightsWeightV2Weight');
-                    Weight = weightv2.refTime && weightv2.proofSize
-                        ? 'SpWeightsWeightV2Weight'
-                        : 'WeightV1';
-                }
-                else if (!util.isBn(this.createType('Weight'))) {
-                    Weight = 'WeightV1';
-                }
-                if (Weight) {
-                    this.register({ Weight });
-                }
-            };
             this.__internal__knownDefaults = util.objectSpread({ Json, Metadata, PortableRegistry, Raw }, baseTypes);
             this.__internal__knownDefaultsEntries = Object.entries(this.__internal__knownDefaults);
             this.__internal__knownDefinitions = definitions;
@@ -17413,6 +17470,27 @@
                 this.__internal__registerObject(arg1);
             }
         }
+        __internal__registerObject = (obj) => {
+            const entries = Object.entries(obj);
+            for (let e = 0, count = entries.length; e < count; e++) {
+                const [name, type] = entries[e];
+                if (util.isFunction(type)) {
+                    this.__internal__classes.set(name, type);
+                }
+                else {
+                    const def = util.isString(type)
+                        ? type
+                        : util.stringify(type);
+                    if (name === def) {
+                        throw new Error(`Unable to register circular ${name} === ${def}`);
+                    }
+                    if (this.__internal__classes.has(name)) {
+                        this.__internal__classes.delete(name);
+                    }
+                    this.__internal__definitions.set(name, def);
+                }
+            }
+        };
         setChainProperties(properties) {
             if (properties) {
                 this.__internal__chainProperties = properties;
@@ -17428,6 +17506,22 @@
             this.__internal__lookup = lookup;
             lookup.register();
         }
+        __internal__registerLookup = (lookup) => {
+            this.setLookup(lookup);
+            let Weight = null;
+            if (this.hasType('SpWeightsWeightV2Weight')) {
+                const weightv2 = this.createType('SpWeightsWeightV2Weight');
+                Weight = weightv2.refTime && weightv2.proofSize
+                    ? 'SpWeightsWeightV2Weight'
+                    : 'WeightV1';
+            }
+            else if (!util.isBn(this.createType('Weight'))) {
+                Weight = 'WeightV1';
+            }
+            if (Weight) {
+                this.register({ Weight });
+            }
+        };
         setMetadata(metadata, signedExtensions, userExtensions, noInitWarn) {
             this.__internal__metadata = metadata.asLatest;
             this.__internal__metadataVersion = metadata.version;

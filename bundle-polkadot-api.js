@@ -31,6 +31,11 @@
         });
     }
     class RpcError extends Error {
+        code;
+        data;
+        message;
+        name;
+        stack;
         constructor(message = '', code = UNKNOWN, data) {
             super();
             extend(this, 'message', String(message));
@@ -45,14 +50,13 @@
                 stack && extend(this, 'stack', stack);
             }
         }
+        static CODES = {
+            ASSERT: -90009,
+            INVALID_JSONRPC: -99998,
+            METHOD_NOT_FOUND: -32601,
+            UNKNOWN
+        };
     }
-    RpcError.CODES = {
-        ASSERT: -90009,
-        INVALID_JSONRPC: -99998,
-        METHOD_NOT_FOUND: -32601,
-        UNKNOWN
-    };
-    const RpcError$1 = RpcError;
 
     function formatErrorData(data) {
         if (util.isUndefined(data)) {
@@ -68,13 +72,11 @@
     function checkError(error) {
         if (error) {
             const { code, data, message } = error;
-            throw new RpcError$1(`${code}: ${message}${formatErrorData(data)}`, code, data);
+            throw new RpcError(`${code}: ${message}${formatErrorData(data)}`, code, data);
         }
     }
     class RpcCoder {
-        constructor() {
-            this.__internal__id = 0;
-        }
+        __internal__id = 0;
         decodeResponse(response) {
             if (!response || response.jsonrpc !== '2.0') {
                 throw new Error('Invalid jsonrpc field in decoded object');
@@ -119,16 +121,22 @@
 
     const DEFAULT_CAPACITY = 128;
     class LRUNode {
+        key;
+        next;
+        prev;
         constructor(key) {
             this.key = key;
             this.next = this.prev = this;
         }
     }
     class LRUCache {
+        capacity;
+        __internal__data = new Map();
+        __internal__refs = new Map();
+        __internal__length = 0;
+        __internal__head;
+        __internal__tail;
         constructor(capacity = DEFAULT_CAPACITY) {
-            this.__internal__data = new Map();
-            this.__internal__refs = new Map();
-            this.__internal__length = 0;
             this.capacity = capacity;
             this.__internal__head = this.__internal__tail = new LRUNode('<empty>');
         }
@@ -213,8 +221,12 @@
     const ERROR_SUBSCRIBE = 'HTTP Provider does not have subscriptions, use WebSockets instead';
     const l$7 = util.logger('api-http');
     class HttpProvider {
+        __internal__callCache = new LRUCache();
+        __internal__coder;
+        __internal__endpoint;
+        __internal__headers;
+        __internal__stats;
         constructor(endpoint = defaults.HTTP_URL, headers = {}) {
-            this.__internal__callCache = new LRUCache();
             if (!/^(https|http):\/\//.test(endpoint)) {
                 throw new Error(`Endpoint should start with 'http://' or 'https://', received '${endpoint}'`);
             }
@@ -517,151 +529,153 @@
         };
     }
     class InnerChecker {
+        __internal__healthCallback;
+        __internal__currentHealthCheckId = null;
+        __internal__currentHealthTimeout = null;
+        __internal__currentSubunsubRequestId = null;
+        __internal__currentSubscriptionId = null;
+        __internal__requestToSmoldot;
+        __internal__isSyncing = false;
+        __internal__nextRequestId = 0;
         constructor(healthCallback, requestToSmoldot) {
-            this.__internal__currentHealthCheckId = null;
-            this.__internal__currentHealthTimeout = null;
-            this.__internal__currentSubunsubRequestId = null;
-            this.__internal__currentSubscriptionId = null;
-            this.__internal__isSyncing = false;
-            this.__internal__nextRequestId = 0;
-            this.sendJsonRpc = (request) => {
-                let parsedRequest;
-                try {
-                    parsedRequest = JSON.parse(request);
-                }
-                catch {
-                    return;
-                }
-                if (parsedRequest.id) {
-                    const newId = 'extern:' + util.stringify(parsedRequest.id);
-                    parsedRequest.id = newId;
-                }
-                this.__internal__requestToSmoldot(parsedRequest);
-            };
-            this.responsePassThrough = (jsonRpcResponse) => {
-                let parsedResponse;
-                try {
-                    parsedResponse = JSON.parse(jsonRpcResponse);
-                }
-                catch {
-                    return jsonRpcResponse;
-                }
-                if (parsedResponse.id && this.__internal__currentHealthCheckId === parsedResponse.id) {
-                    this.__internal__currentHealthCheckId = null;
-                    if (!parsedResponse.result) {
-                        this.update(false);
-                        return null;
-                    }
-                    this.__internal__healthCallback(parsedResponse.result);
-                    this.__internal__isSyncing = parsedResponse.result.isSyncing;
-                    this.update(false);
-                    return null;
-                }
-                if (parsedResponse.id &&
-                    this.__internal__currentSubunsubRequestId === parsedResponse.id) {
-                    this.__internal__currentSubunsubRequestId = null;
-                    if (!parsedResponse.result) {
-                        this.update(false);
-                        return null;
-                    }
-                    if (this.__internal__currentSubscriptionId) {
-                        this.__internal__currentSubscriptionId = null;
-                    }
-                    else {
-                        this.__internal__currentSubscriptionId = parsedResponse.result;
-                    }
-                    this.update(false);
-                    return null;
-                }
-                if (parsedResponse.params &&
-                    this.__internal__currentSubscriptionId &&
-                    parsedResponse.params.subscription === this.__internal__currentSubscriptionId) {
-                    this.update(true);
-                    return null;
-                }
-                if (parsedResponse.id) {
-                    const id = parsedResponse.id;
-                    if (!id.startsWith('extern:')) {
-                        throw new Error('State inconsistency in health checker');
-                    }
-                    const newId = JSON.parse(id.slice('extern:'.length));
-                    parsedResponse.id = newId;
-                }
-                return util.stringify(parsedResponse);
-            };
-            this.update = (startNow) => {
-                if (startNow && this.__internal__currentHealthTimeout) {
-                    clearTimeout(this.__internal__currentHealthTimeout);
-                    this.__internal__currentHealthTimeout = null;
-                }
-                if (!this.__internal__currentHealthTimeout) {
-                    const startHealthRequest = () => {
-                        this.__internal__currentHealthTimeout = null;
-                        if (this.__internal__currentHealthCheckId) {
-                            return;
-                        }
-                        this.__internal__currentHealthCheckId = `health-checker:${this.__internal__nextRequestId}`;
-                        this.__internal__nextRequestId += 1;
-                        this.__internal__requestToSmoldot({
-                            id: this.__internal__currentHealthCheckId,
-                            jsonrpc: '2.0',
-                            method: 'system_health',
-                            params: []
-                        });
-                    };
-                    if (startNow) {
-                        startHealthRequest();
-                    }
-                    else {
-                        this.__internal__currentHealthTimeout = setTimeout(startHealthRequest, 1000);
-                    }
-                }
-                if (this.__internal__isSyncing &&
-                    !this.__internal__currentSubscriptionId &&
-                    !this.__internal__currentSubunsubRequestId) {
-                    this.startSubscription();
-                }
-                if (!this.__internal__isSyncing &&
-                    this.__internal__currentSubscriptionId &&
-                    !this.__internal__currentSubunsubRequestId) {
-                    this.endSubscription();
-                }
-            };
-            this.startSubscription = () => {
-                if (this.__internal__currentSubunsubRequestId || this.__internal__currentSubscriptionId) {
-                    throw new Error('Internal error in health checker');
-                }
-                this.__internal__currentSubunsubRequestId = `health-checker:${this.__internal__nextRequestId}`;
-                this.__internal__nextRequestId += 1;
-                this.__internal__requestToSmoldot({
-                    id: this.__internal__currentSubunsubRequestId,
-                    jsonrpc: '2.0',
-                    method: 'chain_subscribeNewHeads',
-                    params: []
-                });
-            };
-            this.endSubscription = () => {
-                if (this.__internal__currentSubunsubRequestId || !this.__internal__currentSubscriptionId) {
-                    throw new Error('Internal error in health checker');
-                }
-                this.__internal__currentSubunsubRequestId = `health-checker:${this.__internal__nextRequestId}`;
-                this.__internal__nextRequestId += 1;
-                this.__internal__requestToSmoldot({
-                    id: this.__internal__currentSubunsubRequestId,
-                    jsonrpc: '2.0',
-                    method: 'chain_unsubscribeNewHeads',
-                    params: [this.__internal__currentSubscriptionId]
-                });
-            };
-            this.destroy = () => {
-                if (this.__internal__currentHealthTimeout) {
-                    clearTimeout(this.__internal__currentHealthTimeout);
-                    this.__internal__currentHealthTimeout = null;
-                }
-            };
             this.__internal__healthCallback = healthCallback;
             this.__internal__requestToSmoldot = (request) => requestToSmoldot(util.stringify(request));
         }
+        sendJsonRpc = (request) => {
+            let parsedRequest;
+            try {
+                parsedRequest = JSON.parse(request);
+            }
+            catch {
+                return;
+            }
+            if (parsedRequest.id) {
+                const newId = 'extern:' + util.stringify(parsedRequest.id);
+                parsedRequest.id = newId;
+            }
+            this.__internal__requestToSmoldot(parsedRequest);
+        };
+        responsePassThrough = (jsonRpcResponse) => {
+            let parsedResponse;
+            try {
+                parsedResponse = JSON.parse(jsonRpcResponse);
+            }
+            catch {
+                return jsonRpcResponse;
+            }
+            if (parsedResponse.id && this.__internal__currentHealthCheckId === parsedResponse.id) {
+                this.__internal__currentHealthCheckId = null;
+                if (!parsedResponse.result) {
+                    this.update(false);
+                    return null;
+                }
+                this.__internal__healthCallback(parsedResponse.result);
+                this.__internal__isSyncing = parsedResponse.result.isSyncing;
+                this.update(false);
+                return null;
+            }
+            if (parsedResponse.id &&
+                this.__internal__currentSubunsubRequestId === parsedResponse.id) {
+                this.__internal__currentSubunsubRequestId = null;
+                if (!parsedResponse.result) {
+                    this.update(false);
+                    return null;
+                }
+                if (this.__internal__currentSubscriptionId) {
+                    this.__internal__currentSubscriptionId = null;
+                }
+                else {
+                    this.__internal__currentSubscriptionId = parsedResponse.result;
+                }
+                this.update(false);
+                return null;
+            }
+            if (parsedResponse.params &&
+                this.__internal__currentSubscriptionId &&
+                parsedResponse.params.subscription === this.__internal__currentSubscriptionId) {
+                this.update(true);
+                return null;
+            }
+            if (parsedResponse.id) {
+                const id = parsedResponse.id;
+                if (!id.startsWith('extern:')) {
+                    throw new Error('State inconsistency in health checker');
+                }
+                const newId = JSON.parse(id.slice('extern:'.length));
+                parsedResponse.id = newId;
+            }
+            return util.stringify(parsedResponse);
+        };
+        update = (startNow) => {
+            if (startNow && this.__internal__currentHealthTimeout) {
+                clearTimeout(this.__internal__currentHealthTimeout);
+                this.__internal__currentHealthTimeout = null;
+            }
+            if (!this.__internal__currentHealthTimeout) {
+                const startHealthRequest = () => {
+                    this.__internal__currentHealthTimeout = null;
+                    if (this.__internal__currentHealthCheckId) {
+                        return;
+                    }
+                    this.__internal__currentHealthCheckId = `health-checker:${this.__internal__nextRequestId}`;
+                    this.__internal__nextRequestId += 1;
+                    this.__internal__requestToSmoldot({
+                        id: this.__internal__currentHealthCheckId,
+                        jsonrpc: '2.0',
+                        method: 'system_health',
+                        params: []
+                    });
+                };
+                if (startNow) {
+                    startHealthRequest();
+                }
+                else {
+                    this.__internal__currentHealthTimeout = setTimeout(startHealthRequest, 1000);
+                }
+            }
+            if (this.__internal__isSyncing &&
+                !this.__internal__currentSubscriptionId &&
+                !this.__internal__currentSubunsubRequestId) {
+                this.startSubscription();
+            }
+            if (!this.__internal__isSyncing &&
+                this.__internal__currentSubscriptionId &&
+                !this.__internal__currentSubunsubRequestId) {
+                this.endSubscription();
+            }
+        };
+        startSubscription = () => {
+            if (this.__internal__currentSubunsubRequestId || this.__internal__currentSubscriptionId) {
+                throw new Error('Internal error in health checker');
+            }
+            this.__internal__currentSubunsubRequestId = `health-checker:${this.__internal__nextRequestId}`;
+            this.__internal__nextRequestId += 1;
+            this.__internal__requestToSmoldot({
+                id: this.__internal__currentSubunsubRequestId,
+                jsonrpc: '2.0',
+                method: 'chain_subscribeNewHeads',
+                params: []
+            });
+        };
+        endSubscription = () => {
+            if (this.__internal__currentSubunsubRequestId || !this.__internal__currentSubscriptionId) {
+                throw new Error('Internal error in health checker');
+            }
+            this.__internal__currentSubunsubRequestId = `health-checker:${this.__internal__nextRequestId}`;
+            this.__internal__nextRequestId += 1;
+            this.__internal__requestToSmoldot({
+                id: this.__internal__currentSubunsubRequestId,
+                jsonrpc: '2.0',
+                method: 'chain_unsubscribeNewHeads',
+                params: [this.__internal__currentSubscriptionId]
+            });
+        };
+        destroy = () => {
+            if (this.__internal__currentHealthTimeout) {
+                clearTimeout(this.__internal__currentHealthTimeout);
+                this.__internal__currentHealthTimeout = null;
+            }
+        };
     }
 
     const l$6 = util.logger('api-substrate-connect');
@@ -679,33 +693,18 @@
     ]);
     const scClients = new WeakMap();
     class ScProvider {
+        __internal__Sc;
+        __internal__coder = new RpcCoder();
+        __internal__spec;
+        __internal__sharedSandbox;
+        __internal__subscriptions = new Map();
+        __internal__resubscribeMethods = new Map();
+        __internal__requests = new Map();
+        __internal__wellKnownChains;
+        __internal__eventemitter = new EventEmitter();
+        __internal__chain = null;
+        __internal__isChainReady = false;
         constructor(Sc, spec, sharedSandbox) {
-            this.__internal__coder = new RpcCoder();
-            this.__internal__subscriptions = new Map();
-            this.__internal__resubscribeMethods = new Map();
-            this.__internal__requests = new Map();
-            this.__internal__eventemitter = new EventEmitter();
-            this.__internal__chain = null;
-            this.__internal__isChainReady = false;
-            this.__internal__resubscribe = () => {
-                const promises = [];
-                this.__internal__resubscribeMethods.forEach((subDetails) => {
-                    if (subDetails.type.startsWith('author_')) {
-                        return;
-                    }
-                    try {
-                        const promise = new Promise((resolve) => {
-                            this.subscribe(subDetails.type, subDetails.method, subDetails.params, subDetails.callback).catch((error) => console.log(error));
-                            resolve();
-                        });
-                        promises.push(promise);
-                    }
-                    catch (error) {
-                        l$6.error(error);
-                    }
-                });
-                Promise.all(promises).catch((err) => l$6.log(err));
-            };
             if (!util.isObject(Sc) || !util.isObject(Sc.WellKnownChain) || !util.isFunction(Sc.createScClient)) {
                 throw new Error('Expected an @substrate/connect interface as first parameter to ScProvider');
             }
@@ -834,6 +833,25 @@
                 throw e;
             }
         }
+        __internal__resubscribe = () => {
+            const promises = [];
+            this.__internal__resubscribeMethods.forEach((subDetails) => {
+                if (subDetails.type.startsWith('author_')) {
+                    return;
+                }
+                try {
+                    const promise = new Promise((resolve) => {
+                        this.subscribe(subDetails.type, subDetails.method, subDetails.params, subDetails.callback).catch((error) => console.log(error));
+                        resolve();
+                    });
+                    promises.push(promise);
+                }
+                catch (error) {
+                    l$6.error(error);
+                }
+            });
+            Promise.all(promises).catch((err) => l$6.log(err));
+        };
         async disconnect() {
             if (!this.__internal__chain) {
                 return;
@@ -983,158 +1001,24 @@
         return { bytesRecv: 0, bytesSent: 0, cached: 0, errors: 0, requests: 0, subscriptions: 0, timeout: 0 };
     }
     class WsProvider {
+        __internal__callCache = new LRUCache();
+        __internal__coder;
+        __internal__endpoints;
+        __internal__headers;
+        __internal__eventemitter;
+        __internal__handlers = {};
+        __internal__isReadyPromise;
+        __internal__stats;
+        __internal__waitingForId = {};
+        __internal__autoConnectMs;
+        __internal__endpointIndex;
+        __internal__endpointStats;
+        __internal__isConnected = false;
+        __internal__subscriptions = {};
+        __internal__timeoutId = null;
+        __internal__websocket;
+        __internal__timeout;
         constructor(endpoint = defaults.WS_URL, autoConnectMs = RETRY_DELAY, headers = {}, timeout) {
-            this.__internal__callCache = new LRUCache();
-            this.__internal__handlers = {};
-            this.__internal__waitingForId = {};
-            this.__internal__isConnected = false;
-            this.__internal__subscriptions = {};
-            this.__internal__timeoutId = null;
-            this.__internal__emit = (type, ...args) => {
-                this.__internal__eventemitter.emit(type, ...args);
-            };
-            this.__internal__onSocketClose = (event) => {
-                const error = new Error(`disconnected from ${this.endpoint}: ${event.code}:: ${event.reason || getWSErrorString(event.code)}`);
-                if (this.__internal__autoConnectMs > 0) {
-                    l$5.error(error.message);
-                }
-                this.__internal__isConnected = false;
-                if (this.__internal__websocket) {
-                    this.__internal__websocket.onclose = null;
-                    this.__internal__websocket.onerror = null;
-                    this.__internal__websocket.onmessage = null;
-                    this.__internal__websocket.onopen = null;
-                    this.__internal__websocket = null;
-                }
-                if (this.__internal__timeoutId) {
-                    clearInterval(this.__internal__timeoutId);
-                    this.__internal__timeoutId = null;
-                }
-                eraseRecord(this.__internal__handlers, (h) => {
-                    try {
-                        h.callback(error, undefined);
-                    }
-                    catch (err) {
-                        l$5.error(err);
-                    }
-                });
-                eraseRecord(this.__internal__waitingForId);
-                this.__internal__endpointStats = defaultEndpointStats();
-                this.__internal__emit('disconnected');
-                if (this.__internal__autoConnectMs > 0) {
-                    setTimeout(() => {
-                        this.connectWithRetry().catch(util.noop);
-                    }, this.__internal__autoConnectMs);
-                }
-            };
-            this.__internal__onSocketError = (error) => {
-                l$5.debug(() => ['socket error', error]);
-                this.__internal__emit('error', error);
-            };
-            this.__internal__onSocketMessage = (message) => {
-                l$5.debug(() => ['received', message.data]);
-                const bytesRecv = message.data.length;
-                this.__internal__endpointStats.bytesRecv += bytesRecv;
-                this.__internal__stats.total.bytesRecv += bytesRecv;
-                const response = JSON.parse(message.data);
-                return util.isUndefined(response.method)
-                    ? this.__internal__onSocketMessageResult(response)
-                    : this.__internal__onSocketMessageSubscribe(response);
-            };
-            this.__internal__onSocketMessageResult = (response) => {
-                const handler = this.__internal__handlers[response.id];
-                if (!handler) {
-                    l$5.debug(() => `Unable to find handler for id=${response.id}`);
-                    return;
-                }
-                try {
-                    const { method, params, subscription } = handler;
-                    const result = this.__internal__coder.decodeResponse(response);
-                    handler.callback(null, result);
-                    if (subscription) {
-                        const subId = `${subscription.type}::${result}`;
-                        this.__internal__subscriptions[subId] = util.objectSpread({}, subscription, {
-                            method,
-                            params
-                        });
-                        if (this.__internal__waitingForId[subId]) {
-                            this.__internal__onSocketMessageSubscribe(this.__internal__waitingForId[subId]);
-                        }
-                    }
-                }
-                catch (error) {
-                    this.__internal__endpointStats.errors++;
-                    this.__internal__stats.total.errors++;
-                    handler.callback(error, undefined);
-                }
-                delete this.__internal__handlers[response.id];
-            };
-            this.__internal__onSocketMessageSubscribe = (response) => {
-                if (!response.method) {
-                    throw new Error('No method found in JSONRPC response');
-                }
-                const method = ALIASES[response.method] || response.method;
-                const subId = `${method}::${response.params.subscription}`;
-                const handler = this.__internal__subscriptions[subId];
-                if (!handler) {
-                    this.__internal__waitingForId[subId] = response;
-                    l$5.debug(() => `Unable to find handler for subscription=${subId}`);
-                    return;
-                }
-                delete this.__internal__waitingForId[subId];
-                try {
-                    const result = this.__internal__coder.decodeResponse(response);
-                    handler.callback(null, result);
-                }
-                catch (error) {
-                    this.__internal__endpointStats.errors++;
-                    this.__internal__stats.total.errors++;
-                    handler.callback(error, undefined);
-                }
-            };
-            this.__internal__onSocketOpen = () => {
-                if (this.__internal__websocket === null) {
-                    throw new Error('WebSocket cannot be null in onOpen');
-                }
-                l$5.debug(() => ['connected to', this.endpoint]);
-                this.__internal__isConnected = true;
-                this.__internal__resubscribe();
-                this.__internal__emit('connected');
-                return true;
-            };
-            this.__internal__resubscribe = () => {
-                const subscriptions = this.__internal__subscriptions;
-                this.__internal__subscriptions = {};
-                Promise.all(Object.keys(subscriptions).map(async (id) => {
-                    const { callback, method, params, type } = subscriptions[id];
-                    if (type.startsWith('author_')) {
-                        return;
-                    }
-                    try {
-                        await this.subscribe(type, method, params, callback);
-                    }
-                    catch (error) {
-                        l$5.error(error);
-                    }
-                })).catch(l$5.error);
-            };
-            this.__internal__timeoutHandlers = () => {
-                const now = Date.now();
-                const ids = Object.keys(this.__internal__handlers);
-                for (let i = 0, count = ids.length; i < count; i++) {
-                    const handler = this.__internal__handlers[ids[i]];
-                    if ((now - handler.start) > this.__internal__timeout) {
-                        try {
-                            handler.callback(new Error(`No response received from RPC endpoint in ${this.__internal__timeout / 1000}s`), undefined);
-                        }
-                        catch {
-                        }
-                        this.__internal__endpointStats.timeout++;
-                        this.__internal__stats.total.timeout++;
-                        delete this.__internal__handlers[ids[i]];
-                    }
-                }
-            };
             const endpoints = Array.isArray(endpoint)
                 ? endpoint
                 : [endpoint];
@@ -1328,9 +1212,154 @@
                 return false;
             }
         }
+        __internal__emit = (type, ...args) => {
+            this.__internal__eventemitter.emit(type, ...args);
+        };
+        __internal__onSocketClose = (event) => {
+            const error = new Error(`disconnected from ${this.endpoint}: ${event.code}:: ${event.reason || getWSErrorString(event.code)}`);
+            if (this.__internal__autoConnectMs > 0) {
+                l$5.error(error.message);
+            }
+            this.__internal__isConnected = false;
+            if (this.__internal__websocket) {
+                this.__internal__websocket.onclose = null;
+                this.__internal__websocket.onerror = null;
+                this.__internal__websocket.onmessage = null;
+                this.__internal__websocket.onopen = null;
+                this.__internal__websocket = null;
+            }
+            if (this.__internal__timeoutId) {
+                clearInterval(this.__internal__timeoutId);
+                this.__internal__timeoutId = null;
+            }
+            eraseRecord(this.__internal__handlers, (h) => {
+                try {
+                    h.callback(error, undefined);
+                }
+                catch (err) {
+                    l$5.error(err);
+                }
+            });
+            eraseRecord(this.__internal__waitingForId);
+            this.__internal__endpointStats = defaultEndpointStats();
+            this.__internal__emit('disconnected');
+            if (this.__internal__autoConnectMs > 0) {
+                setTimeout(() => {
+                    this.connectWithRetry().catch(util.noop);
+                }, this.__internal__autoConnectMs);
+            }
+        };
+        __internal__onSocketError = (error) => {
+            l$5.debug(() => ['socket error', error]);
+            this.__internal__emit('error', error);
+        };
+        __internal__onSocketMessage = (message) => {
+            l$5.debug(() => ['received', message.data]);
+            const bytesRecv = message.data.length;
+            this.__internal__endpointStats.bytesRecv += bytesRecv;
+            this.__internal__stats.total.bytesRecv += bytesRecv;
+            const response = JSON.parse(message.data);
+            return util.isUndefined(response.method)
+                ? this.__internal__onSocketMessageResult(response)
+                : this.__internal__onSocketMessageSubscribe(response);
+        };
+        __internal__onSocketMessageResult = (response) => {
+            const handler = this.__internal__handlers[response.id];
+            if (!handler) {
+                l$5.debug(() => `Unable to find handler for id=${response.id}`);
+                return;
+            }
+            try {
+                const { method, params, subscription } = handler;
+                const result = this.__internal__coder.decodeResponse(response);
+                handler.callback(null, result);
+                if (subscription) {
+                    const subId = `${subscription.type}::${result}`;
+                    this.__internal__subscriptions[subId] = util.objectSpread({}, subscription, {
+                        method,
+                        params
+                    });
+                    if (this.__internal__waitingForId[subId]) {
+                        this.__internal__onSocketMessageSubscribe(this.__internal__waitingForId[subId]);
+                    }
+                }
+            }
+            catch (error) {
+                this.__internal__endpointStats.errors++;
+                this.__internal__stats.total.errors++;
+                handler.callback(error, undefined);
+            }
+            delete this.__internal__handlers[response.id];
+        };
+        __internal__onSocketMessageSubscribe = (response) => {
+            if (!response.method) {
+                throw new Error('No method found in JSONRPC response');
+            }
+            const method = ALIASES[response.method] || response.method;
+            const subId = `${method}::${response.params.subscription}`;
+            const handler = this.__internal__subscriptions[subId];
+            if (!handler) {
+                this.__internal__waitingForId[subId] = response;
+                l$5.debug(() => `Unable to find handler for subscription=${subId}`);
+                return;
+            }
+            delete this.__internal__waitingForId[subId];
+            try {
+                const result = this.__internal__coder.decodeResponse(response);
+                handler.callback(null, result);
+            }
+            catch (error) {
+                this.__internal__endpointStats.errors++;
+                this.__internal__stats.total.errors++;
+                handler.callback(error, undefined);
+            }
+        };
+        __internal__onSocketOpen = () => {
+            if (this.__internal__websocket === null) {
+                throw new Error('WebSocket cannot be null in onOpen');
+            }
+            l$5.debug(() => ['connected to', this.endpoint]);
+            this.__internal__isConnected = true;
+            this.__internal__resubscribe();
+            this.__internal__emit('connected');
+            return true;
+        };
+        __internal__resubscribe = () => {
+            const subscriptions = this.__internal__subscriptions;
+            this.__internal__subscriptions = {};
+            Promise.all(Object.keys(subscriptions).map(async (id) => {
+                const { callback, method, params, type } = subscriptions[id];
+                if (type.startsWith('author_')) {
+                    return;
+                }
+                try {
+                    await this.subscribe(type, method, params, callback);
+                }
+                catch (error) {
+                    l$5.error(error);
+                }
+            })).catch(l$5.error);
+        };
+        __internal__timeoutHandlers = () => {
+            const now = Date.now();
+            const ids = Object.keys(this.__internal__handlers);
+            for (let i = 0, count = ids.length; i < count; i++) {
+                const handler = this.__internal__handlers[ids[i]];
+                if ((now - handler.start) > this.__internal__timeout) {
+                    try {
+                        handler.callback(new Error(`No response received from RPC endpoint in ${this.__internal__timeout / 1000}s`), undefined);
+                    }
+                    catch {
+                    }
+                    this.__internal__endpointStats.timeout++;
+                    this.__internal__stats.total.timeout++;
+                    delete this.__internal__handlers[ids[i]];
+                }
+            }
+        };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.10.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.11.1' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -3532,12 +3561,18 @@
         return ['0x3a636f6465'].includes(key.toHex());
     }
     class RpcCore {
+        __internal__instanceId;
+        __internal__isPedantic;
+        __internal__registryDefault;
+        __internal__storageCache = new Map();
+        __internal__storageCacheHits = 0;
+        __internal__storageCacheSize = 0;
+        __internal__getBlockRegistry;
+        __internal__getBlockHash;
+        mapping = new Map();
+        provider;
+        sections = [];
         constructor(instanceId, registry, { isPedantic = true, provider, userRpc = {} }) {
-            this.__internal__storageCache = new Map();
-            this.__internal__storageCacheHits = 0;
-            this.__internal__storageCacheSize = 0;
-            this.mapping = new Map();
-            this.sections = [];
             if (!provider || !util.isFunction(provider.send)) {
                 throw new Error('Expected Provider to API create');
             }
@@ -4647,6 +4682,7 @@
     function createHeaderExtended(registry, header, validators, author) {
         const HeaderBase = registry.createClass('Header');
         class Implementation extends HeaderBase {
+            __internal__author;
             constructor(registry, header, validators, author) {
                 super(registry, header);
                 this.__internal__author = author || extractAuthor(this.digest, validators || []);
@@ -4683,6 +4719,9 @@
     function createSignedBlockExtended(registry, block, events, validators, author) {
         const SignedBlockBase = registry.createClass('SignedBlock');
         class Implementation extends SignedBlockBase {
+            __internal__author;
+            __internal__events;
+            __internal__extrinsics;
             constructor(registry, block, events, validators, author) {
                 super(registry, block);
                 this.__internal__author = author || extractAuthor(this.block.header.digest, validators || []);
@@ -6963,6 +7002,14 @@
         return filterAndApply(events, 'system', ['ExtrinsicFailed', 'ExtrinsicSuccess'], getDispatchInfo)[0];
     }
     class SubmittableResult {
+        dispatchError;
+        dispatchInfo;
+        internalError;
+        events;
+        status;
+        txHash;
+        txIndex;
+        blockNumber;
         constructor({ blockNumber, dispatchError, dispatchInfo, events, internalError, status, txHash, txIndex }) {
             this.dispatchError = dispatchError || extractError(events);
             this.dispatchInfo = dispatchInfo || extractInfo(events);
@@ -7046,87 +7093,10 @@
     function createClass({ api, apiType, blockHash, decorateMethod }) {
         const ExtrinsicBase = api.registry.createClass('Extrinsic');
         class Submittable extends ExtrinsicBase {
+            __internal__ignoreStatusCb;
+            __internal__transformResult = (util.identity);
             constructor(registry, extrinsic) {
                 super(registry, extrinsic, { version: api.extrinsicType });
-                this.__internal__transformResult = (util.identity);
-                this.__internal__observeSign = (account, partialOptions) => {
-                    const address = isKeyringPair(account) ? account.address : account.toString();
-                    const options = optionsOrNonce(partialOptions);
-                    return api.derive.tx.signingInfo(address, options.nonce, options.era).pipe(first(), mergeMap(async (signingInfo) => {
-                        const eraOptions = makeEraOptions(api, this.registry, options, signingInfo);
-                        let updateId = -1;
-                        if (isKeyringPair(account)) {
-                            this.sign(account, eraOptions);
-                        }
-                        else {
-                            updateId = await this.__internal__signViaSigner(address, eraOptions, signingInfo.header);
-                        }
-                        return { options: eraOptions, updateId };
-                    }));
-                };
-                this.__internal__observeStatus = (txHash, status) => {
-                    if (!status.isFinalized && !status.isInBlock) {
-                        return of(this.__internal__transformResult(new SubmittableResult({
-                            status,
-                            txHash
-                        })));
-                    }
-                    const blockHash = status.isInBlock
-                        ? status.asInBlock
-                        : status.asFinalized;
-                    return api.derive.tx.events(blockHash).pipe(map(({ block, events }) => this.__internal__transformResult(new SubmittableResult({
-                        ...filterEvents(txHash, block, events, status),
-                        status,
-                        txHash
-                    }))), catchError((internalError) => of(this.__internal__transformResult(new SubmittableResult({
-                        internalError,
-                        status,
-                        txHash
-                    })))));
-                };
-                this.__internal__observeSend = (info) => {
-                    return api.rpc.author.submitExtrinsic(this).pipe(tap((hash) => {
-                        this.__internal__updateSigner(hash, info);
-                    }));
-                };
-                this.__internal__observeSubscribe = (info) => {
-                    const txHash = this.hash;
-                    return api.rpc.author.submitAndWatchExtrinsic(this).pipe(switchMap((status) => this.__internal__observeStatus(txHash, status)), tap((status) => {
-                        this.__internal__updateSigner(status, info);
-                    }));
-                };
-                this.__internal__signViaSigner = async (address, options, header) => {
-                    const signer = options.signer || api.signer;
-                    if (!signer) {
-                        throw new Error('No signer specified, either via api.setSigner or via sign options. You possibly need to pass through an explicit keypair for the origin so it can be used for signing.');
-                    }
-                    const payload = this.registry.createTypeUnsafe('SignerPayload', [util.objectSpread({}, options, {
-                            address,
-                            blockNumber: header ? header.number : 0,
-                            method: this.method
-                        })]);
-                    let result;
-                    if (util.isFunction(signer.signPayload)) {
-                        result = await signer.signPayload(payload.toPayload());
-                    }
-                    else if (util.isFunction(signer.signRaw)) {
-                        result = await signer.signRaw(payload.toRaw());
-                    }
-                    else {
-                        throw new Error('Invalid signer interface, it should implement either signPayload or signRaw (or both)');
-                    }
-                    super.addSignature(address, result.signature, payload.toPayload());
-                    return result.id;
-                };
-                this.__internal__updateSigner = (status, info) => {
-                    if (info && (info.updateId !== -1)) {
-                        const { options, updateId } = info;
-                        const signer = options.signer || api.signer;
-                        if (signer && util.isFunction(signer.update)) {
-                            signer.update(updateId, status);
-                        }
-                    }
-                };
                 this.__internal__ignoreStatusCb = apiType === 'rxjs';
             }
             get hasDryRun() {
@@ -7184,6 +7154,84 @@
                 this.__internal__transformResult = transform;
                 return this;
             }
+            __internal__observeSign = (account, partialOptions) => {
+                const address = isKeyringPair(account) ? account.address : account.toString();
+                const options = optionsOrNonce(partialOptions);
+                return api.derive.tx.signingInfo(address, options.nonce, options.era).pipe(first(), mergeMap(async (signingInfo) => {
+                    const eraOptions = makeEraOptions(api, this.registry, options, signingInfo);
+                    let updateId = -1;
+                    if (isKeyringPair(account)) {
+                        this.sign(account, eraOptions);
+                    }
+                    else {
+                        updateId = await this.__internal__signViaSigner(address, eraOptions, signingInfo.header);
+                    }
+                    return { options: eraOptions, updateId };
+                }));
+            };
+            __internal__observeStatus = (txHash, status) => {
+                if (!status.isFinalized && !status.isInBlock) {
+                    return of(this.__internal__transformResult(new SubmittableResult({
+                        status,
+                        txHash
+                    })));
+                }
+                const blockHash = status.isInBlock
+                    ? status.asInBlock
+                    : status.asFinalized;
+                return api.derive.tx.events(blockHash).pipe(map(({ block, events }) => this.__internal__transformResult(new SubmittableResult({
+                    ...filterEvents(txHash, block, events, status),
+                    status,
+                    txHash
+                }))), catchError((internalError) => of(this.__internal__transformResult(new SubmittableResult({
+                    internalError,
+                    status,
+                    txHash
+                })))));
+            };
+            __internal__observeSend = (info) => {
+                return api.rpc.author.submitExtrinsic(this).pipe(tap((hash) => {
+                    this.__internal__updateSigner(hash, info);
+                }));
+            };
+            __internal__observeSubscribe = (info) => {
+                const txHash = this.hash;
+                return api.rpc.author.submitAndWatchExtrinsic(this).pipe(switchMap((status) => this.__internal__observeStatus(txHash, status)), tap((status) => {
+                    this.__internal__updateSigner(status, info);
+                }));
+            };
+            __internal__signViaSigner = async (address, options, header) => {
+                const signer = options.signer || api.signer;
+                if (!signer) {
+                    throw new Error('No signer specified, either via api.setSigner or via sign options. You possibly need to pass through an explicit keypair for the origin so it can be used for signing.');
+                }
+                const payload = this.registry.createTypeUnsafe('SignerPayload', [util.objectSpread({}, options, {
+                        address,
+                        blockNumber: header ? header.number : 0,
+                        method: this.method
+                    })]);
+                let result;
+                if (util.isFunction(signer.signPayload)) {
+                    result = await signer.signPayload(payload.toPayload());
+                }
+                else if (util.isFunction(signer.signRaw)) {
+                    result = await signer.signRaw(payload.toRaw());
+                }
+                else {
+                    throw new Error('Invalid signer interface, it should implement either signPayload or signRaw (or both)');
+                }
+                super.addSignature(address, result.signature, payload.toPayload());
+                return result.id;
+            };
+            __internal__updateSigner = (status, info) => {
+                if (info && (info.updateId !== -1)) {
+                    const { options, updateId } = info;
+                    const signer = options.signer || api.signer;
+                    if (signer && util.isFunction(signer.update)) {
+                        signer.update(updateId, status);
+                    }
+                }
+            };
         }
         return Submittable;
     }
@@ -7207,7 +7255,7 @@
 
     const typesChain = {};
 
-    const sharedTypes$5 = {
+    const sharedTypes$7 = {
         AnchorData: {
             anchoredBlock: 'u64',
             docRoot: 'H256',
@@ -7272,14 +7320,14 @@
         }
     };
     const standaloneTypes = {
-        ...sharedTypes$5,
+        ...sharedTypes$7,
         AccountInfo: 'AccountInfoWithRefCount',
         Address: 'LookupSource',
         LookupSource: 'IndicesLookupSource',
         Multiplier: 'Fixed64',
         RefCount: 'RefCountTo259'
     };
-    const versioned$8 = [
+    const versioned$a = [
         {
             minmax: [240, 243],
             types: {
@@ -7301,11 +7349,11 @@
         },
         {
             minmax: [1000, undefined],
-            types: { ...sharedTypes$5 }
+            types: { ...sharedTypes$7 }
         }
     ];
 
-    const sharedTypes$4 = {
+    const sharedTypes$6 = {
         CompactAssignments: 'CompactAssignmentsWith24',
         DispatchErrorModule: 'DispatchErrorModuleU8',
         RawSolution: 'RawSolutionWith24',
@@ -7335,7 +7383,7 @@
         LookupSource: 'AccountId',
         ValidatorPrefs: 'ValidatorPrefsWithCommission'
     };
-    const versioned$7 = [
+    const versioned$9 = [
         {
             minmax: [1019, 1031],
             types: {
@@ -7400,7 +7448,7 @@
         {
             minmax: [1046, 1049],
             types: {
-                ...sharedTypes$4,
+                ...sharedTypes$6,
                 ...addrAccountIdTypes$2,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 DispatchInfo: 'DispatchInfoTo244',
@@ -7417,7 +7465,7 @@
         {
             minmax: [1050, 1054],
             types: {
-                ...sharedTypes$4,
+                ...sharedTypes$6,
                 ...addrAccountIdTypes$2,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 DispatchInfo: 'DispatchInfoTo244',
@@ -7434,7 +7482,7 @@
         {
             minmax: [1055, 1056],
             types: {
-                ...sharedTypes$4,
+                ...sharedTypes$6,
                 ...addrAccountIdTypes$2,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 DispatchInfo: 'DispatchInfoTo244',
@@ -7450,7 +7498,7 @@
         {
             minmax: [1057, 1061],
             types: {
-                ...sharedTypes$4,
+                ...sharedTypes$6,
                 ...addrAccountIdTypes$2,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 DispatchInfo: 'DispatchInfoTo244',
@@ -7463,7 +7511,7 @@
         {
             minmax: [1062, 2012],
             types: {
-                ...sharedTypes$4,
+                ...sharedTypes$6,
                 ...addrAccountIdTypes$2,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 OpenTip: 'OpenTipTo225',
@@ -7473,7 +7521,7 @@
         {
             minmax: [2013, 2022],
             types: {
-                ...sharedTypes$4,
+                ...sharedTypes$6,
                 ...addrAccountIdTypes$2,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 RefCount: 'RefCountTo259'
@@ -7482,7 +7530,7 @@
         {
             minmax: [2023, 2024],
             types: {
-                ...sharedTypes$4,
+                ...sharedTypes$6,
                 ...addrAccountIdTypes$2,
                 RefCount: 'RefCountTo259'
             }
@@ -7490,14 +7538,14 @@
         {
             minmax: [2025, 2027],
             types: {
-                ...sharedTypes$4,
+                ...sharedTypes$6,
                 ...addrAccountIdTypes$2
             }
         },
         {
             minmax: [2028, 2029],
             types: {
-                ...sharedTypes$4,
+                ...sharedTypes$6,
                 AccountInfo: 'AccountInfoWithDualRefCount',
                 CompactAssignments: 'CompactAssignmentsWith16',
                 RawSolution: 'RawSolutionWith16'
@@ -7506,7 +7554,7 @@
         {
             minmax: [2030, 9000],
             types: {
-                ...sharedTypes$4,
+                ...sharedTypes$6,
                 CompactAssignments: 'CompactAssignmentsWith16',
                 RawSolution: 'RawSolutionWith16'
             }
@@ -7514,14 +7562,14 @@
         {
             minmax: [9010, 9099],
             types: {
-                ...sharedTypes$4,
+                ...sharedTypes$6,
                 ...mapXcmTypes('V0')
             }
         },
         {
             minmax: [9100, 9105],
             types: {
-                ...sharedTypes$4,
+                ...sharedTypes$6,
                 ...mapXcmTypes('V1')
             }
         },
@@ -7533,7 +7581,7 @@
         }
     ];
 
-    const versioned$6 = [
+    const versioned$8 = [
         {
             minmax: [0, undefined],
             types: {
@@ -7542,7 +7590,7 @@
         }
     ];
 
-    const versioned$5 = [
+    const versioned$7 = [
         {
             minmax: [0, undefined],
             types: {
@@ -7551,7 +7599,7 @@
         }
     ];
 
-    const sharedTypes$3 = {
+    const sharedTypes$5 = {
         CompactAssignments: 'CompactAssignmentsWith16',
         DispatchErrorModule: 'DispatchErrorModuleU8',
         RawSolution: 'RawSolutionWith16',
@@ -7578,11 +7626,11 @@
         LookupSource: 'AccountId',
         ValidatorPrefs: 'ValidatorPrefsWithCommission'
     };
-    const versioned$4 = [
+    const versioned$6 = [
         {
             minmax: [0, 12],
             types: {
-                ...sharedTypes$3,
+                ...sharedTypes$5,
                 ...addrAccountIdTypes$1,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 OpenTip: 'OpenTipTo225',
@@ -7592,7 +7640,7 @@
         {
             minmax: [13, 22],
             types: {
-                ...sharedTypes$3,
+                ...sharedTypes$5,
                 ...addrAccountIdTypes$1,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 RefCount: 'RefCountTo259'
@@ -7601,7 +7649,7 @@
         {
             minmax: [23, 24],
             types: {
-                ...sharedTypes$3,
+                ...sharedTypes$5,
                 ...addrAccountIdTypes$1,
                 RefCount: 'RefCountTo259'
             }
@@ -7609,21 +7657,21 @@
         {
             minmax: [25, 27],
             types: {
-                ...sharedTypes$3,
+                ...sharedTypes$5,
                 ...addrAccountIdTypes$1
             }
         },
         {
             minmax: [28, 29],
             types: {
-                ...sharedTypes$3,
+                ...sharedTypes$5,
                 AccountInfo: 'AccountInfoWithDualRefCount'
             }
         },
         {
             minmax: [30, 9109],
             types: {
-                ...sharedTypes$3
+                ...sharedTypes$5
             }
         },
         {
@@ -7634,17 +7682,17 @@
         }
     ];
 
-    const sharedTypes$2 = {
+    const sharedTypes$4 = {
         DispatchErrorModule: 'DispatchErrorModuleU8',
         FullIdentification: '()',
         Keys: 'SessionKeys7B',
         Weight: 'WeightV1'
     };
-    const versioned$3 = [
+    const versioned$5 = [
         {
             minmax: [0, 200],
             types: {
-                ...sharedTypes$2,
+                ...sharedTypes$4,
                 AccountInfo: 'AccountInfoWithDualRefCount',
                 Address: 'AccountId',
                 LookupSource: 'AccountId'
@@ -7653,28 +7701,28 @@
         {
             minmax: [201, 214],
             types: {
-                ...sharedTypes$2,
+                ...sharedTypes$4,
                 AccountInfo: 'AccountInfoWithDualRefCount'
             }
         },
         {
             minmax: [215, 228],
             types: {
-                ...sharedTypes$2,
+                ...sharedTypes$4,
                 Keys: 'SessionKeys6'
             }
         },
         {
             minmax: [229, 9099],
             types: {
-                ...sharedTypes$2,
+                ...sharedTypes$4,
                 ...mapXcmTypes('V0')
             }
         },
         {
             minmax: [9100, 9105],
             types: {
-                ...sharedTypes$2,
+                ...sharedTypes$4,
                 ...mapXcmTypes('V1')
             }
         },
@@ -7686,7 +7734,7 @@
         }
     ];
 
-    const versioned$2 = [
+    const versioned$4 = [
         {
             minmax: [0, undefined],
             types: {
@@ -7694,7 +7742,7 @@
         }
     ];
 
-    const sharedTypes$1 = {
+    const sharedTypes$3 = {
         DispatchErrorModule: 'DispatchErrorModuleU8',
         TAssetBalance: 'u128',
         ProxyType: {
@@ -7710,12 +7758,12 @@
         },
         Weight: 'WeightV1'
     };
-    const versioned$1 = [
+    const versioned$3 = [
         {
             minmax: [0, 3],
             types: {
                 DispatchError: 'DispatchErrorPre6First',
-                ...sharedTypes$1,
+                ...sharedTypes$3,
                 ...mapXcmTypes('V0')
             }
         },
@@ -7723,19 +7771,68 @@
             minmax: [4, 5],
             types: {
                 DispatchError: 'DispatchErrorPre6First',
-                ...sharedTypes$1,
+                ...sharedTypes$3,
                 ...mapXcmTypes('V1')
             }
         },
         {
-            minmax: [500, undefined],
+            minmax: [500, 9999],
+            types: {
+                Weight: 'WeightV1',
+                TAssetConversion: 'Option<AssetId>'
+            }
+        },
+        {
+            minmax: [10000, undefined],
             types: {
                 Weight: 'WeightV1'
             }
         }
     ];
 
-    const sharedTypes = {
+    const sharedTypes$2 = {
+        DispatchErrorModule: 'DispatchErrorModuleU8',
+        TAssetBalance: 'u128',
+        ProxyType: {
+            _enum: [
+                'Any',
+                'NonTransfer',
+                'CancelProxy',
+                'Assets',
+                'AssetOwner',
+                'AssetManager',
+                'Staking'
+            ]
+        },
+        Weight: 'WeightV1'
+    };
+    const versioned$2 = [
+        {
+            minmax: [0, 3],
+            types: {
+                DispatchError: 'DispatchErrorPre6First',
+                ...sharedTypes$2,
+                ...mapXcmTypes('V0')
+            }
+        },
+        {
+            minmax: [4, 5],
+            types: {
+                DispatchError: 'DispatchErrorPre6First',
+                ...sharedTypes$2,
+                ...mapXcmTypes('V1')
+            }
+        },
+        {
+            minmax: [500, undefined],
+            types: {
+                Weight: 'WeightV1',
+                TAssetConversion: 'Option<AssetId>'
+            }
+        }
+    ];
+
+    const sharedTypes$1 = {
         CompactAssignments: 'CompactAssignmentsWith16',
         DispatchErrorModule: 'DispatchErrorModuleU8',
         RawSolution: 'RawSolutionWith16',
@@ -7755,11 +7852,11 @@
         RawSolution: 'RawSolutionWith16',
         ValidatorPrefs: 'ValidatorPrefsWithCommission'
     };
-    const versioned = [
+    const versioned$1 = [
         {
             minmax: [1, 2],
             types: {
-                ...sharedTypes,
+                ...sharedTypes$1,
                 ...addrAccountIdTypes,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 DispatchInfo: 'DispatchInfoTo244',
@@ -7773,7 +7870,7 @@
         {
             minmax: [3, 22],
             types: {
-                ...sharedTypes,
+                ...sharedTypes$1,
                 ...addrAccountIdTypes,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 DispatchInfo: 'DispatchInfoTo244',
@@ -7785,7 +7882,7 @@
         {
             minmax: [23, 42],
             types: {
-                ...sharedTypes,
+                ...sharedTypes$1,
                 ...addrAccountIdTypes,
                 CompactAssignments: 'CompactAssignmentsTo257',
                 DispatchInfo: 'DispatchInfoTo244',
@@ -7796,7 +7893,7 @@
         {
             minmax: [43, 44],
             types: {
-                ...sharedTypes,
+                ...sharedTypes$1,
                 ...addrAccountIdTypes,
                 DispatchInfo: 'DispatchInfoTo244',
                 Heartbeat: 'HeartbeatTo244',
@@ -7806,28 +7903,28 @@
         {
             minmax: [45, 47],
             types: {
-                ...sharedTypes,
+                ...sharedTypes$1,
                 ...addrAccountIdTypes
             }
         },
         {
             minmax: [48, 49],
             types: {
-                ...sharedTypes,
+                ...sharedTypes$1,
                 AccountInfo: 'AccountInfoWithDualRefCount'
             }
         },
         {
             minmax: [50, 9099],
             types: {
-                ...sharedTypes,
+                ...sharedTypes$1,
                 ...mapXcmTypes('V0')
             }
         },
         {
             minmax: [9100, 9105],
             types: {
-                ...sharedTypes,
+                ...sharedTypes$1,
                 ...mapXcmTypes('V1')
             }
         },
@@ -7839,18 +7936,66 @@
         }
     ];
 
+    const sharedTypes = {
+        DispatchErrorModule: 'DispatchErrorModuleU8',
+        TAssetBalance: 'u128',
+        ProxyType: {
+            _enum: [
+                'Any',
+                'NonTransfer',
+                'CancelProxy',
+                'Assets',
+                'AssetOwner',
+                'AssetManager',
+                'Staking'
+            ]
+        },
+        Weight: 'WeightV1'
+    };
+    const versioned = [
+        {
+            minmax: [0, 3],
+            types: {
+                DispatchError: 'DispatchErrorPre6First',
+                ...sharedTypes,
+                ...mapXcmTypes('V0')
+            }
+        },
+        {
+            minmax: [4, 5],
+            types: {
+                DispatchError: 'DispatchErrorPre6First',
+                ...sharedTypes,
+                ...mapXcmTypes('V1')
+            }
+        },
+        {
+            minmax: [500, 9434],
+            types: {
+                Weight: 'WeightV1',
+                TAssetConversion: 'Option<AssetId>'
+            }
+        },
+        {
+            minmax: [9435, undefined],
+            types: {
+                Weight: 'WeightV1'
+            }
+        }
+    ];
+
     const typesSpec = {
-        'centrifuge-chain': versioned$8,
-        kusama: versioned$7,
-        node: versioned$6,
-        'node-template': versioned$5,
-        polkadot: versioned$4,
-        rococo: versioned$3,
-        shell: versioned$2,
-        statemine: versioned$1,
-        statemint: versioned$1,
-        westend: versioned,
-        westmint: versioned$1
+        'centrifuge-chain': versioned$a,
+        kusama: versioned$9,
+        node: versioned$8,
+        'node-template': versioned$7,
+        polkadot: versioned$6,
+        rococo: versioned$5,
+        shell: versioned$4,
+        statemine: versioned$3,
+        statemint: versioned$2,
+        westend: versioned$1,
+        westmint: versioned
     };
 
     const upgrades$3 = [
@@ -18855,9 +19000,7 @@
     }
 
     class Events {
-        constructor() {
-            this.__internal__eventemitter = new EventEmitter();
-        }
+        __internal__eventemitter = new EventEmitter();
         emit(type, ...args) {
             return this.__internal__eventemitter.emit(type, ...args);
         }
@@ -18884,24 +19027,36 @@
         return util.assertReturn(api.rx.query[section] && api.rx.query[section][method], () => `query.${section}.${method} is not available in this version of the metadata`);
     }
     class Decorate extends Events {
+        __internal__instanceId;
+        __internal__runtimeLog = {};
+        __internal__registry;
+        __internal__storageGetQ = [];
+        __internal__storageSubQ = [];
+        __phantom = new util.BN(0);
+        _type;
+        _call = {};
+        _consts = {};
+        _derive;
+        _errors = {};
+        _events = {};
+        _extrinsics;
+        _extrinsicType = types.GenericExtrinsic.LATEST_EXTRINSIC_VERSION;
+        _genesisHash;
+        _isConnected;
+        _isReady = false;
+        _query = {};
+        _queryMulti;
+        _rpc;
+        _rpcCore;
+        _runtimeMap = {};
+        _runtimeChain;
+        _runtimeMetadata;
+        _runtimeVersion;
+        _rx = { call: {}, consts: {}, query: {}, tx: {} };
+        _options;
+        _decorateMethod;
         constructor(options, type, decorateMethod) {
             super();
-            this.__internal__runtimeLog = {};
-            this.__internal__storageGetQ = [];
-            this.__internal__storageSubQ = [];
-            this.__phantom = new util.BN(0);
-            this._call = {};
-            this._consts = {};
-            this._errors = {};
-            this._events = {};
-            this._extrinsicType = types.GenericExtrinsic.LATEST_EXTRINSIC_VERSION;
-            this._isReady = false;
-            this._query = {};
-            this._runtimeMap = {};
-            this._rx = { call: {}, consts: {}, query: {}, tx: {} };
-            this._rxDecorateMethod = (method) => {
-                return method;
-            };
             this.__internal__instanceId = `${++instanceCounter}`;
             this.__internal__registry = options.source?.registry || options.registry || new types.TypeRegistry();
             this._rx.callAt = (blockHash, knownVersion) => from(this.at(blockHash, knownVersion)).pipe(map((a) => a.rx.call));
@@ -19424,6 +19579,9 @@
         _decorateDerive(decorateMethod) {
             return decorateDeriveSections(decorateMethod, this._rx.derive);
         }
+        _rxDecorateMethod = (method) => {
+            return method;
+        };
     }
 
     const KEEPALIVE_INTERVAL = 10000;
@@ -19432,13 +19590,13 @@
         return t.toString();
     }
     class Init extends Decorate {
+        __internal__atLast = null;
+        __internal__healthTimer = null;
+        __internal__registries = [];
+        __internal__updateSub = null;
+        __internal__waitingRegistries = {};
         constructor(options, type, decorateMethod) {
             super(options, type, decorateMethod);
-            this.__internal__atLast = null;
-            this.__internal__healthTimer = null;
-            this.__internal__registries = [];
-            this.__internal__updateSub = null;
-            this.__internal__waitingRegistries = {};
             this.registry.setKnownTypes(options);
             if (!options.source) {
                 this.registerTypes(options.types);
@@ -19797,13 +19955,14 @@
     }
 
     class Combinator {
+        __internal__allHasFired = false;
+        __internal__callback;
+        __internal__fired = [];
+        __internal__fns = [];
+        __internal__isActive = true;
+        __internal__results = [];
+        __internal__subscriptions = [];
         constructor(fns, callback) {
-            this.__internal__allHasFired = false;
-            this.__internal__fired = [];
-            this.__internal__fns = [];
-            this.__internal__isActive = true;
-            this.__internal__results = [];
-            this.__internal__subscriptions = [];
             this.__internal__callback = callback;
             this.__internal__subscriptions = fns.map(async (input, index) => {
                 const [fn, ...args] = Array.isArray(input)
@@ -19915,6 +20074,8 @@
     }
 
     class ApiPromise extends ApiBase {
+        __internal__isReadyPromise;
+        __internal__isReadyOrErrorPromise;
         constructor(options) {
             super(options, 'promise', toPromiseMethod);
             this.__internal__isReadyPromise = new Promise((resolve) => {
@@ -19956,6 +20117,7 @@
     }
 
     class ApiRx extends ApiBase {
+        __internal__isReadyRx;
         constructor(options) {
             super(options, 'rxjs', toRxMethod);
             this.__internal__isReadyRx = from(

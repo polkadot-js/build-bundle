@@ -164,99 +164,15 @@
         return !!value && value instanceof types.Option;
     }
     class Abi {
+        events;
+        constructors;
+        info;
+        json;
+        messages;
+        metadata;
+        registry;
+        environment = new Map();
         constructor(abiJson, chainProperties) {
-            this.environment = new Map();
-            this.__internal__createArgs = (args, spec) => {
-                return args.map(({ label, type }, index) => {
-                    try {
-                        if (!util.isObject(type)) {
-                            throw new Error('Invalid type definition found');
-                        }
-                        const displayName = type.displayName.length
-                            ? type.displayName[type.displayName.length - 1].toString()
-                            : undefined;
-                        const camelName = util.stringCamelCase(label);
-                        if (displayName && PRIMITIVE_ALWAYS.includes(displayName)) {
-                            return {
-                                name: camelName,
-                                type: {
-                                    info: TypeDefInfo.Plain,
-                                    type: displayName
-                                }
-                            };
-                        }
-                        const typeDef = this.registry.lookup.getTypeDef(type.type);
-                        return {
-                            name: camelName,
-                            type: displayName && !typeDef.type.startsWith(displayName)
-                                ? { displayName, ...typeDef }
-                                : typeDef
-                        };
-                    }
-                    catch (error) {
-                        l$1.error(`Error expanding argument ${index} in ${util.stringify(spec)}`);
-                        throw error;
-                    }
-                });
-            };
-            this.__internal__createEvent = (spec, index) => {
-                const args = this.__internal__createArgs(spec.args, spec);
-                const event = {
-                    args,
-                    docs: spec.docs.map((d) => d.toString()),
-                    fromU8a: (data) => ({
-                        args: this.__internal__decodeArgs(args, data),
-                        event
-                    }),
-                    identifier: spec.label.toString(),
-                    index
-                };
-                return event;
-            };
-            this.__internal__createMessage = (spec, index, add = {}) => {
-                const args = this.__internal__createArgs(spec.args, spec);
-                const identifier = spec.label.toString();
-                const message = {
-                    ...add,
-                    args,
-                    docs: spec.docs.map((d) => d.toString()),
-                    fromU8a: (data) => ({
-                        args: this.__internal__decodeArgs(args, data),
-                        message
-                    }),
-                    identifier,
-                    index,
-                    isDefault: spec.default.isTrue,
-                    method: util.stringCamelCase(identifier),
-                    path: identifier.split('::').map((s) => util.stringCamelCase(s)),
-                    selector: spec.selector,
-                    toU8a: (params) => this.__internal__encodeArgs(spec, args, params)
-                };
-                return message;
-            };
-            this.__internal__decodeArgs = (args, data) => {
-                let offset = 0;
-                return args.map(({ type: { lookupName, type } }) => {
-                    const value = this.registry.createType(lookupName || type, data.subarray(offset));
-                    offset += value.encodedLength;
-                    return value;
-                });
-            };
-            this.__internal__decodeMessage = (type, list, data) => {
-                const [, trimmed] = util.compactStripLength(data);
-                const selector = trimmed.subarray(0, 4);
-                const message = list.find((m) => m.selector.eq(selector));
-                if (!message) {
-                    throw new Error(`Unable to find ${type} with selector ${util.u8aToHex(selector)}`);
-                }
-                return message.fromU8a(trimmed.subarray(4));
-            };
-            this.__internal__encodeArgs = ({ label, selector }, args, data) => {
-                if (data.length !== args.length) {
-                    throw new Error(`Expected ${args.length} arguments to contract message '${label.toString()}', found ${data.length}`);
-                }
-                return util.compactAddLength(util.u8aConcat(this.registry.createType('ContractSelector', selector).toU8a(), ...args.map(({ type: { lookupName, type } }, index) => this.registry.createType(lookupName || type, data[index]).toU8a())));
-            };
             [this.json, this.registry, this.metadata, this.info] = parseJson(util.isString(abiJson)
                 ? JSON.parse(abiJson)
                 : abiJson, chainProperties);
@@ -317,9 +233,100 @@
         findMessage(messageOrId) {
             return findMessage(this.messages, messageOrId);
         }
+        __internal__createArgs = (args, spec) => {
+            return args.map(({ label, type }, index) => {
+                try {
+                    if (!util.isObject(type)) {
+                        throw new Error('Invalid type definition found');
+                    }
+                    const displayName = type.displayName.length
+                        ? type.displayName[type.displayName.length - 1].toString()
+                        : undefined;
+                    const camelName = util.stringCamelCase(label);
+                    if (displayName && PRIMITIVE_ALWAYS.includes(displayName)) {
+                        return {
+                            name: camelName,
+                            type: {
+                                info: TypeDefInfo.Plain,
+                                type: displayName
+                            }
+                        };
+                    }
+                    const typeDef = this.registry.lookup.getTypeDef(type.type);
+                    return {
+                        name: camelName,
+                        type: displayName && !typeDef.type.startsWith(displayName)
+                            ? { displayName, ...typeDef }
+                            : typeDef
+                    };
+                }
+                catch (error) {
+                    l$1.error(`Error expanding argument ${index} in ${util.stringify(spec)}`);
+                    throw error;
+                }
+            });
+        };
+        __internal__createEvent = (spec, index) => {
+            const args = this.__internal__createArgs(spec.args, spec);
+            const event = {
+                args,
+                docs: spec.docs.map((d) => d.toString()),
+                fromU8a: (data) => ({
+                    args: this.__internal__decodeArgs(args, data),
+                    event
+                }),
+                identifier: spec.label.toString(),
+                index
+            };
+            return event;
+        };
+        __internal__createMessage = (spec, index, add = {}) => {
+            const args = this.__internal__createArgs(spec.args, spec);
+            const identifier = spec.label.toString();
+            const message = {
+                ...add,
+                args,
+                docs: spec.docs.map((d) => d.toString()),
+                fromU8a: (data) => ({
+                    args: this.__internal__decodeArgs(args, data),
+                    message
+                }),
+                identifier,
+                index,
+                isDefault: spec.default.isTrue,
+                method: util.stringCamelCase(identifier),
+                path: identifier.split('::').map((s) => util.stringCamelCase(s)),
+                selector: spec.selector,
+                toU8a: (params) => this.__internal__encodeArgs(spec, args, params)
+            };
+            return message;
+        };
+        __internal__decodeArgs = (args, data) => {
+            let offset = 0;
+            return args.map(({ type: { lookupName, type } }) => {
+                const value = this.registry.createType(lookupName || type, data.subarray(offset));
+                offset += value.encodedLength;
+                return value;
+            });
+        };
+        __internal__decodeMessage = (type, list, data) => {
+            const [, trimmed] = util.compactStripLength(data);
+            const selector = trimmed.subarray(0, 4);
+            const message = list.find((m) => m.selector.eq(selector));
+            if (!message) {
+                throw new Error(`Unable to find ${type} with selector ${util.u8aToHex(selector)}`);
+            }
+            return message.fromU8a(trimmed.subarray(4));
+        };
+        __internal__encodeArgs = ({ label, selector }, args, data) => {
+            if (data.length !== args.length) {
+                throw new Error(`Expected ${args.length} arguments to contract message '${label.toString()}', found ${data.length}`);
+            }
+            return util.compactAddLength(util.u8aConcat(this.registry.createType('ContractSelector', selector).toU8a(), ...args.map(({ type: { lookupName, type } }, index) => this.registry.createType(lookupName || type, data[index]).toU8a())));
+        };
     }
 
-    const packageInfo = { name: '@polkadot/api-contract', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.10.1' };
+    const packageInfo = { name: '@polkadot/api-contract', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.11.1' };
 
     function applyOnEvent(result, types, fn) {
         if (result.isInBlock || result.isFinalized) {
@@ -332,6 +339,10 @@
     }
 
     class Base {
+        abi;
+        api;
+        _decorateMethod;
+        _isWeightV1;
         constructor(api, abi, decorateMethod) {
             if (!api || !api.isConnected || !api.tx) {
                 throw new Error('Your API has not been initialized correctly and is not connected to a chain');
@@ -899,64 +910,18 @@
         return withMeta(meta, (options, ...params) => fn(options, params));
     }
     class ContractSubmittableResult extends api.SubmittableResult {
+        contractEvents;
         constructor(result, contractEvents) {
             super(result);
             this.contractEvents = contractEvents;
         }
     }
     class Contract extends Base {
+        address;
+        __internal__query = {};
+        __internal__tx = {};
         constructor(api, abi, address, decorateMethod) {
             super(api, abi, decorateMethod);
-            this.__internal__query = {};
-            this.__internal__tx = {};
-            this.__internal__getGas = (_gasLimit, isCall = false) => {
-                const weight = convertWeight(_gasLimit);
-                if (weight.v1Weight.gt(util.BN_ZERO)) {
-                    return weight;
-                }
-                return convertWeight(isCall
-                    ? MAX_CALL_GAS
-                    : convertWeight(this.api.consts.system.blockWeights
-                        ? this.api.consts.system.blockWeights.maxBlock
-                        : this.api.consts.system['maximumBlockWeight']).v1Weight.muln(64).div(util.BN_HUNDRED));
-            };
-            this.__internal__exec = (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
-                return this.api.tx.contracts.call(this.address, value,
-                this._isWeightV1
-                    ? convertWeight(gasLimit).v1Weight
-                    : convertWeight(gasLimit).v2Weight, storageDepositLimit, this.abi.findMessage(messageOrId).toU8a(params)).withResultTransform((result) =>
-                new ContractSubmittableResult(result, applyOnEvent(result, ['ContractEmitted', 'ContractExecution'], (records) => records
-                    .map(({ event: { data: [, data] } }) => {
-                    try {
-                        return this.abi.decodeEvent(data);
-                    }
-                    catch (error) {
-                        l.error(`Unable to decode contract event: ${error.message}`);
-                        return null;
-                    }
-                })
-                    .filter((decoded) => !!decoded))));
-            };
-            this.__internal__read = (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
-                const message = this.abi.findMessage(messageOrId);
-                return {
-                    send: this._decorateMethod((origin) => this.api.rx.call.contractsApi.call(origin, this.address, value,
-                    this._isWeightV1
-                        ? this.__internal__getGas(gasLimit, true).v1Weight
-                        : this.__internal__getGas(gasLimit, true).v2Weight, storageDepositLimit, message.toU8a(params)).pipe(map(({ debugMessage, gasConsumed, gasRequired, result, storageDeposit }) => ({
-                        debugMessage,
-                        gasConsumed,
-                        gasRequired: gasRequired && !convertWeight(gasRequired).v1Weight.isZero()
-                            ? gasRequired
-                            : gasConsumed,
-                        output: result.isOk && message.returnType
-                            ? this.abi.registry.createTypeUnsafe(message.returnType.lookupName || message.returnType.type, [result.asOk.data.toU8a(true)], { isPedantic: true })
-                            : null,
-                        result,
-                        storageDeposit
-                    }))))
-                };
-            };
             this.address = this.registry.createType('AccountId', address);
             this.abi.messages.forEach((m) => {
                 if (util.isUndefined(this.__internal__tx[m.method])) {
@@ -973,24 +938,68 @@
         get tx() {
             return this.__internal__tx;
         }
+        __internal__getGas = (_gasLimit, isCall = false) => {
+            const weight = convertWeight(_gasLimit);
+            if (weight.v1Weight.gt(util.BN_ZERO)) {
+                return weight;
+            }
+            return convertWeight(isCall
+                ? MAX_CALL_GAS
+                : convertWeight(this.api.consts.system.blockWeights
+                    ? this.api.consts.system.blockWeights.maxBlock
+                    : this.api.consts.system['maximumBlockWeight']).v1Weight.muln(64).div(util.BN_HUNDRED));
+        };
+        __internal__exec = (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
+            return this.api.tx.contracts.call(this.address, value,
+            this._isWeightV1
+                ? convertWeight(gasLimit).v1Weight
+                : convertWeight(gasLimit).v2Weight, storageDepositLimit, this.abi.findMessage(messageOrId).toU8a(params)).withResultTransform((result) =>
+            new ContractSubmittableResult(result, applyOnEvent(result, ['ContractEmitted', 'ContractExecution'], (records) => records
+                .map(({ event: { data: [, data] } }) => {
+                try {
+                    return this.abi.decodeEvent(data);
+                }
+                catch (error) {
+                    l.error(`Unable to decode contract event: ${error.message}`);
+                    return null;
+                }
+            })
+                .filter((decoded) => !!decoded))));
+        };
+        __internal__read = (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
+            const message = this.abi.findMessage(messageOrId);
+            return {
+                send: this._decorateMethod((origin) => this.api.rx.call.contractsApi.call(origin, this.address, value,
+                this._isWeightV1
+                    ? this.__internal__getGas(gasLimit, true).v1Weight
+                    : this.__internal__getGas(gasLimit, true).v2Weight, storageDepositLimit, message.toU8a(params)).pipe(map(({ debugMessage, gasConsumed, gasRequired, result, storageDeposit }) => ({
+                    debugMessage,
+                    gasConsumed,
+                    gasRequired: gasRequired && !convertWeight(gasRequired).v1Weight.isZero()
+                        ? gasRequired
+                        : gasConsumed,
+                    output: result.isOk && message.returnType
+                        ? this.abi.registry.createTypeUnsafe(message.returnType.lookupName || message.returnType.type, [result.asOk.data.toU8a(true)], { isPedantic: true })
+                        : null,
+                    result,
+                    storageDeposit
+                }))))
+            };
+        };
     }
 
     class BlueprintSubmittableResult extends api.SubmittableResult {
+        contract;
         constructor(result, contract) {
             super(result);
             this.contract = contract;
         }
     }
     class Blueprint extends Base {
+        codeHash;
+        __internal__tx = {};
         constructor(api, abi, codeHash, decorateMethod) {
             super(api, abi, decorateMethod);
-            this.__internal__tx = {};
-            this.__internal__deploy = (constructorOrId, { gasLimit = util.BN_ZERO, salt, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
-                return this.api.tx.contracts.instantiate(value,
-                this._isWeightV1
-                    ? convertWeight(gasLimit).v1Weight
-                    : convertWeight(gasLimit).v2Weight, storageDepositLimit, this.codeHash, this.abi.findConstructor(constructorOrId).toU8a(params), encodeSalt(salt)).withResultTransform((result) => new BlueprintSubmittableResult(result, applyOnEvent(result, ['Instantiated'], ([record]) => new Contract(this.api, this.abi, record.event.data[1], this._decorateMethod))));
-            };
             this.codeHash = this.registry.createType('Hash', codeHash);
             this.abi.constructors.forEach((c) => {
                 if (util.isUndefined(this.__internal__tx[c.method])) {
@@ -1001,9 +1010,17 @@
         get tx() {
             return this.__internal__tx;
         }
+        __internal__deploy = (constructorOrId, { gasLimit = util.BN_ZERO, salt, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
+            return this.api.tx.contracts.instantiate(value,
+            this._isWeightV1
+                ? convertWeight(gasLimit).v1Weight
+                : convertWeight(gasLimit).v2Weight, storageDepositLimit, this.codeHash, this.abi.findConstructor(constructorOrId).toU8a(params), encodeSalt(salt)).withResultTransform((result) => new BlueprintSubmittableResult(result, applyOnEvent(result, ['Instantiated'], ([record]) => new Contract(this.api, this.abi, record.event.data[1], this._decorateMethod))));
+        };
     }
 
     class CodeSubmittableResult extends api.SubmittableResult {
+        blueprint;
+        contract;
         constructor(result, blueprint, contract) {
             super(result);
             this.blueprint = blueprint;
@@ -1014,19 +1031,10 @@
         return util.isWasm(code) || util.isRiscV(code);
     }
     class Code extends Base {
+        code;
+        __internal__tx = {};
         constructor(api, abi, wasm, decorateMethod) {
             super(api, abi, decorateMethod);
-            this.__internal__tx = {};
-            this.__internal__instantiate = (constructorOrId, { gasLimit = util.BN_ZERO, salt, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
-                return this.api.tx.contracts.instantiateWithCode(value,
-                this._isWeightV1
-                    ? convertWeight(gasLimit).v1Weight
-                    : convertWeight(gasLimit).v2Weight, storageDepositLimit, util.compactAddLength(this.code), this.abi.findConstructor(constructorOrId).toU8a(params), encodeSalt(salt)).withResultTransform((result) => new CodeSubmittableResult(result, ...(applyOnEvent(result, ['CodeStored', 'Instantiated'], (records) => records.reduce(([blueprint, contract], { event }) => this.api.events.contracts.Instantiated.is(event)
-                    ? [blueprint, new Contract(this.api, this.abi, event.data[1], this._decorateMethod)]
-                    : this.api.events.contracts.CodeStored.is(event)
-                        ? [new Blueprint(this.api, this.abi, event.data[0], this._decorateMethod), contract]
-                        : [blueprint, contract], [undefined, undefined])) || [undefined, undefined])));
-            };
             this.code = isValidCode(this.abi.info.source.wasm)
                 ? this.abi.info.source.wasm
                 : util.u8aToU8a(wasm);
@@ -1042,6 +1050,16 @@
         get tx() {
             return this.__internal__tx;
         }
+        __internal__instantiate = (constructorOrId, { gasLimit = util.BN_ZERO, salt, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
+            return this.api.tx.contracts.instantiateWithCode(value,
+            this._isWeightV1
+                ? convertWeight(gasLimit).v1Weight
+                : convertWeight(gasLimit).v2Weight, storageDepositLimit, util.compactAddLength(this.code), this.abi.findConstructor(constructorOrId).toU8a(params), encodeSalt(salt)).withResultTransform((result) => new CodeSubmittableResult(result, ...(applyOnEvent(result, ['CodeStored', 'Instantiated'], (records) => records.reduce(([blueprint, contract], { event }) => this.api.events.contracts.Instantiated.is(event)
+                ? [blueprint, new Contract(this.api, this.abi, event.data[1], this._decorateMethod)]
+                : this.api.events.contracts.CodeStored.is(event)
+                    ? [new Blueprint(this.api, this.abi, event.data[0], this._decorateMethod), contract]
+                    : [blueprint, contract], [undefined, undefined])) || [undefined, undefined])));
+        };
     }
 
     class BlueprintPromise extends Blueprint {
