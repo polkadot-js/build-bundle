@@ -2,6 +2,7 @@
 
 ## master
 
+- wasm-crypto 7.3.2
 - extension-dapp 0.46.6
 - react-{identicon, qr}, ui-{keyring, settings}, vue-identicon 3.6.4
 - phishing 0.22.1

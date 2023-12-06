@@ -202,16 +202,16 @@
         };
     }
 
-    const chr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    const CHR = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
     const map = new Array(256);
-    for (let i = 0, count = chr.length; i < count; i++) {
-        map[chr.charCodeAt(i)] = i;
+    for (let i = 0, count = CHR.length; i < count; i++) {
+        map[CHR.charCodeAt(i)] = i;
     }
     function base64Decode(data, out) {
         let byte = 0;
         let bits = 0;
         let pos = -1;
-        for (let i = 0, count = out.length; pos < count; i++) {
+        for (let i = 0, last = out.length - 1; pos !== last; i++) {
             byte = (byte << 6) | map[data.charCodeAt(i)];
             if ((bits += 6) >= 8) {
                 out[++pos] = (byte >>> (bits -= 8)) & 0xff;
@@ -251,10 +251,12 @@
         const s = cd.length;
         let i = 0;
         const l = new u16(mb);
-        for (; i < s; ++i)
-            ++l[cd[i] - 1];
+        for (; i < s; ++i) {
+            if (cd[i])
+                ++l[cd[i] - 1];
+        }
         const le = new u16(mb);
-        for (i = 0; i < mb; ++i) {
+        for (i = 1; i < mb; ++i) {
             le[i] = (le[i - 1] + l[i - 1]) << 1;
         }
         let co;
@@ -267,15 +269,18 @@
                     const r = mb - cd[i];
                     let v = le[cd[i] - 1]++ << r;
                     for (const m = v | ((1 << r) - 1); v <= m; ++v) {
-                        co[rev[v] >>> rvb] = sv;
+                        co[rev[v] >> rvb] = sv;
                     }
                 }
             }
         }
         else {
             co = new u16(s);
-            for (i = 0; i < s; ++i)
-                co[i] = rev[le[cd[i] - 1]++] >>> (15 - cd[i]);
+            for (i = 0; i < s; ++i) {
+                if (cd[i]) {
+                    co[i] = rev[le[cd[i] - 1]++] >> (15 - cd[i]);
+                }
+            }
         }
         return co;
     });
@@ -479,7 +484,7 @@
         return bridge.init(createWasm);
     }
 
-    const packageInfo = { name: '@polkadot/wasm-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '7.3.1' };
+    const packageInfo = { name: '@polkadot/wasm-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '7.3.2' };
 
     function withWasm(fn) {
         return (...params) => {
