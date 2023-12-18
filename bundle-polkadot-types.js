@@ -14149,7 +14149,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.11.1' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.11.2' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
@@ -17045,24 +17045,35 @@
         return storageFn;
     }
 
-    function findSiPrimitive(registry, _prim) {
-        const prim = _prim.toLowerCase();
+    function findSiPrimitive(registry, type) {
+        const prim = type.toLowerCase();
         return registry.lookup.types.find((t) => (t.type.def.isPrimitive &&
             t.type.def.asPrimitive.toString().toLowerCase() === prim) || (t.type.def.isHistoricMetaCompat &&
             t.type.def.asHistoricMetaCompat.toString().toLowerCase() === prim));
     }
-    function findSiType(registry, orig) {
-        let portable = findSiPrimitive(registry, orig);
-        if (!portable && orig === 'Bytes') {
+    function findSiType(registry, type) {
+        let portable = findSiPrimitive(registry, type);
+        if (!portable && (type === 'Bytes' || type.startsWith('[u8;'))) {
             const u8 = findSiPrimitive(registry, 'u8');
             if (u8) {
-                portable = registry.lookup.types.find((t) => (t.type.def.isSequence &&
-                    t.type.def.asSequence.type.eq(u8.id)) || (t.type.def.isHistoricMetaCompat &&
-                    t.type.def.asHistoricMetaCompat.eq(orig)));
+                if (type === 'Bytes') {
+                    portable = registry.lookup.types.find((t) => (t.type.def.isSequence &&
+                        t.type.def.asSequence.type.eq(u8.id)) || (t.type.def.isHistoricMetaCompat &&
+                        t.type.def.asHistoricMetaCompat.eq(type)));
+                }
+                else {
+                    const td = getTypeDef(type);
+                    portable = registry.lookup.types.find((t) => (t.type.def.isArray &&
+                        t.type.def.asArray.eq({
+                            len: td.length,
+                            type: u8.id
+                        })) || (t.type.def.isHistoricMetaCompat &&
+                        t.type.def.asHistoricMetaCompat.eq(type)));
+                }
             }
         }
         if (!portable) {
-            console.warn(`Unable to map ${orig} to a lookup index`);
+            console.warn(`Unable to map ${type} to a lookup index`);
         }
         return portable;
     }

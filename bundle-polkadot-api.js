@@ -1359,7 +1359,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.11.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.11.2' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -5310,6 +5310,12 @@
             : of(null));
     }
 
+    function getUnrequestedTicket(status) {
+        return status.ticket || status.deposit;
+    }
+    function getRequestedTicket(status) {
+        return (status.maybeTicket || status.deposit).unwrapOrDefault();
+    }
     function isDemocracyPreimage(api, imageOpt) {
         return !!imageOpt && !api.query.democracy['dispatchQueue'];
     }
@@ -5342,8 +5348,8 @@
             return undefined;
         }
         const [proposer, balance] = status.isUnrequested
-            ? status.asUnrequested.deposit
-            : status.asRequested.deposit.unwrapOrDefault();
+            ? getUnrequestedTicket(status.asUnrequested)
+            : getRequestedTicket(status.asRequested);
         let proposal;
         if (bytes) {
             try {
@@ -6474,6 +6480,12 @@
     }
     const stakerPrefs =  erasHistoricApplyAccount('_stakerPrefs');
 
+    function extractCompatRewards(ledger) {
+        return ledger
+            ? (ledger.legacyClaimedRewards ||
+                ledger.claimedRewards)
+            : [];
+    }
     function parseRewards(api, stashId, [erasPoints, erasPrefs, erasRewards], exposures) {
         return exposures.map(({ era, isEmpty, isValidator, nominating, validators: eraValidators }) => {
             const { eraPoints, validators: allValPoints } = erasPoints.find((p) => p.era.eq(era)) || { eraPoints: util.BN_ZERO, validators: {} };
@@ -6538,7 +6550,7 @@
             const index = validators.indexOf(validatorId);
             if (index !== -1) {
                 const valLedger = queryValidators[index].stakingLedger;
-                if (valLedger?.claimedRewards.some((e) => reward.era.eq(e))) {
+                if (extractCompatRewards(valLedger).some((e) => reward.era.eq(e))) {
                     rm.push(validatorId);
                 }
             }
@@ -6548,7 +6560,7 @@
         });
     }
     function filterRewards(eras, valInfo, { rewards, stakingLedger }) {
-        const filter = eras.filter((e) => !stakingLedger.claimedRewards.some((s) => s.eq(e)));
+        const filter = eras.filter((e) => !extractCompatRewards(stakingLedger).some((s) => s.eq(e)));
         const validators = valInfo.map(([v]) => v);
         const queryValidators = valInfo.map(([, q]) => q);
         return rewards
@@ -20136,7 +20148,7 @@
         }
     }
 
-    Object.defineProperty(exports, 'Keyring', {
+    Object.defineProperty(exports, "Keyring", {
         enumerable: true,
         get: function () { return keyring.Keyring; }
     });
