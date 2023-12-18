@@ -7,7 +7,7 @@
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
     var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
-    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.6.1' };
+    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.6.2' };
 
     function evaluateThis(fn) {
         return fn('return this');
@@ -84,7 +84,7 @@
 
     Object.defineProperty(packageInfo$1, "__esModule", { value: true });
     packageInfo$1.packageInfo = void 0;
-    packageInfo$1.packageInfo = { name: '@polkadot/x-randomvalues', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.6.1' };
+    packageInfo$1.packageInfo = { name: '@polkadot/x-randomvalues', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.6.2' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -277,16 +277,16 @@
         };
     }
 
-    const chr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    const CHR = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
     const map = new Array(256);
-    for (let i = 0, count = chr.length; i < count; i++) {
-        map[chr.charCodeAt(i)] = i;
+    for (let i = 0, count = CHR.length; i < count; i++) {
+        map[CHR.charCodeAt(i)] = i;
     }
     function base64Decode$1(data, out) {
         let byte = 0;
         let bits = 0;
         let pos = -1;
-        for (let i = 0, count = out.length; pos < count; i++) {
+        for (let i = 0, last = out.length - 1; pos !== last; i++) {
             byte = (byte << 6) | map[data.charCodeAt(i)];
             if ((bits += 6) >= 8) {
                 out[++pos] = (byte >>> (bits -= 8)) & 0xff;
@@ -326,10 +326,12 @@
         const s = cd.length;
         let i = 0;
         const l = new u16(mb);
-        for (; i < s; ++i)
-            ++l[cd[i] - 1];
+        for (; i < s; ++i) {
+            if (cd[i])
+                ++l[cd[i] - 1];
+        }
         const le = new u16(mb);
-        for (i = 0; i < mb; ++i) {
+        for (i = 1; i < mb; ++i) {
             le[i] = (le[i - 1] + l[i - 1]) << 1;
         }
         let co;
@@ -342,15 +344,18 @@
                     const r = mb - cd[i];
                     let v = le[cd[i] - 1]++ << r;
                     for (const m = v | ((1 << r) - 1); v <= m; ++v) {
-                        co[rev[v] >>> rvb] = sv;
+                        co[rev[v] >> rvb] = sv;
                     }
                 }
             }
         }
         else {
             co = new u16(s);
-            for (i = 0; i < s; ++i)
-                co[i] = rev[le[cd[i] - 1]++] >>> (15 - cd[i]);
+            for (i = 0; i < s; ++i) {
+                if (cd[i]) {
+                    co[i] = rev[le[cd[i] - 1]++] >> (15 - cd[i]);
+                }
+            }
         }
         return co;
     });
@@ -718,19 +723,22 @@
     cryptoWaitReady().catch(() => {
     });
 
-    const packageInfo = { name: '@polkadot/util-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.6.1' };
+    const packageInfo = { name: '@polkadot/util-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.6.2' };
 
     /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
     function assertNumber(n) {
         if (!Number.isSafeInteger(n))
             throw new Error(`Wrong integer: ${n}`);
     }
+    function isBytes$3(a) {
+        return (a instanceof Uint8Array ||
+            (a != null && typeof a === 'object' && a.constructor.name === 'Uint8Array'));
+    }
     function chain(...args) {
+        const id = (a) => a;
         const wrap = (a, b) => (c) => a(b(c));
-        const encode = Array.from(args)
-            .reverse()
-            .reduce((acc, i) => (acc ? wrap(acc, i.encode) : i.encode), undefined);
-        const decode = args.reduce((acc, i) => (acc ? wrap(acc, i.decode) : i.decode), undefined);
+        const encode = args.map((x) => x.encode).reduceRight(wrap, id);
+        const decode = args.map((x) => x.decode).reduce(wrap, id);
         return { encode, decode };
     }
     function alphabet(alphabet) {
@@ -904,13 +912,13 @@
         assertNumber(num);
         return {
             encode: (bytes) => {
-                if (!(bytes instanceof Uint8Array))
+                if (!isBytes$3(bytes))
                     throw new Error('radix.encode input should be Uint8Array');
                 return convertRadix(Array.from(bytes), 2 ** 8, num);
             },
             decode: (digits) => {
                 if (!Array.isArray(digits) || (digits.length && typeof digits[0] !== 'number'))
-                    throw new Error('radix.decode input should be array of strings');
+                    throw new Error('radix.decode input should be array of numbers');
                 return Uint8Array.from(convertRadix(digits, num, 2 ** 8));
             },
         };
@@ -923,13 +931,13 @@
             throw new Error('radix2: carry overflow');
         return {
             encode: (bytes) => {
-                if (!(bytes instanceof Uint8Array))
+                if (!isBytes$3(bytes))
                     throw new Error('radix2.encode input should be Uint8Array');
                 return convertRadix2(Array.from(bytes), 8, bits, !revPadding);
             },
             decode: (digits) => {
                 if (!Array.isArray(digits) || (digits.length && typeof digits[0] !== 'number'))
-                    throw new Error('radix2.decode input should be array of strings');
+                    throw new Error('radix2.decode input should be array of numbers');
                 return Uint8Array.from(convertRadix2(digits, bits, 8, revPadding));
             },
         };
@@ -950,7 +958,7 @@
             throw new Error('checksum fn should be function');
         return {
             encode(data) {
-                if (!(data instanceof Uint8Array))
+                if (!isBytes$3(data))
                     throw new Error('checksum.encode: input should be Uint8Array');
                 const checksum = fn(data).slice(0, len);
                 const res = new Uint8Array(data.length + len);
@@ -959,7 +967,7 @@
                 return res;
             },
             decode(data) {
-                if (!(data instanceof Uint8Array))
+                if (!isBytes$3(data))
                     throw new Error('checksum.decode: input should be Uint8Array');
                 const payload = data.slice(0, -len);
                 const newChecksum = fn(payload).slice(0, len);
@@ -971,7 +979,9 @@
             },
         };
     }
-    const utils = { alphabet, chain, checksum, radix, radix2, join, padding };
+    const utils = {
+        alphabet, chain, checksum, convertRadix, convertRadix2, radix, radix2, join, padding,
+    };
     chain(radix2(4), alphabet('0123456789ABCDEF'), join(''));
     chain(radix2(5), alphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'), padding(5), join(''));
     chain(radix2(5), alphabet('0123456789ABCDEFGHIJKLMNOPQRSTUV'), padding(5), join(''));
@@ -1134,8 +1144,12 @@
         if (!Number.isSafeInteger(n) || n < 0)
             throw new Error(`Wrong positive integer: ${n}`);
     }
+    function isBytes$2(a) {
+        return (a instanceof Uint8Array ||
+            (a != null && typeof a === 'object' && a.constructor.name === 'Uint8Array'));
+    }
     function bytes(b, ...lengths) {
-        if (!(b instanceof Uint8Array))
+        if (!isBytes$2(b))
             throw new Error('Expected Uint8Array');
         if (lengths.length > 0 && !lengths.includes(b.length))
             throw new Error(`Expected Uint8Array of length ${lengths}, not of length=${b.length}`);
@@ -1163,8 +1177,11 @@
     const crypto = typeof globalThis === 'object' && 'crypto' in globalThis ? globalThis.crypto : undefined;
 
     /*! noble-hashes - MIT License (c) 2022 Paul Miller (paulmillr.com) */
-    const u8a$1 = (a) => a instanceof Uint8Array;
     const u32 = (arr) => new Uint32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4));
+    function isBytes$1(a) {
+        return (a instanceof Uint8Array ||
+            (a != null && typeof a === 'object' && a.constructor.name === 'Uint8Array'));
+    }
     const createView = (arr) => new DataView(arr.buffer, arr.byteOffset, arr.byteLength);
     const rotr = (word, shift) => (word << (32 - shift)) | (word >>> shift);
     const isLE = new Uint8Array(new Uint32Array([0x11223344]).buffer)[0] === 0x44;
@@ -1179,20 +1196,25 @@
     function toBytes(data) {
         if (typeof data === 'string')
             data = utf8ToBytes$1(data);
-        if (!u8a$1(data))
+        if (!isBytes$1(data))
             throw new Error(`expected Uint8Array, got ${typeof data}`);
         return data;
     }
     function concatBytes$1(...arrays) {
-        const r = new Uint8Array(arrays.reduce((sum, a) => sum + a.length, 0));
-        let pad = 0;
-        arrays.forEach((a) => {
-            if (!u8a$1(a))
+        let sum = 0;
+        for (let i = 0; i < arrays.length; i++) {
+            const a = arrays[i];
+            if (!isBytes$1(a))
                 throw new Error('Uint8Array expected');
-            r.set(a, pad);
+            sum += a.length;
+        }
+        const res = new Uint8Array(sum);
+        for (let i = 0, pad = 0; i < arrays.length; i++) {
+            const a = arrays[i];
+            res.set(a, pad);
             pad += a.length;
-        });
-        return r;
+        }
+        return res;
     }
     class Hash {
         clone() {
@@ -4052,10 +4074,13 @@
     const _0n$8 = BigInt(0);
     const _1n$8 = BigInt(1);
     const _2n$6 = BigInt(2);
-    const u8a = (a) => a instanceof Uint8Array;
+    function isBytes(a) {
+        return (a instanceof Uint8Array ||
+            (a != null && typeof a === 'object' && a.constructor.name === 'Uint8Array'));
+    }
     const hexes =  Array.from({ length: 256 }, (_, i) => i.toString(16).padStart(2, '0'));
     function bytesToHex(bytes) {
-        if (!u8a(bytes))
+        if (!isBytes(bytes))
             throw new Error('Uint8Array expected');
         let hex = '';
         for (let i = 0; i < bytes.length; i++) {
@@ -4072,20 +4097,32 @@
             throw new Error('hex string expected, got ' + typeof hex);
         return BigInt(hex === '' ? '0' : `0x${hex}`);
     }
+    const asciis = { _0: 48, _9: 57, _A: 65, _F: 70, _a: 97, _f: 102 };
+    function asciiToBase16(char) {
+        if (char >= asciis._0 && char <= asciis._9)
+            return char - asciis._0;
+        if (char >= asciis._A && char <= asciis._F)
+            return char - (asciis._A - 10);
+        if (char >= asciis._a && char <= asciis._f)
+            return char - (asciis._a - 10);
+        return;
+    }
     function hexToBytes(hex) {
         if (typeof hex !== 'string')
             throw new Error('hex string expected, got ' + typeof hex);
-        const len = hex.length;
-        if (len % 2)
-            throw new Error('padded hex string expected, got unpadded hex of length ' + len);
-        const array = new Uint8Array(len / 2);
-        for (let i = 0; i < array.length; i++) {
-            const j = i * 2;
-            const hexByte = hex.slice(j, j + 2);
-            const byte = Number.parseInt(hexByte, 16);
-            if (Number.isNaN(byte) || byte < 0)
-                throw new Error('Invalid byte sequence');
-            array[i] = byte;
+        const hl = hex.length;
+        const al = hl / 2;
+        if (hl % 2)
+            throw new Error('padded hex string expected, got unpadded hex of length ' + hl);
+        const array = new Uint8Array(al);
+        for (let ai = 0, hi = 0; ai < al; ai++, hi += 2) {
+            const n1 = asciiToBase16(hex.charCodeAt(hi));
+            const n2 = asciiToBase16(hex.charCodeAt(hi + 1));
+            if (n1 === undefined || n2 === undefined) {
+                const char = hex[hi] + hex[hi + 1];
+                throw new Error('hex string expected, got non-hex character "' + char + '" at index ' + hi);
+            }
+            array[ai] = n1 * 16 + n2;
         }
         return array;
     }
@@ -4093,7 +4130,7 @@
         return hexToNumber(bytesToHex(bytes));
     }
     function bytesToNumberLE(bytes) {
-        if (!u8a(bytes))
+        if (!isBytes(bytes))
             throw new Error('Uint8Array expected');
         return hexToNumber(bytesToHex(Uint8Array.from(bytes).reverse()));
     }
@@ -4116,7 +4153,7 @@
                 throw new Error(`${title} must be valid hex string, got "${hex}". Cause: ${e}`);
             }
         }
-        else if (u8a(hex)) {
+        else if (isBytes(hex)) {
             res = Uint8Array.from(hex);
         }
         else {
@@ -4128,23 +4165,29 @@
         return res;
     }
     function concatBytes(...arrays) {
-        const r = new Uint8Array(arrays.reduce((sum, a) => sum + a.length, 0));
-        let pad = 0;
-        arrays.forEach((a) => {
-            if (!u8a(a))
+        let sum = 0;
+        for (let i = 0; i < arrays.length; i++) {
+            const a = arrays[i];
+            if (!isBytes(a))
                 throw new Error('Uint8Array expected');
-            r.set(a, pad);
+            sum += a.length;
+        }
+        let res = new Uint8Array(sum);
+        let pad = 0;
+        for (let i = 0; i < arrays.length; i++) {
+            const a = arrays[i];
+            res.set(a, pad);
             pad += a.length;
-        });
-        return r;
+        }
+        return res;
     }
-    function equalBytes(b1, b2) {
-        if (b1.length !== b2.length)
+    function equalBytes(a, b) {
+        if (a.length !== b.length)
             return false;
-        for (let i = 0; i < b1.length; i++)
-            if (b1[i] !== b2[i])
-                return false;
-        return true;
+        let diff = 0;
+        for (let i = 0; i < a.length; i++)
+            diff |= a[i] ^ b[i];
+        return diff === 0;
     }
     function utf8ToBytes(str) {
         if (typeof str !== 'string')
@@ -4219,7 +4262,7 @@
         function: (val) => typeof val === 'function',
         boolean: (val) => typeof val === 'boolean',
         string: (val) => typeof val === 'string',
-        stringOrUint8Array: (val) => typeof val === 'string' || val instanceof Uint8Array,
+        stringOrUint8Array: (val) => typeof val === 'string' || isBytes(val),
         isSafeInteger: (val) => Number.isSafeInteger(val),
         array: (val) => Array.isArray(val),
         field: (val, object) => object.Fp.isValid(val),
@@ -4259,6 +4302,7 @@
         equalBytes: equalBytes,
         hexToBytes: hexToBytes,
         hexToNumber: hexToNumber,
+        isBytes: isBytes,
         numberToBytesBE: numberToBytesBE,
         numberToBytesLE: numberToBytesLE,
         numberToHexUnpadded: numberToHexUnpadded,
@@ -4667,7 +4711,7 @@
         toSig(hex) {
             const { Err: E } = DER;
             const data = typeof hex === 'string' ? h2b(hex) : hex;
-            if (!(data instanceof Uint8Array))
+            if (!isBytes(data))
                 throw new Error('ui8a expected');
             let l = data.length;
             if (l < 2 || data[0] != 0x30)
@@ -4729,7 +4773,7 @@
         function normPrivateKeyToScalar(key) {
             const { allowedPrivateKeyLengths: lengths, nByteLength, wrapPrivateKey, n } = CURVE;
             if (lengths && typeof key !== 'bigint') {
-                if (key instanceof Uint8Array)
+                if (isBytes(key))
                     key = bytesToHex(key);
                 if (typeof key !== 'string' || !lengths.includes(key.length))
                     throw new Error('Invalid key');
@@ -5204,7 +5248,7 @@
             return Point.fromPrivateKey(privateKey).toRawBytes(isCompressed);
         }
         function isProbPub(item) {
-            const arr = item instanceof Uint8Array;
+            const arr = isBytes(item);
             const str = typeof item === 'string';
             const len = (arr || str) && item.length;
             if (arr)
@@ -5301,7 +5345,7 @@
             let _sig = undefined;
             let P;
             try {
-                if (typeof sg === 'string' || sg instanceof Uint8Array) {
+                if (typeof sg === 'string' || isBytes(sg)) {
                     try {
                         _sig = Signature.fromDER(sg);
                     }
@@ -5452,7 +5496,7 @@
     }
 
     function validateDST(dst) {
-        if (dst instanceof Uint8Array)
+        if (isBytes(dst))
             return dst;
         if (typeof dst === 'string')
             return utf8ToBytes(dst);
@@ -5477,8 +5521,8 @@
         }
         return arr;
     }
-    function isBytes(item) {
-        if (!(item instanceof Uint8Array))
+    function abytes(item) {
+        if (!isBytes(item))
             throw new Error('Uint8Array expected');
     }
     function isNum(item) {
@@ -5486,8 +5530,8 @@
             throw new Error('number expected');
     }
     function expand_message_xmd(msg, DST, lenInBytes, H) {
-        isBytes(msg);
-        isBytes(DST);
+        abytes(msg);
+        abytes(DST);
         isNum(lenInBytes);
         if (DST.length > 255)
             DST = H(concatBytes(utf8ToBytes('H2C-OVERSIZE-DST-'), DST));
@@ -5509,8 +5553,8 @@
         return pseudo_random_bytes.slice(0, lenInBytes);
     }
     function expand_message_xof(msg, DST, lenInBytes, k, H) {
-        isBytes(msg);
-        isBytes(DST);
+        abytes(msg);
+        abytes(DST);
         isNum(lenInBytes);
         if (DST.length > 255) {
             const dkLen = Math.ceil((2 * k) / 8);
@@ -5534,7 +5578,7 @@
             hash: 'hash',
         });
         const { p, k, m, hash, expand, DST: _DST } = options;
-        isBytes(msg);
+        abytes(msg);
         isNum(count);
         const DST = validateDST(_DST);
         const log2p = p.toString(2).length;
@@ -6572,14 +6616,15 @@
         }
         function decodeUCoordinate(uEnc) {
             const u = ensureBytes('u coordinate', uEnc, montgomeryBytes);
-            if (fieldLen === montgomeryBytes)
-                u[fieldLen - 1] &= 127;
+            if (fieldLen === 32)
+                u[31] &= 127;
             return bytesToNumberLE(u);
         }
         function decodeScalar(n) {
             const bytes = ensureBytes('scalar', n);
-            if (bytes.length !== montgomeryBytes && bytes.length !== fieldLen)
-                throw new Error(`Expected ${montgomeryBytes} or ${fieldLen} bytes, got ${bytes.length}`);
+            const len = bytes.length;
+            if (len !== montgomeryBytes && len !== fieldLen)
+                throw new Error(`Expected ${montgomeryBytes} or ${fieldLen} bytes, got ${len}`);
             return bytesToNumberLE(adjustScalarBytes(bytes));
         }
         function scalarMult(scalar, u) {
@@ -6901,6 +6946,12 @@
         }
         multiplyUnsafe(scalar) {
             return new RistPoint(this.ep.multiplyUnsafe(scalar));
+        }
+        double() {
+            return new RistPoint(this.ep.double());
+        }
+        negate() {
+            return new RistPoint(this.ep.negate());
         }
     }
     (() => {

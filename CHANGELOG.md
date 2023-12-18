@@ -2,6 +2,7 @@
 
 ## master
 
+- hw-ledger, keyring, util, util-crypto 12.6.2
 - wasm-crypto 7.3.2
 - extension-dapp 0.46.6
 - react-{identicon, qr}, ui-{keyring, settings}, vue-identicon 3.6.4

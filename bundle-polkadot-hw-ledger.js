@@ -1203,7 +1203,6 @@
 	    return typeof value === "object";
 	}
 
-	const LockedDeviceError = createCustomErrorClass("LockedDeviceError");
 	const DisconnectedDevice = createCustomErrorClass("DisconnectedDevice");
 	const DisconnectedDeviceDuringOperation = createCustomErrorClass("DisconnectedDeviceDuringOperation");
 	const TransportOpenUserCancelled = createCustomErrorClass("TransportOpenUserCancelled");
@@ -1289,21 +1288,30 @@
 	        return "Internal error, please report";
 	    }
 	}
-	function TransportStatusError(statusCode) {
-	    const statusText = Object.keys(StatusCodes).find(k => StatusCodes[k] === statusCode) || "UNKNOWN_ERROR";
-	    const smsg = getAltStatusMessage(statusCode) || statusText;
-	    const statusCodeStr = statusCode.toString(16);
-	    const message = `Ledger device: ${smsg} (0x${statusCodeStr})`;
-	    if (statusCode === StatusCodes.LOCKED_DEVICE) {
-	        throw new LockedDeviceError(message);
+	class TransportStatusError extends Error {
+	    constructor(statusCode, { canBeMappedToChildError = true } = {}) {
+	        const statusText = Object.keys(StatusCodes).find(k => StatusCodes[k] === statusCode) || "UNKNOWN_ERROR";
+	        const smsg = getAltStatusMessage(statusCode) || statusText;
+	        const statusCodeStr = statusCode.toString(16);
+	        const message = `Ledger device: ${smsg} (0x${statusCodeStr})`;
+	        super(message);
+	        this.name = "TransportStatusError";
+	        this.statusCode = statusCode;
+	        this.statusText = statusText;
+	        if (canBeMappedToChildError && statusCode === StatusCodes.LOCKED_DEVICE) {
+	            return new LockedDeviceError(message);
+	        }
 	    }
-	    this.name = "TransportStatusError";
-	    this.message = message;
-	    this.stack = new Error(message).stack;
-	    this.statusCode = statusCode;
-	    this.statusText = statusText;
 	}
-	TransportStatusError.prototype = new Error();
+	class LockedDeviceError extends TransportStatusError {
+	    constructor(message) {
+	        super(StatusCodes.LOCKED_DEVICE, { canBeMappedToChildError: false });
+	        if (message) {
+	            this.message = message;
+	        }
+	        this.name = "LockedDeviceError";
+	    }
+	}
 
 	let id = 0;
 	const subscribers = [];
@@ -1411,55 +1419,26 @@
 	        this.unresponsiveTimeout = 15000;
 	        this.deviceModel = null;
 	        this._events = new EventEmitter();
-	        this.send = (cla, ins, p1, p2, data = Buffer.alloc(0), statusList = [StatusCodes.OK]) => __awaiter$3(this, void 0, void 0, function* () {
+	        this.send = (cla, ins, p1, p2, data = Buffer.alloc(0), statusList = [StatusCodes.OK], { abortTimeoutMs } = {}) => __awaiter$3(this, void 0, void 0, function* () {
+	            const tracer = this.tracer.withUpdatedContext({ function: "send" });
 	            if (data.length >= 256) {
+	                tracer.trace("data.length exceeded 256 bytes limit", { dataLength: data.length });
 	                throw new TransportError("data.length exceed 256 bytes limit. Got: " + data.length, "DataLengthTooBig");
 	            }
-	            const response = yield this.exchange(Buffer.concat([Buffer.from([cla, ins, p1, p2]), Buffer.from([data.length]), data]));
+	            tracer.trace("Starting an exchange", { abortTimeoutMs });
+	            const response = yield this.exchange(
+	            Buffer.concat([Buffer.from([cla, ins, p1, p2]), Buffer.from([data.length]), data]), { abortTimeoutMs });
+	            tracer.trace("Received response from exchange");
 	            const sw = response.readUInt16BE(response.length - 2);
 	            if (!statusList.some(s => s === sw)) {
 	                throw new TransportStatusError(sw);
 	            }
 	            return response;
 	        });
-	        this.exchangeAtomicImpl = (f) => __awaiter$3(this, void 0, void 0, function* () {
-	            const tracer = this.tracer.withUpdatedContext({ function: "exchangeAtomicImpl" });
-	            tracer.trace("Starting an atomic APDU exchange");
-	            if (this.exchangeBusyPromise) {
-	                tracer.trace("Atomic exchange is already busy");
-	                throw new TransportRaceCondition("An action was already pending on the Ledger device. Please deny or reconnect.");
-	            }
-	            let resolveBusy;
-	            const busyPromise = new Promise(r => {
-	                resolveBusy = r;
-	            });
-	            this.exchangeBusyPromise = busyPromise;
-	            let unresponsiveReached = false;
-	            const timeout = setTimeout(() => {
-	                tracer.trace(`Timeout reached, emitting Transport event "unresponsive"`);
-	                unresponsiveReached = true;
-	                this.emit("unresponsive");
-	            }, this.unresponsiveTimeout);
-	            try {
-	                const res = yield f();
-	                tracer.trace("Received a response from atomic exchange");
-	                if (unresponsiveReached) {
-	                    tracer.trace("Device was unresponsive, emitting responsive");
-	                    this.emit("responsive");
-	                }
-	                return res;
-	            }
-	            finally {
-	                clearTimeout(timeout);
-	                if (resolveBusy)
-	                    resolveBusy();
-	                this.exchangeBusyPromise = null;
-	            }
-	        });
 	        this._appAPIlock = null;
 	        this.tracer = new LocalTracer(logType !== null && logType !== void 0 ? logType : DEFAULT_LOG_TYPE, context);
 	    }
-	    exchange(_apdu) {
+	    exchange(_apdu, { abortTimeoutMs: _abortTimeoutMs } = {}) {
 	        throw new Error("exchange not implemented");
 	    }
 	    exchangeBulk(apdus, observer) {
@@ -1539,6 +1518,46 @@
 	                : null;
 	        });
 	    }
+	    exchangeAtomicImpl(f) {
+	        return __awaiter$3(this, void 0, void 0, function* () {
+	            const tracer = this.tracer.withUpdatedContext({ function: "exchangeAtomicImpl" });
+	            tracer.trace("Starting an atomic APDU exchange", {
+	                unresponsiveTimeout: this.unresponsiveTimeout,
+	            });
+	            if (this.exchangeBusyPromise) {
+	                tracer.trace("Atomic exchange is already busy");
+	                throw new TransportRaceCondition("An action was already pending on the Ledger device. Please deny or reconnect.");
+	            }
+	            let resolveBusy;
+	            const busyPromise = new Promise(r => {
+	                resolveBusy = r;
+	            });
+	            this.exchangeBusyPromise = busyPromise;
+	            let unresponsiveReached = false;
+	            const timeout = setTimeout(() => {
+	                tracer.trace(`Timeout reached, emitting Transport event "unresponsive"`, {
+	                    unresponsiveTimeout: this.unresponsiveTimeout,
+	                });
+	                unresponsiveReached = true;
+	                this.emit("unresponsive");
+	            }, this.unresponsiveTimeout);
+	            try {
+	                const res = yield f();
+	                if (unresponsiveReached) {
+	                    tracer.trace("Device was unresponsive, emitting responsive");
+	                    this.emit("responsive");
+	                }
+	                return res;
+	            }
+	            finally {
+	                tracer.trace("Finalize, clearing busy guard");
+	                clearTimeout(timeout);
+	                if (resolveBusy)
+	                    resolveBusy();
+	                this.exchangeBusyPromise = null;
+	            }
+	        });
+	    }
 	    decorateAppAPIMethods(self, methods, scrambleKey) {
 	        for (const methodName of methods) {
 	            self[methodName] = this.decorateAppAPIMethod(methodName, self[methodName], self, scrambleKey);
@@ -1562,6 +1581,9 @@
 	    }
 	    setTraceContext(context) {
 	        this.tracer = this.tracer.withContext(context);
+	    }
+	    updateTraceContext(contextToAdd) {
+	        this.tracer.updateContext(contextToAdd);
 	    }
 	    getTraceContext() {
 	        return this.tracer.getContext();
@@ -1587,10 +1609,7 @@
 	            let data = Buffer.concat([asUInt16BE(apdu.length), apdu]);
 	            const blockSize = packetSize - 5;
 	            const nbBlocks = Math.ceil(data.length / blockSize);
-	            data = Buffer.concat([
-	                data,
-	                Buffer.alloc(nbBlocks * blockSize - data.length + 1).fill(0),
-	            ]);
+	            data = Buffer.concat([data, Buffer.alloc(nbBlocks * blockSize - data.length + 1).fill(0)]);
 	            const blocks = [];
 	            for (let i = 0; i < nbBlocks; i++) {
 	                const head = Buffer.alloc(5);
@@ -4552,7 +4571,7 @@
 		hasRequiredPackageInfo = 1;
 		Object.defineProperty(packageInfo$1, "__esModule", { value: true });
 		packageInfo$1.packageInfo = void 0;
-		packageInfo$1.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.6.1' };
+		packageInfo$1.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.6.2' };
 		return packageInfo$1;
 	}
 
@@ -4616,7 +4635,7 @@
 	    zeitgeist: 'Zeitgeist'
 	};
 
-	const packageInfo = { name: '@polkadot/hw-ledger', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.6.1' };
+	const packageInfo = { name: '@polkadot/hw-ledger', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-hw-ledger.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.6.2' };
 
 	async function wrapError(promise) {
 	    const result = await promise;
