@@ -764,9 +764,14 @@
                 const callback = this.__internal__subscriptions.get(subscriptionId)?.[0];
                 callback?.(decodedResponse);
             };
-            const addChain = this.__internal__wellKnownChains.has(this.__internal__spec)
-                ? client.addWellKnownChain
-                : client.addChain;
+            const addChain = this.__internal__sharedSandbox
+                ? (async (...args) => {
+                    const source = this.__internal__sharedSandbox;
+                    return (await source.__internal__chain).addChain(...args);
+                })
+                : this.__internal__wellKnownChains.has(this.__internal__spec)
+                    ? client.addWellKnownChain
+                    : client.addChain;
             this.__internal__chain = addChain(this.__internal__spec, onResponse).then((chain) => {
                 hc.setSendJsonRpc(chain.sendJsonRpc);
                 this.__internal__isChainReady = false;
@@ -1001,7 +1006,7 @@
         return { bytesRecv: 0, bytesSent: 0, cached: 0, errors: 0, requests: 0, subscriptions: 0, timeout: 0 };
     }
     class WsProvider {
-        __internal__callCache = new LRUCache();
+        __internal__callCache;
         __internal__coder;
         __internal__endpoints;
         __internal__headers;
@@ -1018,7 +1023,7 @@
         __internal__timeoutId = null;
         __internal__websocket;
         __internal__timeout;
-        constructor(endpoint = defaults.WS_URL, autoConnectMs = RETRY_DELAY, headers = {}, timeout) {
+        constructor(endpoint = defaults.WS_URL, autoConnectMs = RETRY_DELAY, headers = {}, timeout, cacheCapacity) {
             const endpoints = Array.isArray(endpoint)
                 ? endpoint
                 : [endpoint];
@@ -1030,6 +1035,7 @@
                     throw new Error(`Endpoint should start with 'ws://', received '${endpoint}'`);
                 }
             });
+            this.__internal__callCache = new LRUCache(cacheCapacity || DEFAULT_CAPACITY);
             this.__internal__eventemitter = new EventEmitter();
             this.__internal__autoConnectMs = autoConnectMs || 0;
             this.__internal__coder = new RpcCoder();
@@ -1359,7 +1365,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.11.2' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.11.3' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -1656,10 +1662,6 @@
             var args = [];
             for (var _i = 2; _i < arguments.length; _i++) {
                 args[_i - 2] = arguments[_i];
-            }
-            var delegate = timeoutProvider.delegate;
-            if (delegate === null || delegate === void 0 ? void 0 : delegate.setTimeout) {
-                return delegate.setTimeout.apply(delegate, __spreadArray([handler, timeout], __read(args)));
             }
             return setTimeout.apply(void 0, __spreadArray([handler, timeout], __read(args)));
         },
@@ -2388,10 +2390,6 @@
             for (var _i = 2; _i < arguments.length; _i++) {
                 args[_i - 2] = arguments[_i];
             }
-            var delegate = intervalProvider.delegate;
-            if (delegate === null || delegate === void 0 ? void 0 : delegate.setInterval) {
-                return delegate.setInterval.apply(delegate, __spreadArray([handler, timeout], __read(args)));
-            }
             return setInterval.apply(void 0, __spreadArray([handler, timeout], __read(args)));
         },
         clearInterval: function (handle) {
@@ -2518,8 +2516,7 @@
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i] = arguments[_i];
             }
-            var delegate = immediateProvider.delegate;
-            return ((delegate === null || delegate === void 0 ? void 0 : delegate.setImmediate) || setImmediate).apply(void 0, __spreadArray([], __read(args)));
+            return (setImmediate).apply(void 0, __spreadArray([], __read(args)));
         },
         clearImmediate: function (handle) {
             var delegate = immediateProvider.delegate;
@@ -20013,7 +20010,8 @@
                 return;
             }
             this.__internal__isActive = false;
-            this.__internal__subscriptions.map(async (subscription) => {
+            Promise
+                .all(this.__internal__subscriptions.map(async (subscription) => {
                 try {
                     const unsubscribe = await subscription;
                     if (util.isFunction(unsubscribe)) {
@@ -20022,6 +20020,7 @@
                 }
                 catch {
                 }
+            })).catch(() => {
             });
         }
     }

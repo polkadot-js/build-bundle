@@ -1522,6 +1522,12 @@
                 first: 'BeefyVoteMessage',
                 second: 'BeefyVoteMessage'
             },
+            BeefyCompactSignedCommitment: {
+                commitment: 'BeefyCommitment',
+                signaturesFrom: 'Vec<u8>',
+                validatorSetLen: 'u32',
+                signaturesCompact: 'Vec<EcdsaSignature>'
+            },
             BeefySignedCommitment: {
                 commitment: 'BeefyCommitment',
                 signatures: 'Vec<Option<EcdsaSignature>>'
@@ -1529,7 +1535,7 @@
             BeefyVersionedFinalityProof: {
                 _enum: {
                     V0: 'Null',
-                    V1: 'BeefySignedCommitment'
+                    V1: 'BeefyCompactSignedCommitment'
                 }
             },
             BeefyNextAuthoritySet: {
@@ -6707,6 +6713,9 @@
     function isEnum(arg) {
         return util.isCodec(arg) && util.isNumber(arg.index) && util.isCodec(arg.value);
     }
+    function isOption(arg) {
+        return util.isCodec(arg) && util.isBoolean(arg.isSome) && util.isCodec(arg.value);
+    }
     function isNumberLike(arg) {
         return util.isNumber(arg) || util.isBn(arg) || util.isBigInt(arg);
     }
@@ -6721,6 +6730,16 @@
         }
         return a.length - b.length;
     }
+    function checkForDuplicates(container, seen, arg) {
+        if (util.isCodec(arg)) {
+            const hex = arg.toHex();
+            if (seen.has(hex)) {
+                throw new Error(`Duplicate value in ${container}: ${util.stringify(arg)}`);
+            }
+            seen.add(hex);
+        }
+        return true;
+    }
     function sortAsc(a, b) {
         if (isNumberLike(a) && isNumberLike(b)) {
             return util.bnToBn(a).cmp(util.bnToBn(b));
@@ -6731,6 +6750,9 @@
         else if (isEnum(a) && isEnum(b)) {
             return sortAsc(a.index, b.index) || sortAsc(a.value, b.value);
         }
+        else if (isOption(a) && isOption(b)) {
+            return sortAsc(a.isNone ? 0 : 1, b.isNone ? 0 : 1) || sortAsc(a.value, b.value);
+        }
         else if (isArrayLike(a) && isArrayLike(b)) {
             return sortArray(a, b);
         }
@@ -6740,10 +6762,12 @@
         throw new Error(`Attempting to sort unrecognized values: ${util.stringify(a)} (typeof ${typeof a}) <-> ${util.stringify(b)} (typeof ${typeof b})`);
     }
     function sortSet(set) {
-        return new Set(Array.from(set).sort(sortAsc));
+        const seen = new Set();
+        return new Set(Array.from(set).filter((value) => checkForDuplicates('BTreeSet', seen, value)).sort(sortAsc));
     }
     function sortMap(map) {
-        return new Map(Array.from(map.entries()).sort(([keyA], [keyB]) => sortAsc(keyA, keyB)));
+        const seen = new Set();
+        return new Map(Array.from(map.entries()).filter(([key]) => checkForDuplicates('BTreeMap', seen, key)).sort(([keyA], [keyB]) => sortAsc(keyA, keyB)));
     }
 
     function typeToConstructor(registry, type) {
@@ -14149,7 +14173,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.11.2' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.11.3' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
