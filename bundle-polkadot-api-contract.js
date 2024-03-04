@@ -95,27 +95,32 @@
             spec: util.objectSpread({}, v3.spec, {
                 constructors: v3.spec.constructors.map((c) => registry.createType('ContractConstructorSpecV4', util.objectSpread({}, c))),
                 messages: v3.spec.messages.map((m) => registry.createType('ContractMessageSpecV3', util.objectSpread({}, m)))
-            })
+            }),
+            version: registry.createType('Text', '4')
         }));
     }
 
-    const enumVersions = ['V4', 'V3', 'V2', 'V1'];
+    const enumVersions = ['V5', 'V4', 'V3', 'V2', 'V1'];
     function createConverter(next, step) {
         return (registry, input) => next(registry, step(registry, input));
     }
-    function v4ToLatest(_registry, v4) {
+    function v5ToLatestCompatible(_registry, v5) {
+        return v5;
+    }
+    function v4ToLatestCompatible(_registry, v4) {
         return v4;
     }
-    const v3ToLatest =  createConverter(v4ToLatest, v3ToV4);
-    const v2ToLatest =  createConverter(v3ToLatest, v2ToV3);
-    const v1ToLatest =  createConverter(v2ToLatest, v1ToV2);
-    const v0ToLatest =  createConverter(v1ToLatest, v0ToV1);
+    const v3ToLatestCompatible =  createConverter(v4ToLatestCompatible, v3ToV4);
+    const v2ToLatestCompatible =  createConverter(v3ToLatestCompatible, v2ToV3);
+    const v1ToLatestCompatible =  createConverter(v2ToLatestCompatible, v1ToV2);
+    const v0ToLatestCompatible =  createConverter(v1ToLatestCompatible, v0ToV1);
     const convertVersions = [
-        ['V4', v4ToLatest],
-        ['V3', v3ToLatest],
-        ['V2', v2ToLatest],
-        ['V1', v1ToLatest],
-        ['V0', v0ToLatest]
+        ['V5', v5ToLatestCompatible],
+        ['V4', v4ToLatestCompatible],
+        ['V3', v3ToLatestCompatible],
+        ['V2', v2ToLatestCompatible],
+        ['V1', v1ToLatestCompatible],
+        ['V0', v0ToLatestCompatible]
     ];
 
     const l$1 = util.logger('Abi');
@@ -128,7 +133,7 @@
                 : messageOrId;
         return util.assertReturn(message, () => `Attempted to call an invalid contract interface, ${util.stringify(messageOrId)}`);
     }
-    function getLatestMeta(registry, json) {
+    function getMetadata(registry, json) {
         const vx = enumVersions.find((v) => util.isObject(json[v]));
         const jsonVersion = json.version;
         if (!vx && jsonVersion && !enumVersions.find((v) => v === `V${jsonVersion}`)) {
@@ -141,21 +146,22 @@
                 : { V0: json });
         const converter = convertVersions.find(([v]) => metadata[`is${v}`]);
         if (!converter) {
-            throw new Error(`Unable to convert ABI with version ${metadata.type} to latest`);
+            throw new Error(`Unable to convert ABI with version ${metadata.type} to a supported version`);
         }
-        return converter[1](registry, metadata[`as${converter[0]}`]);
+        const upgradedMetadata = converter[1](registry, metadata[`as${converter[0]}`]);
+        return upgradedMetadata;
     }
     function parseJson(json, chainProperties) {
         const registry = new types.TypeRegistry();
         const info = registry.createType('ContractProjectInfo', json);
-        const latest = getLatestMeta(registry, json);
-        const lookup = registry.createType('PortableRegistry', { types: latest.types }, true);
+        const metadata = getMetadata(registry, json);
+        const lookup = registry.createType('PortableRegistry', { types: metadata.types }, true);
         registry.setLookup(lookup);
         if (chainProperties) {
             registry.setChainProperties(chainProperties);
         }
         lookup.types.forEach(({ id }) => lookup.getTypeDef(id));
-        return [json, registry, latest, info];
+        return [json, registry, metadata, info];
     }
     function isTypeSpec(value) {
         return !!value && value instanceof Map && !util.isUndefined(value.type) && !util.isUndefined(value.displayName);
@@ -184,7 +190,7 @@
                     ? this.registry.lookup.getTypeDef(spec.returnType.unwrap().type)
                     : null
             }));
-            this.events = this.metadata.spec.events.map((spec, index) => this.__internal__createEvent(spec, index));
+            this.events = this.metadata.spec.events.map((_, index) => this.__internal__createEvent(index));
             this.messages = this.metadata.spec.messages.map((spec, index) => this.__internal__createMessage(spec, index, {
                 isDefault: spec.default.isTrue,
                 isMutating: spec.mutates.isTrue,
@@ -213,14 +219,48 @@
                 }
             }
         }
-        decodeEvent(data) {
+        decodeEvent(record) {
+            switch (this.metadata.version.toString()) {
+                case '4':
+                    return this.__internal__decodeEventV4(record);
+                default:
+                    return this.__internal__decodeEventV5(record);
+            }
+        }
+        __internal__decodeEventV5 = (record) => {
+            const signatureTopic = record.topics[0];
+            const data = record.event.data[1];
+            if (signatureTopic) {
+                const event = this.events.find((e) => e.signatureTopic !== undefined && e.signatureTopic !== null && e.signatureTopic === signatureTopic.toHex());
+                if (event) {
+                    return event.fromU8a(data);
+                }
+            }
+            const amountOfTopics = record.topics.length;
+            const potentialEvents = this.events.filter((e) => {
+                if (e.signatureTopic !== null && e.signatureTopic !== undefined) {
+                    return false;
+                }
+                const amountIndexed = e.args.filter((a) => a.indexed).length;
+                if (amountIndexed !== amountOfTopics) {
+                    return false;
+                }
+                return true;
+            });
+            if (potentialEvents.length === 1) {
+                return potentialEvents[0].fromU8a(data);
+            }
+            throw new Error('Unable to determine event');
+        };
+        __internal__decodeEventV4 = (record) => {
+            const data = record.event.data[1];
             const index = data[0];
             const event = this.events[index];
             if (!event) {
                 throw new Error(`Unable to find event with index ${index}`);
             }
             return event.fromU8a(data.subarray(1));
-        }
+        };
         decodeConstructor(data) {
             return this.__internal__decodeMessage('message', this.constructors, data);
         }
@@ -266,8 +306,38 @@
                 }
             });
         };
-        __internal__createEvent = (spec, index) => {
-            const args = this.__internal__createArgs(spec.args, spec);
+        __internal__createMessageParams = (args, spec) => {
+            return this.__internal__createArgs(args, spec);
+        };
+        __internal__createEventParams = (args, spec) => {
+            const params = this.__internal__createArgs(args, spec);
+            return params.map((p, index) => ({ ...p, indexed: args[index].indexed.toPrimitive() }));
+        };
+        __internal__createEvent = (index) => {
+            switch (this.metadata.version.toString()) {
+                case '4':
+                    return this.__internal__createEventV4(this.metadata.spec.events[index], index);
+                default:
+                    return this.__internal__createEventV5(this.metadata.spec.events[index], index);
+            }
+        };
+        __internal__createEventV5 = (spec, index) => {
+            const args = this.__internal__createEventParams(spec.args, spec);
+            const event = {
+                args,
+                docs: spec.docs.map((d) => d.toString()),
+                fromU8a: (data) => ({
+                    args: this.__internal__decodeArgs(args, data),
+                    event
+                }),
+                identifier: [spec.module_path, spec.label].join('::'),
+                index,
+                signatureTopic: spec.signature_topic.isSome ? spec.signature_topic.unwrap().toHex() : null
+            };
+            return event;
+        };
+        __internal__createEventV4 = (spec, index) => {
+            const args = this.__internal__createEventParams(spec.args, spec);
             const event = {
                 args,
                 docs: spec.docs.map((d) => d.toString()),
@@ -281,7 +351,7 @@
             return event;
         };
         __internal__createMessage = (spec, index, add = {}) => {
-            const args = this.__internal__createArgs(spec.args, spec);
+            const args = this.__internal__createMessageParams(spec.args, spec);
             const identifier = spec.label.toString();
             const message = {
                 ...add,
@@ -297,7 +367,7 @@
                 method: util.stringCamelCase(identifier),
                 path: identifier.split('::').map((s) => util.stringCamelCase(s)),
                 selector: spec.selector,
-                toU8a: (params) => this.__internal__encodeArgs(spec, args, params)
+                toU8a: (params) => this.__internal__encodeMessageArgs(spec, args, params)
             };
             return message;
         };
@@ -318,7 +388,7 @@
             }
             return message.fromU8a(trimmed.subarray(4));
         };
-        __internal__encodeArgs = ({ label, selector }, args, data) => {
+        __internal__encodeMessageArgs = ({ label, selector }, args, data) => {
             if (data.length !== args.length) {
                 throw new Error(`Expected ${args.length} arguments to contract message '${label.toString()}', found ${data.length}`);
             }
@@ -326,7 +396,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api-contract', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.11.3' };
+    const packageInfo = { name: '@polkadot/api-contract', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.12.1' };
 
     function applyOnEvent(result, types, fn) {
         if (result.isInBlock || result.isFinalized) {
@@ -951,9 +1021,9 @@
                 ? convertWeight(gasLimit).v1Weight
                 : convertWeight(gasLimit).v2Weight, storageDepositLimit, this.abi.findMessage(messageOrId).toU8a(params)).withResultTransform((result) =>
             new ContractSubmittableResult(result, applyOnEvent(result, ['ContractEmitted', 'ContractExecution'], (records) => records
-                .map(({ event: { data: [, data] } }) => {
+                .map((record) => {
                 try {
-                    return this.abi.decodeEvent(data);
+                    return this.abi.decodeEvent(record);
                 }
                 catch (error) {
                     l.error(`Unable to decode contract event: ${error.message}`);
