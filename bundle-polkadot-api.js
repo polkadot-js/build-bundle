@@ -264,13 +264,14 @@
         async send(method, params, isCacheable) {
             this.__internal__stats.total.requests++;
             const [, body] = this.__internal__coder.encodeJson(method, params);
+            const cacheKey = isCacheable ? `${method}::${util.stringify(params)}` : '';
             let resultPromise = isCacheable
-                ? this.__internal__callCache.get(body)
+                ? this.__internal__callCache.get(cacheKey)
                 : null;
             if (!resultPromise) {
                 resultPromise = this.__internal__send(body);
                 if (isCacheable) {
-                    this.__internal__callCache.set(body, resultPromise);
+                    this.__internal__callCache.set(cacheKey, resultPromise);
                 }
             }
             else {
@@ -1151,13 +1152,14 @@
             this.__internal__endpointStats.requests++;
             this.__internal__stats.total.requests++;
             const [id, body] = this.__internal__coder.encodeJson(method, params);
+            const cacheKey = isCacheable ? `${method}::${util.stringify(params)}` : '';
             let resultPromise = isCacheable
-                ? this.__internal__callCache.get(body)
+                ? this.__internal__callCache.get(cacheKey)
                 : null;
             if (!resultPromise) {
                 resultPromise = this.__internal__send(id, body, method, params, subscription);
                 if (isCacheable) {
-                    this.__internal__callCache.set(body, resultPromise);
+                    this.__internal__callCache.set(cacheKey, resultPromise);
                 }
             }
             else {
@@ -1365,7 +1367,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.12.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.12.2' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -4015,11 +4017,17 @@
             return other;
         }, {});
     }
+    function identityCompat(identityOfOpt) {
+        const identity = identityOfOpt.unwrap();
+        return Array.isArray(identity)
+            ? identity[0]
+            : identity;
+    }
     function extractIdentity(identityOfOpt, superOf) {
         if (!identityOfOpt?.isSome) {
             return { judgements: [] };
         }
-        const { info, judgements } = identityOfOpt.unwrap();
+        const { info, judgements } = identityCompat(identityOfOpt);
         const topDisplay = dataAsString(info.display);
         return {
             display: (superOf && dataAsString(superOf[1])) || topDisplay,
@@ -4073,7 +4081,7 @@
                     : undefined;
                 let display;
                 if (identityOfOpt && identityOfOpt.isSome) {
-                    const value = dataAsString(identityOfOpt.unwrap().info.display);
+                    const value = dataAsString(identityCompat(identityOfOpt).info.display);
                     if (value && !util.isHex(value)) {
                         display = value;
                     }
@@ -6369,7 +6377,12 @@
     const ownSlash =  firstMemo((api, accountId, era) => api.derive.staking._ownSlashes(accountId, [era], true));
     const ownSlashes =  erasHistoricApplyAccount('_ownSlashes');
 
-    function parseDetails(stashId, controllerIdOpt, nominatorsOpt, rewardDestination, validatorPrefs, exposure, stakingLedgerOpt) {
+    function rewardDestinationCompat(rewardDestination) {
+        return typeof rewardDestination.isSome === 'boolean'
+            ? rewardDestination.unwrapOr(null)
+            : rewardDestination;
+    }
+    function parseDetails(stashId, controllerIdOpt, nominatorsOpt, rewardDestinationOpts, validatorPrefs, exposure, stakingLedgerOpt) {
         return {
             accountId: stashId,
             controllerId: controllerIdOpt?.unwrapOr(null) || null,
@@ -6377,7 +6390,7 @@
             nominators: nominatorsOpt.isSome
                 ? nominatorsOpt.unwrap().targets
                 : [],
-            rewardDestination,
+            rewardDestination: rewardDestinationCompat(rewardDestinationOpts),
             stakingLedger: stakingLedgerOpt.unwrapOrDefault(),
             stashId,
             validatorPrefs
