@@ -984,11 +984,11 @@
                         params: [
                             {
                                 name: 'asset1',
-                                type: 'XcmV3MultiLocation'
+                                type: 'StagingXcmV3MultiLocation'
                             },
                             {
                                 name: 'asset2',
-                                type: 'XcmV3MultiLocation'
+                                type: 'StagingXcmV3MultiLocation'
                             }
                         ],
                         type: 'Option<(Balance,Balance)>'
@@ -998,11 +998,11 @@
                         params: [
                             {
                                 name: 'asset1',
-                                type: 'XcmV3MultiLocation'
+                                type: 'StagingXcmV3MultiLocation'
                             },
                             {
                                 name: 'asset2',
-                                type: 'XcmV3MultiLocation'
+                                type: 'StagingXcmV3MultiLocation'
                             },
                             {
                                 name: 'amount',
@@ -1020,11 +1020,11 @@
                         params: [
                             {
                                 name: 'asset1',
-                                type: 'XcmV3MultiLocation'
+                                type: 'StagingXcmV3MultiLocation'
                             },
                             {
                                 name: 'asset2',
-                                type: 'XcmV3MultiLocation'
+                                type: 'StagingXcmV3MultiLocation'
                             },
                             {
                                 name: 'amount',
@@ -8878,7 +8878,7 @@
         }
         toHuman() {
             return [...this.entries()].reduce((json, [key, value]) => {
-                json[key] = util.isFunction(value.toHuman)
+                json[key] = util.isFunction(value?.toHuman)
                     ? value.toHuman()
                     : value;
                 return json;
@@ -14194,7 +14194,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.12.2' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.12.3' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
