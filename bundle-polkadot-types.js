@@ -24,7 +24,7 @@
             type: 'OpaqueMetadata'
         }
     };
-    const runtime$t = {
+    const runtime$w = {
         Metadata: [
             {
                 methods: {
@@ -543,9 +543,9 @@
         }
     };
 
-    const definitions$17 = {
+    const definitions$1a = {
         rpc: {},
-        runtime: runtime$t,
+        runtime: runtime$w,
         types: {
             ...v9,
             ...v10,
@@ -628,15 +628,38 @@
             type: 'Null'
         }
     };
-    const runtime$s = {
+    const CORE_V4_VERSION = {
+        version: {
+            description: 'Returns the version of the runtime.',
+            params: [],
+            type: 'RuntimeVersion'
+        }
+    };
+    const CORE_V4_TO_V5 = {
+        ...CORE_V1_TO_V4,
+        initialize_block: {
+            description: 'Initialize a block with the given header.',
+            params: [
+                {
+                    name: 'header',
+                    type: 'Header'
+                }
+            ],
+            type: 'ExtrinsicInclusionMode'
+        }
+    };
+    const runtime$v = {
         Core: [
             {
                 methods: {
-                    version: {
-                        description: 'Returns the version of the runtime.',
-                        params: [],
-                        type: 'RuntimeVersion'
-                    },
+                    ...CORE_V4_VERSION,
+                    ...CORE_V4_TO_V5
+                },
+                version: 5
+            },
+            {
+                methods: {
+                    ...CORE_V4_VERSION,
                     ...CORE_V1_TO_V4,
                     ...CORE_V2_TO_V4
                 },
@@ -706,9 +729,9 @@
         Authority: 'AuthorityOrigin',
         GeneralCouncil: 'CollectiveOrigin'
     };
-    const definitions$16 = {
+    const definitions$19 = {
         rpc: {},
-        runtime: runtime$s,
+        runtime: runtime$v,
         types: {
             ...numberTypes,
             AccountId: 'AccountId32',
@@ -883,7 +906,10 @@
             PreRuntime: '(ConsensusEngineId, Bytes)',
             SealV0: '(u64, Signature)',
             Seal: '(ConsensusEngineId, Bytes)',
-            Consensus: '(ConsensusEngineId, Bytes)'
+            Consensus: '(ConsensusEngineId, Bytes)',
+            ExtrinsicInclusionMode: {
+                _enum: ['AllExtrinsics', 'OnlyInherents']
+            }
         }
     };
 
@@ -952,7 +978,7 @@
         }
     };
 
-    const definitions$15 = {
+    const definitions$18 = {
         rpc: {},
         types: {
             ...v0$1,
@@ -975,7 +1001,7 @@
         }
     };
 
-    const runtime$r = {
+    const runtime$u = {
         AssetConversionApi: [
             {
                 methods: {
@@ -1043,15 +1069,15 @@
         ]
     };
 
-    const definitions$14 = {
+    const definitions$17 = {
         rpc: {},
-        runtime: runtime$r,
+        runtime: runtime$u,
         types: {
             TAssetConversion: 'Option<MultiLocation>'
         }
     };
 
-    const runtime$q = {
+    const runtime$t = {
         AssetsApi: [
             {
                 methods: {
@@ -1071,9 +1097,9 @@
         ]
     };
 
-    const definitions$13 = {
+    const definitions$16 = {
         rpc: {},
-        runtime: runtime$q,
+        runtime: runtime$t,
         types: {
             AssetApprovalKey: {
                 owner: 'AccountId',
@@ -1119,7 +1145,7 @@
         }
     };
 
-    const runtime$p = {
+    const runtime$s = {
         AuraApi: [
             {
                 methods: {
@@ -1139,9 +1165,9 @@
         ]
     };
 
-    const definitions$12 = {
+    const definitions$15 = {
         rpc: {},
-        runtime: runtime$p,
+        runtime: runtime$s,
         types: {
             RawAuraPreDigest: {
                 slotNumber: 'u64'
@@ -1149,7 +1175,7 @@
         }
     };
 
-    const definitions$11 = {
+    const definitions$14 = {
         rpc: {},
         types: {
             UncleEntryItem: {
@@ -1215,7 +1241,7 @@
             type: 'Option<Null>'
         }
     };
-    const runtime$o = {
+    const runtime$r = {
         BabeApi: [
             {
                 methods: {
@@ -1242,9 +1268,9 @@
         ]
     };
 
-    const definitions$10 = {
+    const definitions$13 = {
         rpc: rpc$g,
-        runtime: runtime$o,
+        runtime: runtime$r,
         types: {
             AllowedSlots: {
                 _enum: ['PrimarySlots', 'PrimaryAndSecondaryPlainSlots', 'PrimaryAndSecondaryVRFSlots']
@@ -1362,7 +1388,7 @@
         }
     };
 
-    const definitions$$ = {
+    const definitions$12 = {
         rpc: {},
         types: {
             AccountData: {
@@ -1480,7 +1506,7 @@
             type: 'BeefyNextAuthoritySet'
         }
     };
-    const runtime$n = {
+    const runtime$q = {
         BeefyApi: [
             {
                 methods: BEEFY_V1_V3,
@@ -1503,9 +1529,9 @@
         ]
     };
 
-    const definitions$_ = {
+    const definitions$11 = {
         rpc: rpc$f,
-        runtime: runtime$n,
+        runtime: runtime$q,
         types: {
             BeefyAuthoritySet: {
                 id: 'u64',
@@ -1559,7 +1585,7 @@
         }
     };
 
-    const runtime$m = {
+    const runtime$p = {
         Benchmark: [
             {
                 methods: {
@@ -1589,9 +1615,9 @@
         ]
     };
 
-    const definitions$Z = {
+    const definitions$10 = {
         rpc: {},
-        runtime: runtime$m,
+        runtime: runtime$p,
         types: {
             BenchmarkBatch: {
                 pallet: 'Text',
@@ -1684,7 +1710,7 @@
             type: 'Header'
         }
     };
-    const runtime$l = {
+    const runtime$o = {
         BlockBuilder: [
             {
                 methods: {
@@ -1743,9 +1769,9 @@
         ]
     };
 
-    const definitions$Y = {
+    const definitions$$ = {
         rpc: {},
-        runtime: runtime$l,
+        runtime: runtime$o,
         types: {
             CheckInherentsResult: {
                 okay: 'bool',
@@ -1759,7 +1785,7 @@
         }
     };
 
-    const definitions$X = {
+    const definitions$_ = {
         rpc: {},
         types: {
             CollectiveOrigin: {
@@ -1786,7 +1812,7 @@
         }
     };
 
-    const definitions$W = {
+    const definitions$Z = {
         rpc: {},
         types: {
             AuthorityId: 'AccountId',
@@ -1921,7 +1947,7 @@
             type: 'CodeUploadResult'
         }
     };
-    const runtime$k = {
+    const runtime$n = {
         ContractsApi: [
             {
                 methods: {
@@ -2066,9 +2092,9 @@
         ]
     };
 
-    const definitions$V = {
+    const definitions$Y = {
         rpc: rpc$e,
-        runtime: runtime$k,
+        runtime: runtime$n,
         types: {
             AliveContractInfo: {
                 trieId: 'TrieId',
@@ -2497,7 +2523,7 @@
         'Locked5x',
         'Locked6x'
     ];
-    const definitions$U = {
+    const definitions$X = {
         rpc: {},
         types: {
             AccountVote: {
@@ -2609,7 +2635,7 @@
         }
     };
 
-    const definitions$T = {
+    const definitions$W = {
         rpc: rpc$d,
         types: {
             BlockStats: {
@@ -2621,7 +2647,7 @@
         }
     };
 
-    const runtime$j = {
+    const runtime$m = {
         AuthorityDiscoveryApi: [
             {
                 methods: {
@@ -2636,13 +2662,13 @@
         ]
     };
 
-    const definitions$S = {
+    const definitions$V = {
         rpc: {},
-        runtime: runtime$j,
+        runtime: runtime$m,
         types: {}
     };
 
-    const definitions$R = {
+    const definitions$U = {
         rpc: {},
         types: {
             ApprovalFlag: 'u32',
@@ -2714,7 +2740,7 @@
         }
     };
 
-    const definitions$Q = {
+    const definitions$T = {
         rpc: rpc$c,
         types: {
             CreatedBlock: {
@@ -2735,7 +2761,7 @@
         }
     };
 
-    const definitions$P = {
+    const definitions$S = {
         rpc: {},
         types: {
             EvmAccount: {
@@ -2826,7 +2852,7 @@
         }
     };
 
-    const definitions$O = {
+    const definitions$R = {
         rpc: {},
         types: {
             Extrinsic: 'GenericExtrinsic',
@@ -2857,7 +2883,7 @@
         }
     };
 
-    const runtime$i = {
+    const runtime$l = {
         FungiblesApi: [
             {
                 methods: {
@@ -2892,9 +2918,9 @@
         ]
     };
 
-    const definitions$N = {
+    const definitions$Q = {
         rpc: {},
-        runtime: runtime$i,
+        runtime: runtime$l,
         types: {
             FungiblesAccessError: {
                 _enum: ['AssetIdConversionFailed', 'AmountToBalanceConversionFailed']
@@ -2902,7 +2928,7 @@
         }
     };
 
-    const definitions$M = {
+    const definitions$P = {
         rpc: {},
         types: {
             AssetOptions: {
@@ -2929,7 +2955,40 @@
         }
     };
 
-    const definitions$L = {
+    const runtime$k = {
+        GenesisBuilder: [
+            {
+                methods: {
+                    build_config: {
+                        description: 'Build `RuntimeGenesisConfig` from a JSON blob not using any defaults and store it in the storage.',
+                        params: [
+                            {
+                                name: 'json',
+                                type: 'Vec<u8>'
+                            }
+                        ],
+                        type: 'Result<(), GenesisBuildErr>'
+                    },
+                    create_default_config: {
+                        description: 'Creates the default `RuntimeGenesisConfig` and returns it as a JSON blob.',
+                        params: [],
+                        type: 'Vec<u8>'
+                    }
+                },
+                version: 1
+            }
+        ]
+    };
+
+    const definitions$O = {
+        rpc: {},
+        runtime: runtime$k,
+        types: {
+            GenesisBuildErr: 'Text'
+        }
+    };
+
+    const definitions$N = {
         rpc: {},
         types: {
             ActiveGilt: {
@@ -3015,7 +3074,7 @@
             type: 'Option<Null>'
         }
     };
-    const runtime$h = {
+    const runtime$j = {
         GrandpaApi: [
             {
                 methods: {
@@ -3035,9 +3094,9 @@
         ]
     };
 
-    const definitions$K = {
+    const definitions$M = {
         rpc: rpc$b,
-        runtime: runtime$h,
+        runtime: runtime$j,
         types: {
             AuthorityIndex: 'u64',
             AuthorityList: 'Vec<NextAuthority>',
@@ -3165,7 +3224,7 @@
         }
     };
 
-    const definitions$J = {
+    const definitions$L = {
         rpc: {},
         types: {
             IdentityFields: {
@@ -3236,7 +3295,7 @@
         }
     };
 
-    const definitions$I = {
+    const definitions$K = {
         rpc: {},
         types: {
             AuthIndex: 'u32',
@@ -3263,7 +3322,7 @@
         }
     };
 
-    const definitions$H = {
+    const definitions$J = {
         rpc: {},
         types: {
             CallIndex: '(u8, u8)',
@@ -3273,6 +3332,72 @@
                 length: 'BlockNumber',
                 delay: 'BlockNumber',
                 repeat: 'bool'
+            }
+        }
+    };
+
+    const runtime$i = {
+        MixnetApi: [
+            {
+                methods: {
+                    current_mixnodes: {
+                        description: 'Get the index and phase of the current session.',
+                        params: [],
+                        type: 'Result<Mixnode, MixnodesErr>'
+                    },
+                    maybe_register: {
+                        description: 'Try to register a mixnode for the next session.',
+                        params: [
+                            {
+                                name: 'session_index',
+                                type: 'u32'
+                            },
+                            {
+                                name: 'mixnode',
+                                type: 'Mixnode'
+                            }
+                        ],
+                        type: 'bool'
+                    },
+                    prev_mixnodes: {
+                        description: 'Get the index and phase of the current session.',
+                        params: [],
+                        type: 'Result<Mixnode, MixnodesErr>'
+                    },
+                    session_status: {
+                        description: 'Get the index and phase of the current session.',
+                        params: [],
+                        type: 'SessionStatus'
+                    }
+                },
+                version: 1
+            }
+        ]
+    };
+
+    const definitions$I = {
+        rpc: {},
+        runtime: runtime$i,
+        types: {
+            Mixnode: {
+                externalAddresses: 'Vec<Bytes>',
+                kxPublic: '[u8; 32]',
+                peerId: '[u8; 32]'
+            },
+            MixnodesErr: {
+                _enum: {
+                    InsufficientRegistrations: {
+                        min: 'u32',
+                        num: 'u32'
+                    }
+                }
+            },
+            SessionPhase: {
+                _enum: ['CoverToCurrent', 'RequestsToCurrent', 'CoverToPrev', 'DisconnectFromPrev']
+            },
+            SessionStatus: {
+                currentIndex: 'u32',
+                phase: 'SessionPhase'
             }
         }
     };
@@ -3352,7 +3477,12 @@
             ],
             type: 'Result<(Vec<MmrEncodableOpaqueLeaf>, MmrBatchProof), MmrError>'
         },
-        root: {
+        mmr_leaf_count: {
+            description: 'Return the number of MMR blocks in the chain.',
+            params: [],
+            type: 'Result<U64, MmrError>'
+        },
+        mmr_root: {
             description: 'Return the on-chain MMR root hash.',
             params: [],
             type: 'Result<Hash, MmrError>'
@@ -3481,7 +3611,7 @@
             type: 'Result<(), MmrError>'
         }
     };
-    const runtime$g = {
+    const runtime$h = {
         MmrApi: [
             {
                 methods: MMR_V2,
@@ -3494,9 +3624,9 @@
         ]
     };
 
-    const definitions$G = {
+    const definitions$H = {
         rpc: rpc$a,
-        runtime: runtime$g,
+        runtime: runtime$h,
         types: {
             MmrBatchProof: {
                 leafIndices: 'Vec<MmrLeafIndex>',
@@ -3505,7 +3635,7 @@
             },
             MmrEncodableOpaqueLeaf: 'Bytes',
             MmrError: {
-                _enum: ['Push', 'GetRoot', 'Commit', 'GenerateProof', 'Verify', 'LeafNotFound', ' PalletNotIncluded', 'InvalidLeafIndex']
+                _enum: ['InvalidNumericOp', 'Push', 'GetRoot', 'Commit', 'GenerateProof', 'Verify', 'LeafNotFound', ' PalletNotIncluded', 'InvalidLeafIndex', 'InvalidBestKnownBlock']
             },
             MmrHash: 'Hash',
             MmrLeafBatchProof: {
@@ -3528,7 +3658,7 @@
         }
     };
 
-    const runtime$f = {
+    const runtime$g = {
         NftsApi: [
             {
                 methods: {
@@ -3634,16 +3764,16 @@
         ]
     };
 
-    const definitions$F = {
+    const definitions$G = {
         rpc: {},
-        runtime: runtime$f,
+        runtime: runtime$g,
         types: {
             NftCollectionId: 'u32',
             NftItemId: 'u32'
         }
     };
 
-    const runtime$e = {
+    const runtime$f = {
         NominationPoolsApi: [
             {
                 methods: {
@@ -3691,9 +3821,9 @@
         ]
     };
 
-    const definitions$E = {
+    const definitions$F = {
         rpc: {},
-        runtime: runtime$e,
+        runtime: runtime$f,
         types: {
             NpApiError: {
                 _enum: ['MemberNotFound', 'OverflowInPendingRewards']
@@ -3702,7 +3832,7 @@
         }
     };
 
-    const definitions$D = {
+    const definitions$E = {
         rpc: {},
         types: {
             DeferredOffenceOf: '(Vec<OffenceDetails>, Vec<Perbill>, SessionIndex)',
@@ -3718,7 +3848,7 @@
         }
     };
 
-    const runtime$d = {
+    const runtime$e = {
         DifficultyApi: [
             {
                 methods: {
@@ -3745,13 +3875,13 @@
         ]
     };
 
-    const definitions$C = {
+    const definitions$D = {
         rpc: {},
-        runtime: runtime$d,
+        runtime: runtime$e,
         types: {}
     };
 
-    const definitions$B = {
+    const definitions$C = {
         rpc: {},
         types: {
             ProxyDefinition: {
@@ -3770,7 +3900,7 @@
         }
     };
 
-    const definitions$A = {
+    const definitions$B = {
         rpc: {},
         types: {
             ActiveRecovery: {
@@ -3787,7 +3917,7 @@
         }
     };
 
-    const definitions$z = {
+    const definitions$A = {
         rpc: {},
         types: {
             Period: '(BlockNumber, u32)',
@@ -3811,7 +3941,7 @@
         }
     };
 
-    const runtime$c = {
+    const runtime$d = {
         SessionKeys: [
             {
                 methods: {
@@ -3860,9 +3990,9 @@
         SessionKeys10: '(AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId)',
         SessionKeys10B: '(AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, BeefyKey)'
     };
-    const definitions$y = {
+    const definitions$z = {
         rpc: {},
-        runtime: runtime$c,
+        runtime: runtime$d,
         types: {
             ...keyTypes,
             FullIdentification: 'Exposure',
@@ -3877,7 +4007,7 @@
         }
     };
 
-    const definitions$x = {
+    const definitions$y = {
         rpc: {},
         types: {
             Bid: {
@@ -3904,7 +4034,7 @@
         }
     };
 
-    const runtime$b = {
+    const runtime$c = {
         StakingApi: [
             {
                 methods: {
@@ -4084,9 +4214,9 @@
         },
         VoteWeight: 'u64'
     };
-    const definitions$w = {
+    const definitions$x = {
         rpc: {},
-        runtime: runtime$b,
+        runtime: runtime$c,
         types: {
             ...deprecated,
             ...phragmen,
@@ -4213,6 +4343,47 @@
             ValidatorPrefsTo145: {
                 unstakeThreshold: 'Compact<u32>',
                 validatorPayment: 'Compact<Balance>'
+            }
+        }
+    };
+
+    const runtime$b = {
+        ValidateStatement: [
+            {
+                methods: {
+                    valdate_statement: {
+                        description: 'Validate the statement.',
+                        params: [
+                            {
+                                name: 'source',
+                                type: 'StatementStoreStatementSource'
+                            },
+                            {
+                                name: 'statement',
+                                type: 'SpStatementStoreStatement'
+                            }
+                        ],
+                        type: 'Result<StatementStoreValidStatement, StatementStoreInvalidStatement>'
+                    }
+                },
+                version: 1
+            }
+        ]
+    };
+
+    const definitions$w = {
+        rpc: {},
+        runtime: runtime$b,
+        types: {
+            StatementStoreStatementSource: {
+                _enum: ['Chain', 'Network', 'Local']
+            },
+            StatementStoreValidStatement: {
+                maxCount: 'u32',
+                maxSize: 'u32'
+            },
+            StatementStoreInvalidStatement: {
+                _enum: ['BadProof', 'NoProof', 'InternalError']
             }
         }
     };
@@ -6156,11 +6327,11 @@
         toHex() {
             return util.u8aToHex(this.toU8a());
         }
-        toHuman(isExtended) {
+        toHuman(isExtended, disableAscii) {
             const count = this.length;
             const result = new Array(count);
             for (let i = 0; i < count; i++) {
-                result[i] = this[i] && this[i].toHuman(isExtended);
+                result[i] = this[i] && this[i].toHuman(isExtended, disableAscii);
             }
             return result;
         }
@@ -6172,11 +6343,11 @@
             }
             return result;
         }
-        toPrimitive() {
+        toPrimitive(disableAscii) {
             const count = this.length;
             const result = new Array(count);
             for (let i = 0; i < count; i++) {
-                result[i] = this[i] && this[i].toPrimitive();
+                result[i] = this[i] && this[i].toPrimitive(disableAscii);
             }
             return result;
         }
@@ -6236,14 +6407,14 @@
         toHex(isLe) {
             return this.__internal__raw.toHex(isLe);
         }
-        toHuman(isExtended) {
-            return this.__internal__raw.toHuman(isExtended);
+        toHuman(isExtended, disableAscii) {
+            return this.__internal__raw.toHuman(isExtended, disableAscii);
         }
         toJSON() {
             return this.__internal__raw.toJSON();
         }
-        toPrimitive() {
-            return this.__internal__raw.toPrimitive();
+        toPrimitive(disableAscii) {
+            return this.__internal__raw.toPrimitive(disableAscii);
         }
         toString() {
             return this.__internal__raw.toString();
@@ -6874,8 +7045,8 @@
         toHex(isLe) {
             return this.__internal__raw.toHex(isLe);
         }
-        toHuman(isExtended) {
-            return this.__internal__raw.toHuman(isExtended);
+        toHuman(isExtended, disableAscii) {
+            return this.__internal__raw.toHuman(isExtended, disableAscii);
         }
         toJSON() {
             return this.__internal__raw.toJSON();
@@ -6883,8 +7054,8 @@
         toNumber() {
             return this.__internal__raw.toNumber();
         }
-        toPrimitive() {
-            return this.__internal__raw.toPrimitive();
+        toPrimitive(disableAscii) {
+            return this.__internal__raw.toPrimitive(disableAscii);
         }
         toRawType() {
             return `Compact<${this.registry.getClassName(this.__internal__Type) || this.__internal__raw.toRawType()}>`;
@@ -7229,10 +7400,10 @@
         toHex() {
             return util.u8aToHex(this.toU8a());
         }
-        toHuman(isExtended) {
+        toHuman(isExtended, disableAscii) {
             return this.__internal__isBasic || this.isNone
                 ? this.type
-                : { [this.type]: this.__internal__raw.toHuman(isExtended) };
+                : { [this.type]: this.__internal__raw.toHuman(isExtended, disableAscii) };
         }
         toJSON() {
             return this.__internal__isBasic
@@ -7242,10 +7413,10 @@
         toNumber() {
             return this.index;
         }
-        toPrimitive() {
+        toPrimitive(disableAscii) {
             return this.__internal__isBasic
                 ? this.type
-                : { [util.stringCamelCase(this.type)]: this.__internal__raw.toPrimitive() };
+                : { [util.stringCamelCase(this.type)]: this.__internal__raw.toPrimitive(disableAscii) };
         }
         _toRawStruct() {
             if (this.__internal__isBasic) {
@@ -7397,18 +7568,18 @@
                 ? '0x'
                 : util.u8aToHex(this.toU8a().subarray(1));
         }
-        toHuman(isExtended) {
-            return this.__internal__raw.toHuman(isExtended);
+        toHuman(isExtended, disableAscii) {
+            return this.__internal__raw.toHuman(isExtended, disableAscii);
         }
         toJSON() {
             return this.isNone
                 ? null
                 : this.__internal__raw.toJSON();
         }
-        toPrimitive() {
+        toPrimitive(disableAscii) {
             return this.isNone
                 ? null
-                : this.__internal__raw.toPrimitive();
+                : this.__internal__raw.toPrimitive(disableAscii);
         }
         toRawType(isBare) {
             const wrapped = this.registry.getClassName(this.__internal__Type) || new this.__internal__Type(this.registry).toRawType();
@@ -7748,14 +7919,14 @@
         toHex() {
             return util.u8aToHex(this);
         }
-        toHuman() {
-            return this.toPrimitive();
+        toHuman(_isExtended, disableAscii) {
+            return this.toPrimitive(disableAscii);
         }
         toJSON() {
             return this.toHex();
         }
-        toPrimitive() {
-            if (this.isAscii) {
+        toPrimitive(disableAscii) {
+            if (!disableAscii && this.isAscii) {
                 const text = this.toUtf8();
                 if (util.isAscii(text)) {
                     return text;
@@ -8009,10 +8180,10 @@
         toHex() {
             return util.u8aToHex(this.toU8a());
         }
-        toHuman(isExtended) {
+        toHuman(isExtended, disableAscii) {
             const json = {};
             for (const [k, v] of this.entries()) {
-                json[k] = v.toHuman(isExtended);
+                json[k] = v.toHuman(isExtended, disableAscii);
             }
             return json;
         }
@@ -8023,10 +8194,10 @@
             }
             return json;
         }
-        toPrimitive() {
+        toPrimitive(disableAscii) {
             const json = {};
             for (const [k, v] of this.entries()) {
-                json[k] = v.toPrimitive();
+                json[k] = v.toPrimitive(disableAscii);
             }
             return json;
         }
@@ -8145,12 +8316,12 @@
         toHex() {
             return util.u8aToHex(this.toU8a());
         }
-        toHuman(isExtended) {
+        toHuman(isExtended, disableAscii) {
             const json = {};
             for (const [k, v] of this.entries()) {
-                json[k instanceof Raw && k.isAscii
+                json[k instanceof Raw && !disableAscii && k.isAscii
                     ? k.toUtf8()
-                    : k.toString()] = v.toHuman(isExtended);
+                    : k.toString()] = v.toHuman(isExtended, disableAscii);
             }
             return json;
         }
@@ -8161,12 +8332,12 @@
             }
             return json;
         }
-        toPrimitive() {
+        toPrimitive(disableAscii) {
             const json = {};
             for (const [k, v] of this.entries()) {
-                json[k instanceof Raw && k.isAscii
+                json[k instanceof Raw && !disableAscii && k.isAscii
                     ? k.toUtf8()
-                    : k.toString()] = v.toPrimitive();
+                    : k.toString()] = v.toPrimitive(disableAscii);
             }
             return json;
         }
@@ -8287,10 +8458,10 @@
         toHex() {
             return util.u8aToHex(this.toU8a());
         }
-        toHuman(isExtended) {
+        toHuman(isExtended, disableAscii) {
             const json = [];
             for (const v of this.values()) {
-                json.push(v.toHuman(isExtended));
+                json.push(v.toHuman(isExtended, disableAscii));
             }
             return json;
         }
@@ -8304,10 +8475,10 @@
         toRawType() {
             return `BTreeSet<${this.registry.getClassName(this.__internal__ValClass) || new this.__internal__ValClass(this.registry).toRawType()}>`;
         }
-        toPrimitive() {
+        toPrimitive(disableAscii) {
             const json = [];
             for (const v of this.values()) {
-                json.push(v.toPrimitive());
+                json.push(v.toPrimitive(disableAscii));
             }
             return json;
         }
@@ -8735,15 +8906,15 @@
                     outer: [util.compactToU8a(this.length), this.toU8a(true)]
                 };
         }
-        toHuman(isExtended) {
+        toHuman(isExtended, disableAscii) {
             return this.__internal__decoded
-                ? this.__internal__decoded.toHuman(isExtended)
-                : super.toHuman();
+                ? this.__internal__decoded.toHuman(isExtended, disableAscii)
+                : super.toHuman(isExtended, disableAscii);
         }
-        toPrimitive() {
+        toPrimitive(disableAscii) {
             return this.__internal__decoded
-                ? this.__internal__decoded.toPrimitive()
-                : super.toPrimitive();
+                ? this.__internal__decoded.toPrimitive(disableAscii)
+                : super.toPrimitive(disableAscii);
         }
         toRawType() {
             return `${this.__internal__opaqueName}<${this.registry.getClassName(this.__internal__Type) || (this.__internal__decoded ? this.__internal__decoded.toRawType() : new this.__internal__Type(this.registry).toRawType())}>`;
@@ -8890,10 +9061,10 @@
                 return json;
             }, {});
         }
-        toPrimitive() {
+        toPrimitive(disableAscii) {
             return [...this.entries()].reduce((json, [key, value]) => {
                 json[key] = util.isFunction(value.toPrimitive)
-                    ? value.toPrimitive()
+                    ? value.toPrimitive(disableAscii)
                     : value;
                 return json;
             }, {});
@@ -13252,67 +13423,70 @@
 
     const definitions = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        assetConversion: definitions$14,
-        assets: definitions$13,
+        assetConversion: definitions$17,
+        assets: definitions$16,
         attestations: definitions$m,
-        aura: definitions$12,
+        aura: definitions$15,
         author: definitions$6,
-        authorship: definitions$11,
-        babe: definitions$10,
-        balances: definitions$$,
-        beefy: definitions$_,
-        benchmark: definitions$Z,
-        blockbuilder: definitions$Y,
+        authorship: definitions$14,
+        babe: definitions$13,
+        balances: definitions$12,
+        beefy: definitions$11,
+        benchmark: definitions$10,
+        blockbuilder: definitions$$,
         bridges: definitions$l,
         chain: definitions$5,
         childstate: definitions$4,
         claims: definitions$k,
-        collective: definitions$X,
-        consensus: definitions$W,
-        contracts: definitions$V,
+        collective: definitions$_,
+        consensus: definitions$Z,
+        contracts: definitions$Y,
         contractsAbi: definitions$c,
         crowdloan: definitions$j,
         cumulus: definitions$i,
-        democracy: definitions$U,
-        dev: definitions$T,
-        discovery: definitions$S,
-        elections: definitions$R,
-        engine: definitions$Q,
+        democracy: definitions$X,
+        dev: definitions$W,
+        discovery: definitions$V,
+        elections: definitions$U,
+        engine: definitions$T,
         eth: definitions$b,
-        evm: definitions$P,
-        extrinsics: definitions$O,
+        evm: definitions$S,
+        extrinsics: definitions$R,
         finality: definitions$h,
-        fungibles: definitions$N,
-        genericAsset: definitions$M,
-        gilt: definitions$L,
-        grandpa: definitions$K,
-        identity: definitions$J,
-        imOnline: definitions$I,
-        lottery: definitions$H,
-        metadata: definitions$17,
-        mmr: definitions$G,
-        nfts: definitions$F,
+        fungibles: definitions$Q,
+        genericAsset: definitions$P,
+        genesisBuilder: definitions$O,
+        gilt: definitions$N,
+        grandpa: definitions$M,
+        identity: definitions$L,
+        imOnline: definitions$K,
+        lottery: definitions$J,
+        metadata: definitions$1a,
+        mixnet: definitions$I,
+        mmr: definitions$H,
+        nfts: definitions$G,
         nimbus: definitions$a,
-        nompools: definitions$E,
+        nompools: definitions$F,
         offchain: definitions$3,
-        offences: definitions$D,
+        offences: definitions$E,
         ormlOracle: definitions$9,
         ormlTokens: definitions$8,
         parachains: definitions$g,
         payment: definitions$2,
         poll: definitions$f,
-        pow: definitions$C,
-        proxy: definitions$B,
+        pow: definitions$D,
+        proxy: definitions$C,
         purchase: definitions$e,
-        recovery: definitions$A,
+        recovery: definitions$B,
         rpc: definitions$7,
-        runtime: definitions$16,
-        scaleInfo: definitions$15,
-        scheduler: definitions$z,
-        session: definitions$y,
-        society: definitions$x,
-        staking: definitions$w,
+        runtime: definitions$19,
+        scaleInfo: definitions$18,
+        scheduler: definitions$A,
+        session: definitions$z,
+        society: definitions$y,
+        staking: definitions$x,
         state: definitions$1,
+        statement: definitions$w,
         support: definitions$v,
         syncstate: definitions$u,
         system: definitions$t,
@@ -14194,7 +14368,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.12.4' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.12.5' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
@@ -14524,11 +14698,11 @@
         get typeDef() {
             return this.__internal__typeDef;
         }
-        toHuman(isExtended) {
+        toHuman(isExtended, disableAscii) {
             if (this.__internal__names !== null) {
                 const json = {};
                 for (let i = 0, count = this.__internal__names.length; i < count; i++) {
-                    json[this.__internal__names[i]] = this[i].toHuman(isExtended);
+                    json[this.__internal__names[i]] = this[i].toHuman(isExtended, disableAscii);
                 }
                 return json;
             }
@@ -14561,13 +14735,13 @@
         get typeDef() {
             return this.data.typeDef;
         }
-        toHuman(isExpanded) {
+        toHuman(isExpanded, disableAscii) {
             return util.objectSpread({
                 method: this.method,
                 section: this.section
             }, isExpanded
                 ? { docs: this.meta.docs.map((d) => d.toString()) }
-                : null, super.toHuman(isExpanded));
+                : null, super.toHuman(isExpanded, disableAscii));
         }
     }
 
@@ -14716,6 +14890,9 @@
         get tip() {
             return this.inner.signature.tip;
         }
+        get assetId() {
+            return this.inner.signature.assetId;
+        }
         get type() {
             return this.inner.version;
         }
@@ -14771,17 +14948,18 @@
         toHex(isBare) {
             return util.u8aToHex(this.toU8a(isBare));
         }
-        toHuman(isExpanded) {
+        toHuman(isExpanded, disableAscii) {
             return util.objectSpread({}, {
                 isSigned: this.isSigned,
-                method: this.method.toHuman(isExpanded)
+                method: this.method.toHuman(isExpanded, disableAscii)
             }, this.isSigned
                 ? {
-                    era: this.era.toHuman(isExpanded),
-                    nonce: this.nonce.toHuman(isExpanded),
+                    assetId: this.assetId.toHuman(isExpanded, disableAscii),
+                    era: this.era.toHuman(isExpanded, disableAscii),
+                    nonce: this.nonce.toHuman(isExpanded, disableAscii),
                     signature: this.signature.toHex(),
-                    signer: this.signer.toHuman(isExpanded),
-                    tip: this.tip.toHuman(isExpanded)
+                    signer: this.signer.toHuman(isExpanded, disableAscii),
+                    tip: this.tip.toHuman(isExpanded, disableAscii)
                 }
                 : null);
         }
@@ -15001,6 +15179,9 @@
         get transactionVersion() {
             return this.inner.transactionVersion || this.registry.createTypeUnsafe('u32', []);
         }
+        get assetId() {
+            return this.inner.assetId;
+        }
         eq(other) {
             return this.inner.eq(other);
         }
@@ -15010,8 +15191,8 @@
                 signature: util.u8aToHex(signature)
             };
         }
-        toHuman(isExtended) {
-            return this.inner.toHuman(isExtended);
+        toHuman(isExtended, disableAscii) {
+            return this.inner.toHuman(isExtended, disableAscii);
         }
         toJSON() {
             return this.toHex();
@@ -15097,6 +15278,9 @@
         }
         get tip() {
             return this.getT('tip');
+        }
+        get assetId() {
+            return this.getT('assetId');
         }
         get version() {
             return this.getT('version');
@@ -15238,6 +15422,9 @@
         }
         get tip() {
             return this.getT('tip');
+        }
+        get assetId() {
+            return this.getT('assetId');
         }
         _injectSignature(signer, signature, payload) {
             for (let i = 0, count = this.__internal__signKeys.length; i < count; i++) {
@@ -15533,7 +15720,7 @@
         is(other) {
             return other.callIndex[0] === this.callIndex[0] && other.callIndex[1] === this.callIndex[1];
         }
-        toHuman(isExpanded) {
+        toHuman(isExpanded, disableAscii) {
             let call;
             try {
                 call = this.registry.findMetaCall(this.callIndex);
@@ -15541,7 +15728,7 @@
             catch {
             }
             return util.objectSpread({
-                args: this.argsEntries.reduce((args, [n, a]) => util.objectSpread(args, { [n]: a.toHuman(isExpanded) }), {}),
+                args: this.argsEntries.reduce((args, [n, a]) => util.objectSpread(args, { [n]: a.toHuman(isExpanded, disableAscii) }), {}),
                 method: call?.method,
                 section: call?.section
             }, isExpanded && call
@@ -16200,10 +16387,10 @@
             }
             return this;
         }
-        toHuman() {
+        toHuman(_isExtended, disableAscii) {
             return this.__internal__args.length
-                ? this.__internal__args.map((a) => a.toHuman())
-                : super.toHuman();
+                ? this.__internal__args.map((a) => a.toHuman(undefined, disableAscii))
+                : super.toHuman(undefined, disableAscii);
         }
         toRawType() {
             return 'StorageKey';
