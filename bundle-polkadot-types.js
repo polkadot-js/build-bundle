@@ -5467,7 +5467,7 @@
                     type: 'OccupiedCoreAssumption'
                 }
             ],
-            type: 'ValidationCode'
+            type: 'Option<ValidationCode>'
         },
         validation_code_by_hash: {
             description: 'Get the validation code from its hash.',
@@ -5585,8 +5585,118 @@
             type: 'Vec<(SessionIndex, CandidateHash, PendingSlashes)>'
         }
     };
+    const PH_V6 = {
+        minimum_backing_votes: {
+            description: 'Get the minimum number of backing votes for a parachain candidate. This is a staging method! Do not use on production runtimes!',
+            params: [],
+            type: 'u32'
+        }
+    };
+    const PH_V7 = {
+        async_backing_params: {
+            description: 'Returns candidate\'s acceptance limitations for asynchronous backing for a relay parent',
+            params: [],
+            type: 'AsyncBackingParams'
+        },
+        para_backing_state: {
+            description: 'Returns the state of parachain backing for a given para',
+            params: [
+                {
+                    name: 'paraId',
+                    type: 'ParaId'
+                }
+            ],
+            type: 'Option<BackingState>'
+        }
+    };
+    const PH_V8 = {
+        disabled_validators: {
+            description: 'Returns a list of all disabled validators at the given block',
+            params: [],
+            type: 'ValidatorIndex'
+        }
+    };
+    const PH_V9 = {
+        node_features: {
+            description: 'Get node features. This is a staging method! Do not use on production runtimes!',
+            params: [],
+            type: 'NodeFeatures'
+        }
+    };
+    const PH_V10 = {
+        approval_voting_params: {
+            description: 'Approval voting configuration parameters',
+            params: [],
+            type: 'ApprovalVotingParams'
+        }
+    };
     const runtime$6 = {
         ParachainHost: [
+            {
+                methods: {
+                    ...PH_V1_TO_V2,
+                    ...PH_V2_TO_V3,
+                    ...PH_V3,
+                    ...PH_V4,
+                    ...PH_V5,
+                    ...PH_V6,
+                    ...PH_V7,
+                    ...PH_V8,
+                    ...PH_V9,
+                    ...PH_V10
+                },
+                version: 10
+            },
+            {
+                methods: {
+                    ...PH_V1_TO_V2,
+                    ...PH_V2_TO_V3,
+                    ...PH_V3,
+                    ...PH_V4,
+                    ...PH_V5,
+                    ...PH_V6,
+                    ...PH_V7,
+                    ...PH_V8,
+                    ...PH_V9
+                },
+                version: 9
+            },
+            {
+                methods: {
+                    ...PH_V1_TO_V2,
+                    ...PH_V2_TO_V3,
+                    ...PH_V3,
+                    ...PH_V4,
+                    ...PH_V5,
+                    ...PH_V6,
+                    ...PH_V7,
+                    ...PH_V8
+                },
+                version: 8
+            },
+            {
+                methods: {
+                    ...PH_V1_TO_V2,
+                    ...PH_V2_TO_V3,
+                    ...PH_V3,
+                    ...PH_V4,
+                    ...PH_V5,
+                    ...PH_V6,
+                    ...PH_V7
+                },
+                version: 7
+            },
+            {
+                methods: {
+                    ...PH_V1_TO_V2,
+                    ...PH_V2_TO_V3,
+                    ...PH_V3,
+                    ...PH_V4,
+                    ...PH_V5,
+                    ...PH_V6
+                },
+                version: 6
+            },
             {
                 methods: {
                     ...PH_V1_TO_V2,
@@ -5807,12 +5917,19 @@
                 totalSize: 'u32',
                 mqcHead: 'Option<Hash>'
             },
+            ApprovalVotingParams: {
+                maxApprovalCoalesceCount: 'u32'
+            },
             AssignmentId: 'AccountId',
             AssignmentKind: {
                 _enum: {
                     Parachain: 'Null',
                     Parathread: '(CollatorId, u32)'
                 }
+            },
+            AsyncBackingParams: {
+                maxCandidateDepth: 'u32',
+                allowedAncestryLen: 'u32'
             },
             AttestedCandidate: {
                 candidate: 'AbridgedCandidateReceipt',
@@ -5829,6 +5946,10 @@
                 candidate: 'CommittedCandidateReceipt',
                 validityVotes: 'Vec<ValidityAttestation>',
                 validatorIndices: 'BitVec'
+            },
+            BackingState: {
+                constraints: 'Constraints',
+                pendingAvailability: 'Vec<CandidatePendingAvailability>'
             },
             BufferedSessionChange: {
                 applyAt: 'BlockNumber',
@@ -5891,6 +6012,22 @@
             CommittedCandidateReceipt: {
                 descriptor: 'CandidateDescriptor',
                 commitments: 'CandidateCommitments'
+            },
+            Constraints: {
+                minRelayParentNumber: 'BlockNumber',
+                maxPovSize: 'u32',
+                maxCodeSize: 'u32',
+                umpRemaining: 'u32',
+                umpRemainingBytes: 'u32',
+                maxUmpNumPerCandidate: 'u32',
+                dmpRemainingMessages: 'Vec<BlockNumber>',
+                hrmpInbound: 'InboundHrmpLimitations',
+                hrmpChannelsOut: 'HashMap<ParaId, OutboundHrmpChannelLimitations>',
+                maxHrmpNumPerCandidate: 'u32',
+                requiredParent: 'HeadData',
+                validationCodeHash: 'ValidationCodeHash',
+                upgradeRestriction: 'Option<UpgradeRestriction>',
+                futureValidationCode: 'Option<(BlockNumber, ValidationCodeHash)>'
             },
             CoreAssignment: {
                 core: 'CoreIndex',
@@ -5992,6 +6129,9 @@
                 sentAt: 'BlockNumber',
                 data: 'Bytes'
             },
+            InboundHrmpLimitations: {
+                validWatermarks: 'Vec<BlockNumber>'
+            },
             InboundHrmpMessages: 'Vec<InboundHrmpMessage>',
             LocalValidationData: {
                 parentHead: 'HeadData',
@@ -6003,6 +6143,7 @@
                 horizontalMessages: 'BTreeMap<ParaId, InboundHrmpMessages>'
             },
             MessageQueueChain: 'RelayChainHash',
+            NodeFeatures: 'BitVec',
             OccupiedCore: {
                 nextUpOnAvailable: 'Option<ScheduledCore>',
                 occupiedSince: 'BlockNumber',
@@ -6015,6 +6156,10 @@
             },
             OccupiedCoreAssumption: {
                 _enum: ['Included,', 'TimedOut', 'Free']
+            },
+            OutboundHrmpChannelLimitations: {
+                bytesRemaining: 'u32',
+                messagesRemaining: 'u32'
             },
             OutboundHrmpMessage: {
                 recipient: 'u32',
@@ -14368,7 +14513,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.12.6' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.13.1' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {

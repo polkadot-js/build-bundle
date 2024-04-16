@@ -1367,7 +1367,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.12.6' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.13.1' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -5620,7 +5620,8 @@
                 : api.query.elections
                     ? 'elections'
                     : null;
-        return [council, elections];
+        const resolvedCouncil = api.query[council] ? council : 'council';
+        return [resolvedCouncil, elections];
     }
     function queryAll(api, council, elections) {
         return api.queryMulti([
@@ -12747,6 +12748,88 @@
         [
             21786291,
             1001002,
+            [
+                [
+                    "0xdf6acb689907609b",
+                    4
+                ],
+                [
+                    "0x37e397fc7c91f5e4",
+                    2
+                ],
+                [
+                    "0x40fe3ad401f8959a",
+                    6
+                ],
+                [
+                    "0xd2bc9897eed08f15",
+                    3
+                ],
+                [
+                    "0xf78b278be53f454c",
+                    2
+                ],
+                [
+                    "0xaf2c0297a23e6d3d",
+                    7
+                ],
+                [
+                    "0x49eaaf1b548a0cb0",
+                    3
+                ],
+                [
+                    "0x91d5df18b0d2cf58",
+                    2
+                ],
+                [
+                    "0x2a5e924655399e60",
+                    1
+                ],
+                [
+                    "0xed99c5acb25eedf5",
+                    3
+                ],
+                [
+                    "0xcbca25e39f142387",
+                    2
+                ],
+                [
+                    "0x687ad44ad37f03c2",
+                    1
+                ],
+                [
+                    "0xab3c0572291feb8b",
+                    1
+                ],
+                [
+                    "0xbc9d89904f5b923f",
+                    1
+                ],
+                [
+                    "0x37c8bb1350a9a2a8",
+                    4
+                ],
+                [
+                    "0xf3ff14d5ab527059",
+                    3
+                ],
+                [
+                    "0x17a6bc0d0062aeb3",
+                    1
+                ],
+                [
+                    "0x18ef58a3b67ba770",
+                    1
+                ],
+                [
+                    "0xfbc577b9d747efd6",
+                    1
+                ]
+            ]
+        ],
+        [
+            22515962,
+            1001003,
             [
                 [
                     "0xdf6acb689907609b",
@@ -21437,6 +21520,92 @@
                 [
                     "0xf3ff14d5ab527059",
                     3
+                ],
+                [
+                    "0x17a6bc0d0062aeb3",
+                    1
+                ],
+                [
+                    "0x18ef58a3b67ba770",
+                    1
+                ],
+                [
+                    "0xfbc577b9d747efd6",
+                    1
+                ]
+            ]
+        ],
+        [
+            20368318,
+            1010000,
+            [
+                [
+                    "0xdf6acb689907609b",
+                    5
+                ],
+                [
+                    "0x37e397fc7c91f5e4",
+                    2
+                ],
+                [
+                    "0x40fe3ad401f8959a",
+                    6
+                ],
+                [
+                    "0xd2bc9897eed08f15",
+                    3
+                ],
+                [
+                    "0xf78b278be53f454c",
+                    2
+                ],
+                [
+                    "0xaf2c0297a23e6d3d",
+                    10
+                ],
+                [
+                    "0x49eaaf1b548a0cb0",
+                    3
+                ],
+                [
+                    "0x91d5df18b0d2cf58",
+                    2
+                ],
+                [
+                    "0x2a5e924655399e60",
+                    1
+                ],
+                [
+                    "0xed99c5acb25eedf5",
+                    3
+                ],
+                [
+                    "0xcbca25e39f142387",
+                    2
+                ],
+                [
+                    "0x687ad44ad37f03c2",
+                    1
+                ],
+                [
+                    "0xab3c0572291feb8b",
+                    1
+                ],
+                [
+                    "0xbc9d89904f5b923f",
+                    1
+                ],
+                [
+                    "0x37c8bb1350a9a2a8",
+                    4
+                ],
+                [
+                    "0xf3ff14d5ab527059",
+                    3
+                ],
+                [
+                    "0x6ff52ee858e6c5bd",
+                    1
                 ],
                 [
                     "0x17a6bc0d0062aeb3",
