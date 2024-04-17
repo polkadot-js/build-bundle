@@ -2,6 +2,7 @@
 
 ## master
 
+- phishing 0.22.5
 - api, api-contract, types 10.13.1
 - api, api-contract, types 10.12.6
 - api, api-contract, types 10.12.5
