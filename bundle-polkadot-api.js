@@ -1367,7 +1367,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '10.13.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.0.1' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -6093,7 +6093,7 @@
         return util.arrayFlatten([nextElected, validators.filter((v) => !nextElected.find((n) => n.eq(v)))]);
     }
     function electedInfo(instanceId, api) {
-        return memo(instanceId, (flags = DEFAULT_FLAGS$1) => api.derive.staking.validators().pipe(switchMap(({ nextElected, validators }) => api.derive.staking.queryMulti(combineAccounts(nextElected, validators), flags).pipe(map((info) => ({
+        return memo(instanceId, (flags = DEFAULT_FLAGS$1, page = 0) => api.derive.staking.validators().pipe(switchMap(({ nextElected, validators }) => api.derive.staking.queryMulti(combineAccounts(nextElected, validators), flags, page).pipe(map((info) => ({
             info,
             nextElected,
             validators
@@ -6155,7 +6155,7 @@
     }
     function erasHistoricApplyAccount(fn) {
         return (instanceId, api) =>
-        memo(instanceId, (accountId, withActive = false) => api.derive.staking.erasHistoric(withActive).pipe(switchMap((e) => api.derive.staking[fn](accountId, e, withActive))));
+        memo(instanceId, (accountId, withActive = false, page) => api.derive.staking.erasHistoric(withActive).pipe(switchMap((e) => api.derive.staking[fn](accountId, e, withActive, page || 0))));
     }
     function singleEra(fn) {
         return (instanceId, api) =>
@@ -6369,14 +6369,18 @@
     }
 
     function _ownExposures(instanceId, api) {
-        return memo(instanceId, (accountId, eras, _withActive) => eras.length
-            ? combineLatest([
-                combineLatest(eras.map((e) => api.query.staking.erasStakersClipped(e, accountId))),
-                combineLatest(eras.map((e) => api.query.staking.erasStakers(e, accountId)))
-            ]).pipe(map(([clp, exp]) => eras.map((era, index) => ({ clipped: clp[index], era, exposure: exp[index] }))))
-            : of([]));
+        return memo(instanceId, (accountId, eras, _withActive, page) => {
+            return eras.length
+                ? combineLatest([
+                    combineLatest(eras.map((e) => api.query.staking.erasStakersClipped(e, accountId))),
+                    combineLatest(eras.map((e) => api.query.staking.erasStakers(e, accountId))),
+                    combineLatest(eras.map((e) => api.query.staking.erasStakersPaged(e, accountId, page))),
+                    combineLatest(eras.map((e) => api.query.staking.erasStakersOverview(e, accountId)))
+                ]).pipe(map(([clp, exp, paged, expMeta]) => eras.map((era, index) => ({ clipped: clp[index], era, exposure: exp[index], exposureMeta: expMeta[index], exposurePaged: paged[index] }))))
+                : of([]);
+        });
     }
-    const ownExposure =  firstMemo((api, accountId, era) => api.derive.staking._ownExposures(accountId, [era], true));
+    const ownExposure =  firstMemo((api, accountId, era, page) => api.derive.staking._ownExposures(accountId, [era], true, page || 0));
     const ownExposures =  erasHistoricApplyAccount('_ownExposures');
 
     function _ownSlashes(instanceId, api) {
@@ -6400,11 +6404,16 @@
             ? rewardDestination.unwrapOr(null)
             : rewardDestination;
     }
-    function parseDetails(stashId, controllerIdOpt, nominatorsOpt, rewardDestinationOpts, validatorPrefs, exposure, stakingLedgerOpt) {
+    function filterClaimedRewards(api, cl) {
+        return api.registry.createType('Vec<u32>', cl.filter((c) => c !== -1));
+    }
+    function parseDetails(api, stashId, controllerIdOpt, nominatorsOpt, rewardDestinationOpts, validatorPrefs, exposure, stakingLedgerOpt, exposureMeta, claimedRewards) {
         return {
             accountId: stashId,
+            claimedRewardsEras: filterClaimedRewards(api, claimedRewards),
             controllerId: controllerIdOpt?.unwrapOr(null) || null,
-            exposure,
+            exposureMeta,
+            exposurePaged: exposure,
             nominators: nominatorsOpt.isSome
                 ? nominatorsOpt.unwrap().targets
                 : [],
@@ -6428,11 +6437,20 @@
                 : emptyLed);
         }));
     }
-    function getStashInfo(api, stashIds, activeEra, { withController, withDestination, withExposure, withLedger, withNominations, withPrefs }) {
+    function getStashInfo(api, stashIds, activeEra, { withClaimedRewardsEras, withController, withDestination, withExposure, withExposureMeta, withLedger, withNominations, withPrefs }, page) {
         const emptyNoms = api.registry.createType('Option<Nominations>');
         const emptyRewa = api.registry.createType('RewardDestination');
-        const emptyExpo = api.registry.createType('Exposure');
+        const emptyExpo = api.registry.createType('Option<SpStakingExposurePage>');
         const emptyPrefs = api.registry.createType('ValidatorPrefs');
+        const emptyExpoMeta = api.registry.createType('Option<SpStakingPagedExposureMetadata>');
+        const emptyClaimedRewards = [-1];
+        const depth = Number(api.consts.staking.historyDepth.toNumber());
+        const eras = new Array(depth).fill(0).map((_, idx) => {
+            if (idx === 0) {
+                return activeEra.toNumber() - 1;
+            }
+            return activeEra.toNumber() - idx - 1;
+        });
         return combineLatest([
             withController || withLedger
                 ? combineLatest(stashIds.map((s) => api.query.staking.bonded(s)))
@@ -6447,19 +6465,39 @@
                 ? combineLatest(stashIds.map((s) => api.query.staking.validators(s)))
                 : of(stashIds.map(() => emptyPrefs)),
             withExposure
-                ? combineLatest(stashIds.map((s) => api.query.staking.erasStakers(activeEra, s)))
-                : of(stashIds.map(() => emptyExpo))
+                ? combineLatest(stashIds.map((s) => api.query.staking.erasStakersPaged(activeEra, s, page)))
+                : of(stashIds.map(() => emptyExpo)),
+            withExposureMeta
+                ? combineLatest(stashIds.map((s) => api.query.staking.erasStakersOverview(activeEra, s)))
+                : of(stashIds.map(() => emptyExpoMeta)),
+            withClaimedRewardsEras
+                ? combineLatest(stashIds.map((s) => combineLatest([
+                    combineLatest(eras.map((e) => api.query.staking.claimedRewards(e, s))),
+                    combineLatest(eras.map((e) => api.query.staking.erasStakersOverview(e, s)))
+                ]))).pipe(map((r) => {
+                    return r.map(([stashClaimedEras, overview]) => {
+                        return stashClaimedEras.map((claimedReward, idx) => {
+                            const o = overview[idx].isSome && overview[idx].unwrap();
+                            if (claimedReward.length === (o && o.pageCount.toNumber())) {
+                                return eras[idx];
+                            }
+                            return -1;
+                        });
+                    });
+                }))
+                : of(stashIds.map(() => emptyClaimedRewards))
         ]);
     }
-    function getBatch(api, activeEra, stashIds, flags) {
-        return getStashInfo(api, stashIds, activeEra, flags).pipe(switchMap(([controllerIdOpt, nominatorsOpt, rewardDestination, validatorPrefs, exposure]) => getLedgers(api, controllerIdOpt, flags).pipe(map((stakingLedgerOpts) => stashIds.map((stashId, index) => parseDetails(stashId, controllerIdOpt[index], nominatorsOpt[index], rewardDestination[index], validatorPrefs[index], exposure[index], stakingLedgerOpts[index]))))));
+    function getBatch(api, activeEra, stashIds, flags, page) {
+        return getStashInfo(api, stashIds, activeEra, flags, page).pipe(switchMap(([controllerIdOpt, nominatorsOpt, rewardDestination, validatorPrefs, exposure, exposureMeta, claimedRewardsEras]) => getLedgers(api, controllerIdOpt, flags).pipe(map((stakingLedgerOpts) => stashIds.map((stashId, index) => parseDetails(api, stashId, controllerIdOpt[index], nominatorsOpt[index], rewardDestination[index], validatorPrefs[index], exposure[index], stakingLedgerOpts[index], exposureMeta[index], claimedRewardsEras[index]))))));
     }
-    const query =  firstMemo((api, accountId, flags) => api.derive.staking.queryMulti([accountId], flags));
+    const query =  firstMemo((api, accountId, flags, page) => api.derive.staking.queryMulti([accountId], flags, page));
     function queryMulti(instanceId, api) {
-        return memo(instanceId, (accountIds, flags) => api.derive.session.indexes().pipe(switchMap(({ activeEra }) => {
+        return memo(instanceId, (accountIds, flags, page) => api.derive.session.indexes().pipe(switchMap(({ activeEra }) => {
             const stashIds = accountIds.map((a) => api.registry.createType('AccountId', a));
+            const p = page || 0;
             return stashIds.length
-                ? getBatch(api, activeEra, stashIds, flags)
+                ? getBatch(api, activeEra, stashIds, flags, p)
                 : of([]);
         })));
     }
@@ -6508,11 +6546,12 @@
     }
     const stakerPrefs =  erasHistoricApplyAccount('_stakerPrefs');
 
-    function extractCompatRewards(ledger) {
-        return ledger
+    function extractCompatRewards(claimedRewardsEras, ledger) {
+        const l = ledger
             ? (ledger.legacyClaimedRewards ||
-                ledger.claimedRewards)
+                ledger.claimedRewards).toArray()
             : [];
+        return claimedRewardsEras.toArray().concat(l);
     }
     function parseRewards(api, stashId, [erasPoints, erasPrefs, erasRewards], exposures) {
         return exposures.map(({ era, isEmpty, isValidator, nominating, validators: eraValidators }) => {
@@ -6584,13 +6623,13 @@
             return [all, perStash];
         }, [[], []]);
     }
-    function removeClaimed(validators, queryValidators, reward) {
+    function removeClaimed(validators, queryValidators, reward, claimedRewardsEras) {
         const rm = [];
         Object.keys(reward.validators).forEach((validatorId) => {
             const index = validators.indexOf(validatorId);
             if (index !== -1) {
                 const valLedger = queryValidators[index].stakingLedger;
-                if (extractCompatRewards(valLedger).some((e) => reward.era.eq(e))) {
+                if (extractCompatRewards(claimedRewardsEras, valLedger).some((e) => reward.era.eq(e))) {
                     rm.push(validatorId);
                 }
             }
@@ -6599,8 +6638,8 @@
             delete reward.validators[validatorId];
         });
     }
-    function filterRewards(eras, valInfo, { rewards, stakingLedger }) {
-        const filter = eras.filter((e) => !extractCompatRewards(stakingLedger).some((s) => s.eq(e)));
+    function filterRewards(eras, valInfo, { claimedRewardsEras, rewards, stakingLedger }) {
+        const filter = eras.filter((e) => !extractCompatRewards(claimedRewardsEras, stakingLedger).some((s) => s.eq(e)));
         const validators = valInfo.map(([v]) => v);
         const queryValidators = valInfo.map(([, q]) => q);
         return rewards
@@ -6609,7 +6648,7 @@
             if (!filter.some((e) => reward.era.eq(e))) {
                 return false;
             }
-            removeClaimed(validators, queryValidators, reward);
+            removeClaimed(validators, queryValidators, reward, claimedRewardsEras);
             return true;
         })
             .filter(({ validators }) => Object.keys(validators).length !== 0)
@@ -6630,19 +6669,20 @@
             api.derive.staking._stakerExposures(accountIds, eras, withActive),
             api.derive.staking._stakerRewardsEras(eras, withActive)
         ]).pipe(switchMap(([queries, exposures, erasResult]) => {
-            const allRewards = queries.map(({ stakingLedger, stashId }, index) => (!stashId || !stakingLedger)
+            const allRewards = queries.map(({ claimedRewardsEras, stakingLedger, stashId }, index) => (!stashId || (!stakingLedger && !claimedRewardsEras))
                 ? []
                 : parseRewards(api, stashId, erasResult, exposures[index]));
             if (withActive) {
                 return of(allRewards);
             }
             const [allValidators, stashValidators] = allUniqValidators(allRewards);
-            return api.derive.staking.queryMulti(allValidators, { withLedger: true }).pipe(map((queriedVals) => queries.map(({ stakingLedger }, index) => filterRewards(eras, stashValidators[index]
+            return api.derive.staking.queryMulti(allValidators, { withClaimedRewardsEras: true, withLedger: true }).pipe(map((queriedVals) => queries.map(({ claimedRewardsEras, stakingLedger }, index) => filterRewards(eras, stashValidators[index]
                 .map((validatorId) => [
                 validatorId,
                 queriedVals.find((q) => q.accountId.eq(validatorId))
             ])
                 .filter((v) => !!v[1]), {
+                claimedRewardsEras,
                 rewards: allRewards[index],
                 stakingLedger
             }))));
@@ -6692,9 +6732,9 @@
     }
 
     function nextElected(instanceId, api) {
-        return memo(instanceId, () => api.query.staking.erasStakers
+        return memo(instanceId, () => api.query.staking.erasStakersPaged
             ? api.derive.session.indexes().pipe(
-            switchMap(({ currentEra }) => api.query.staking.erasStakers.keys(currentEra)), map((keys) => keys.map(({ args: [, accountId] }) => accountId)))
+            switchMap(({ currentEra }) => api.query.staking.erasStakersPaged.keys(currentEra)), map((keys) => keys.map(({ args: [, accountId] }) => accountId)))
             : api.query.staking['currentElected']());
     }
     function validators(instanceId, api) {
@@ -16075,6 +16115,170 @@
                 [
                     "0xaf2c0297a23e6d3d",
                     5
+                ],
+                [
+                    "0x49eaaf1b548a0cb0",
+                    3
+                ],
+                [
+                    "0x91d5df18b0d2cf58",
+                    2
+                ],
+                [
+                    "0x2a5e924655399e60",
+                    1
+                ],
+                [
+                    "0xed99c5acb25eedf5",
+                    3
+                ],
+                [
+                    "0xcbca25e39f142387",
+                    2
+                ],
+                [
+                    "0x687ad44ad37f03c2",
+                    1
+                ],
+                [
+                    "0xab3c0572291feb8b",
+                    1
+                ],
+                [
+                    "0xbc9d89904f5b923f",
+                    1
+                ],
+                [
+                    "0x37c8bb1350a9a2a8",
+                    4
+                ],
+                [
+                    "0xf3ff14d5ab527059",
+                    3
+                ],
+                [
+                    "0xfbc577b9d747efd6",
+                    1
+                ]
+            ]
+        ],
+        [
+            20181758,
+            1001003,
+            [
+                [
+                    "0xdf6acb689907609b",
+                    4
+                ],
+                [
+                    "0x37e397fc7c91f5e4",
+                    2
+                ],
+                [
+                    "0x40fe3ad401f8959a",
+                    6
+                ],
+                [
+                    "0x17a6bc0d0062aeb3",
+                    1
+                ],
+                [
+                    "0x18ef58a3b67ba770",
+                    1
+                ],
+                [
+                    "0xd2bc9897eed08f15",
+                    3
+                ],
+                [
+                    "0xf78b278be53f454c",
+                    2
+                ],
+                [
+                    "0xaf2c0297a23e6d3d",
+                    5
+                ],
+                [
+                    "0x49eaaf1b548a0cb0",
+                    3
+                ],
+                [
+                    "0x91d5df18b0d2cf58",
+                    2
+                ],
+                [
+                    "0x2a5e924655399e60",
+                    1
+                ],
+                [
+                    "0xed99c5acb25eedf5",
+                    3
+                ],
+                [
+                    "0xcbca25e39f142387",
+                    2
+                ],
+                [
+                    "0x687ad44ad37f03c2",
+                    1
+                ],
+                [
+                    "0xab3c0572291feb8b",
+                    1
+                ],
+                [
+                    "0xbc9d89904f5b923f",
+                    1
+                ],
+                [
+                    "0x37c8bb1350a9a2a8",
+                    4
+                ],
+                [
+                    "0xf3ff14d5ab527059",
+                    3
+                ],
+                [
+                    "0xfbc577b9d747efd6",
+                    1
+                ]
+            ]
+        ],
+        [
+            20438530,
+            1002000,
+            [
+                [
+                    "0xdf6acb689907609b",
+                    4
+                ],
+                [
+                    "0x37e397fc7c91f5e4",
+                    2
+                ],
+                [
+                    "0x40fe3ad401f8959a",
+                    6
+                ],
+                [
+                    "0x17a6bc0d0062aeb3",
+                    1
+                ],
+                [
+                    "0x18ef58a3b67ba770",
+                    1
+                ],
+                [
+                    "0xd2bc9897eed08f15",
+                    3
+                ],
+                [
+                    "0xf78b278be53f454c",
+                    2
+                ],
+                [
+                    "0xaf2c0297a23e6d3d",
+                    10
                 ],
                 [
                     "0x49eaaf1b548a0cb0",
