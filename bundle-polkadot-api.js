@@ -1367,7 +1367,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.0.2' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.0.3' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -6370,12 +6370,23 @@
 
     function _ownExposures(instanceId, api) {
         return memo(instanceId, (accountId, eras, _withActive, page) => {
+            const emptyStakingExposure = api.registry.createType('Exposure');
+            const emptyOptionPage = api.registry.createType('Option<Null>');
+            const emptyOptionMeta = api.registry.createType('Option<Null>');
             return eras.length
                 ? combineLatest([
-                    combineLatest(eras.map((e) => api.query.staking.erasStakersClipped(e, accountId))),
-                    combineLatest(eras.map((e) => api.query.staking.erasStakers(e, accountId))),
-                    combineLatest(eras.map((e) => api.query.staking.erasStakersPaged(e, accountId, page))),
-                    combineLatest(eras.map((e) => api.query.staking.erasStakersOverview(e, accountId)))
+                    api.query.staking.erasStakersClipped
+                        ? combineLatest(eras.map((e) => api.query.staking.erasStakersClipped(e, accountId)))
+                        : of(eras.map((_) => emptyStakingExposure)),
+                    api.query.staking.erasStakers
+                        ? combineLatest(eras.map((e) => api.query.staking.erasStakers(e, accountId)))
+                        : of(eras.map((_) => emptyStakingExposure)),
+                    api.query.staking.erasStakersPaged
+                        ? combineLatest(eras.map((e) => api.query.staking.erasStakersPaged(e, accountId, page)))
+                        : of(eras.map((_) => emptyOptionPage)),
+                    api.query.staking.erasStakersOverview
+                        ? combineLatest(eras.map((e) => api.query.staking.erasStakersOverview(e, accountId)))
+                        : of(eras.map((_) => emptyOptionMeta))
                 ]).pipe(map(([clp, exp, paged, expMeta]) => eras.map((era, index) => ({ clipped: clp[index], era, exposure: exp[index], exposureMeta: expMeta[index], exposurePaged: paged[index] }))))
                 : of([]);
         });
@@ -6407,11 +6418,57 @@
     function filterClaimedRewards(api, cl) {
         return api.registry.createType('Vec<u32>', cl.filter((c) => c !== -1));
     }
-    function parseDetails(api, stashId, controllerIdOpt, nominatorsOpt, rewardDestinationOpts, validatorPrefs, exposure, stakingLedgerOpt, exposureMeta, claimedRewards) {
+    function filterRewards$1(stashIds, eras, claimedRewards, stakersOverview) {
+        const claimedData = {};
+        const overviewData = {};
+        const ids = stashIds.map((i) => i.toString());
+        claimedRewards.forEach(([keys, rewards]) => {
+            const id = keys.args[1].toString();
+            const era = keys.args[0].toNumber();
+            if (ids.includes(id)) {
+                if (claimedData[id]) {
+                    claimedData[id].set(era, rewards.toArray());
+                }
+                else {
+                    claimedData[id] = new Map();
+                    claimedData[id].set(era, rewards.toArray());
+                }
+            }
+        });
+        stakersOverview.forEach(([keys, overview]) => {
+            const id = keys.args[1].toString();
+            const era = keys.args[0].toNumber();
+            if (ids.includes(id) && overview.isSome) {
+                if (overviewData[id]) {
+                    overviewData[id].set(era, overview.unwrap().pageCount);
+                }
+                else {
+                    overviewData[id] = new Map();
+                    overviewData[id].set(era, overview.unwrap().pageCount);
+                }
+            }
+        });
+        return stashIds.map((id) => {
+            const rewardsPerEra = claimedData[id.toString()];
+            const overviewPerEra = overviewData[id.toString()];
+            return eras.map((era) => {
+                if (rewardsPerEra && rewardsPerEra.has(era) && overviewPerEra && overviewPerEra.has(era)) {
+                    const rewards = rewardsPerEra.get(era);
+                    const pageCount = overviewPerEra.get(era);
+                    return rewards.length === pageCount.toNumber()
+                        ? era
+                        : -1;
+                }
+                return -1;
+            });
+        });
+    }
+    function parseDetails(api, stashId, controllerIdOpt, nominatorsOpt, rewardDestinationOpts, validatorPrefs, exposure, stakingLedgerOpt, exposureMeta, claimedRewards, exposureEraStakers) {
         return {
             accountId: stashId,
             claimedRewardsEras: filterClaimedRewards(api, claimedRewards),
             controllerId: controllerIdOpt?.unwrapOr(null) || null,
+            exposureEraStakers,
             exposureMeta,
             exposurePaged: exposure,
             nominators: nominatorsOpt.isSome
@@ -6437,12 +6494,13 @@
                 : emptyLed);
         }));
     }
-    function getStashInfo(api, stashIds, activeEra, { withClaimedRewardsEras, withController, withDestination, withExposure, withExposureMeta, withLedger, withNominations, withPrefs }, page) {
+    function getStashInfo(api, stashIds, activeEra, { withClaimedRewardsEras, withController, withDestination, withExposure, withExposureErasStakersLegacy, withExposureMeta, withLedger, withNominations, withPrefs }, page) {
         const emptyNoms = api.registry.createType('Option<Nominations>');
         const emptyRewa = api.registry.createType('RewardDestination');
-        const emptyExpo = api.registry.createType('Option<SpStakingExposurePage>');
+        const emptyExpoEraStakers = api.registry.createType('Exposure');
         const emptyPrefs = api.registry.createType('ValidatorPrefs');
-        const emptyExpoMeta = api.registry.createType('Option<SpStakingPagedExposureMetadata>');
+        const emptyExpo = api.registry.createType('Option<Null>');
+        const emptyExpoMeta = api.registry.createType('Option<Null>');
         const emptyClaimedRewards = [-1];
         const depth = Number(api.consts.staking.historyDepth.toNumber());
         const eras = new Array(depth).fill(0).map((_, idx) => {
@@ -6464,32 +6522,25 @@
             withPrefs
                 ? combineLatest(stashIds.map((s) => api.query.staking.validators(s)))
                 : of(stashIds.map(() => emptyPrefs)),
-            withExposure
+            withExposure && api.query.staking.erasStakersPaged
                 ? combineLatest(stashIds.map((s) => api.query.staking.erasStakersPaged(activeEra, s, page)))
                 : of(stashIds.map(() => emptyExpo)),
-            withExposureMeta
+            withExposureMeta && api.query.staking.erasStakersOverview
                 ? combineLatest(stashIds.map((s) => api.query.staking.erasStakersOverview(activeEra, s)))
                 : of(stashIds.map(() => emptyExpoMeta)),
-            withClaimedRewardsEras
-                ? combineLatest(stashIds.map((s) => combineLatest([
-                    combineLatest(eras.map((e) => api.query.staking.claimedRewards(e, s))),
-                    combineLatest(eras.map((e) => api.query.staking.erasStakersOverview(e, s)))
-                ]))).pipe(map((r) => {
-                    return r.map(([stashClaimedEras, overview]) => {
-                        return stashClaimedEras.map((claimedReward, idx) => {
-                            const o = overview[idx].isSome && overview[idx].unwrap();
-                            if (claimedReward.length === (o && o.pageCount.toNumber())) {
-                                return eras[idx];
-                            }
-                            return -1;
-                        });
-                    });
-                }))
-                : of(stashIds.map(() => emptyClaimedRewards))
+            withClaimedRewardsEras && api.query.staking.claimedRewards
+                ? combineLatest([
+                    api.query.staking.claimedRewards.entries(),
+                    api.query.staking.erasStakersOverview.entries()
+                ]).pipe(map(([rewardsStorageVec, overviewStorageVec]) => filterRewards$1(stashIds, eras, rewardsStorageVec, overviewStorageVec)))
+                : of(stashIds.map(() => emptyClaimedRewards)),
+            withExposureErasStakersLegacy && api.query.staking.erasStakers
+                ? combineLatest(stashIds.map((s) => api.query.staking.erasStakers(activeEra, s)))
+                : of(stashIds.map(() => emptyExpoEraStakers))
         ]);
     }
     function getBatch(api, activeEra, stashIds, flags, page) {
-        return getStashInfo(api, stashIds, activeEra, flags, page).pipe(switchMap(([controllerIdOpt, nominatorsOpt, rewardDestination, validatorPrefs, exposure, exposureMeta, claimedRewardsEras]) => getLedgers(api, controllerIdOpt, flags).pipe(map((stakingLedgerOpts) => stashIds.map((stashId, index) => parseDetails(api, stashId, controllerIdOpt[index], nominatorsOpt[index], rewardDestination[index], validatorPrefs[index], exposure[index], stakingLedgerOpts[index], exposureMeta[index], claimedRewardsEras[index]))))));
+        return getStashInfo(api, stashIds, activeEra, flags, page).pipe(switchMap(([controllerIdOpt, nominatorsOpt, rewardDestination, validatorPrefs, exposure, exposureMeta, claimedRewardsEras, exposureEraStakers]) => getLedgers(api, controllerIdOpt, flags).pipe(map((stakingLedgerOpts) => stashIds.map((stashId, index) => parseDetails(api, stashId, controllerIdOpt[index], nominatorsOpt[index], rewardDestination[index], validatorPrefs[index], exposure[index], stakingLedgerOpts[index], exposureMeta[index], claimedRewardsEras[index], exposureEraStakers[index]))))));
     }
     const query =  firstMemo((api, accountId, flags, page) => api.derive.staking.queryMulti([accountId], flags, page));
     function queryMulti(instanceId, api) {
@@ -6665,7 +6716,7 @@
     }
     function _stakerRewards(instanceId, api) {
         return memo(instanceId, (accountIds, eras, withActive = false) => combineLatest([
-            api.derive.staking.queryMulti(accountIds, { withLedger: true }),
+            api.derive.staking.queryMulti(accountIds, { withClaimedRewardsEras: true, withLedger: true }),
             api.derive.staking._stakerExposures(accountIds, eras, withActive),
             api.derive.staking._stakerRewardsEras(eras, withActive)
         ]).pipe(switchMap(([queries, exposures, erasResult]) => {
@@ -6732,10 +6783,14 @@
     }
 
     function nextElected(instanceId, api) {
-        return memo(instanceId, () => api.query.staking.erasStakersPaged
+        return memo(instanceId, () =>
+        api.query.staking.erasStakersPaged
             ? api.derive.session.indexes().pipe(
             switchMap(({ currentEra }) => api.query.staking.erasStakersPaged.keys(currentEra)), map((keys) => keys.map(({ args: [, accountId] }) => accountId)))
-            : api.query.staking['currentElected']());
+            : api.query.staking.erasStakers
+                ? api.derive.session.indexes().pipe(
+                switchMap(({ currentEra }) => api.query.staking.erasStakers.keys(currentEra)), map((keys) => keys.map(({ args: [, accountId] }) => accountId)))
+                : api.query.staking['currentElected']());
     }
     function validators(instanceId, api) {
         return memo(instanceId, () =>
