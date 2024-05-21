@@ -14513,7 +14513,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.0.3' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.1.1' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
@@ -14717,6 +14717,14 @@
         }
     };
 
+    const CheckMetadataHash = {
+        extrinsic: {
+            mode: 'u8'
+        },
+        payload: {
+            metadataHash: 'Option<[u8;32]>'
+        }
+    };
     const CheckMortality = {
         extrinsic: {
             era: 'ExtrinsicEra'
@@ -14741,6 +14749,7 @@
                 genesisHash: 'Hash'
             }
         },
+        CheckMetadataHash,
         CheckMortality,
         CheckNonZeroSender: emptyCheck,
         CheckNonce: {
@@ -15038,6 +15047,9 @@
         get assetId() {
             return this.inner.signature.assetId;
         }
+        get metadataHash() {
+            return this.inner.signature.metadataHash;
+        }
         get type() {
             return this.inner.version;
         }
@@ -15099,8 +15111,9 @@
                 method: this.method.toHuman(isExpanded, disableAscii)
             }, this.isSigned
                 ? {
-                    assetId: this.assetId.toHuman(isExpanded, disableAscii),
+                    assetId: this.assetId ? this.assetId.toHuman(isExpanded, disableAscii) : null,
                     era: this.era.toHuman(isExpanded, disableAscii),
+                    metadataHash: this.metadataHash ? this.metadataHash.toHex() : null,
                     nonce: this.nonce.toHuman(isExpanded, disableAscii),
                     signature: this.signature.toHex(),
                     signer: this.signer.toHuman(isExpanded, disableAscii),
@@ -15327,6 +15340,9 @@
         get assetId() {
             return this.inner.assetId;
         }
+        get metadataHash() {
+            return this.inner.metadataHash;
+        }
         eq(other) {
             return this.inner.eq(other);
         }
@@ -15369,11 +15385,14 @@
 
     const knownTypes = {
         address: 'Address',
+        assetId: 'Option<TAssetConversion>',
         blockHash: 'Hash',
         blockNumber: 'BlockNumber',
         era: 'ExtrinsicEra',
         genesisHash: 'Hash',
+        metadataHash: 'Option<[u8;32]>',
         method: 'Call',
+        mode: 'u8',
         nonce: 'Compact<Index>',
         runtimeVersion: 'RuntimeVersion',
         signedExtensions: 'Vec<Text>',
@@ -15430,6 +15449,12 @@
         get version() {
             return this.getT('version');
         }
+        get mode() {
+            return this.getT('mode');
+        }
+        get metadataHash() {
+            return this.getT('metadataHash');
+        }
         toPayload() {
             const result = {};
             const keys = Object.keys(this.__internal__extraTypes);
@@ -15442,11 +15467,14 @@
             }
             return util.objectSpread(result, {
                 address: this.address.toString(),
+                assetId: this.assetId ? this.assetId.toJSON() : null,
                 blockHash: this.blockHash.toHex(),
                 blockNumber: this.blockNumber.toHex(),
                 era: this.era.toHex(),
                 genesisHash: this.genesisHash.toHex(),
+                metadataHash: this.metadataHash.isSome ? this.metadataHash.toHex() : null,
                 method: this.method.toHex(),
+                mode: this.mode.toNumber(),
                 nonce: this.nonce.toHex(),
                 signedExtensions: this.signedExtensions.map((e) => e.toString()),
                 specVersion: this.runtimeVersion.specVersion.toHex(),
@@ -15513,6 +15541,9 @@
         get assetId() {
             return this.getT('assetId');
         }
+        get metadataHash() {
+            return this.getT('metadataHash');
+        }
         sign(signerPair) {
             return sign(this.registry, signerPair, this.toU8a({ method: true }), this.__internal__signOptions);
         }
@@ -15570,6 +15601,9 @@
         }
         get assetId() {
             return this.getT('assetId');
+        }
+        get metadataHash() {
+            return this.getT('metadataHash');
         }
         _injectSignature(signer, signature, payload) {
             for (let i = 0, count = this.__internal__signKeys.length; i < count; i++) {

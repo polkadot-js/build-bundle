@@ -1367,7 +1367,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.0.3' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.1.1' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -4001,6 +4001,9 @@
 
     const UNDEF_HEX = { toHex: () => undefined };
     function dataAsString(data) {
+        if (!data) {
+            return data;
+        }
         return data.isRaw
             ? util.u8aToString(data.asRaw.toU8a(true))
             : data.isNone
@@ -4030,13 +4033,16 @@
         const { info, judgements } = identityCompat(identityOfOpt);
         const topDisplay = dataAsString(info.display);
         return {
+            discord: dataAsString(info.discord),
             display: (superOf && dataAsString(superOf[1])) || topDisplay,
             displayParent: superOf && topDisplay,
             email: dataAsString(info.email),
+            github: dataAsString(info.github),
             image: dataAsString(info.image),
             judgements,
             legal: dataAsString(info.legal),
-            other: extractOther(info.additional),
+            matrix: dataAsString(info.matrix),
+            other: info.additional ? extractOther(info.additional) : {},
             parent: superOf?.[0],
             pgp: info.pgpFingerprint.unwrapOr(UNDEF_HEX).toHex(),
             riot: dataAsString(info.riot),
@@ -6786,10 +6792,12 @@
         return memo(instanceId, () =>
         api.query.staking.erasStakersPaged
             ? api.derive.session.indexes().pipe(
-            switchMap(({ currentEra }) => api.query.staking.erasStakersPaged.keys(currentEra)), map((keys) => keys.map(({ args: [, accountId] }) => accountId)))
+            switchMap(({ currentEra }) => api.query.staking.erasStakersPaged.keys(currentEra)),
+            map((keys) => [...new Set(keys.map(({ args: [, accountId] }) => accountId.toString()))].map((a) => api.registry.createType('AccountId', a))))
             : api.query.staking.erasStakers
                 ? api.derive.session.indexes().pipe(
-                switchMap(({ currentEra }) => api.query.staking.erasStakers.keys(currentEra)), map((keys) => keys.map(({ args: [, accountId] }) => accountId)))
+                switchMap(({ currentEra }) => api.query.staking.erasStakers.keys(currentEra)),
+                map((keys) => [...new Set(keys.map(({ args: [, accountId] }) => accountId.toString()))].map((a) => api.registry.createType('AccountId', a))))
                 : api.query.staking['currentElected']());
     }
     function validators(instanceId, api) {
