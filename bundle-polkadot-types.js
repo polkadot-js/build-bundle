@@ -5251,6 +5251,27 @@
     };
 
     const runtime$8 = {
+        AuraUnincludedSegmentApi: [
+            {
+                methods: {
+                    can_build_upon: {
+                        description: 'Whether it is legal to extend the chain',
+                        params: [
+                            {
+                                name: 'includedHash',
+                                type: 'BlockHash'
+                            },
+                            {
+                                name: 'slot',
+                                type: 'Slot'
+                            }
+                        ],
+                        type: 'bool'
+                    }
+                },
+                version: 1
+            }
+        ],
         CollectCollationInfo: [
             {
                 methods: {
@@ -5630,8 +5651,31 @@
             type: 'ApprovalVotingParams'
         }
     };
+    const PH_V11 = {
+        claim_queue: {
+            description: 'Claim queue',
+            params: [],
+            type: 'BTreeMap<CoreIndex, Vec<u32>>'
+        }
+    };
     const runtime$6 = {
         ParachainHost: [
+            {
+                methods: {
+                    ...PH_V1_TO_V2,
+                    ...PH_V2_TO_V3,
+                    ...PH_V3,
+                    ...PH_V4,
+                    ...PH_V5,
+                    ...PH_V6,
+                    ...PH_V7,
+                    ...PH_V8,
+                    ...PH_V9,
+                    ...PH_V10,
+                    ...PH_V11
+                },
+                version: 11
+            },
             {
                 methods: {
                     ...PH_V1_TO_V2,
@@ -14513,7 +14557,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.1.1' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.2.1' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
