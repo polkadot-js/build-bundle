@@ -1367,7 +1367,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '11.3.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.0.1' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -6721,29 +6721,32 @@
         ]));
     }
     function _stakerRewards(instanceId, api) {
-        return memo(instanceId, (accountIds, eras, withActive = false) => combineLatest([
-            api.derive.staking.queryMulti(accountIds, { withClaimedRewardsEras: true, withLedger: true }),
-            api.derive.staking._stakerExposures(accountIds, eras, withActive),
-            api.derive.staking._stakerRewardsEras(eras, withActive)
-        ]).pipe(switchMap(([queries, exposures, erasResult]) => {
-            const allRewards = queries.map(({ claimedRewardsEras, stakingLedger, stashId }, index) => (!stashId || (!stakingLedger && !claimedRewardsEras))
-                ? []
-                : parseRewards(api, stashId, erasResult, exposures[index]));
-            if (withActive) {
-                return of(allRewards);
-            }
-            const [allValidators, stashValidators] = allUniqValidators(allRewards);
-            return api.derive.staking.queryMulti(allValidators, { withClaimedRewardsEras: true, withLedger: true }).pipe(map((queriedVals) => queries.map(({ claimedRewardsEras, stakingLedger }, index) => filterRewards(eras, stashValidators[index]
-                .map((validatorId) => [
-                validatorId,
-                queriedVals.find((q) => q.accountId.eq(validatorId))
-            ])
-                .filter((v) => !!v[1]), {
-                claimedRewardsEras,
-                rewards: allRewards[index],
-                stakingLedger
-            }))));
-        })));
+        return memo(instanceId, (accountIds, eras, withActive = false) => {
+            const sanitizedEras = eras.map((e) => typeof e === 'number' || typeof e === 'string' ? api.registry.createType('u32', e) : e);
+            return combineLatest([
+                api.derive.staking.queryMulti(accountIds, { withClaimedRewardsEras: true, withLedger: true }),
+                api.derive.staking._stakerExposures(accountIds, sanitizedEras, withActive),
+                api.derive.staking._stakerRewardsEras(sanitizedEras, withActive)
+            ]).pipe(switchMap(([queries, exposures, erasResult]) => {
+                const allRewards = queries.map(({ claimedRewardsEras, stakingLedger, stashId }, index) => (!stashId || (!stakingLedger && !claimedRewardsEras))
+                    ? []
+                    : parseRewards(api, stashId, erasResult, exposures[index]));
+                if (withActive) {
+                    return of(allRewards);
+                }
+                const [allValidators, stashValidators] = allUniqValidators(allRewards);
+                return api.derive.staking.queryMulti(allValidators, { withClaimedRewardsEras: true, withLedger: true }).pipe(map((queriedVals) => queries.map(({ claimedRewardsEras, stakingLedger }, index) => filterRewards(eras, stashValidators[index]
+                    .map((validatorId) => [
+                    validatorId,
+                    queriedVals.find((q) => q.accountId.eq(validatorId))
+                ])
+                    .filter((v) => !!v[1]), {
+                    claimedRewardsEras,
+                    rewards: allRewards[index],
+                    stakingLedger
+                }))));
+            }));
+        });
     }
     const stakerRewards =  firstMemo((api, accountId, withActive) => api.derive.staking.erasHistoric(withActive).pipe(switchMap((eras) => api.derive.staking._stakerRewards([accountId], eras, withActive))));
     function stakerRewardsMultiEras(instanceId, api) {
@@ -6981,9 +6984,14 @@
         return api.derive.balances.account(address).pipe(map(({ accountNonce }) => accountNonce));
     }
     function nextNonce(api, address) {
-        return api.rpc.system?.accountNextIndex
-            ? api.rpc.system.accountNextIndex(address)
-            : latestNonce(api, address);
+        if (api.call.accountNonceApi) {
+            return api.call.accountNonceApi.accountNonce(address);
+        }
+        else {
+            return api.rpc.system?.accountNextIndex
+                ? api.rpc.system.accountNextIndex(address)
+                : latestNonce(api, address);
+        }
     }
     function signingHeader(api) {
         return combineLatest([
@@ -7319,13 +7327,18 @@
                 return api.derive.tx.signingInfo(address, options.nonce, options.era).pipe(first(), mergeMap(async (signingInfo) => {
                     const eraOptions = makeEraOptions(api, this.registry, options, signingInfo);
                     let updateId = -1;
+                    let signedTx = null;
                     if (isKeyringPair(account)) {
                         this.sign(account, eraOptions);
                     }
                     else {
-                        updateId = await this.__internal__signViaSigner(address, eraOptions, signingInfo.header);
+                        const result = await this.__internal__signViaSigner(address, eraOptions, signingInfo.header);
+                        updateId = result.id;
+                        if (result.signedTransaction) {
+                            signedTx = result.signedTransaction;
+                        }
                     }
-                    return { options: eraOptions, updateId };
+                    return { options: eraOptions, signedTransaction: signedTx, updateId };
                 }));
             };
             __internal__observeStatus = (txHash, status) => {
@@ -7349,13 +7362,13 @@
                 })))));
             };
             __internal__observeSend = (info) => {
-                return api.rpc.author.submitExtrinsic(this).pipe(tap((hash) => {
+                return api.rpc.author.submitExtrinsic(info?.signedTransaction || this).pipe(tap((hash) => {
                     this.__internal__updateSigner(hash, info);
                 }));
             };
             __internal__observeSubscribe = (info) => {
                 const txHash = this.hash;
-                return api.rpc.author.submitAndWatchExtrinsic(this).pipe(switchMap((status) => this.__internal__observeStatus(txHash, status)), tap((status) => {
+                return api.rpc.author.submitAndWatchExtrinsic(info?.signedTransaction || this).pipe(switchMap((status) => this.__internal__observeStatus(txHash, status)), tap((status) => {
                     this.__internal__updateSigner(status, info);
                 }));
             };
@@ -7372,6 +7385,14 @@
                 let result;
                 if (util.isFunction(signer.signPayload)) {
                     result = await signer.signPayload(payload.toPayload());
+                    if (result.signedTransaction) {
+                        const ext = this.registry.createTypeUnsafe('Extrinsic', [result.signedTransaction]);
+                        if (!ext.isSigned) {
+                            throw new Error(`When using the signedTransaction field, the transaction must be signed. Recieved isSigned: ${ext.isSigned}`);
+                        }
+                        this.__internal__validateSignedTransaction(payload, ext);
+                        return { id: result.id, signedTransaction: result.signedTransaction };
+                    }
                 }
                 else if (util.isFunction(signer.signRaw)) {
                     result = await signer.signRaw(payload.toRaw());
@@ -7380,7 +7401,7 @@
                     throw new Error('Invalid signer interface, it should implement either signPayload or signRaw (or both)');
                 }
                 super.addSignature(address, result.signature, payload.toPayload());
-                return result.id;
+                return { id: result.id };
             };
             __internal__updateSigner = (status, info) => {
                 if (info && (info.updateId !== -1)) {
@@ -7389,6 +7410,13 @@
                     if (signer && util.isFunction(signer.update)) {
                         signer.update(updateId, status);
                     }
+                }
+            };
+            __internal__validateSignedTransaction = (signerPayload, signedExt) => {
+                const payload = signerPayload.toPayload();
+                const errMsg = (field) => `signAndSend: ${field} does not match the original payload`;
+                if (payload.method !== signedExt.method.toHex()) {
+                    throw new Error(errMsg('call data'));
                 }
             };
         }
