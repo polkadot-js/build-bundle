@@ -1367,7 +1367,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.0.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.0.2' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -7385,12 +7385,32 @@
                 let result;
                 if (util.isFunction(signer.signPayload)) {
                     result = await signer.signPayload(payload.toPayload());
-                    if (result.signedTransaction) {
+                    if (result.signedTransaction && !options.withSignedTransaction) {
+                        throw new Error('The `signedTransaction` field may not be submitted when `withSignedTransaction` is disabled');
+                    }
+                    if (result.signedTransaction && options.withSignedTransaction) {
                         const ext = this.registry.createTypeUnsafe('Extrinsic', [result.signedTransaction]);
+                        const newSignerPayload = this.registry.createTypeUnsafe('SignerPayload', [util.objectSpread({}, {
+                                address,
+                                assetId: ext.assetId ? ext.assetId.toHex() : null,
+                                blockHash: payload.blockHash,
+                                blockNumber: header ? header.number : 0,
+                                era: ext.era.toHex(),
+                                genesisHash: payload.genesisHash,
+                                metadataHash: ext.metadataHash ? ext.metadataHash.toHex() : null,
+                                method: ext.method.toHex(),
+                                mode: ext.mode ? ext.mode.toHex() : null,
+                                nonce: ext.nonce.toHex(),
+                                runtimeVersion: payload.runtimeVersion,
+                                signedExtensions: payload.signedExtensions,
+                                tip: ext.tip.toHex(),
+                                version: payload.version
+                            })]);
                         if (!ext.isSigned) {
                             throw new Error(`When using the signedTransaction field, the transaction must be signed. Recieved isSigned: ${ext.isSigned}`);
                         }
                         this.__internal__validateSignedTransaction(payload, ext);
+                        super.addSignature(address, result.signature, newSignerPayload.toPayload());
                         return { id: result.id, signedTransaction: result.signedTransaction };
                     }
                 }
