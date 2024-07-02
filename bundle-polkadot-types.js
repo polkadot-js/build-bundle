@@ -24,7 +24,7 @@
             type: 'OpaqueMetadata'
         }
     };
-    const runtime$x = {
+    const runtime$y = {
         Metadata: [
             {
                 methods: {
@@ -543,9 +543,9 @@
         }
     };
 
-    const definitions$1b = {
+    const definitions$1c = {
         rpc: {},
-        runtime: runtime$x,
+        runtime: runtime$y,
         types: {
             ...v9,
             ...v10,
@@ -648,7 +648,7 @@
             type: 'ExtrinsicInclusionMode'
         }
     };
-    const runtime$w = {
+    const runtime$x = {
         Core: [
             {
                 methods: {
@@ -729,9 +729,9 @@
         Authority: 'AuthorityOrigin',
         GeneralCouncil: 'CollectiveOrigin'
     };
-    const definitions$1a = {
+    const definitions$1b = {
         rpc: {},
-        runtime: runtime$w,
+        runtime: runtime$x,
         types: {
             ...numberTypes,
             AccountId: 'AccountId32',
@@ -978,7 +978,7 @@
         }
     };
 
-    const definitions$19 = {
+    const definitions$1a = {
         rpc: {},
         types: {
             ...v0$1,
@@ -1001,7 +1001,7 @@
         }
     };
 
-    const runtime$v = {
+    const runtime$w = {
         AssetConversionApi: [
             {
                 methods: {
@@ -1069,15 +1069,15 @@
         ]
     };
 
-    const definitions$18 = {
+    const definitions$19 = {
         rpc: {},
-        runtime: runtime$v,
+        runtime: runtime$w,
         types: {
             TAssetConversion: 'Option<MultiLocation>'
         }
     };
 
-    const runtime$u = {
+    const runtime$v = {
         AssetsApi: [
             {
                 methods: {
@@ -1097,9 +1097,9 @@
         ]
     };
 
-    const definitions$17 = {
+    const definitions$18 = {
         rpc: {},
-        runtime: runtime$u,
+        runtime: runtime$v,
         types: {
             AssetApprovalKey: {
                 owner: 'AccountId',
@@ -1145,7 +1145,7 @@
         }
     };
 
-    const runtime$t = {
+    const runtime$u = {
         AuraApi: [
             {
                 methods: {
@@ -1165,9 +1165,9 @@
         ]
     };
 
-    const definitions$16 = {
+    const definitions$17 = {
         rpc: {},
-        runtime: runtime$t,
+        runtime: runtime$u,
         types: {
             RawAuraPreDigest: {
                 slotNumber: 'u64'
@@ -1175,7 +1175,7 @@
         }
     };
 
-    const definitions$15 = {
+    const definitions$16 = {
         rpc: {},
         types: {
             UncleEntryItem: {
@@ -1241,7 +1241,7 @@
             type: 'Option<Null>'
         }
     };
-    const runtime$s = {
+    const runtime$t = {
         BabeApi: [
             {
                 methods: {
@@ -1268,9 +1268,9 @@
         ]
     };
 
-    const definitions$14 = {
+    const definitions$15 = {
         rpc: rpc$g,
-        runtime: runtime$s,
+        runtime: runtime$t,
         types: {
             AllowedSlots: {
                 _enum: ['PrimarySlots', 'PrimaryAndSecondaryPlainSlots', 'PrimaryAndSecondaryVRFSlots']
@@ -1388,7 +1388,7 @@
         }
     };
 
-    const definitions$13 = {
+    const definitions$14 = {
         rpc: {},
         types: {
             AccountData: {
@@ -1506,7 +1506,7 @@
             type: 'BeefyNextAuthoritySet'
         }
     };
-    const runtime$r = {
+    const runtime$s = {
         BeefyApi: [
             {
                 methods: BEEFY_V1_V3,
@@ -1529,9 +1529,9 @@
         ]
     };
 
-    const definitions$12 = {
+    const definitions$13 = {
         rpc: rpc$f,
-        runtime: runtime$r,
+        runtime: runtime$s,
         types: {
             BeefyAuthoritySet: {
                 id: 'u64',
@@ -1585,7 +1585,7 @@
         }
     };
 
-    const runtime$q = {
+    const runtime$r = {
         Benchmark: [
             {
                 methods: {
@@ -1615,9 +1615,9 @@
         ]
     };
 
-    const definitions$11 = {
+    const definitions$12 = {
         rpc: {},
-        runtime: runtime$q,
+        runtime: runtime$r,
         types: {
             BenchmarkBatch: {
                 pallet: 'Text',
@@ -1710,7 +1710,7 @@
             type: 'Header'
         }
     };
-    const runtime$p = {
+    const runtime$q = {
         BlockBuilder: [
             {
                 methods: {
@@ -1769,9 +1769,9 @@
         ]
     };
 
-    const definitions$10 = {
+    const definitions$11 = {
         rpc: {},
-        runtime: runtime$p,
+        runtime: runtime$q,
         types: {
             CheckInherentsResult: {
                 okay: 'bool',
@@ -1785,7 +1785,7 @@
         }
     };
 
-    const definitions$$ = {
+    const definitions$10 = {
         rpc: {},
         types: {
             CollectiveOrigin: {
@@ -1812,7 +1812,7 @@
         }
     };
 
-    const definitions$_ = {
+    const definitions$$ = {
         rpc: {},
         types: {
             AuthorityId: 'AccountId',
@@ -1947,7 +1947,7 @@
             type: 'CodeUploadResult'
         }
     };
-    const runtime$o = {
+    const runtime$p = {
         ContractsApi: [
             {
                 methods: {
@@ -2092,9 +2092,9 @@
         ]
     };
 
-    const definitions$Z = {
+    const definitions$_ = {
         rpc: rpc$e,
-        runtime: runtime$o,
+        runtime: runtime$p,
         types: {
             AliveContractInfo: {
                 trieId: 'TrieId',
@@ -2523,7 +2523,7 @@
         'Locked5x',
         'Locked6x'
     ];
-    const definitions$Y = {
+    const definitions$Z = {
         rpc: {},
         types: {
             AccountVote: {
@@ -2635,7 +2635,7 @@
         }
     };
 
-    const definitions$X = {
+    const definitions$Y = {
         rpc: rpc$d,
         types: {
             BlockStats: {
@@ -2647,7 +2647,7 @@
         }
     };
 
-    const runtime$n = {
+    const runtime$o = {
         AuthorityDiscoveryApi: [
             {
                 methods: {
@@ -2662,13 +2662,13 @@
         ]
     };
 
-    const definitions$W = {
+    const definitions$X = {
         rpc: {},
-        runtime: runtime$n,
+        runtime: runtime$o,
         types: {}
     };
 
-    const definitions$V = {
+    const definitions$W = {
         rpc: {},
         types: {
             ApprovalFlag: 'u32',
@@ -2740,7 +2740,7 @@
         }
     };
 
-    const definitions$U = {
+    const definitions$V = {
         rpc: rpc$c,
         types: {
             CreatedBlock: {
@@ -2761,7 +2761,7 @@
         }
     };
 
-    const definitions$T = {
+    const definitions$U = {
         rpc: {},
         types: {
             EvmAccount: {
@@ -2852,7 +2852,7 @@
         }
     };
 
-    const definitions$S = {
+    const definitions$T = {
         rpc: {},
         types: {
             Extrinsic: 'GenericExtrinsic',
@@ -2883,7 +2883,7 @@
         }
     };
 
-    const runtime$m = {
+    const runtime$n = {
         FungiblesApi: [
             {
                 methods: {
@@ -2918,9 +2918,9 @@
         ]
     };
 
-    const definitions$R = {
+    const definitions$S = {
         rpc: {},
-        runtime: runtime$m,
+        runtime: runtime$n,
         types: {
             FungiblesAccessError: {
                 _enum: ['AssetIdConversionFailed', 'AmountToBalanceConversionFailed']
@@ -2928,7 +2928,7 @@
         }
     };
 
-    const definitions$Q = {
+    const definitions$R = {
         rpc: {},
         types: {
             AssetOptions: {
@@ -2955,7 +2955,7 @@
         }
     };
 
-    const runtime$l = {
+    const runtime$m = {
         GenesisBuilder: [
             {
                 methods: {
@@ -2980,15 +2980,15 @@
         ]
     };
 
-    const definitions$P = {
+    const definitions$Q = {
         rpc: {},
-        runtime: runtime$l,
+        runtime: runtime$m,
         types: {
             GenesisBuildErr: 'Text'
         }
     };
 
-    const definitions$O = {
+    const definitions$P = {
         rpc: {},
         types: {
             ActiveGilt: {
@@ -3074,7 +3074,7 @@
             type: 'Option<Null>'
         }
     };
-    const runtime$k = {
+    const runtime$l = {
         GrandpaApi: [
             {
                 methods: {
@@ -3094,9 +3094,9 @@
         ]
     };
 
-    const definitions$N = {
+    const definitions$O = {
         rpc: rpc$b,
-        runtime: runtime$k,
+        runtime: runtime$l,
         types: {
             AuthorityIndex: 'u64',
             AuthorityList: 'Vec<NextAuthority>',
@@ -3224,7 +3224,7 @@
         }
     };
 
-    const definitions$M = {
+    const definitions$N = {
         rpc: {},
         types: {
             IdentityFields: {
@@ -3295,7 +3295,7 @@
         }
     };
 
-    const definitions$L = {
+    const definitions$M = {
         rpc: {},
         types: {
             AuthIndex: 'u32',
@@ -3322,7 +3322,7 @@
         }
     };
 
-    const definitions$K = {
+    const definitions$L = {
         rpc: {},
         types: {
             CallIndex: '(u8, u8)',
@@ -3336,7 +3336,7 @@
         }
     };
 
-    const runtime$j = {
+    const runtime$k = {
         MixnetApi: [
             {
                 methods: {
@@ -3375,9 +3375,9 @@
         ]
     };
 
-    const definitions$J = {
+    const definitions$K = {
         rpc: {},
-        runtime: runtime$j,
+        runtime: runtime$k,
         types: {
             Mixnode: {
                 externalAddresses: 'Vec<Bytes>',
@@ -3611,7 +3611,7 @@
             type: 'Result<(), MmrError>'
         }
     };
-    const runtime$i = {
+    const runtime$j = {
         MmrApi: [
             {
                 methods: MMR_V2,
@@ -3624,9 +3624,9 @@
         ]
     };
 
-    const definitions$I = {
+    const definitions$J = {
         rpc: rpc$a,
-        runtime: runtime$i,
+        runtime: runtime$j,
         types: {
             MmrBatchProof: {
                 leafIndices: 'Vec<MmrLeafIndex>',
@@ -3658,7 +3658,7 @@
         }
     };
 
-    const runtime$h = {
+    const runtime$i = {
         NftsApi: [
             {
                 methods: {
@@ -3764,16 +3764,16 @@
         ]
     };
 
-    const definitions$H = {
+    const definitions$I = {
         rpc: {},
-        runtime: runtime$h,
+        runtime: runtime$i,
         types: {
             NftCollectionId: 'u32',
             NftItemId: 'u32'
         }
     };
 
-    const runtime$g = {
+    const runtime$h = {
         NominationPoolsApi: [
             {
                 methods: {
@@ -3821,9 +3821,9 @@
         ]
     };
 
-    const definitions$G = {
+    const definitions$H = {
         rpc: {},
-        runtime: runtime$g,
+        runtime: runtime$h,
         types: {
             NpApiError: {
                 _enum: ['MemberNotFound', 'OverflowInPendingRewards']
@@ -3832,7 +3832,7 @@
         }
     };
 
-    const definitions$F = {
+    const definitions$G = {
         rpc: {},
         types: {
             DeferredOffenceOf: '(Vec<OffenceDetails>, Vec<Perbill>, SessionIndex)',
@@ -3848,7 +3848,7 @@
         }
     };
 
-    const runtime$f = {
+    const runtime$g = {
         DifficultyApi: [
             {
                 methods: {
@@ -3875,13 +3875,13 @@
         ]
     };
 
-    const definitions$E = {
+    const definitions$F = {
         rpc: {},
-        runtime: runtime$f,
+        runtime: runtime$g,
         types: {}
     };
 
-    const definitions$D = {
+    const definitions$E = {
         rpc: {},
         types: {
             ProxyDefinition: {
@@ -3900,7 +3900,7 @@
         }
     };
 
-    const definitions$C = {
+    const definitions$D = {
         rpc: {},
         types: {
             ActiveRecovery: {
@@ -3917,7 +3917,7 @@
         }
     };
 
-    const definitions$B = {
+    const definitions$C = {
         rpc: {},
         types: {
             Period: '(BlockNumber, u32)',
@@ -3941,7 +3941,7 @@
         }
     };
 
-    const runtime$e = {
+    const runtime$f = {
         SessionKeys: [
             {
                 methods: {
@@ -3990,9 +3990,9 @@
         SessionKeys10: '(AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId)',
         SessionKeys10B: '(AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, AccountId, BeefyKey)'
     };
-    const definitions$A = {
+    const definitions$B = {
         rpc: {},
-        runtime: runtime$e,
+        runtime: runtime$f,
         types: {
             ...keyTypes,
             FullIdentification: 'Exposure',
@@ -4007,7 +4007,7 @@
         }
     };
 
-    const definitions$z = {
+    const definitions$A = {
         rpc: {},
         types: {
             Bid: {
@@ -4034,7 +4034,7 @@
         }
     };
 
-    const runtime$d = {
+    const runtime$e = {
         StakingApi: [
             {
                 methods: {
@@ -4214,9 +4214,9 @@
         },
         VoteWeight: 'u64'
     };
-    const definitions$y = {
+    const definitions$z = {
         rpc: {},
-        runtime: runtime$d,
+        runtime: runtime$e,
         types: {
             ...deprecated,
             ...phragmen,
@@ -4347,7 +4347,7 @@
         }
     };
 
-    const runtime$c = {
+    const runtime$d = {
         ValidateStatement: [
             {
                 methods: {
@@ -4371,9 +4371,9 @@
         ]
     };
 
-    const definitions$x = {
+    const definitions$y = {
         rpc: {},
-        runtime: runtime$c,
+        runtime: runtime$d,
         types: {
             StatementStoreStatementSource: {
                 _enum: ['Chain', 'Network', 'Local']
@@ -4388,7 +4388,7 @@
         }
     };
 
-    const definitions$w = {
+    const definitions$x = {
         rpc: {},
         types: {
             WeightToFeeCoefficient: {
@@ -4414,7 +4414,7 @@
         }
     };
 
-    const definitions$v = {
+    const definitions$w = {
         rpc: rpc$9,
         types: {}
     };
@@ -4559,7 +4559,7 @@
         }
     };
 
-    const runtime$b = {
+    const runtime$c = {
         AccountNonceApi: [
             {
                 methods: {
@@ -4579,9 +4579,9 @@
         ]
     };
 
-    const definitions$u = {
+    const definitions$v = {
         rpc: rpc$8,
-        runtime: runtime$b,
+        runtime: runtime$c,
         types: {
             AccountInfo: 'AccountInfoWithTripleRefCount',
             AccountInfoWithRefCountU8: {
@@ -4891,7 +4891,7 @@
         }
     };
 
-    const definitions$t = {
+    const definitions$u = {
         rpc: {},
         types: {
             Bounty: {
@@ -4952,14 +4952,14 @@
         }
     };
 
-    const definitions$s = {
+    const definitions$t = {
         rpc: {},
         types: {
             Multiplier: 'Fixed128'
         }
     };
 
-    const runtime$a = {
+    const runtime$b = {
         TaggedTransactionQueue: [
             {
                 methods: {
@@ -5021,9 +5021,9 @@
         ]
     };
 
-    const definitions$r = {
+    const definitions$s = {
         rpc: {},
-        runtime: runtime$a,
+        runtime: runtime$b,
         types: {
             TransactionSource: {
                 _enum: ['InBlock', 'Local', 'External']
@@ -5039,7 +5039,7 @@
         }
     };
 
-    const definitions$q = {
+    const definitions$r = {
         rpc: {},
         types: {
             ClassId: 'u32',
@@ -5082,7 +5082,7 @@
         }
     };
 
-    const definitions$p = {
+    const definitions$q = {
         rpc: {},
         types: {
             Multisig: {
@@ -5098,7 +5098,7 @@
         }
     };
 
-    const definitions$o = {
+    const definitions$p = {
         rpc: {},
         types: {
             VestingInfo: {
@@ -5109,7 +5109,7 @@
         }
     };
 
-    const definitions$n = {
+    const definitions$o = {
         rpc: {},
         types: {
             BlockAttestations: {
@@ -5128,7 +5128,7 @@
         }
     };
 
-    const definitions$m = {
+    const definitions$n = {
         rpc: {},
         types: {
             BridgedBlockHash: 'H256',
@@ -5214,7 +5214,7 @@
         }
     };
 
-    const definitions$l = {
+    const definitions$m = {
         rpc: {},
         types: {
             StatementKind: {
@@ -5223,7 +5223,7 @@
         }
     };
 
-    const definitions$k = {
+    const definitions$l = {
         rpc: {},
         types: {
             FundIndex: 'u32',
@@ -5250,7 +5250,7 @@
         }
     };
 
-    const runtime$9 = {
+    const runtime$a = {
         AuraUnincludedSegmentApi: [
             {
                 methods: {
@@ -5329,9 +5329,9 @@
             overweightCount: 'OverweightIndex'
         }
     };
-    const definitions$j = {
+    const definitions$k = {
         rpc: {},
-        runtime: runtime$9,
+        runtime: runtime$a,
         types: dmpQueue
     };
 
@@ -5345,16 +5345,16 @@
         },
         version: 1
     };
-    const runtime$8 = {
+    const runtime$9 = {
         KusamaFinalityApi: [finalityV1],
         PolkadotFinalityApi: [finalityV1],
         RococoFinalityApi: [finalityV1],
         WestendFinalityApi: [finalityV1]
     };
 
-    const definitions$i = {
+    const definitions$j = {
         rpc: {},
-        runtime: runtime$8,
+        runtime: runtime$9,
         types: {}
     };
 
@@ -5658,7 +5658,7 @@
             type: 'BTreeMap<CoreIndex, Vec<u32>>'
         }
     };
-    const runtime$7 = {
+    const runtime$8 = {
         ParachainHost: [
             {
                 methods: {
@@ -5924,9 +5924,9 @@
             }
         }
     };
-    const definitions$h = {
+    const definitions$i = {
         rpc: {},
-        runtime: runtime$7,
+        runtime: runtime$8,
         types: {
             ...cumulusTypes,
             ...disputeTypes,
@@ -6401,14 +6401,14 @@
         }
     };
 
-    const definitions$g = {
+    const definitions$h = {
         rpc: {},
         types: {
             Approvals: '[bool; 4]'
         }
     };
 
-    const definitions$f = {
+    const definitions$g = {
         rpc: {},
         types: {
             AccountStatus: {
@@ -10707,7 +10707,7 @@
             }
         }
     };
-    const definitions$e = {
+    const definitions$f = {
         rpc: {},
         types: {
             ...location,
@@ -10792,6 +10792,66 @@
                 }
             },
             XcmVersion: 'u32'
+        }
+    };
+
+    const runtime$7 = {
+        XcmPaymentApi: [
+            {
+                methods: {
+                    query_acceptable_payment_assets: {
+                        description: 'The API to query acceptable payment assets',
+                        params: [
+                            {
+                                name: 'version',
+                                type: 'u32'
+                            }
+                        ],
+                        type: 'Result<Vec<XcmVersionedAssetId>, XcmPaymentApiError>'
+                    },
+                    query_weight_to_asset_fee: {
+                        description: '',
+                        params: [
+                            {
+                                name: 'weight',
+                                type: 'WeightV2'
+                            },
+                            {
+                                name: 'asset',
+                                type: 'XcmVersionedAssetId'
+                            }
+                        ],
+                        type: 'Result<u128, XcmPaymentApiError>'
+                    },
+                    query_xcm_weight: {
+                        description: '',
+                        params: [
+                            {
+                                name: 'message',
+                                type: 'XcmVersionedXcm'
+                            }
+                        ],
+                        type: 'Result<WeightV2, XcmPaymentApiError>'
+                    }
+                },
+                version: 1
+            }
+        ]
+    };
+
+    const definitions$e = {
+        rpc: {},
+        runtime: runtime$7,
+        types: {
+            XcmPaymentApiError: {
+                _enum: [
+                    'Unimplemented',
+                    'VersionedConversionFailed',
+                    'WeightNotComputable',
+                    'UnhandledXcmVersion',
+                    'AssetNotFound'
+                ]
+            }
         }
     };
 
@@ -13642,80 +13702,81 @@
 
     const definitions = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        assetConversion: definitions$18,
-        assets: definitions$17,
-        attestations: definitions$n,
-        aura: definitions$16,
+        assetConversion: definitions$19,
+        assets: definitions$18,
+        attestations: definitions$o,
+        aura: definitions$17,
         author: definitions$6,
-        authorship: definitions$15,
-        babe: definitions$14,
-        balances: definitions$13,
-        beefy: definitions$12,
-        benchmark: definitions$11,
-        blockbuilder: definitions$10,
-        bridges: definitions$m,
+        authorship: definitions$16,
+        babe: definitions$15,
+        balances: definitions$14,
+        beefy: definitions$13,
+        benchmark: definitions$12,
+        blockbuilder: definitions$11,
+        bridges: definitions$n,
         chain: definitions$5,
         childstate: definitions$4,
-        claims: definitions$l,
-        collective: definitions$$,
-        consensus: definitions$_,
-        contracts: definitions$Z,
+        claims: definitions$m,
+        collective: definitions$10,
+        consensus: definitions$$,
+        contracts: definitions$_,
         contractsAbi: definitions$c,
-        crowdloan: definitions$k,
-        cumulus: definitions$j,
-        democracy: definitions$Y,
-        dev: definitions$X,
-        discovery: definitions$W,
-        elections: definitions$V,
-        engine: definitions$U,
+        crowdloan: definitions$l,
+        cumulus: definitions$k,
+        democracy: definitions$Z,
+        dev: definitions$Y,
+        discovery: definitions$X,
+        elections: definitions$W,
+        engine: definitions$V,
         eth: definitions$b,
-        evm: definitions$T,
-        extrinsics: definitions$S,
-        finality: definitions$i,
-        fungibles: definitions$R,
-        genericAsset: definitions$Q,
-        genesisBuilder: definitions$P,
-        gilt: definitions$O,
-        grandpa: definitions$N,
-        identity: definitions$M,
-        imOnline: definitions$L,
-        lottery: definitions$K,
-        metadata: definitions$1b,
-        mixnet: definitions$J,
-        mmr: definitions$I,
-        nfts: definitions$H,
+        evm: definitions$U,
+        extrinsics: definitions$T,
+        finality: definitions$j,
+        fungibles: definitions$S,
+        genericAsset: definitions$R,
+        genesisBuilder: definitions$Q,
+        gilt: definitions$P,
+        grandpa: definitions$O,
+        identity: definitions$N,
+        imOnline: definitions$M,
+        lottery: definitions$L,
+        metadata: definitions$1c,
+        mixnet: definitions$K,
+        mmr: definitions$J,
+        nfts: definitions$I,
         nimbus: definitions$a,
-        nompools: definitions$G,
+        nompools: definitions$H,
         offchain: definitions$3,
-        offences: definitions$F,
+        offences: definitions$G,
         ormlOracle: definitions$9,
         ormlTokens: definitions$8,
-        parachains: definitions$h,
+        parachains: definitions$i,
         payment: definitions$2,
-        poll: definitions$g,
-        pow: definitions$E,
-        proxy: definitions$D,
-        purchase: definitions$f,
-        recovery: definitions$C,
+        poll: definitions$h,
+        pow: definitions$F,
+        proxy: definitions$E,
+        purchase: definitions$g,
+        recovery: definitions$D,
         rpc: definitions$7,
-        runtime: definitions$1a,
-        scaleInfo: definitions$19,
-        scheduler: definitions$B,
-        session: definitions$A,
-        society: definitions$z,
-        staking: definitions$y,
+        runtime: definitions$1b,
+        scaleInfo: definitions$1a,
+        scheduler: definitions$C,
+        session: definitions$B,
+        society: definitions$A,
+        staking: definitions$z,
         state: definitions$1,
-        statement: definitions$x,
-        support: definitions$w,
-        syncstate: definitions$v,
-        system: definitions$u,
-        treasury: definitions$t,
-        txpayment: definitions$s,
-        txqueue: definitions$r,
-        uniques: definitions$q,
-        utility: definitions$p,
-        vesting: definitions$o,
-        xcm: definitions$e,
+        statement: definitions$y,
+        support: definitions$x,
+        syncstate: definitions$w,
+        system: definitions$v,
+        treasury: definitions$u,
+        txpayment: definitions$t,
+        txqueue: definitions$s,
+        uniques: definitions$r,
+        utility: definitions$q,
+        vesting: definitions$p,
+        xcm: definitions$f,
+        xcmPaymentApi: definitions$e,
         xcmRuntimeApi: definitions$d
     });
 
@@ -14588,7 +14649,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.0.2' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.1.1' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
