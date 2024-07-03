@@ -2,6 +2,7 @@
 
 ## master
 
+- extension-dapp 0.48.2
 - api, api-contract, types 12.1.1
 - extension-dapp 0.48.1
 - api, api-contract, types 12.0.2
