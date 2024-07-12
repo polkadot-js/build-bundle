@@ -7,34 +7,34 @@
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
     var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
-    const PKCS8_DIVIDER = new Uint8Array([161, 35, 3, 33, 0]);
-    const PKCS8_HEADER = new Uint8Array([48, 83, 2, 1, 1, 48, 5, 6, 3, 43, 101, 112, 4, 34, 4, 32]);
+    const PAIR_DIV = new Uint8Array([161, 35, 3, 33, 0]);
+    const PAIR_HDR = new Uint8Array([48, 83, 2, 1, 1, 48, 5, 6, 3, 43, 101, 112, 4, 34, 4, 32]);
     const PUB_LENGTH = 32;
     const SEC_LENGTH = 64;
     const SEED_LENGTH = 32;
 
-    const SEED_OFFSET = PKCS8_HEADER.length;
+    const SEED_OFFSET = PAIR_HDR.length;
     function decodePair(passphrase, encrypted, _encType) {
         const encType = Array.isArray(_encType) || _encType === undefined
             ? _encType
             : [_encType];
         const decrypted = utilCrypto.jsonDecryptData(encrypted, passphrase, encType);
-        const header = decrypted.subarray(0, PKCS8_HEADER.length);
-        if (!util.u8aEq(header, PKCS8_HEADER)) {
-            throw new Error('Invalid Pkcs8 header found in body');
+        const header = decrypted.subarray(0, PAIR_HDR.length);
+        if (!util.u8aEq(header, PAIR_HDR)) {
+            throw new Error('Invalid encoding header found in body');
         }
         let secretKey = decrypted.subarray(SEED_OFFSET, SEED_OFFSET + SEC_LENGTH);
         let divOffset = SEED_OFFSET + SEC_LENGTH;
-        let divider = decrypted.subarray(divOffset, divOffset + PKCS8_DIVIDER.length);
-        if (!util.u8aEq(divider, PKCS8_DIVIDER)) {
+        let divider = decrypted.subarray(divOffset, divOffset + PAIR_DIV.length);
+        if (!util.u8aEq(divider, PAIR_DIV)) {
             divOffset = SEED_OFFSET + SEED_LENGTH;
             secretKey = decrypted.subarray(SEED_OFFSET, divOffset);
-            divider = decrypted.subarray(divOffset, divOffset + PKCS8_DIVIDER.length);
-            if (!util.u8aEq(divider, PKCS8_DIVIDER)) {
-                throw new Error('Invalid Pkcs8 divider found in body');
+            divider = decrypted.subarray(divOffset, divOffset + PAIR_DIV.length);
+            if (!util.u8aEq(divider, PAIR_DIV)) {
+                throw new Error('Invalid encoding divider found in body');
             }
         }
-        const pubOffset = divOffset + PKCS8_DIVIDER.length;
+        const pubOffset = divOffset + PAIR_DIV.length;
         const publicKey = decrypted.subarray(pubOffset, pubOffset + PUB_LENGTH);
         return {
             publicKey,
@@ -46,7 +46,7 @@
         if (!secretKey) {
             throw new Error('Expected a valid secretKey to be passed to encode');
         }
-        const encoded = util.u8aConcat(PKCS8_HEADER, secretKey, PKCS8_DIVIDER, publicKey);
+        const encoded = util.u8aConcat(PAIR_HDR, secretKey, PAIR_DIV, publicKey);
         if (!passphrase) {
             return encoded;
         }
@@ -363,7 +363,7 @@
         }
     }
 
-    const packageInfo = { name: '@polkadot/keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.6.2' };
+    const packageInfo = { name: '@polkadot/keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.0.1' };
 
     const PAIRSSR25519 = [
         {

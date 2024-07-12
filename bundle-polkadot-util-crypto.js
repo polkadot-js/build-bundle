@@ -7,7 +7,7 @@
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
     var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
-    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.6.2' };
+    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.0.1' };
 
     function evaluateThis(fn) {
         return fn('return this');
@@ -84,7 +84,7 @@
 
     Object.defineProperty(packageInfo$1, "__esModule", { value: true });
     packageInfo$1.packageInfo = void 0;
-    packageInfo$1.packageInfo = { name: '@polkadot/x-randomvalues', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.6.2' };
+    packageInfo$1.packageInfo = { name: '@polkadot/x-randomvalues', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.0.1' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -723,7 +723,7 @@
     cryptoWaitReady().catch(() => {
     });
 
-    const packageInfo = { name: '@polkadot/util-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.6.2' };
+    const packageInfo = { name: '@polkadot/util-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.0.1' };
 
     /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
     function assertNumber(n) {
@@ -1402,7 +1402,6 @@
         rotlSH, rotlSL, rotlBH, rotlBL,
         add, add3L, add3H, add4L, add4H, add5H, add5L,
     };
-    const u64$1 = u64;
 
     const IV$1 =  new Uint32Array([
         0xf3bcc908, 0x6a09e667, 0x84caa73b, 0xbb67ae85, 0xfe94f82b, 0x3c6ef372, 0x5f1d36f1, 0xa54ff53a,
@@ -1415,14 +1414,14 @@
         let Bl = BUF[2 * b], Bh = BUF[2 * b + 1];
         let Cl = BUF[2 * c], Ch = BUF[2 * c + 1];
         let Dl = BUF[2 * d], Dh = BUF[2 * d + 1];
-        let ll = u64$1.add3L(Al, Bl, Xl);
-        Ah = u64$1.add3H(ll, Ah, Bh, Xh);
+        let ll = u64.add3L(Al, Bl, Xl);
+        Ah = u64.add3H(ll, Ah, Bh, Xh);
         Al = ll | 0;
         ({ Dh, Dl } = { Dh: Dh ^ Ah, Dl: Dl ^ Al });
-        ({ Dh, Dl } = { Dh: u64$1.rotr32H(Dh, Dl), Dl: u64$1.rotr32L(Dh, Dl) });
-        ({ h: Ch, l: Cl } = u64$1.add(Ch, Cl, Dh, Dl));
+        ({ Dh, Dl } = { Dh: u64.rotr32H(Dh, Dl), Dl: u64.rotr32L(Dh, Dl) });
+        ({ h: Ch, l: Cl } = u64.add(Ch, Cl, Dh, Dl));
         ({ Bh, Bl } = { Bh: Bh ^ Ch, Bl: Bl ^ Cl });
-        ({ Bh, Bl } = { Bh: u64$1.rotrSH(Bh, Bl, 24), Bl: u64$1.rotrSL(Bh, Bl, 24) });
+        ({ Bh, Bl } = { Bh: u64.rotrSH(Bh, Bl, 24), Bl: u64.rotrSL(Bh, Bl, 24) });
         (BUF[2 * a] = Al), (BUF[2 * a + 1] = Ah);
         (BUF[2 * b] = Bl), (BUF[2 * b + 1] = Bh);
         (BUF[2 * c] = Cl), (BUF[2 * c + 1] = Ch);
@@ -1434,14 +1433,14 @@
         let Bl = BUF[2 * b], Bh = BUF[2 * b + 1];
         let Cl = BUF[2 * c], Ch = BUF[2 * c + 1];
         let Dl = BUF[2 * d], Dh = BUF[2 * d + 1];
-        let ll = u64$1.add3L(Al, Bl, Xl);
-        Ah = u64$1.add3H(ll, Ah, Bh, Xh);
+        let ll = u64.add3L(Al, Bl, Xl);
+        Ah = u64.add3H(ll, Ah, Bh, Xh);
         Al = ll | 0;
         ({ Dh, Dl } = { Dh: Dh ^ Ah, Dl: Dl ^ Al });
-        ({ Dh, Dl } = { Dh: u64$1.rotrSH(Dh, Dl, 16), Dl: u64$1.rotrSL(Dh, Dl, 16) });
-        ({ h: Ch, l: Cl } = u64$1.add(Ch, Cl, Dh, Dl));
+        ({ Dh, Dl } = { Dh: u64.rotrSH(Dh, Dl, 16), Dl: u64.rotrSL(Dh, Dl, 16) });
+        ({ h: Ch, l: Cl } = u64.add(Ch, Cl, Dh, Dl));
         ({ Bh, Bl } = { Bh: Bh ^ Ch, Bl: Bl ^ Cl });
-        ({ Bh, Bl } = { Bh: u64$1.rotrBH(Bh, Bl, 63), Bl: u64$1.rotrBL(Bh, Bl, 63) });
+        ({ Bh, Bl } = { Bh: u64.rotrBH(Bh, Bl, 63), Bl: u64.rotrBL(Bh, Bl, 63) });
         (BUF[2 * a] = Al), (BUF[2 * a + 1] = Ah);
         (BUF[2 * b] = Bl), (BUF[2 * b + 1] = Bh);
         (BUF[2 * c] = Cl), (BUF[2 * c + 1] = Ch);
@@ -1513,7 +1512,7 @@
         compress(msg, offset, isLast) {
             this.get().forEach((v, i) => (BUF[i] = v));
             BUF.set(IV$1, 16);
-            let { h, l } = u64$1.fromBig(BigInt(this.length));
+            let { h, l } = u64.fromBig(BigInt(this.length));
             BUF[24] = IV$1[8] ^ l;
             BUF[25] = IV$1[9] ^ h;
             if (isLast) {
@@ -2329,6 +2328,19 @@
     		"website": "https://pendulumchain.org/"
     	},
     	{
+    		"prefix": 58,
+    		"network": "eternal-civilization",
+    		"displayName": "Eternal Civilization",
+    		"symbols": [
+    			"ECC"
+    		],
+    		"decimals": [
+    			12
+    		],
+    		"standardAccount": "*25519",
+    		"website": "http://www.ysknfr.cn/"
+    	},
+    	{
     		"prefix": 63,
     		"network": "hydradx",
     		"displayName": "HydraDX",
@@ -2340,19 +2352,6 @@
     		],
     		"standardAccount": "*25519",
     		"website": "https://hydradx.io"
-    	},
-    	{
-    		"prefix": 64,
-    		"network": "ewx",
-    		"displayName": "Energy Web X",
-    		"symbols": [
-    			"EWT"
-    		],
-    		"decimals": [
-    			18
-    		],
-    		"standardAccount": "*25519",
-    		"website": "https://www.energyweb.org"
     	},
     	{
     		"prefix": 65,
@@ -2742,7 +2741,7 @@
     			12
     		],
     		"standardAccount": "*25519",
-    		"website": "https://vara-network.io/"
+    		"website": "https://vara.network/"
     	},
     	{
     		"prefix": 172,
@@ -2834,6 +2833,19 @@
     		],
     		"standardAccount": "*25519",
     		"website": "https://metaquity.xyz/"
+    	},
+    	{
+    		"prefix": 777,
+    		"network": "curio",
+    		"displayName": "Curio",
+    		"symbols": [
+    			"CGT"
+    		],
+    		"decimals": [
+    			18
+    		],
+    		"standardAccount": "*25519",
+    		"website": "https://parachain.capitaldex.exchange/"
     	},
     	{
     		"prefix": 789,
@@ -3135,19 +3147,6 @@
     		"website": "https://www.peerplays.com/"
     	},
     	{
-    		"prefix": 4006,
-    		"network": "tangle",
-    		"displayName": "Tangle Network",
-    		"symbols": [
-    			"TNT"
-    		],
-    		"decimals": [
-    			18
-    		],
-    		"standardAccount": "*25519",
-    		"website": "https://www.webb.tools/"
-    	},
-    	{
     		"prefix": 4450,
     		"network": "g1",
     		"displayName": "Ğ1",
@@ -3172,6 +3171,19 @@
     		],
     		"standardAccount": "*25519",
     		"website": "https://humanode.io"
+    	},
+    	{
+    		"prefix": 5845,
+    		"network": "tangle",
+    		"displayName": "Tangle Network",
+    		"symbols": [
+    			"TNT"
+    		],
+    		"decimals": [
+    			18
+    		],
+    		"standardAccount": "*25519",
+    		"website": "https://www.tangle.tools/"
     	},
     	{
     		"prefix": 6094,
@@ -5970,7 +5982,7 @@
         return util.hexToBn(randomAsHex(8)).and(BN_53).toNumber();
     }
 
-    const [SHA512_Kh, SHA512_Kl] =  (() => u64$1.split([
+    const [SHA512_Kh, SHA512_Kl] =  (() => u64.split([
         '0x428a2f98d728ae22', '0x7137449123ef65cd', '0xb5c0fbcfec4d3b2f', '0xe9b5dba58189dbbc',
         '0x3956c25bf348b538', '0x59f111f1b605d019', '0x923f82a4af194f9b', '0xab1c5ed5da6d8118',
         '0xd807aa98a3030242', '0x12835b0145706fbe', '0x243185be4ee4b28c', '0x550c7dc3d5ffb4e2',
@@ -6044,28 +6056,28 @@
             for (let i = 16; i < 80; i++) {
                 const W15h = SHA512_W_H[i - 15] | 0;
                 const W15l = SHA512_W_L[i - 15] | 0;
-                const s0h = u64$1.rotrSH(W15h, W15l, 1) ^ u64$1.rotrSH(W15h, W15l, 8) ^ u64$1.shrSH(W15h, W15l, 7);
-                const s0l = u64$1.rotrSL(W15h, W15l, 1) ^ u64$1.rotrSL(W15h, W15l, 8) ^ u64$1.shrSL(W15h, W15l, 7);
+                const s0h = u64.rotrSH(W15h, W15l, 1) ^ u64.rotrSH(W15h, W15l, 8) ^ u64.shrSH(W15h, W15l, 7);
+                const s0l = u64.rotrSL(W15h, W15l, 1) ^ u64.rotrSL(W15h, W15l, 8) ^ u64.shrSL(W15h, W15l, 7);
                 const W2h = SHA512_W_H[i - 2] | 0;
                 const W2l = SHA512_W_L[i - 2] | 0;
-                const s1h = u64$1.rotrSH(W2h, W2l, 19) ^ u64$1.rotrBH(W2h, W2l, 61) ^ u64$1.shrSH(W2h, W2l, 6);
-                const s1l = u64$1.rotrSL(W2h, W2l, 19) ^ u64$1.rotrBL(W2h, W2l, 61) ^ u64$1.shrSL(W2h, W2l, 6);
-                const SUMl = u64$1.add4L(s0l, s1l, SHA512_W_L[i - 7], SHA512_W_L[i - 16]);
-                const SUMh = u64$1.add4H(SUMl, s0h, s1h, SHA512_W_H[i - 7], SHA512_W_H[i - 16]);
+                const s1h = u64.rotrSH(W2h, W2l, 19) ^ u64.rotrBH(W2h, W2l, 61) ^ u64.shrSH(W2h, W2l, 6);
+                const s1l = u64.rotrSL(W2h, W2l, 19) ^ u64.rotrBL(W2h, W2l, 61) ^ u64.shrSL(W2h, W2l, 6);
+                const SUMl = u64.add4L(s0l, s1l, SHA512_W_L[i - 7], SHA512_W_L[i - 16]);
+                const SUMh = u64.add4H(SUMl, s0h, s1h, SHA512_W_H[i - 7], SHA512_W_H[i - 16]);
                 SHA512_W_H[i] = SUMh | 0;
                 SHA512_W_L[i] = SUMl | 0;
             }
             let { Ah, Al, Bh, Bl, Ch, Cl, Dh, Dl, Eh, El, Fh, Fl, Gh, Gl, Hh, Hl } = this;
             for (let i = 0; i < 80; i++) {
-                const sigma1h = u64$1.rotrSH(Eh, El, 14) ^ u64$1.rotrSH(Eh, El, 18) ^ u64$1.rotrBH(Eh, El, 41);
-                const sigma1l = u64$1.rotrSL(Eh, El, 14) ^ u64$1.rotrSL(Eh, El, 18) ^ u64$1.rotrBL(Eh, El, 41);
+                const sigma1h = u64.rotrSH(Eh, El, 14) ^ u64.rotrSH(Eh, El, 18) ^ u64.rotrBH(Eh, El, 41);
+                const sigma1l = u64.rotrSL(Eh, El, 14) ^ u64.rotrSL(Eh, El, 18) ^ u64.rotrBL(Eh, El, 41);
                 const CHIh = (Eh & Fh) ^ (~Eh & Gh);
                 const CHIl = (El & Fl) ^ (~El & Gl);
-                const T1ll = u64$1.add5L(Hl, sigma1l, CHIl, SHA512_Kl[i], SHA512_W_L[i]);
-                const T1h = u64$1.add5H(T1ll, Hh, sigma1h, CHIh, SHA512_Kh[i], SHA512_W_H[i]);
+                const T1ll = u64.add5L(Hl, sigma1l, CHIl, SHA512_Kl[i], SHA512_W_L[i]);
+                const T1h = u64.add5H(T1ll, Hh, sigma1h, CHIh, SHA512_Kh[i], SHA512_W_H[i]);
                 const T1l = T1ll | 0;
-                const sigma0h = u64$1.rotrSH(Ah, Al, 28) ^ u64$1.rotrBH(Ah, Al, 34) ^ u64$1.rotrBH(Ah, Al, 39);
-                const sigma0l = u64$1.rotrSL(Ah, Al, 28) ^ u64$1.rotrBL(Ah, Al, 34) ^ u64$1.rotrBL(Ah, Al, 39);
+                const sigma0h = u64.rotrSH(Ah, Al, 28) ^ u64.rotrBH(Ah, Al, 34) ^ u64.rotrBH(Ah, Al, 39);
+                const sigma0l = u64.rotrSL(Ah, Al, 28) ^ u64.rotrBL(Ah, Al, 34) ^ u64.rotrBL(Ah, Al, 39);
                 const MAJh = (Ah & Bh) ^ (Ah & Ch) ^ (Bh & Ch);
                 const MAJl = (Al & Bl) ^ (Al & Cl) ^ (Bl & Cl);
                 Hh = Gh | 0;
@@ -6074,25 +6086,25 @@
                 Gl = Fl | 0;
                 Fh = Eh | 0;
                 Fl = El | 0;
-                ({ h: Eh, l: El } = u64$1.add(Dh | 0, Dl | 0, T1h | 0, T1l | 0));
+                ({ h: Eh, l: El } = u64.add(Dh | 0, Dl | 0, T1h | 0, T1l | 0));
                 Dh = Ch | 0;
                 Dl = Cl | 0;
                 Ch = Bh | 0;
                 Cl = Bl | 0;
                 Bh = Ah | 0;
                 Bl = Al | 0;
-                const All = u64$1.add3L(T1l, sigma0l, MAJl);
-                Ah = u64$1.add3H(All, T1h, sigma0h, MAJh);
+                const All = u64.add3L(T1l, sigma0l, MAJl);
+                Ah = u64.add3H(All, T1h, sigma0h, MAJh);
                 Al = All | 0;
             }
-            ({ h: Ah, l: Al } = u64$1.add(this.Ah | 0, this.Al | 0, Ah | 0, Al | 0));
-            ({ h: Bh, l: Bl } = u64$1.add(this.Bh | 0, this.Bl | 0, Bh | 0, Bl | 0));
-            ({ h: Ch, l: Cl } = u64$1.add(this.Ch | 0, this.Cl | 0, Ch | 0, Cl | 0));
-            ({ h: Dh, l: Dl } = u64$1.add(this.Dh | 0, this.Dl | 0, Dh | 0, Dl | 0));
-            ({ h: Eh, l: El } = u64$1.add(this.Eh | 0, this.El | 0, Eh | 0, El | 0));
-            ({ h: Fh, l: Fl } = u64$1.add(this.Fh | 0, this.Fl | 0, Fh | 0, Fl | 0));
-            ({ h: Gh, l: Gl } = u64$1.add(this.Gh | 0, this.Gl | 0, Gh | 0, Gl | 0));
-            ({ h: Hh, l: Hl } = u64$1.add(this.Hh | 0, this.Hl | 0, Hh | 0, Hl | 0));
+            ({ h: Ah, l: Al } = u64.add(this.Ah | 0, this.Al | 0, Ah | 0, Al | 0));
+            ({ h: Bh, l: Bl } = u64.add(this.Bh | 0, this.Bl | 0, Bh | 0, Bl | 0));
+            ({ h: Ch, l: Cl } = u64.add(this.Ch | 0, this.Cl | 0, Ch | 0, Cl | 0));
+            ({ h: Dh, l: Dl } = u64.add(this.Dh | 0, this.Dl | 0, Dh | 0, Dl | 0));
+            ({ h: Eh, l: El } = u64.add(this.Eh | 0, this.El | 0, Eh | 0, El | 0));
+            ({ h: Fh, l: Fl } = u64.add(this.Fh | 0, this.Fl | 0, Fh | 0, Fl | 0));
+            ({ h: Gh, l: Gl } = u64.add(this.Gh | 0, this.Gl | 0, Gh | 0, Gl | 0));
+            ({ h: Hh, l: Hl } = u64.add(this.Hh | 0, this.Hl | 0, Hh | 0, Hl | 0));
             this.set(Ah, Al, Bh, Bl, Ch, Cl, Dh, Dl, Eh, El, Fh, Fl, Gh, Gl, Hh, Hl);
         }
         roundClean() {

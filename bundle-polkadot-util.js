@@ -7,7 +7,7 @@
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
     var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
-    const packageInfo$3 = { name: '@polkadot/util', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.6.2' };
+    const packageInfo$3 = { name: '@polkadot/util', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.0.1' };
 
     function arrayChunk(array, chunkSize) {
         const outputSize = Math.ceil(array.length / chunkSize);
@@ -132,7 +132,7 @@
     const nMax =  createCmp((a, b) => a > b);
     const nMin =  createCmp((a, b) => a < b);
 
-    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.6.2' };
+    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.0.1' };
 
     function evaluateThis(fn) {
         return fn('return this');
@@ -3121,7 +3121,7 @@
 
     Object.defineProperty(packageInfo$1, "__esModule", { value: true });
     packageInfo$1.packageInfo = void 0;
-    packageInfo$1.packageInfo = { name: '@polkadot/x-textencoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.6.2' };
+    packageInfo$1.packageInfo = { name: '@polkadot/x-textencoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.0.1' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -3426,7 +3426,7 @@
 
     Object.defineProperty(packageInfo, "__esModule", { value: true });
     packageInfo.packageInfo = void 0;
-    packageInfo.packageInfo = { name: '@polkadot/x-textdecoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '12.6.2' };
+    packageInfo.packageInfo = { name: '@polkadot/x-textdecoder', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.0.1' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -3720,6 +3720,87 @@
             total,
             input.subarray(offset, total)
         ];
+    }
+
+    const DEDUPE = 'Either remove and explicitly install matching versions or dedupe using your package manager.\nThe following conflicting packages were found:';
+    const POLKADOTJS_DISABLE_ESM_CJS_WARNING_FLAG = 'POLKADOTJS_DISABLE_ESM_CJS_WARNING';
+    function getEntry(name) {
+        const _global = xglobal;
+        if (!_global.__polkadotjs) {
+            _global.__polkadotjs = {};
+        }
+        if (!_global.__polkadotjs[name]) {
+            _global.__polkadotjs[name] = [];
+        }
+        return _global.__polkadotjs[name];
+    }
+    function formatDisplay(all, fmt) {
+        let max = 0;
+        for (let i = 0, count = all.length; i < count; i++) {
+            max = Math.max(max, all[i].version.length);
+        }
+        return all
+            .map((d) => `\t${fmt(d.version.padEnd(max), d).join('\t')}`)
+            .join('\n');
+    }
+    function formatInfo(version, { name }) {
+        return [
+            version,
+            name
+        ];
+    }
+    function formatVersion(version, { path, type }) {
+        let extracted;
+        if (path && path.length >= 5) {
+            const nmIndex = path.indexOf('node_modules');
+            extracted = nmIndex === -1
+                ? path
+                : path.substring(nmIndex);
+        }
+        else {
+            extracted = '<unknown>';
+        }
+        return [
+            `${`${type || ''}`.padStart(3)} ${version}`,
+            extracted
+        ];
+    }
+    function getPath(infoPath, pathOrFn) {
+        if (infoPath) {
+            return infoPath;
+        }
+        else if (isFunction(pathOrFn)) {
+            try {
+                return pathOrFn() || '';
+            }
+            catch {
+                return '';
+            }
+        }
+        return pathOrFn || '';
+    }
+    function warn(pre, all, fmt) {
+        console.warn(`${pre}\n${DEDUPE}\n${formatDisplay(all, fmt)}`);
+    }
+    function detectPackage({ name, path, type, version }, pathOrFn, deps = []) {
+        if (!name.startsWith('@polkadot')) {
+            throw new Error(`Invalid package descriptor ${name}`);
+        }
+        const entry = getEntry(name);
+        entry.push({ path: getPath(path, pathOrFn), type, version });
+        const entriesSameVersion = entry.every((e) => e.version === version);
+        const esmCjsWarningDisabled = xglobal.process?.env?.[POLKADOTJS_DISABLE_ESM_CJS_WARNING_FLAG] === '1';
+        const multipleEntries = entry.length !== 1;
+        const disableWarnings = esmCjsWarningDisabled && entriesSameVersion;
+        if (multipleEntries && !disableWarnings) {
+            warn(`${name} has multiple versions, ensure that there is only one installed.`, entry, formatVersion);
+        }
+        else {
+            const mismatches = deps.filter((d) => d && d.version !== version);
+            if (mismatches.length) {
+                warn(`${name} requires direct dependencies exactly matching version ${version}.`, mismatches, formatInfo);
+            }
+        }
     }
 
     const MIN_MS = 60 * 1000;
@@ -4558,87 +4639,6 @@
 
     function stringToHex(value) {
         return u8aToHex(stringToU8a(value));
-    }
-
-    const DEDUPE = 'Either remove and explicitly install matching versions or dedupe using your package manager.\nThe following conflicting packages were found:';
-    const POLKADOTJS_DISABLE_ESM_CJS_WARNING_FLAG = 'POLKADOTJS_DISABLE_ESM_CJS_WARNING';
-    function getEntry(name) {
-        const _global = xglobal;
-        if (!_global.__polkadotjs) {
-            _global.__polkadotjs = {};
-        }
-        if (!_global.__polkadotjs[name]) {
-            _global.__polkadotjs[name] = [];
-        }
-        return _global.__polkadotjs[name];
-    }
-    function formatDisplay(all, fmt) {
-        let max = 0;
-        for (let i = 0, count = all.length; i < count; i++) {
-            max = Math.max(max, all[i].version.length);
-        }
-        return all
-            .map((d) => `\t${fmt(d.version.padEnd(max), d).join('\t')}`)
-            .join('\n');
-    }
-    function formatInfo(version, { name }) {
-        return [
-            version,
-            name
-        ];
-    }
-    function formatVersion(version, { path, type }) {
-        let extracted;
-        if (path && path.length >= 5) {
-            const nmIndex = path.indexOf('node_modules');
-            extracted = nmIndex === -1
-                ? path
-                : path.substring(nmIndex);
-        }
-        else {
-            extracted = '<unknown>';
-        }
-        return [
-            `${`${type || ''}`.padStart(3)} ${version}`,
-            extracted
-        ];
-    }
-    function getPath(infoPath, pathOrFn) {
-        if (infoPath) {
-            return infoPath;
-        }
-        else if (isFunction(pathOrFn)) {
-            try {
-                return pathOrFn() || '';
-            }
-            catch {
-                return '';
-            }
-        }
-        return pathOrFn || '';
-    }
-    function warn(pre, all, fmt) {
-        console.warn(`${pre}\n${DEDUPE}\n${formatDisplay(all, fmt)}`);
-    }
-    function detectPackage({ name, path, type, version }, pathOrFn, deps = []) {
-        if (!name.startsWith('@polkadot')) {
-            throw new Error(`Invalid package descriptor ${name}`);
-        }
-        const entry = getEntry(name);
-        entry.push({ path: getPath(path, pathOrFn), type, version });
-        const entriesSameVersion = entry.every((e) => e.version === version);
-        const esmCjsWarningDisabled = xglobal.process?.env?.[POLKADOTJS_DISABLE_ESM_CJS_WARNING_FLAG] === '1';
-        const multipleEntries = entry.length !== 1;
-        const disableWarnings = esmCjsWarningDisabled && entriesSameVersion;
-        if (multipleEntries && !disableWarnings) {
-            warn(`${name} has multiple versions, ensure that there is only one installed.`, entry, formatVersion);
-        }
-        else {
-            const mismatches = deps.filter((d) => d && d.version !== version);
-            if (mismatches.length) {
-                warn(`${name} requires direct dependencies exactly matching version ${version}.`, mismatches, formatInfo);
-            }
-        }
     }
 
     exports.BN = BN;
