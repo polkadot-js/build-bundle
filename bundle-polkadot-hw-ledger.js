@@ -272,9 +272,13 @@
 	        return await this.transport.send(this.cla, 1 , p1, p2, bip44Path).then(response => {
 	            const errorCodeData = response.subarray(-2);
 	            const errorCode = errorCodeData[0] * 256 + errorCodeData[1];
+	            let pubkeyLen = 32;
+	            if (scheme == 2 ) {
+	                pubkeyLen = 33;
+	            }
 	            return {
-	                pubKey: response.subarray(0, 32).toString('hex'),
-	                address: response.subarray(32, response.length - 2).toString('ascii'),
+	                pubKey: response.subarray(0, pubkeyLen).toString('hex'),
+	                address: response.subarray(pubkeyLen, response.length - 2).toString('ascii'),
 	                return_code: errorCode,
 	                error_message: (0, common_1$1.errorCodeToString)(errorCode),
 	            };
@@ -708,6 +712,18 @@
 		        name: 'Avail',
 		        cla: 0xbc,
 		        slip0044: 0x800002c5,
+		        ss58_addr_type: 42,
+		    },
+		    {
+		        name: 'Entropy',
+		        cla: 0xbd,
+		        slip0044: 0x80000520,
+		        ss58_addr_type: 42,
+		    },
+		    {
+		        name: 'Peaq',
+		        cla: 0x61,
+		        slip0044: 0x8000003c,
 		        ss58_addr_type: 42,
 		    },
 		];
@@ -9062,7 +9078,7 @@
 		hasRequiredPackageInfo = 1;
 		Object.defineProperty(packageInfo, "__esModule", { value: true });
 		packageInfo.packageInfo = void 0;
-		packageInfo.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.0.1' };
+		packageInfo.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.0.2' };
 		return packageInfo;
 	}
 
@@ -9108,6 +9124,7 @@
 	    nodle: 'Nodle',
 	    origintrail: 'OriginTrail',
 	    parallel: 'Parallel',
+	    peaq: 'Peaq',
 	    pendulum: 'Pendulum',
 	    phala: 'Phala',
 	    picasso: 'Picasso',
