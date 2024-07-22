@@ -1029,6 +1029,24 @@
 	        value: 'hid'
 	    }
 	];
+	const LEDGER_APP_DEFAULT = 'generic';
+	const LEDGER_APP = [
+	    {
+	        info: 'generic',
+	        text: 'Use the Ledger Polkadot Generic App',
+	        value: 'generic'
+	    },
+	    {
+	        info: 'migration',
+	        text: 'Use the Ledger Migration App',
+	        value: 'migration'
+	    },
+	    {
+	        info: 'legacy',
+	        text: 'Use the Ledger Legacy App',
+	        value: 'legacy'
+	    }
+	];
 
 	const PREFIX_DEFAULT = -1;
 	const defaultNetwork = {
@@ -1170,6 +1188,7 @@
 	    __internal__camera;
 	    __internal__i18nLang;
 	    __internal__icon;
+	    __internal__ledgerApp;
 	    __internal__ledgerConn;
 	    __internal__locking;
 	    __internal__metadataUp;
@@ -1184,6 +1203,7 @@
 	        this.__internal__apiUrl = (typeof settings.apiUrl === 'string' && settings.apiUrl) || (util$7.hasProcess && process.env?.['WS_URL']) || ENDPOINT_DEFAULT.value;
 	        this.__internal__apiType = { param: this.__internal__apiUrl, type: 'json-rpc' };
 	        this.__internal__camera = withDefault(CAMERA, settings.camera, CAMERA_DEFAULT);
+	        this.__internal__ledgerApp = withDefault(LEDGER_APP, settings.ledgerApp, LEDGER_APP_DEFAULT);
 	        this.__internal__ledgerConn = withDefault(LEDGER_CONN, settings.ledgerConn, LEDGER_CONN_DEFAULT);
 	        this.__internal__i18nLang = settings.i18nLang || LANGUAGE_DEFAULT;
 	        this.__internal__icon = settings.icon || ICON_DEFAULT;
@@ -1212,6 +1232,9 @@
 	    }
 	    get notification() {
 	        return this.__internal__notification;
+	    }
+	    get ledgerApp() {
+	        return this.__internal__ledgerApp;
 	    }
 	    get ledgerConn() {
 	        return this.__internal__ledgerConn;
@@ -1249,6 +1272,9 @@
 	    get availableIcons() {
 	        return ICONS;
 	    }
+	    get availableLedgerApp() {
+	        return LEDGER_APP;
+	    }
 	    get availableLedgerConn() {
 	        return LEDGER_CONN;
 	    }
@@ -1280,6 +1306,7 @@
 	            camera: this.__internal__camera,
 	            i18nLang: this.__internal__i18nLang,
 	            icon: this.__internal__icon,
+	            ledgerApp: this.__internal__ledgerApp,
 	            ledgerConn: this.__internal__ledgerConn,
 	            locking: this.__internal__locking,
 	            metadataUp: this.__internal__metadataUp,
@@ -1318,7 +1345,7 @@
 	    .filter((n) => n.genesisHash.length)
 	    .reduce((chains, { genesisHash, network }) => util$7.objectSpread(chains, { [network]: genesisHash }), {});
 
-	const packageInfo = { name: '@polkadot/ui-settings', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.7.1' };
+	const packageInfo = { name: '@polkadot/ui-settings', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.8.1' };
 
 	exports.ENDPOINT_DEFAULT = ENDPOINT_DEFAULT;
 	exports.ICON_DEFAULT = ICON_DEFAULT;
