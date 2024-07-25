@@ -2,6 +2,7 @@
 
 ## master
 
+- api, api-contract, types 12.2.2
 - react-{identicon, qr}, ui-{keyring, settings}, vue-identicon 3.8.2
 - react-{identicon, qr}, ui-{keyring, settings}, vue-identicon 3.8.1
 - extension-dapp 0.49.3
