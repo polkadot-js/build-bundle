@@ -1454,7 +1454,7 @@
         }
     };
 
-    const BEEFY_V1_V3 = {
+    const BEEFY_V3 = {
         beefy_genesis: {
             description: 'Return the block number where BEEFY consensus is enabled/started',
             params: [],
@@ -1474,6 +1474,14 @@
             ],
             type: 'Option<OpaqueKeyOwnershipProof>'
         },
+        validator_set: {
+            description: 'Return the current active BEEFY validator set',
+            params: [],
+            type: 'Option<ValidatorSet>'
+        }
+    };
+    const BEEFY_V1_V3 = {
+        ...BEEFY_V3,
         submit_report_equivocation_unsigned_extrinsic: {
             description: 'Submits an unsigned extrinsic to report an equivocation.',
             params: [
@@ -1487,11 +1495,23 @@
                 }
             ],
             type: 'Option<Null>'
-        },
-        validator_set: {
-            description: 'Return the current active BEEFY validator set',
-            params: [],
-            type: 'Option<ValidatorSet>'
+        }
+    };
+    const BEEFY_V4 = {
+        ...BEEFY_V3,
+        submit_report_double_voting_unsigned_extrinsic: {
+            description: 'Submits an unsigned extrinsic to report a double voting equivocation.',
+            params: [
+                {
+                    name: 'equivocationProof',
+                    type: 'SpConsensusBeefyDoubleVotingProof'
+                },
+                {
+                    name: 'keyOwnerProof',
+                    type: 'OpaqueKeyOwnershipProof'
+                }
+            ],
+            type: 'Option<Null>'
         }
     };
     const BEEFY_MMR_V1 = {
@@ -1508,6 +1528,10 @@
     };
     const runtime$s = {
         BeefyApi: [
+            {
+                methods: BEEFY_V4,
+                version: 4
+            },
             {
                 methods: BEEFY_V1_V3,
                 version: 3
@@ -7939,7 +7963,7 @@
         }
     }
 
-    const MAX_LENGTH$2 = 64 * 1024;
+    const MAX_LENGTH$2 = 512 * 1024;
     const l$5 = util.logger('Vec');
     function decodeVecLength(value) {
         if (Array.isArray(value)) {
@@ -13823,9 +13847,7 @@
         'ink::env::types::*',
         'ink::primitives::types::*',
         'ink_env::types::*',
-        'ink_primitives::types::*',
-        'np_runtime::accountname::AccountName',
-        'np_runtime::universaladdress::UniversalAddress'
+        'ink_primitives::types::*'
     ]);
     const PATHS_SET = splitNamespace([
         'pallet_identity::types::BitFlags'
@@ -14649,7 +14671,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.2.3' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.3.1' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
