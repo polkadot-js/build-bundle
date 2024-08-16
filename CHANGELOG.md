@@ -2,6 +2,7 @@
 
 ## master
 
+- extension-dapp 0.52.2
 - extension-dapp 0.52.1
 - react-{identicon, qr}, ui-{keyring, settings}, vue-identicon 3.9.1
 - extension-dapp 0.51.1
