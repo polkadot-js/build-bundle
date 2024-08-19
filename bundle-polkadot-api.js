@@ -1367,7 +1367,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.3.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.4.1' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -1460,8 +1460,9 @@
     function __asyncGenerator(thisArg, _arguments, generator) {
       if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
       var g = generator.apply(thisArg, _arguments || []), i, q = [];
-      return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
-      function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+      return i = {}, verb("next"), verb("throw"), verb("return", awaitReturn), i[Symbol.asyncIterator] = function () { return this; }, i;
+      function awaitReturn(f) { return function (v) { return Promise.resolve(v).then(f, reject); }; }
+      function verb(n, f) { if (g[n]) { i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; if (f) i[n] = f(i[n]); } }
       function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
       function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
       function fulfill(value) { resume("next", value); }
@@ -4330,10 +4331,22 @@
     }
     function calcShared(api, bestNumber, data, locks) {
         const { allLocked, lockedBalance, lockedBreakdown, vestingLocked } = calcLocked(api, bestNumber, locks);
+        let transferable = null;
+        if (data.frameSystemAccountInfo?.frozen) {
+            const { frameSystemAccountInfo, freeBalance, reservedBalance } = data;
+            const noFrozenReserved = frameSystemAccountInfo.frozen.isZero() && reservedBalance.isZero();
+            const ED = api.consts.balances.existentialDeposit;
+            const maybeED = noFrozenReserved ? new util.BN(0) : ED;
+            const frozenReserveDif = frameSystemAccountInfo.frozen.sub(reservedBalance);
+            transferable = api.registry.createType('Balance', allLocked
+                ? 0
+                : freeBalance.sub(util.bnMax(maybeED, frozenReserveDif)));
+        }
         return util.objectSpread({}, data, {
             availableBalance: api.registry.createType('Balance', allLocked ? 0 : util.bnMax(new util.BN(0), data?.freeBalance ? data.freeBalance.sub(lockedBalance) : new util.BN(0))),
             lockedBalance,
             lockedBreakdown,
+            transferable,
             vestingLocked
         });
     }
@@ -4446,22 +4459,35 @@
     function zeroBalance(api) {
         return api.registry.createType('Balance');
     }
-    function getBalance(api, [freeBalance, reservedBalance, frozenFee, frozenMisc]) {
+    function getBalance(api, [freeBalance, reservedBalance, frozenFeeOrFrozen, frozenMiscOrFlags], accType) {
         const votingBalance = api.registry.createType('Balance', freeBalance.toBn());
+        if (accType.isFrameAccountData) {
+            return {
+                frameSystemAccountInfo: {
+                    flags: frozenMiscOrFlags,
+                    frozen: frozenFeeOrFrozen
+                },
+                freeBalance,
+                frozenFee: api.registry.createType('Balance', 0),
+                frozenMisc: api.registry.createType('Balance', 0),
+                reservedBalance,
+                votingBalance
+            };
+        }
         return {
             freeBalance,
-            frozenFee,
-            frozenMisc,
+            frozenFee: frozenFeeOrFrozen,
+            frozenMisc: frozenMiscOrFlags,
             reservedBalance,
             votingBalance
         };
     }
-    function calcBalances(api, [accountId, [accountNonce, [primary, ...additional]]]) {
+    function calcBalances(api, [accountId, [accountNonce, [primary, ...additional], accType]]) {
         return util.objectSpread({
             accountId,
             accountNonce,
-            additional: additional.map((b) => getBalance(api, b))
-        }, getBalance(api, primary));
+            additional: additional.map((b) => getBalance(api, b, accType))
+        }, getBalance(api, primary, accType));
     }
     function queryBalancesFree(api, accountId) {
         return combineLatest([
@@ -4470,13 +4496,15 @@
             api.query.system['accountNonce'](accountId)
         ]).pipe(map(([freeBalance, reservedBalance, accountNonce]) => [
             accountNonce,
-            [[freeBalance, reservedBalance, zeroBalance(api), zeroBalance(api)]]
+            [[freeBalance, reservedBalance, zeroBalance(api), zeroBalance(api)]],
+            { isFrameAccountData: false }
         ]));
     }
     function queryNonceOnly(api, accountId) {
         const fill = (nonce) => [
             nonce,
-            [[zeroBalance(api), zeroBalance(api), zeroBalance(api), zeroBalance(api)]]
+            [[zeroBalance(api), zeroBalance(api), zeroBalance(api), zeroBalance(api)]],
+            { isFrameAccountData: false }
         ];
         return util.isFunction(api.query.system.account)
             ? api.query.system.account(accountId).pipe(map(({ nonce }) => fill(nonce)))
@@ -4490,7 +4518,8 @@
             .filter((q) => util.isFunction(q));
         const extract = (nonce, data) => [
             nonce,
-            data.map(({ feeFrozen, free, miscFrozen, reserved }) => [free, reserved, feeFrozen, miscFrozen])
+            data.map(({ feeFrozen, free, miscFrozen, reserved }) => [free, reserved, feeFrozen, miscFrozen]),
+            { isFrameAccountData: false }
         ];
         return balances.length
             ? util.isFunction(api.query.system.account)
@@ -4513,14 +4542,27 @@
             if (!data || data.isEmpty) {
                 return [
                     nonce,
-                    [[zeroBalance(api), zeroBalance(api), zeroBalance(api), zeroBalance(api)]]
+                    [[zeroBalance(api), zeroBalance(api), zeroBalance(api), zeroBalance(api)]],
+                    { isFrameAccountData: false }
                 ];
             }
-            const { feeFrozen, free, miscFrozen, reserved } = data;
-            return [
-                nonce,
-                [[free, reserved, feeFrozen, miscFrozen]]
-            ];
+            const isFrameType = !!infoOrTuple.data.frozen;
+            if (isFrameType) {
+                const { flags, free, frozen, reserved } = data;
+                return [
+                    nonce,
+                    [[free, reserved, frozen, flags]],
+                    { isFrameAccountData: true }
+                ];
+            }
+            else {
+                const { feeFrozen, free, miscFrozen, reserved } = data;
+                return [
+                    nonce,
+                    [[free, reserved, feeFrozen, miscFrozen]],
+                    { isFrameAccountData: false }
+                ];
+            }
         }));
     }
     function account$1(instanceId, api) {
@@ -4541,7 +4583,8 @@
             ])
             : of([api.registry.createType('AccountId'), [
                     api.registry.createType('Index'),
-                    [[zeroBalance(api), zeroBalance(api), zeroBalance(api), zeroBalance(api)]]
+                    [[zeroBalance(api), zeroBalance(api), zeroBalance(api), zeroBalance(api)]],
+                    { isFrameAccountData: false }
                 ]]))), map((result) => calcBalances(api, result))));
     }
 
@@ -7404,7 +7447,7 @@
                                 nonce: ext.nonce.toHex(),
                                 runtimeVersion: payload.runtimeVersion,
                                 signedExtensions: payload.signedExtensions,
-                                tip: ext.tip.toHex(),
+                                tip: ext.tip ? ext.tip.toHex() : null,
                                 version: payload.version
                             })]);
                         if (!ext.isSigned) {
