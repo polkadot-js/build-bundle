@@ -991,9 +991,9 @@
         chain_subscribeFinalisedHeads: 'chain_subscribeFinalizedHeads',
         chain_unsubscribeFinalisedHeads: 'chain_unsubscribeFinalizedHeads'
     };
-    const RETRY_DELAY = 2500;
+    const RETRY_DELAY = 2_500;
     const DEFAULT_TIMEOUT_MS = 60 * 1000;
-    const TIMEOUT_INTERVAL = 5000;
+    const TIMEOUT_INTERVAL = 5_000;
     const l$5 = util.logger('api-ws');
     function eraseRecord(record, cb) {
         Object.keys(record).forEach((key) => {
@@ -1367,7 +1367,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.4.2' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.0.1' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -1392,8 +1392,8 @@
       });
     }
     function __generator(thisArg, body) {
-      var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-      return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+      var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+      return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
       function verb(n) { return function (v) { return step([n, v]); }; }
       function step(op) {
           if (f) throw new TypeError("Generator is already executing.");
@@ -1460,7 +1460,7 @@
     function __asyncGenerator(thisArg, _arguments, generator) {
       if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
       var g = generator.apply(thisArg, _arguments || []), i, q = [];
-      return i = {}, verb("next"), verb("throw"), verb("return", awaitReturn), i[Symbol.asyncIterator] = function () { return this; }, i;
+      return i = Object.create((typeof AsyncIterator === "function" ? AsyncIterator : Object).prototype), verb("next"), verb("throw"), verb("return", awaitReturn), i[Symbol.asyncIterator] = function () { return this; }, i;
       function awaitReturn(f) { return function (v) { return Promise.resolve(v).then(f, reject); }; }
       function verb(n, f) { if (g[n]) { i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; if (f) i[n] = f(i[n]); } }
       function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
@@ -7436,7 +7436,7 @@
                         const ext = this.registry.createTypeUnsafe('Extrinsic', [result.signedTransaction]);
                         const newSignerPayload = this.registry.createTypeUnsafe('SignerPayload', [util.objectSpread({}, {
                                 address,
-                                assetId: ext.assetId ? ext.assetId.toHex() : null,
+                                assetId: ext.assetId && ext.assetId.isSome ? ext.assetId.toHex() : null,
                                 blockHash: payload.blockHash,
                                 blockNumber: header ? header.number : 0,
                                 era: ext.era.toHex(),
@@ -13505,6 +13505,104 @@
                 [
                     "0xf3ff14d5ab527059",
                     3
+                ],
+                [
+                    "0x17a6bc0d0062aeb3",
+                    1
+                ],
+                [
+                    "0x18ef58a3b67ba770",
+                    1
+                ],
+                [
+                    "0xfbc577b9d747efd6",
+                    1
+                ]
+            ]
+        ],
+        [
+            24786390,
+            1003000,
+            [
+                [
+                    "0xc51ff1fa3f5d0cca",
+                    1
+                ],
+                [
+                    "0xdf6acb689907609b",
+                    5
+                ],
+                [
+                    "0x37e397fc7c91f5e4",
+                    2
+                ],
+                [
+                    "0x40fe3ad401f8959a",
+                    6
+                ],
+                [
+                    "0xd2bc9897eed08f15",
+                    3
+                ],
+                [
+                    "0xf78b278be53f454c",
+                    2
+                ],
+                [
+                    "0xaf2c0297a23e6d3d",
+                    11
+                ],
+                [
+                    "0x49eaaf1b548a0cb0",
+                    3
+                ],
+                [
+                    "0x91d5df18b0d2cf58",
+                    2
+                ],
+                [
+                    "0x2a5e924655399e60",
+                    1
+                ],
+                [
+                    "0xed99c5acb25eedf5",
+                    3
+                ],
+                [
+                    "0xcbca25e39f142387",
+                    2
+                ],
+                [
+                    "0x687ad44ad37f03c2",
+                    1
+                ],
+                [
+                    "0xab3c0572291feb8b",
+                    1
+                ],
+                [
+                    "0xbc9d89904f5b923f",
+                    1
+                ],
+                [
+                    "0x37c8bb1350a9a2a8",
+                    4
+                ],
+                [
+                    "0xf3ff14d5ab527059",
+                    3
+                ],
+                [
+                    "0x6ff52ee858e6c5bd",
+                    1
+                ],
+                [
+                    "0x91b1c8b16328eb92",
+                    1
+                ],
+                [
+                    "0x9ffb505aa738d69c",
+                    1
                 ],
                 [
                     "0x17a6bc0d0062aeb3",

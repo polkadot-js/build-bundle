@@ -1426,11 +1426,11 @@
             },
             WithdrawReasons: {
                 _set: {
-                    TransactionPayment: 1,
-                    Transfer: 2,
-                    Reserve: 4,
-                    Fee: 8,
-                    Tip: 16
+                    TransactionPayment: 0b0000_0001,
+                    Transfer: 0b0000_0010,
+                    Reserve: 0b0000_0100,
+                    Fee: 0b0000_1000,
+                    Tip: 0b0001_0000
                 }
             }
         }
@@ -2210,16 +2210,16 @@
             ContractCallFlags: {
                 _set: {
                     _bitLength: 32,
-                    ForwardInput: 1,
-                    CloneInput: 2,
-                    TailCall: 4,
-                    AllowReentry: 8
+                    ForwardInput: 0b0000_0001,
+                    CloneInput: 0b0000_0010,
+                    TailCall: 0b0000_0100,
+                    AllowReentry: 0b0000_1000
                 }
             },
             ContractReturnFlags: {
                 _set: {
                     _bitLength: 32,
-                    Revert: 1
+                    Revert: 0x0000_0001
                 }
             },
             ContractStorageKey: '[u8; 32]',
@@ -3254,14 +3254,14 @@
             IdentityFields: {
                 _set: {
                     _bitLength: 64,
-                    Display: 1,
-                    Legal: 2,
-                    Web: 4,
-                    Riot: 8,
-                    Email: 16,
-                    PgpFingerprint: 32,
-                    Image: 64,
-                    Twitter: 128
+                    Display: 0b00000000_00000000_00000000_0000_0001,
+                    Legal: 0b00000000_00000000_00000000_0000_0010,
+                    Web: 0b00000000_00000000_00000000_0000_0100,
+                    Riot: 0b00000000_00000000_00000000_0000_1000,
+                    Email: 0b00000000_00000000_00000000_0001_0000,
+                    PgpFingerprint: 0b00000000_00000000_00000000_0010_0000,
+                    Image: 0b00000000_00000000_00000000_0100_0000,
+                    Twitter: 0b00000000_00000000_00000000_1000_0000
                 }
             },
             IdentityInfoAdditional: '(Data, Data)',
@@ -6645,7 +6645,7 @@
 
     const DEFAULT_UINT_BITS = 64;
     const MAX_NUMBER_BITS = 52;
-    const MUL_P = new util.BN(10000);
+    const MUL_P = new util.BN(1_00_00);
     const FORMATTERS = [
         ['Perquintill', util.BN_QUINTILL],
         ['Perbill', util.BN_BILLION],
@@ -8201,14 +8201,14 @@
         }
         toBoolArray() {
             const map = [...this.toU8a(true)].map((v) => [
-                !!(v & 128),
-                !!(v & 64),
-                !!(v & 32),
-                !!(v & 16),
-                !!(v & 8),
-                !!(v & 4),
-                !!(v & 2),
-                !!(v & 1)
+                !!(v & 0b1000_0000),
+                !!(v & 0b0100_0000),
+                !!(v & 0b0010_0000),
+                !!(v & 0b0001_0000),
+                !!(v & 0b0000_1000),
+                !!(v & 0b0000_0100),
+                !!(v & 0b0000_0010),
+                !!(v & 0b0000_0001)
             ]);
             const count = map.length;
             const result = new Array(8 * count);
@@ -14671,7 +14671,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '12.4.2' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.0.1' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
@@ -15469,6 +15469,13 @@
         if (value instanceof GenericExtrinsicPayload) {
             return value.unwrap();
         }
+        if (value && value.assetId && util.isHex(value.assetId)) {
+            const adjustedPayload = {
+                ...value,
+                assetId: registry.createType('TAssetConversion', util.hexToU8a(value.assetId)).toJSON()
+            };
+            return registry.createTypeUnsafe(VERSIONS[version] || VERSIONS[0], [adjustedPayload, { version }]);
+        }
         return registry.createTypeUnsafe(VERSIONS[version] || VERSIONS[0], [value, { version }]);
     }
     class GenericExtrinsicPayload extends AbstractBase {
@@ -15633,7 +15640,7 @@
             }
             return util.objectSpread(result, {
                 address: this.address.toString(),
-                assetId: this.assetId ? this.assetId.toJSON() : null,
+                assetId: this.assetId && this.assetId.isSome ? this.assetId.toHex() : null,
                 blockHash: this.blockHash.toHex(),
                 blockNumber: this.blockNumber.toHex(),
                 era: this.era.toHex(),
