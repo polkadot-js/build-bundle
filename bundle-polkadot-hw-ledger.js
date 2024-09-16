@@ -5401,8 +5401,8 @@
 	  });
 	}
 	function __generator(thisArg, body) {
-	  var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-	  return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+	  var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+	  return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
 	  function verb(n) { return function (v) { return step([n, v]); }; }
 	  function step(op) {
 	      if (f) throw new TypeError("Generator is already executing.");
@@ -5495,8 +5495,9 @@
 	function __asyncGenerator(thisArg, _arguments, generator) {
 	  if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
 	  var g = generator.apply(thisArg, _arguments || []), i, q = [];
-	  return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
-	  function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+	  return i = Object.create((typeof AsyncIterator === "function" ? AsyncIterator : Object).prototype), verb("next"), verb("throw"), verb("return", awaitReturn), i[Symbol.asyncIterator] = function () { return this; }, i;
+	  function awaitReturn(f) { return function (v) { return Promise.resolve(v).then(f, reject); }; }
+	  function verb(n, f) { if (g[n]) { i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; if (f) i[n] = f(i[n]); } }
 	  function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
 	  function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
 	  function fulfill(value) { resume("next", value); }
@@ -5551,16 +5552,18 @@
 	function __addDisposableResource(env, value, async) {
 	  if (value !== null && value !== void 0) {
 	    if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-	    var dispose;
+	    var dispose, inner;
 	    if (async) {
-	        if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
-	        dispose = value[Symbol.asyncDispose];
+	      if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+	      dispose = value[Symbol.asyncDispose];
 	    }
 	    if (dispose === void 0) {
-	        if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
-	        dispose = value[Symbol.dispose];
+	      if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+	      dispose = value[Symbol.dispose];
+	      if (async) inner = dispose;
 	    }
 	    if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+	    if (inner) dispose = function() { try { inner.call(this); } catch (e) { return Promise.reject(e); } };
 	    env.stack.push({ value: value, dispose: dispose, async: async });
 	  }
 	  else if (async) {
@@ -5577,17 +5580,22 @@
 	    env.error = env.hasError ? new _SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
 	    env.hasError = true;
 	  }
+	  var r, s = 0;
 	  function next() {
-	    while (env.stack.length) {
-	      var rec = env.stack.pop();
+	    while (r = env.stack.pop()) {
 	      try {
-	        var result = rec.dispose && rec.dispose.call(rec.value);
-	        if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+	        if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+	        if (r.dispose) {
+	          var result = r.dispose.call(r.value);
+	          if (r.async) return s |= 2, Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+	        }
+	        else s |= 1;
 	      }
 	      catch (e) {
-	          fail(e);
+	        fail(e);
 	      }
 	    }
+	    if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
 	    if (env.hasError) throw env.error;
 	  }
 	  return next();
@@ -5721,7 +5729,7 @@
 	    CONDITIONS_OF_USE_NOT_SATISFIED: 0x6985,
 	    CONTRADICTION_INVALIDATION: 0x9810,
 	    CONTRADICTION_SECRET_CODE_STATUS: 0x9808,
-	    CUSTOM_IMAGE_BOOTLOADER: 0x662f,
+	    DEVICE_IN_RECOVERY_MODE: 0x662f,
 	    CUSTOM_IMAGE_EMPTY: 0x662e,
 	    FILE_ALREADY_EXISTS: 0x6a89,
 	    FILE_NOT_FOUND: 0x9404,
@@ -5751,6 +5759,18 @@
 	    UNKNOWN_APDU: 0x6d02,
 	    USER_REFUSED_ON_DEVICE: 0x5501,
 	    NOT_ENOUGH_SPACE: 0x5102,
+	    APP_NOT_FOUND_OR_INVALID_CONTEXT: 0x5123,
+	    INVALID_APP_NAME_LENGTH: 0x670a,
+	    GEN_AES_KEY_FAILED: 0x5419,
+	    INTERNAL_CRYPTO_OPERATION_FAILED: 0x541a,
+	    INTERNAL_COMPUTE_AES_CMAC_FAILED: 0x541b,
+	    ENCRYPT_APP_STORAGE_FAILED: 0x541c,
+	    INVALID_BACKUP_STATE: 0x6642,
+	    PIN_NOT_SET: 0x5502,
+	    INVALID_BACKUP_LENGTH: 0x6733,
+	    INVALID_RESTORE_STATE: 0x6643,
+	    INVALID_CHUNK_LENGTH: 0x6734,
+	    INVALID_BACKUP_HEADER: 0x684a,
 	};
 	function getAltStatusMessage(code) {
 	    switch (code) {
@@ -8626,7 +8646,7 @@
 	    },
 	    [DeviceModelId.europa]: {
 	        id: DeviceModelId.europa,
-	        productName: "Ledger Europa",
+	        productName: "Ledger Flex",
 	        productIdMM: 0x70,
 	        legacyUsbProductId: 0x0007,
 	        usbOnly: false,
@@ -9059,14 +9079,13 @@
 		if (hasRequiredUtil) return util;
 		hasRequiredUtil = 1;
 		Object.defineProperty(util, "__esModule", { value: true });
-		util.createDefs = void 0;
+		util.createDefs = createDefs;
 		function createDefs(...items) {
 		    return items.map(([type, Clazz]) => ({
 		        create: () => Clazz.create(),
 		        type
 		    }));
 		}
-		util.createDefs = createDefs;
 		return util;
 	}
 
@@ -9078,7 +9097,7 @@
 		hasRequiredPackageInfo = 1;
 		Object.defineProperty(packageInfo, "__esModule", { value: true });
 		packageInfo.packageInfo = void 0;
-		packageInfo.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.0.2' };
+		packageInfo.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.1.1' };
 		return packageInfo;
 	}
 
@@ -9100,7 +9119,7 @@
 	const LEDGER_DEFAULT_INDEX = 0x80000000;
 	const LEDGER_SUCCESS_CODE = 0x9000;
 
-	const ledgerApps = {
+	const prevLedgerRecord = {
 	    acala: 'Acala',
 	    ajuna: 'Ajuna',
 	    'aleph-node': 'AlephZero',
@@ -9141,6 +9160,14 @@
 	    vtb: 'VTB',
 	    xxnetwork: 'XXNetwork',
 	    zeitgeist: 'Zeitgeist'
+	};
+	const genericLedgerApps = {
+	    encointer: 'Encointer',
+	    integritee: 'Integritee'
+	};
+	const ledgerApps = {
+	    ...prevLedgerRecord,
+	    ...genericLedgerApps
 	};
 
 	async function wrapError$1(promise) {

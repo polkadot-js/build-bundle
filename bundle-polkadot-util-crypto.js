@@ -7,7 +7,7 @@
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
     var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
-    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.0.2' };
+    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.1.1' };
 
     function evaluateThis(fn) {
         return fn('return this');
@@ -84,11 +84,12 @@
 
     Object.defineProperty(packageInfo$1, "__esModule", { value: true });
     packageInfo$1.packageInfo = void 0;
-    packageInfo$1.packageInfo = { name: '@polkadot/x-randomvalues', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.0.2' };
+    packageInfo$1.packageInfo = { name: '@polkadot/x-randomvalues', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.1.1' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
-    	exports.getRandomValues = exports.crypto = exports.packageInfo = void 0;
+    	exports.crypto = exports.packageInfo = void 0;
+    	exports.getRandomValues = getRandomValues;
     	const x_global_1 = require$$0;
     	var packageInfo_js_1 = packageInfo$1;
     	Object.defineProperty(exports, "packageInfo", { enumerable: true, get: function () { return packageInfo_js_1.packageInfo; } });
@@ -96,7 +97,6 @@
     	function getRandomValues(arr) {
     	    return exports.crypto.getRandomValues(arr);
     	}
-    	exports.getRandomValues = getRandomValues;
     } (browser));
     getDefaultExportFromCjs(browser);
 
@@ -723,7 +723,7 @@
     cryptoWaitReady().catch(() => {
     });
 
-    const packageInfo = { name: '@polkadot/util-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.0.2' };
+    const packageInfo = { name: '@polkadot/util-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.1.1' };
 
     /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
     function assertNumber(n) {
@@ -984,9 +984,12 @@
     };
     chain(radix2(4), alphabet('0123456789ABCDEF'), join(''));
     chain(radix2(5), alphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'), padding(5), join(''));
+    chain(radix2(5), alphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'), join(''));
     chain(radix2(5), alphabet('0123456789ABCDEFGHIJKLMNOPQRSTUV'), padding(5), join(''));
+    chain(radix2(5), alphabet('0123456789ABCDEFGHIJKLMNOPQRSTUV'), join(''));
     chain(radix2(5), alphabet('0123456789ABCDEFGHJKMNPQRSTVWXYZ'), join(''), normalize$1((s) => s.toUpperCase().replace(/O/g, '0').replace(/[IL]/g, '1')));
     const base64 =  chain(radix2(6), alphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'), padding(6), join(''));
+    chain(radix2(6), alphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'), join(''));
     chain(radix2(6), alphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'), padding(6), join(''));
     chain(radix2(6), alphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'), join(''));
     const genBase58 = (abc) => chain(radix(58), alphabet(abc), join(''));
@@ -1034,6 +1037,8 @@
                 throw new Error(`bech32.encode prefix should be string, not ${typeof prefix}`);
             if (!Array.isArray(words) || (words.length && typeof words[0] !== 'number'))
                 throw new Error(`bech32.encode words should be array of numbers, not ${typeof words}`);
+            if (prefix.length === 0)
+                throw new TypeError(`Invalid prefix length ${prefix.length}`);
             const actualLength = prefix.length + 7 + words.length;
             if (limit !== false && actualLength > limit)
                 throw new TypeError(`Length ${actualLength} exceeds limit ${limit}`);
@@ -1049,17 +1054,16 @@
             const lowered = str.toLowerCase();
             if (str !== lowered && str !== str.toUpperCase())
                 throw new Error(`String must be lowercase or uppercase`);
-            str = lowered;
-            const sepIndex = str.lastIndexOf('1');
+            const sepIndex = lowered.lastIndexOf('1');
             if (sepIndex === 0 || sepIndex === -1)
                 throw new Error(`Letter "1" must be present between prefix and data only`);
-            const prefix = str.slice(0, sepIndex);
-            const _words = str.slice(sepIndex + 1);
-            if (_words.length < 6)
+            const prefix = lowered.slice(0, sepIndex);
+            const data = lowered.slice(sepIndex + 1);
+            if (data.length < 6)
                 throw new Error('Data must be at least 6 characters long');
-            const words = BECH_ALPHABET.decode(_words).slice(0, -6);
+            const words = BECH_ALPHABET.decode(data).slice(0, -6);
             const sum = bechChecksum(prefix, words, ENCODING_CONST);
-            if (!_words.endsWith(sum))
+            if (!data.endsWith(sum))
                 throw new Error(`Invalid checksum in ${str}: expected "${sum}"`);
             return { prefix, words };
         }
@@ -1597,14 +1601,14 @@
     }
 
     function checkAddressChecksum(decoded) {
-        const ss58Length = (decoded[0] & 64) ? 2 : 1;
+        const ss58Length = (decoded[0] & 0b0100_0000) ? 2 : 1;
         const ss58Decoded = ss58Length === 1
             ? decoded[0]
-            : ((decoded[0] & 63) << 2) | (decoded[1] >> 6) | ((decoded[1] & 63) << 8);
+            : ((decoded[0] & 0b0011_1111) << 2) | (decoded[1] >> 6) | ((decoded[1] & 0b0011_1111) << 8);
         const isPublicKey = [34 + ss58Length, 35 + ss58Length].includes(decoded.length);
         const length = decoded.length - (isPublicKey ? 2 : 1);
         const hash = sshash(decoded.subarray(0, length));
-        const isValid = (decoded[0] & 128) === 0 && ![46, 47].includes(decoded[0]) && (isPublicKey
+        const isValid = (decoded[0] & 0b1000_0000) === 0 && ![46, 47].includes(decoded[0]) && (isPublicKey
             ? decoded[decoded.length - 2] === hash[0] && decoded[decoded.length - 1] === hash[1]
             : decoded[decoded.length - 1] === hash[0]);
         return [isValid, length, ss58Length, ss58Decoded];
@@ -2343,7 +2347,7 @@
     	{
     		"prefix": 63,
     		"network": "hydradx",
-    		"displayName": "HydraDX",
+    		"displayName": "Hydration",
     		"symbols": [
     			"HDX"
     		],
@@ -2351,7 +2355,7 @@
     			12
     		],
     		"standardAccount": "*25519",
-    		"website": "https://hydradx.io"
+    		"website": "https://hydration.net"
     	},
     	{
     		"prefix": 65,
@@ -3030,6 +3034,19 @@
     		"website": "https://logion.network"
     	},
     	{
+    		"prefix": 2024,
+    		"network": "vow-chain",
+    		"displayName": "Enigmatic Smile",
+    		"symbols": [
+    			"VOW"
+    		],
+    		"decimals": [
+    			18
+    		],
+    		"standardAccount": "*25519",
+    		"website": "https://www.vow.foundation/"
+    	},
+    	{
     		"prefix": 2032,
     		"network": "interlay",
     		"displayName": "Interlay",
@@ -3353,7 +3370,7 @@
     			"TCESS"
     		],
     		"decimals": [
-    			12
+    			18
     		],
     		"standardAccount": "*25519",
     		"website": "https://cess.cloud"
@@ -3366,7 +3383,7 @@
     			"CESS"
     		],
     		"decimals": [
-    			12
+    			18
     		],
     		"standardAccount": "*25519",
     		"website": "https://cess.cloud"
@@ -3424,6 +3441,19 @@
     		"website": "https://nftmart.io"
     	},
     	{
+    		"prefix": 12850,
+    		"network": "analog-timechain",
+    		"displayName": "Analog Timechain",
+    		"symbols": [
+    			"ANLOG"
+    		],
+    		"decimals": [
+    			12
+    		],
+    		"standardAccount": "*25519",
+    		"website": "https://analog.one"
+    	},
+    	{
     		"prefix": 13116,
     		"network": "bittensor",
     		"displayName": "Bittensor",
@@ -3448,6 +3478,45 @@
     		],
     		"standardAccount": "*25519",
     		"website": "https://goro.network"
+    	},
+    	{
+    		"prefix": 14998,
+    		"network": "mosaic-chain",
+    		"displayName": "Mosaic Chain",
+    		"symbols": [
+    			"MOS"
+    		],
+    		"decimals": [
+    			18
+    		],
+    		"standardAccount": "*25519",
+    		"website": "https://mosaicchain.io"
+    	},
+    	{
+    		"prefix": 29972,
+    		"network": "mythos",
+    		"displayName": "Mythos",
+    		"symbols": [
+    			"MYTH"
+    		],
+    		"decimals": [
+    			18
+    		],
+    		"standardAccount": "secp256k1",
+    		"website": "https://mythos.foundation"
+    	},
+    	{
+    		"prefix": 8888,
+    		"network": "xcavate",
+    		"displayName": "Xcavate Protocol",
+    		"symbols": [
+    			"XCAV"
+    		],
+    		"decimals": [
+    			12
+    		],
+    		"standardAccount": "*25519",
+    		"website": "https://xcavate.io/"
     	}
     ];
 
@@ -3496,6 +3565,9 @@
         edgeware: [
             '0x742a2ca70c2fda6cee4f8df98d64c4c670a052d9568058982dad9d5a7a135c5b'
         ],
+        encointer: [
+            '0x7dd99936c1e9e6d1ce7d90eb6f33bea8393b4bf87677d675aa63c9cb3e8c5b5b'
+        ],
         enjin: [
             '0xd8761d3c88f26dc12875c00d3165f7d67243d56fc85b4cf19937601a7916e5a9'
         ],
@@ -3511,6 +3583,10 @@
             '0x10af6e84234477d84dc572bac0789813b254aa490767ed06fb9591191d1073f9',
             '0x3d75507dd46301767e601265791da1d9cb47b6ebc94e87347b635e5bf58bd047',
             '0x0ed32bfcab4a83517fac88f2aa7cbc2f88d3ab93be9a12b6188a036bf8a943c2'
+        ],
+        integritee: [
+            '0xcdedc8eadbfa209d3f207bba541e57c3c58a667b05a2e1d1e86353c9000758da',
+            '0xe13e7af377c64e83f95e0d70d5e5c3c01d697a84538776c5b9bbe0e7d7b6034c'
         ],
         'interlay-parachain': [
             '0xbf88efe70e9e0e916416e8bed61f2b45717f517d7f3523e33c7b001e5ffcbc72'
@@ -3641,10 +3717,12 @@
         darwinia: 0x00000162,
         'dock-mainnet': 0x00000252,
         edgeware: 0x0000020b,
+        encointer: 0x000001b2,
         enjin: 0x00000483,
         equilibrium: 0x05f5e0fd,
         genshiro: 0x05f5e0fc,
         hydradx: 0x00000162,
+        integritee: 0x000007df,
         'interlay-parachain': 0x00000162,
         karura: 0x000002ae,
         khala: 0x000001b2,
@@ -7184,8 +7262,8 @@
         const input = util.u8aConcat(ss58Format < 64
             ? [ss58Format]
             : [
-                ((ss58Format & 252) >> 2) | 64,
-                (ss58Format >> 8) | ((ss58Format & 3) << 6)
+                ((ss58Format & 0b0000_0000_1111_1100) >> 2) | 0b0100_0000,
+                (ss58Format >> 8) | ((ss58Format & 0b0000_0000_0000_0011) << 6)
             ], u8a);
         return base58Encode(util.u8aConcat(input, sshash(input).subarray(0, [32, 33].includes(u8a.length) ? 2 : 1)));
     }
@@ -7918,12 +7996,12 @@
         const seed = mnemonicToSeedSync(mnemonic, password);
         const chainCode = hmacShaAsU8a(ED25519_CRYPTO, new Uint8Array([1, ...seed]), 256);
         let priv;
-        while (!priv || (priv[31] & 32)) {
+        while (!priv || (priv[31] & 0b0010_0000)) {
             priv = hmacShaAsU8a(ED25519_CRYPTO, priv || seed, 512);
         }
-        priv[0] &= 248;
-        priv[31] &= 127;
-        priv[31] |= 64;
+        priv[0] &= 0b1111_1000;
+        priv[31] &= 0b0111_1111;
+        priv[31] |= 0b0100_0000;
         return util.u8aConcat(priv, chainCode);
     }
 
