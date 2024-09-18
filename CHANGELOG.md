@@ -2,6 +2,7 @@
 
 ## master
 
+- api, api-contract, types 13.1.1
 - hw-ledger, keyring, util, util-crypto 13.1.1
 - api, api-contract, types 13.0.1
 - api, api-contract, types 12.4.2

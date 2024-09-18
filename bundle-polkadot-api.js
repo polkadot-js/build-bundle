@@ -1367,7 +1367,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.0.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.1.1' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -7499,7 +7499,7 @@
         return registry.findMetaError(util.u8aToU8a(errorIndex));
     }
 
-    const XCM_MAPPINGS = ['AssetInstance', 'Fungibility', 'Junction', 'Junctions', 'MultiAsset', 'MultiAssetFilter', 'MultiLocation', 'Response', 'WildFungibility', 'WildMultiAsset', 'Xcm', 'XcmError', 'XcmOrder'];
+    const XCM_MAPPINGS = ['AssetInstance', 'Fungibility', 'Junction', 'Junctions', 'MultiAsset', 'MultiAssetFilter', 'MultiLocation', 'Response', 'WildFungibility', 'WildMultiAsset', 'Xcm', 'XcmError'];
     function mapXcmTypes(version) {
         return XCM_MAPPINGS.reduce((all, key) => util.objectSpread(all, { [key]: `${key}${version}` }), {});
     }
@@ -24048,6 +24048,7 @@
     }
 
     const KEEPALIVE_INTERVAL = 10000;
+    const SUPPORTED_METADATA_VERSIONS = [15, 14];
     const l = util.logger('api/init');
     function textToString(t) {
         return t.toString();
@@ -24113,7 +24114,7 @@
         }
         async _createBlockRegistry(blockHash, header, version) {
             const registry = new types.TypeRegistry(blockHash);
-            const metadata = new types.Metadata(registry, await firstValueFrom(this._rpcCore.state.getMetadata.raw(header.parentHash)));
+            const metadata = await this._retrieveMetadata(version.apis, header.parentHash, registry);
             const runtimeChain = this._runtimeChain;
             if (!runtimeChain) {
                 throw new Error('Invalid initializion order, runtimeChain is not available');
@@ -24228,23 +24229,20 @@
                 })))).subscribe();
         }
         async _metaFromChain(optMetadata) {
-            const [genesisHash, runtimeVersion, chain, chainProps, rpcMethods, chainMetadata] = await Promise.all([
+            const [genesisHash, runtimeVersion, chain, chainProps, rpcMethods] = await Promise.all([
                 firstValueFrom(this._rpcCore.chain.getBlockHash(0)),
                 firstValueFrom(this._rpcCore.state.getRuntimeVersion()),
                 firstValueFrom(this._rpcCore.system.chain()),
                 firstValueFrom(this._rpcCore.system.properties()),
-                firstValueFrom(this._rpcCore.rpc.methods()),
-                optMetadata
-                    ? Promise.resolve(null)
-                    : firstValueFrom(this._rpcCore.state.getMetadata())
+                firstValueFrom(this._rpcCore.rpc.methods())
             ]);
             this._runtimeChain = chain;
             this._runtimeVersion = runtimeVersion;
             this._rx.runtimeVersion = runtimeVersion;
             const metadataKey = `${genesisHash.toHex() || '0x'}-${runtimeVersion.specVersion.toString()}`;
-            const metadata = chainMetadata || (optMetadata?.[metadataKey]
+            const metadata = optMetadata?.[metadataKey]
                 ? new types.Metadata(this.registry, optMetadata[metadataKey])
-                : await firstValueFrom(this._rpcCore.state.getMetadata()));
+                : await this._retrieveMetadata(runtimeVersion.apis);
             this._initRegistry(this.registry, chain, runtimeVersion, metadata, chainProps);
             this._filterRpc(rpcMethods.methods.map(textToString), getSpecRpc(this.registry, chain, runtimeVersion.specName));
             this._subscribeUpdates();
@@ -24267,6 +24265,52 @@
             this._rx.derive = this._decorateDeriveRx(this._rxDecorateMethod);
             this._derive = this._decorateDerive(this._decorateMethod);
             return true;
+        }
+        async _retrieveMetadata(apis, at, registry) {
+            let metadataVersion = null;
+            const metadataApi = apis.find(([a]) => a.eq(utilCrypto.blake2AsHex('Metadata', 64)));
+            const typeRegistry = registry || this.registry;
+            if (!metadataApi || metadataApi[1].toNumber() < 2) {
+                l.warn('MetadataApi not available, rpc::state::get_metadata will be used.');
+                return at
+                    ? new types.Metadata(typeRegistry, await firstValueFrom(this._rpcCore.state.getMetadata.raw(at)))
+                    : await firstValueFrom(this._rpcCore.state.getMetadata());
+            }
+            try {
+                const metadataVersionsAsBytes = at
+                    ? await firstValueFrom(this._rpcCore.state.call.raw('Metadata_metadata_versions', '0x', at))
+                    : await firstValueFrom(this._rpcCore.state.call('Metadata_metadata_versions', '0x'));
+                const versions = typeRegistry.createType('Vec<u32>', metadataVersionsAsBytes);
+                metadataVersion = versions.reduce((largest, current) => current.gt(largest) ? current : largest);
+            }
+            catch (e) {
+                l.debug(e.message);
+                l.warn('error with state_call::Metadata_metadata_versions, rpc::state::get_metadata will be used');
+            }
+            if (metadataVersion && !SUPPORTED_METADATA_VERSIONS.includes(metadataVersion.toNumber())) {
+                metadataVersion = null;
+            }
+            if (metadataVersion) {
+                try {
+                    const metadataBytes = at
+                        ? await firstValueFrom(this._rpcCore.state.call.raw('Metadata_metadata_at_version', util.u8aToHex(metadataVersion.toU8a()), at))
+                        : await firstValueFrom(this._rpcCore.state.call('Metadata_metadata_at_version', util.u8aToHex(metadataVersion.toU8a())));
+                    const rawMeta = at
+                        ? typeRegistry.createType('Raw', metadataBytes).toU8a()
+                        : metadataBytes;
+                    const opaqueMetadata = typeRegistry.createType('Option<OpaqueMetadata>', rawMeta).unwrapOr(null);
+                    if (opaqueMetadata) {
+                        return new types.Metadata(typeRegistry, opaqueMetadata.toHex());
+                    }
+                }
+                catch (e) {
+                    l.debug(e.message);
+                    l.warn('error with state_call::Metadata_metadata_at_version, rpc::state::get_metadata will be used');
+                }
+            }
+            return at
+                ? new types.Metadata(typeRegistry, await firstValueFrom(this._rpcCore.state.getMetadata.raw(at)))
+                : await firstValueFrom(this._rpcCore.state.getMetadata());
         }
         _subscribeHealth() {
             this._unsubscribeHealth();
