@@ -1367,7 +1367,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.1.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.2.1' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -23760,52 +23760,98 @@
             this._addRuntimeDef(result, this._options.runtime);
             return Object.entries(result);
         }
+        _getMethods(registry, methods) {
+            const result = {};
+            methods.forEach((m) => {
+                const { docs, inputs, name, output } = m;
+                result[name.toString()] = {
+                    description: docs.map((d) => d.toString()).join(),
+                    params: inputs.map(({ name, type }) => {
+                        return { name: name.toString(), type: registry.lookup.getName(type) || registry.lookup.getTypeDef(type).type };
+                    }),
+                    type: registry.lookup.getName(output) || registry.lookup.getTypeDef(output).type
+                };
+            });
+            return result;
+        }
+        _getRuntimeDefsViaMetadata(registry) {
+            const result = {};
+            const { apis } = registry.metadata;
+            for (let i = 0, count = apis.length; i < count; i++) {
+                const { methods, name } = apis[i];
+                result[name.toString()] = [{
+                        methods: this._getMethods(registry, methods),
+                        version: 0
+                    }];
+            }
+            return Object.entries(result);
+        }
         _decorateCalls({ registry, runtimeVersion: { apis, specName, specVersion } }, decorateMethod, blockHash) {
             const result = {};
             const named = {};
             const hashes = {};
-            const sections = this._getRuntimeDefs(registry, specName, this._runtimeChain);
+            const isApiInMetadata = registry.metadata.apis.length > 0;
+            const sections = isApiInMetadata ? this._getRuntimeDefsViaMetadata(registry) : this._getRuntimeDefs(registry, specName, this._runtimeChain);
             const older = [];
             const implName = `${specName.toString()}/${specVersion.toString()}`;
             const hasLogged = this.__internal__runtimeLog[implName] || false;
             this.__internal__runtimeLog[implName] = true;
-            for (let i = 0, scount = sections.length; i < scount; i++) {
-                const [_section, secs] = sections[i];
-                const sectionHash = utilCrypto.blake2AsHex(_section, 64);
-                const rtApi = apis.find(([a]) => a.eq(sectionHash));
-                hashes[sectionHash] = true;
-                if (rtApi) {
-                    const all = secs.map(({ version }) => version).sort();
-                    const sec = secs.find(({ version }) => rtApi[1].eq(version));
-                    if (sec) {
-                        const section = util.stringCamelCase(_section);
-                        const methods = Object.entries(sec.methods);
-                        if (methods.length) {
-                            if (!named[section]) {
-                                named[section] = {};
-                            }
-                            for (let m = 0, mcount = methods.length; m < mcount; m++) {
-                                const [_method, def] = methods[m];
-                                const method = util.stringCamelCase(_method);
-                                named[section][method] = util.objectSpread({ method, name: `${_section}_${_method}`, section, sectionHash }, def);
-                            }
-                        }
+            if (isApiInMetadata) {
+                for (let i = 0, scount = sections.length; i < scount; i++) {
+                    const [_section, secs] = sections[i];
+                    const sec = secs[0];
+                    const sectionHash = utilCrypto.blake2AsHex(_section, 64);
+                    const section = util.stringCamelCase(_section);
+                    const methods = Object.entries(sec.methods);
+                    if (!named[section]) {
+                        named[section] = {};
                     }
-                    else {
-                        older.push(`${_section}/${rtApi[1].toString()} (${all.join('/')} known)`);
+                    for (let m = 0, mcount = methods.length; m < mcount; m++) {
+                        const [_method, def] = methods[m];
+                        const method = util.stringCamelCase(_method);
+                        named[section][method] = util.objectSpread({ method, name: `${_section}_${_method}`, section, sectionHash }, def);
                     }
                 }
             }
-            const notFound = apis
-                .map(([a, v]) => [a.toHex(), v.toString()])
-                .filter(([a]) => !hashes[a])
-                .map(([a, v]) => `${this._runtimeMap[a] || a}/${v}`);
-            if (!this._options.noInitWarn && !hasLogged) {
-                if (older.length) {
-                    l$1.warn(`${implName}: Not decorating runtime apis without matching versions: ${older.join(', ')}`);
+            else {
+                for (let i = 0, scount = sections.length; i < scount; i++) {
+                    const [_section, secs] = sections[i];
+                    const sectionHash = utilCrypto.blake2AsHex(_section, 64);
+                    const rtApi = apis.find(([a]) => a.eq(sectionHash));
+                    hashes[sectionHash] = true;
+                    if (rtApi) {
+                        const all = secs.map(({ version }) => version).sort();
+                        const sec = secs.find(({ version }) => rtApi[1].eq(version));
+                        if (sec) {
+                            const section = util.stringCamelCase(_section);
+                            const methods = Object.entries(sec.methods);
+                            if (methods.length) {
+                                if (!named[section]) {
+                                    named[section] = {};
+                                }
+                                for (let m = 0, mcount = methods.length; m < mcount; m++) {
+                                    const [_method, def] = methods[m];
+                                    const method = util.stringCamelCase(_method);
+                                    named[section][method] = util.objectSpread({ method, name: `${_section}_${_method}`, section, sectionHash }, def);
+                                }
+                            }
+                        }
+                        else {
+                            older.push(`${_section}/${rtApi[1].toString()} (${all.join('/')} known)`);
+                        }
+                    }
                 }
-                if (notFound.length) {
-                    l$1.warn(`${implName}: Not decorating unknown runtime apis: ${notFound.join(', ')}`);
+                const notFound = apis
+                    .map(([a, v]) => [a.toHex(), v.toString()])
+                    .filter(([a]) => !hashes[a])
+                    .map(([a, v]) => `${this._runtimeMap[a] || a}/${v}`);
+                if (!this._options.noInitWarn && !hasLogged) {
+                    if (older.length) {
+                        l$1.warn(`${implName}: Not decorating runtime apis without matching versions: ${older.join(', ')}`);
+                    }
+                    if (notFound.length) {
+                        l$1.warn(`${implName}: Not decorating unknown runtime apis: ${notFound.join(', ')}`);
+                    }
                 }
             }
             const stateCall = blockHash
