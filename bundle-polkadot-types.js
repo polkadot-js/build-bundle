@@ -2888,6 +2888,9 @@
             ExtrinsicSignatureV4: 'GenericExtrinsicSignatureV4',
             ExtrinsicUnknown: 'GenericExtrinsicUnknown',
             ExtrinsicPayloadUnknown: 'GenericExtrinsicPayloadUnknown',
+            ExtrinsicV5: 'GenericExtrinsicV5',
+            ExtrinsicPayloadV5: 'GenericExtrinsicPayloadV5',
+            ExtrinsicSignatureV5: 'GenericExtrinsicSignatureV5',
             Era: 'ExtrinsicEra',
             ImmortalEra: 'GenericImmortalEra',
             MortalEra: 'GenericMortalEra',
@@ -6913,7 +6916,7 @@
         }
         return `${fn}: failed at ${util.u8aToHex(u8a.subarray(0, 16))}…${key ? ` on ${key}` : ''} (index ${i + 1}/${count})${type}:: ${message}`;
     }
-    function decodeU8a$6(registry, result, u8a, [Types, keys]) {
+    function decodeU8a$7(registry, result, u8a, [Types, keys]) {
         const count = result.length;
         let offset = 0;
         let i = 0;
@@ -7954,7 +7957,7 @@
             return [result, 0];
         }
         else if (util.isHex(value)) {
-            return decodeU8a$6(registry, result, util.u8aToU8a(value), Classes);
+            return decodeU8a$7(registry, result, util.u8aToU8a(value), Classes);
         }
         else if (!value || !result.length) {
             const Types = Classes[0];
@@ -7975,7 +7978,7 @@
                     : mapToTypeMap(registry, Types));
             super(registry, Classes[0].length);
             this.initialU8aLength = (util.isU8a(value)
-                ? decodeU8a$6(registry, this, value, Classes)
+                ? decodeU8a$7(registry, this, value, Classes)
                 : decodeTuple(registry, this, value, Classes))[1];
             this.__internal__Types = Classes;
         }
@@ -8506,7 +8509,7 @@
         for (let i = 0; i < count; i++) {
             types.push(KeyClass, ValClass);
         }
-        const [values, decodedLength] = decodeU8a$6(registry, new Array(types.length), u8a.subarray(offset), [types, []]);
+        const [values, decodedLength] = decodeU8a$7(registry, new Array(types.length), u8a.subarray(offset), [types, []]);
         for (let i = 0, count = values.length; i < count; i += 2) {
             output.set(values[i], values[i + 1]);
         }
@@ -8926,7 +8929,7 @@
         }
     }
 
-    function decodeU8a$5(registry, value) {
+    function decodeU8a$6(registry, value) {
         return value[0] === 0
             ? null
             : new bool(registry, value[0] === 1);
@@ -8934,7 +8937,7 @@
     class OptionBool extends Option {
         constructor(registry, value) {
             super(registry, bool, util.isU8a(value) || util.isHex(value)
-                ? decodeU8a$5(registry, util.u8aToU8a(value))
+                ? decodeU8a$6(registry, util.u8aToU8a(value))
                 : value);
             this.initialU8aLength = 1;
         }
@@ -15530,7 +15533,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.2.1' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '14.0.1' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
@@ -15916,91 +15919,63 @@
         }
     }
 
-    const EXTRINSIC_VERSION = 4;
-    class GenericExtrinsicV4 extends Struct {
-        constructor(registry, value, { isSigned } = {}) {
-            super(registry, {
-                signature: 'ExtrinsicSignatureV4',
-                method: 'Call'
-            }, GenericExtrinsicV4.decodeExtrinsic(registry, value, isSigned));
-        }
-        static decodeExtrinsic(registry, value, isSigned = false) {
-            if (value instanceof GenericExtrinsicV4) {
-                return value;
-            }
-            else if (value instanceof registry.createClassUnsafe('Call')) {
-                return { method: value };
-            }
-            else if (util.isU8a(value)) {
-                const signature = registry.createTypeUnsafe('ExtrinsicSignatureV4', [value, { isSigned }]);
-                const method = registry.createTypeUnsafe('Call', [value.subarray(signature.encodedLength)]);
-                return {
-                    method,
-                    signature
-                };
-            }
-            return value || {};
-        }
-        get encodedLength() {
-            return this.toU8a().length;
-        }
-        get method() {
-            return this.getT('method');
-        }
-        get signature() {
-            return this.getT('signature');
-        }
-        get version() {
-            return EXTRINSIC_VERSION;
-        }
-        addSignature(signer, signature, payload) {
-            this.signature.addSignature(signer, signature, payload);
-            return this;
-        }
-        sign(account, options) {
-            this.signature.sign(this.method, account, options);
-            return this;
-        }
-        signFake(signer, options) {
-            this.signature.signFake(this.method, signer, options);
-            return this;
-        }
-    }
-
     const BIT_SIGNED = 0b10000000;
     const BIT_UNSIGNED = 0;
     const EMPTY_U8A = new Uint8Array();
-    const DEFAULT_VERSION = 4;
     const IMMORTAL_ERA = new Uint8Array([0]);
     const UNMASK_VERSION = 0b01111111;
+    const DEFAULT_PREAMBLE = 'bare';
+    const LATEST_EXTRINSIC_VERSION = 5;
+    const VERSION_MASK = 0b00111111;
+    const TYPE_MASK = 0b11000000;
+    const BARE_EXTRINSIC = 0b00000000;
+    const SIGNED_EXTRINSIC = 0b10000000;
+    const GENERAL_EXTRINSIC = 0b01000000;
+    const LOWEST_SUPPORTED_EXTRINSIC_FORMAT_VERSION = 4;
 
     const VERSIONS$1 = [
         'ExtrinsicUnknown',
         'ExtrinsicUnknown',
         'ExtrinsicUnknown',
         'ExtrinsicUnknown',
-        'ExtrinsicV4'
+        'ExtrinsicV4',
+        'ExtrinsicV5'
     ];
-    function newFromValue(registry, value, version) {
+    const PREAMBLE = {
+        bare: 'ExtrinsicV5',
+        general: 'GeneralExtrinsic',
+        signed: 'ExtrinsicV5'
+    };
+    const PreambleMask = {
+        bare: BARE_EXTRINSIC,
+        general: GENERAL_EXTRINSIC,
+        signed: SIGNED_EXTRINSIC
+    };
+    const preambleUnMask = {
+        0: 'bare',
+        64: 'general',
+        128: 'signed'
+    };
+    function newFromValue(registry, value, version, preamble) {
         if (value instanceof GenericExtrinsic) {
             return value.unwrap();
         }
         const isSigned = (version & BIT_SIGNED) === BIT_SIGNED;
-        const type = VERSIONS$1[version & UNMASK_VERSION] || VERSIONS$1[0];
+        const type = (version & VERSION_MASK) === 5 ? PREAMBLE[preamble] : VERSIONS$1[version & VERSION_MASK] || VERSIONS$1[0];
         return registry.createTypeUnsafe(type, [value, { isSigned, version }]);
     }
-    function decodeExtrinsic(registry, value, version = DEFAULT_VERSION) {
+    function decodeExtrinsic(registry, value, version = LOWEST_SUPPORTED_EXTRINSIC_FORMAT_VERSION, preamble = DEFAULT_PREAMBLE) {
         if (util.isU8a(value) || Array.isArray(value) || util.isHex(value)) {
-            return decodeU8a$4(registry, util.u8aToU8a(value), version);
+            return decodeU8a$5(registry, util.u8aToU8a(value), version, preamble);
         }
         else if (value instanceof registry.createClassUnsafe('Call')) {
-            return newFromValue(registry, { method: value }, version);
+            return newFromValue(registry, { method: value }, version, preamble);
         }
-        return newFromValue(registry, value, version);
+        return newFromValue(registry, value, version, preamble);
     }
-    function decodeU8a$4(registry, value, version) {
+    function decodeU8a$5(registry, value, version, preamble) {
         if (!value.length) {
-            return newFromValue(registry, new Uint8Array(), version);
+            return newFromValue(registry, new Uint8Array(), version, preamble);
         }
         const [offset, length] = util.compactFromU8a(value);
         const total = offset + length.toNumber();
@@ -16008,16 +15983,30 @@
             throw new Error(`Extrinsic: length less than remainder, expected at least ${total}, found ${value.length}`);
         }
         const data = value.subarray(offset, total);
-        return newFromValue(registry, data.subarray(1), data[0]);
+        const unmaskedPreamble = data[0] & TYPE_MASK;
+        if (preambleUnMask[`${unmaskedPreamble}`] === 'general') {
+            return newFromValue(registry, value, data[0], preambleUnMask[`${unmaskedPreamble}`] || preamble);
+        }
+        else {
+            return newFromValue(registry, data.subarray(1), data[0], preambleUnMask[`${unmaskedPreamble}`] || preamble);
+        }
     }
     class ExtrinsicBase extends AbstractBase {
-        constructor(registry, value, initialU8aLength) {
+        __internal__preamble;
+        constructor(registry, value, initialU8aLength, preamble) {
             super(registry, value, initialU8aLength);
             const signKeys = Object.keys(registry.getSignedExtensionTypes());
-            const getter = (key) => this.inner.signature[key];
-            for (let i = 0, count = signKeys.length; i < count; i++) {
-                util.objectProperty(this, signKeys[i], getter);
+            if (this.version === 5 && preamble !== 'general') {
+                const getter = (key) => this.inner.signature[key];
+                for (let i = 0, count = signKeys.length; i < count; i++) {
+                    util.objectProperty(this, signKeys[i], getter);
+                }
             }
+            const unmaskedPreamble = this.type & TYPE_MASK;
+            this.__internal__preamble = preamble || preambleUnMask[`${unmaskedPreamble}`];
+        }
+        isGeneral() {
+            return this.__internal__preamble === 'general';
         }
         get args() {
             return this.method.args;
@@ -16032,13 +16021,17 @@
             return this.method.data;
         }
         get era() {
-            return this.inner.signature.era;
+            return this.isGeneral()
+                ? this.inner.era
+                : this.inner.signature.era;
         }
         get encodedLength() {
             return this.toU8a().length;
         }
         get isSigned() {
-            return this.inner.signature.isSigned;
+            return this.isGeneral()
+                ? false
+                : this.inner.signature.isSigned;
         }
         get length() {
             return this.toU8a(true).length;
@@ -16050,25 +16043,41 @@
             return this.inner.method;
         }
         get nonce() {
-            return this.inner.signature.nonce;
+            return this.isGeneral()
+                ? this.inner.nonce
+                : this.inner.signature.nonce;
         }
         get signature() {
+            if (this.isGeneral()) {
+                throw new Error('Extrinsic: GeneralExtrinsic does not have signature implemented');
+            }
             return this.inner.signature.signature;
         }
         get signer() {
+            if (this.isGeneral()) {
+                throw new Error('Extrinsic: GeneralExtrinsic does not have signer implemented');
+            }
             return this.inner.signature.signer;
         }
         get tip() {
-            return this.inner.signature.tip;
+            return this.isGeneral()
+                ? this.inner.tip
+                : this.inner.signature.tip;
         }
         get assetId() {
-            return this.inner.signature.assetId;
+            return this.isGeneral()
+                ? this.inner.assetId
+                : this.inner.signature.assetId;
         }
         get metadataHash() {
-            return this.inner.signature.metadataHash;
+            return this.isGeneral()
+                ? this.inner.metadataHash
+                : this.inner.signature.metadataHash;
         }
         get mode() {
-            return this.inner.signature.mode;
+            return this.isGeneral()
+                ? this.inner.mode
+                : this.inner.signature.mode;
         }
         get type() {
             return this.inner.version;
@@ -16077,7 +16086,12 @@
             return this.unwrap();
         }
         get version() {
-            return this.type | (this.isSigned ? BIT_SIGNED : BIT_UNSIGNED);
+            if (this.type <= LOWEST_SUPPORTED_EXTRINSIC_FORMAT_VERSION) {
+                return this.type | (this.isSigned ? BIT_SIGNED : BIT_UNSIGNED);
+            }
+            else {
+                return this.type | (this.isSigned ? PreambleMask.signed : this.isGeneral() ? PreambleMask.general : PreambleMask.bare);
+            }
         }
         is(other) {
             return this.method.is(other);
@@ -16088,9 +16102,9 @@
     }
     class GenericExtrinsic extends ExtrinsicBase {
         __internal__hashCache;
-        static LATEST_EXTRINSIC_VERSION = EXTRINSIC_VERSION;
-        constructor(registry, value, { version } = {}) {
-            super(registry, decodeExtrinsic(registry, value, version));
+        static LATEST_EXTRINSIC_VERSION = LATEST_EXTRINSIC_VERSION;
+        constructor(registry, value, { preamble, version } = {}) {
+            super(registry, decodeExtrinsic(registry, value, version || registry.metadata.extrinsic.version?.toNumber(), preamble), undefined, preamble);
         }
         get hash() {
             if (!this.__internal__hashCache) {
@@ -16322,24 +16336,31 @@
         'ExtrinsicPayloadUnknown',
         'ExtrinsicPayloadUnknown',
         'ExtrinsicPayloadUnknown',
-        'ExtrinsicPayloadV4'
+        'ExtrinsicPayloadV4',
+        'ExtrinsicPayloadV5'
     ];
-    function decodeExtrinsicPayload(registry, value, version = DEFAULT_VERSION) {
+    const PREAMBLES = {
+        bare: 'ExtrinsicPayloadV5',
+        general: 'ExtrinsicPayloadV5',
+        signed: 'ExtrinsicPayloadV5'
+    };
+    function decodeExtrinsicPayload(registry, value, version = LATEST_EXTRINSIC_VERSION, preamble = DEFAULT_PREAMBLE) {
         if (value instanceof GenericExtrinsicPayload) {
             return value.unwrap();
         }
+        const extVersion = version === 5 ? PREAMBLES[preamble] : VERSIONS[version] || VERSIONS[0];
         if (value && value.assetId && util.isHex(value.assetId)) {
             const adjustedPayload = {
                 ...value,
                 assetId: registry.createType('TAssetConversion', util.hexToU8a(value.assetId)).toJSON()
             };
-            return registry.createTypeUnsafe(VERSIONS[version] || VERSIONS[0], [adjustedPayload, { version }]);
+            return registry.createTypeUnsafe(extVersion, [adjustedPayload, { version }]);
         }
-        return registry.createTypeUnsafe(VERSIONS[version] || VERSIONS[0], [value, { version }]);
+        return registry.createTypeUnsafe(extVersion, [value, { version }]);
     }
     class GenericExtrinsicPayload extends AbstractBase {
-        constructor(registry, value, { version } = {}) {
-            super(registry, decodeExtrinsicPayload(registry, value, version));
+        constructor(registry, value, { preamble, version } = {}) {
+            super(registry, decodeExtrinsicPayload(registry, value, version, preamble));
         }
         get blockHash() {
             return this.inner.blockHash;
@@ -16529,10 +16550,65 @@
         }
     }
 
+    const EXTRINSIC_VERSION$1 = 4;
+    class GenericExtrinsicV4 extends Struct {
+        constructor(registry, value, { isSigned } = {}) {
+            super(registry, {
+                signature: 'ExtrinsicSignatureV4',
+                method: 'Call'
+            }, GenericExtrinsicV4.decodeExtrinsic(registry, value, isSigned));
+        }
+        static decodeExtrinsic(registry, value, isSigned = false) {
+            if (value instanceof GenericExtrinsicV4) {
+                return value;
+            }
+            else if (value instanceof registry.createClassUnsafe('Call')) {
+                return { method: value };
+            }
+            else if (util.isU8a(value)) {
+                const signature = registry.createTypeUnsafe('ExtrinsicSignatureV4', [value, { isSigned }]);
+                const method = registry.createTypeUnsafe('Call', [value.subarray(signature.encodedLength)]);
+                return {
+                    method,
+                    signature
+                };
+            }
+            return value || {};
+        }
+        get encodedLength() {
+            return this.toU8a().length;
+        }
+        get method() {
+            return this.getT('method');
+        }
+        get signature() {
+            return this.getT('signature');
+        }
+        get version() {
+            return EXTRINSIC_VERSION$1;
+        }
+        addSignature(signer, signature, payload) {
+            this.signature.addSignature(signer, signature, payload);
+            return this;
+        }
+        sign(account, options) {
+            this.signature.sign(this.method, account, options);
+            return this;
+        }
+        signFake(signer, options) {
+            this.signature.signFake(this.method, signer, options);
+            return this;
+        }
+    }
+
     function sign(registry, signerPair, u8a, options) {
         const encoded = u8a.length > 256
             ? registry.hash(u8a)
             : u8a;
+        return signerPair.sign(encoded, options);
+    }
+    function signV5(registry, signerPair, u8a, options) {
+        const encoded = registry.hash(u8a);
         return signerPair.sign(encoded, options);
     }
 
@@ -16582,8 +16658,8 @@
         }
     }
 
-    const FAKE_SIGNATURE = new Uint8Array(256).fill(1);
-    function toAddress(registry, address) {
+    const FAKE_SIGNATURE$1 = new Uint8Array(256).fill(1);
+    function toAddress$1(registry, address) {
         return registry.createTypeUnsafe('Address', [util.isU8a(address) ? util.u8aToHex(address) : address]);
     }
     class GenericExtrinsicSignatureV4 extends Struct {
@@ -16654,11 +16730,224 @@
             return this;
         }
         addSignature(signer, signature, payload) {
-            return this._injectSignature(toAddress(this.registry, signer), this.registry.createTypeUnsafe('ExtrinsicSignature', [signature]), new GenericExtrinsicPayloadV4(this.registry, payload));
+            return this._injectSignature(toAddress$1(this.registry, signer), this.registry.createTypeUnsafe('ExtrinsicSignature', [signature]), new GenericExtrinsicPayloadV4(this.registry, payload));
         }
         createPayload(method, options) {
             const { era, runtimeVersion: { specVersion, transactionVersion } } = options;
             return new GenericExtrinsicPayloadV4(this.registry, util.objectSpread({}, options, {
+                era: era || IMMORTAL_ERA,
+                method: method.toHex(),
+                specVersion,
+                transactionVersion
+            }));
+        }
+        sign(method, account, options) {
+            if (!account?.addressRaw) {
+                throw new Error(`Expected a valid keypair for signing, found ${util.stringify(account)}`);
+            }
+            const payload = this.createPayload(method, options);
+            return this._injectSignature(toAddress$1(this.registry, account.addressRaw), this.registry.createTypeUnsafe('ExtrinsicSignature', [payload.sign(account)]), payload);
+        }
+        signFake(method, address, options) {
+            if (!address) {
+                throw new Error(`Expected a valid address for signing, found ${util.stringify(address)}`);
+            }
+            const payload = this.createPayload(method, options);
+            return this._injectSignature(toAddress$1(this.registry, address), this.registry.createTypeUnsafe('ExtrinsicSignature', [FAKE_SIGNATURE$1]), payload);
+        }
+        toU8a(isBare) {
+            return this.isSigned
+                ? super.toU8a(isBare)
+                : EMPTY_U8A;
+        }
+    }
+
+    const EXTRINSIC_VERSION = 5;
+    class GenericExtrinsicV5 extends Struct {
+        constructor(registry, value, { isSigned } = {}) {
+            super(registry, {
+                signature: 'ExtrinsicSignatureV5',
+                method: 'Call'
+            }, GenericExtrinsicV5.decodeExtrinsic(registry, value, isSigned));
+        }
+        static decodeExtrinsic(registry, value, isSigned = false) {
+            if (value instanceof GenericExtrinsicV5) {
+                return value;
+            }
+            else if (value instanceof registry.createClassUnsafe('Call')) {
+                return { method: value };
+            }
+            else if (util.isU8a(value)) {
+                const signature = registry.createTypeUnsafe('ExtrinsicSignatureV5', [value, { isSigned }]);
+                const method = registry.createTypeUnsafe('Call', [value.subarray(signature.encodedLength)]);
+                return {
+                    method,
+                    signature
+                };
+            }
+            return value || {};
+        }
+        get encodedLength() {
+            return this.toU8a().length;
+        }
+        get method() {
+            return this.getT('method');
+        }
+        get signature() {
+            return this.getT('signature');
+        }
+        get version() {
+            return EXTRINSIC_VERSION;
+        }
+        get preamble() {
+            return this.getT('preamble');
+        }
+        addSignature(signer, signature, payload) {
+            this.signature.addSignature(signer, signature, payload);
+            return this;
+        }
+        sign(account, options) {
+            this.signature.sign(this.method, account, options);
+            return this;
+        }
+        signFake(signer, options) {
+            this.signature.signFake(this.method, signer, options);
+            return this;
+        }
+    }
+
+    class GenericExtrinsicPayloadV5 extends Struct {
+        __internal__signOptions;
+        constructor(registry, value) {
+            super(registry, util.objectSpread({ method: 'Bytes' }, registry.getSignedExtensionTypes(), registry.getSignedExtensionExtra()), value);
+            this.__internal__signOptions = {
+                withType: registry.createTypeUnsafe('ExtrinsicSignature', []) instanceof Enum
+            };
+        }
+        inspect() {
+            return super.inspect({ method: true });
+        }
+        get blockHash() {
+            return this.getT('blockHash');
+        }
+        get era() {
+            return this.getT('era');
+        }
+        get genesisHash() {
+            return this.getT('genesisHash');
+        }
+        get method() {
+            return this.getT('method');
+        }
+        get nonce() {
+            return this.getT('nonce');
+        }
+        get specVersion() {
+            return this.getT('specVersion');
+        }
+        get tip() {
+            return this.getT('tip');
+        }
+        get transactionVersion() {
+            return this.getT('transactionVersion');
+        }
+        get assetId() {
+            return this.getT('assetId');
+        }
+        get metadataHash() {
+            return this.getT('metadataHash');
+        }
+        sign(signerPair) {
+            return signV5(this.registry, signerPair, this.toU8a({ method: true }), this.__internal__signOptions);
+        }
+    }
+
+    const FAKE_SIGNATURE = new Uint8Array(256).fill(1);
+    function toAddress(registry, address) {
+        return registry.createTypeUnsafe('Address', [util.isU8a(address) ? util.u8aToHex(address) : address]);
+    }
+    class GenericExtrinsicSignatureV5 extends Struct {
+        __internal__signKeys;
+        __internal__transactionExtensionVersion;
+        constructor(registry, value, { isSigned } = {}) {
+            const signTypes = registry.getSignedExtensionTypes();
+            const signedVersion = registry.getTransactionExtensionVersion();
+            super(registry, util.objectSpread(
+            { signer: 'Address', signature: 'ExtrinsicSignature', transactionExtensionVersion: 'u8' }, signTypes), GenericExtrinsicSignatureV5.decodeExtrinsicSignature(value, isSigned));
+            this.__internal__transactionExtensionVersion = signedVersion;
+            this.__internal__signKeys = Object.keys(signTypes);
+            util.objectProperties(this, this.__internal__signKeys, (k) => this.get(k));
+        }
+        static decodeExtrinsicSignature(value, isSigned = false) {
+            if (!value) {
+                return EMPTY_U8A;
+            }
+            else if (value instanceof GenericExtrinsicSignatureV5) {
+                return value;
+            }
+            return isSigned
+                ? value
+                : EMPTY_U8A;
+        }
+        get encodedLength() {
+            return this.isSigned
+                ? super.encodedLength
+                : 0;
+        }
+        get isSigned() {
+            return !this.signature.isEmpty;
+        }
+        get era() {
+            return this.getT('era');
+        }
+        get nonce() {
+            return this.getT('nonce');
+        }
+        get signature() {
+            return (this.multiSignature.value || this.multiSignature);
+        }
+        get multiSignature() {
+            return this.getT('signature');
+        }
+        get signer() {
+            return this.getT('signer');
+        }
+        get tip() {
+            return this.getT('tip');
+        }
+        get assetId() {
+            return this.getT('assetId');
+        }
+        get mode() {
+            return this.getT('mode');
+        }
+        get metadataHash() {
+            return this.getT('metadataHash');
+        }
+        get transactionExtensionVersion() {
+            return this.getT('transactionExtensionVersion');
+        }
+        _injectSignature(signer, signature, payload) {
+            for (let i = 0, count = this.__internal__signKeys.length; i < count; i++) {
+                const k = this.__internal__signKeys[i];
+                const v = payload.get(k);
+                if (k === 'transactionExtensionVersion') {
+                    this.set(k, this.registry.createType('u8', this.__internal__transactionExtensionVersion));
+                }
+                else if (!util.isUndefined(v)) {
+                    this.set(k, v);
+                }
+            }
+            this.set('signer', signer);
+            this.set('signature', signature);
+            return this;
+        }
+        addSignature(signer, signature, payload) {
+            return this._injectSignature(toAddress(this.registry, signer), this.registry.createTypeUnsafe('ExtrinsicSignature', [signature]), new GenericExtrinsicPayloadV5(this.registry, payload));
+        }
+        createPayload(method, options) {
+            const { era, runtimeVersion: { specVersion, transactionVersion } } = options;
+            return new GenericExtrinsicPayloadV5(this.registry, util.objectSpread({}, options, {
                 era: era || IMMORTAL_ERA,
                 method: method.toHex(),
                 specVersion,
@@ -16683,6 +16972,113 @@
             return this.isSigned
                 ? super.toU8a(isBare)
                 : EMPTY_U8A;
+        }
+    }
+
+    function decodeU8a$4(u8a) {
+        if (!u8a.length) {
+            return new Uint8Array();
+        }
+        const [offset, length] = util.compactFromU8a(u8a);
+        const total = offset + length.toNumber();
+        if (total > u8a.length) {
+            throw new Error(`Extrinsic: length less than remainder, expected at least ${total}, found ${u8a.length}`);
+        }
+        const data = u8a.subarray(offset, total);
+        if (data[0] !== 69) {
+            throw new Error(`Extrinsic: incorrect version for General Transactions, expected 5, found ${data[0] & UNMASK_VERSION}`);
+        }
+        return data.subarray(1);
+    }
+    class GeneralExtrinsic extends Struct {
+        __internal__version;
+        __internal__preamble;
+        constructor(registry, value, opt) {
+            const extTypes = registry.getSignedExtensionTypes();
+            super(registry, util.objectSpread({
+                transactionExtensionVersion: 'u8'
+            }, extTypes, {
+                method: 'Call'
+            }), GeneralExtrinsic.decodeExtrinsic(registry, value));
+            this.__internal__version = opt?.version || 0b00000101;
+            this.__internal__preamble = 0b01000000;
+        }
+        static decodeExtrinsic(registry, value) {
+            if (!value) {
+                return EMPTY_U8A;
+            }
+            else if (value instanceof GeneralExtrinsic) {
+                return value;
+            }
+            else if (util.isU8a(value) || Array.isArray(value) || util.isHex(value)) {
+                return decodeU8a$4(util.u8aToU8a(value));
+            }
+            else if (util.isObject(value)) {
+                const { payload, transactionExtensionVersion } = value;
+                return util.objectSpread(payload || {}, {
+                    transactionExtensionVersion: transactionExtensionVersion || registry.getTransactionExtensionVersion()
+                });
+            }
+            return {};
+        }
+        get encodedLength() {
+            return super.encodedLength;
+        }
+        get era() {
+            return this.getT('era');
+        }
+        get nonce() {
+            return this.getT('nonce');
+        }
+        get tip() {
+            return this.getT('tip');
+        }
+        get assetId() {
+            return this.getT('assetId');
+        }
+        get mode() {
+            return this.getT('mode');
+        }
+        get metadataHash() {
+            return this.getT('metadataHash');
+        }
+        get transactionExtensionVersion() {
+            return this.getT('transactionExtensionVersion');
+        }
+        get method() {
+            return this.getT('method');
+        }
+        get version() {
+            return this.__internal__version;
+        }
+        get preamble() {
+            return this.__internal__preamble;
+        }
+        toHex(isBare) {
+            return util.u8aToHex(this.toU8a(isBare));
+        }
+        toU8a(isBare) {
+            return isBare
+                ? this.encode()
+                : util.compactAddLength(this.encode());
+        }
+        toRawType() {
+            return 'GeneralExt';
+        }
+        encode() {
+            return util.u8aConcat(new Uint8Array([this.version | this.preamble]), super.toU8a());
+        }
+        signFake() {
+            throw new Error('Extrinsic: Type GeneralExtrinsic does not have signFake implemented');
+        }
+        addSignature() {
+            throw new Error('Extrinsic: Type GeneralExtrinsic does not have addSignature implemented');
+        }
+        sign() {
+            throw new Error('Extrinsic: Type GeneralExtrinsic does not have sign implemented');
+        }
+        signature() {
+            throw new Error('Extrinsic: Type GeneralExtrinsic does not have the signature getter');
         }
     }
 
@@ -17620,6 +18016,7 @@
         Data: Data,
         F32: f32,
         F64: f64,
+        GeneralExtrinsic: GeneralExtrinsic,
         GenericAccountId: GenericAccountId,
         GenericAccountId32: GenericAccountId,
         GenericAccountId33: GenericAccountId33,
@@ -17638,9 +18035,12 @@
         GenericExtrinsicPayload: GenericExtrinsicPayload,
         GenericExtrinsicPayloadUnknown: GenericExtrinsicPayloadUnknown,
         GenericExtrinsicPayloadV4: GenericExtrinsicPayloadV4,
+        GenericExtrinsicPayloadV5: GenericExtrinsicPayloadV5,
         GenericExtrinsicSignatureV4: GenericExtrinsicSignatureV4,
+        GenericExtrinsicSignatureV5: GenericExtrinsicSignatureV5,
         GenericExtrinsicUnknown: GenericExtrinsicUnknown,
         GenericExtrinsicV4: GenericExtrinsicV4,
+        GenericExtrinsicV5: GenericExtrinsicV5,
         GenericImmortalEra: ImmortalEra,
         GenericLookupSource: GenericLookupSource,
         GenericMortalEra: MortalEra,
@@ -18893,6 +19293,9 @@
         getOrUnknown(name) {
             return this.get(name, true);
         }
+        getTransactionExtensionVersion() {
+            return 0;
+        }
         getSignedExtensionExtra() {
             return expandExtensionTypes(this.__internal__signedExtensions, 'payload', this.__internal__userExtensions);
         }
@@ -19029,6 +19432,7 @@
     exports.Enum = Enum;
     exports.F32 = f32;
     exports.F64 = f64;
+    exports.GeneralExtrinsic = GeneralExtrinsic;
     exports.GenericAccountId = GenericAccountId;
     exports.GenericAccountId32 = GenericAccountId;
     exports.GenericAccountId33 = GenericAccountId33;
@@ -19047,9 +19451,12 @@
     exports.GenericExtrinsicPayload = GenericExtrinsicPayload;
     exports.GenericExtrinsicPayloadUnknown = GenericExtrinsicPayloadUnknown;
     exports.GenericExtrinsicPayloadV4 = GenericExtrinsicPayloadV4;
+    exports.GenericExtrinsicPayloadV5 = GenericExtrinsicPayloadV5;
     exports.GenericExtrinsicSignatureV4 = GenericExtrinsicSignatureV4;
+    exports.GenericExtrinsicSignatureV5 = GenericExtrinsicSignatureV5;
     exports.GenericExtrinsicUnknown = GenericExtrinsicUnknown;
     exports.GenericExtrinsicV4 = GenericExtrinsicV4;
+    exports.GenericExtrinsicV5 = GenericExtrinsicV5;
     exports.GenericImmortalEra = ImmortalEra;
     exports.GenericLookupSource = GenericLookupSource;
     exports.GenericMortalEra = MortalEra;
