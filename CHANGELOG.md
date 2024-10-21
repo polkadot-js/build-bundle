@@ -2,6 +2,7 @@
 
 ## master
 
+- wasm-crypto 7.4.1
 - extension-dapp 0.54.1
 - phishing 0.23.7
 - api, api-contract, types 14.0.1

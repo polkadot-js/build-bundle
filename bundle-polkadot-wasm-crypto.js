@@ -189,11 +189,7 @@
                 result.type = 'wasm';
             }
             catch (error) {
-                if (typeof asmFn === 'function') {
-                    result.wasm = asmFn(wbg);
-                    result.type = 'asm';
-                }
-                else {
+                {
                     result.error = `FATAL: Unable to initialize @polkadot/wasm-${root}:: ${error.message}`;
                     console.error(result.error);
                 }
@@ -260,7 +256,7 @@
             le[i] = (le[i - 1] + l[i - 1]) << 1;
         }
         let co;
-        if (r) {
+        {
             co = new u16(1 << mb);
             const rvb = 15 - mb;
             for (i = 0; i < s; ++i) {
@@ -271,14 +267,6 @@
                     for (const m = v | ((1 << r) - 1); v <= m; ++v) {
                         co[rev[v] >> rvb] = sv;
                     }
-                }
-            }
-        }
-        else {
-            co = new u16(s);
-            for (i = 0; i < s; ++i) {
-                if (cd[i]) {
-                    co[i] = rev[le[cd[i] - 1]++] >> (15 - cd[i]);
                 }
             }
         }
@@ -296,8 +284,8 @@
     const fdt = new u8(32);
     for (let i = 0; i < 32; ++i)
         fdt[i] = 5;
-    const flrm = hMap(flt, 9, 1);
-    const fdrm = hMap(fdt, 5, 1);
+    const flrm = hMap(flt, 9);
+    const fdrm = hMap(fdt, 5);
     const bits = (d, p, m) => {
         const o = p >>> 3;
         return ((d[o] | (d[o + 1] << 8)) >>> (p & 7)) & m;
@@ -308,8 +296,6 @@
     };
     const shft = (p) => (p >>> 3) + (p & 7 && 1);
     const slc = (v, s, e) => {
-        if (s == null || s < 0)
-            s = 0;
         if (e == null || e > v.length)
             e = v.length;
         const n = new (v instanceof u16 ? u16 : v instanceof u32 ? u32 : u8)(e - s);
@@ -377,7 +363,7 @@
                     const clb = max(clt), clbmsk = (1 << clb) - 1;
                     if (!noSt && pos + tl * (clb + 7) > tbts)
                         break;
-                    const clm = hMap(clt, clb, 1);
+                    const clm = hMap(clt, clb);
                     for (let i = 0; i < tl;) {
                         const r = clm[bits(dat, pos, clbmsk)];
                         pos += r & 15;
@@ -400,8 +386,8 @@
                     const lt = ldt.subarray(0, hLit), dt = ldt.subarray(hLit);
                     lbt = max(lt);
                     dbt = max(dt);
-                    lm = hMap(lt, lbt, 1);
-                    dm = hMap(dt, dbt, 1);
+                    lm = hMap(lt, lbt);
+                    dm = hMap(dt, dbt);
                 }
                 else
                     throw 'invalid block type';
@@ -477,14 +463,14 @@
 
     const wasmBytes =  unzlibSync(base64Decode(bytes_1, new Uint8Array(lenIn)), new Uint8Array(lenOut));
 
-    const createWasm =  createWasmFn('crypto', wasmBytes, null);
+    const createWasm =  createWasmFn('crypto', wasmBytes);
 
     const bridge = new Bridge(createWasm);
     async function initBridge(createWasm) {
         return bridge.init(createWasm);
     }
 
-    const packageInfo = { name: '@polkadot/wasm-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '7.3.2' };
+    const packageInfo = { name: '@polkadot/wasm-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-wasm-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '7.4.1' };
 
     function withWasm(fn) {
         return (...params) => {
