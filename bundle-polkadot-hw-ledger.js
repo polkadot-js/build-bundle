@@ -122,17 +122,27 @@
 		        const response = await transport.send(cla, 0 , 0, 0);
 		        const errorCodeData = response.subarray(-2);
 		        const returnCode = errorCodeData[0] * 256 + errorCodeData[1];
-		        if (response.length !== 14) {
+		        if (response.length !== 14 && response.length !== 20) {
 		            return {
 		                return_code: 27012 ,
 		                error_message: errorCodeToString(27012 ),
 		            };
 		        }
-		        const major = response[1] * 256 + response[2];
-		        const minor = response[3] * 256 + response[4];
-		        const patch = response[5] * 256 + response[6];
-		        const deviceLocked = response[7] === 1;
-		        const targetId = (response[8] << 24) + (response[9] << 16) + (response[10] << 8) + (response[11] << 0);
+		        let major, minor, patch, deviceLocked, targetId;
+		        if (response.length === 14) {
+		            major = response.readUInt16BE(1);
+		            minor = response.readUInt16BE(3);
+		            patch = response.readUInt16BE(5);
+		            deviceLocked = response[7] === 1;
+		            targetId = (response[8] << 24) + (response[9] << 16) + (response[10] << 8) + (response[11] << 0);
+		        }
+		        else {
+		            major = response.readUInt32BE(1);
+		            minor = response.readUInt32BE(5);
+		            patch = response.readUInt32BE(9);
+		            deviceLocked = response[13] === 1;
+		            targetId = (response[14] << 24) + (response[15] << 16) + (response[16] << 8) + (response[17] << 0);
+		        }
 		        return {
 		            return_code: returnCode,
 		            error_message: errorCodeToString(returnCode),
@@ -1512,6 +1522,36 @@
 	const isThenable = (thing) =>
 	  thing && (isObject$1(thing) || isFunction(thing)) && isFunction(thing.then) && isFunction(thing.catch);
 
+	// original code
+	// https://github.com/DigitalBrainJS/AxiosPromise/blob/16deab13710ec09779922131f3fa5954320f83ab/lib/utils.js#L11-L34
+
+	const _setImmediate = ((setImmediateSupported, postMessageSupported) => {
+	  if (setImmediateSupported) {
+	    return setImmediate;
+	  }
+
+	  return postMessageSupported ? ((token, callbacks) => {
+	    _global.addEventListener("message", ({source, data}) => {
+	      if (source === _global && data === token) {
+	        callbacks.length && callbacks.shift()();
+	      }
+	    }, false);
+
+	    return (cb) => {
+	      callbacks.push(cb);
+	      _global.postMessage(token, "*");
+	    }
+	  })(`axios@${Math.random()}`, []) : (cb) => setTimeout(cb);
+	})(
+	  typeof setImmediate === 'function',
+	  isFunction(_global.postMessage)
+	);
+
+	const asap = typeof queueMicrotask !== 'undefined' ?
+	  queueMicrotask.bind(_global) : ( typeof process !== 'undefined' && process.nextTick || _setImmediate);
+
+	// *********************
+
 	var utils$1 = {
 	  isArray,
 	  isArrayBuffer,
@@ -1567,7 +1607,9 @@
 	  isSpecCompliantForm,
 	  toJSONObject,
 	  isAsyncFn,
-	  isThenable
+	  isThenable,
+	  setImmediate: _setImmediate,
+	  asap
 	};
 
 	/**
@@ -1595,7 +1637,10 @@
 	  code && (this.code = code);
 	  config && (this.config = config);
 	  request && (this.request = request);
-	  response && (this.response = response);
+	  if (response) {
+	    this.response = response;
+	    this.status = response.status ? response.status : null;
+	  }
 	}
 
 	utils$1.inherits(AxiosError, Error, {
@@ -1615,7 +1660,7 @@
 	      // Axios
 	      config: utils$1.toJSONObject(this.config),
 	      code: this.code,
-	      status: this.response && this.response.status ? this.response.status : null
+	      status: this.status
 	    };
 	  }
 	});
@@ -2083,6 +2128,8 @@
 
 	const hasBrowserEnv = typeof window !== 'undefined' && typeof document !== 'undefined';
 
+	const _navigator = typeof navigator === 'object' && navigator || undefined;
+
 	/**
 	 * Determine if we're running in a standard browser environment
 	 *
@@ -2100,10 +2147,8 @@
 	 *
 	 * @returns {boolean}
 	 */
-	const hasStandardBrowserEnv = (
-	  (product) => {
-	    return hasBrowserEnv && ['ReactNative', 'NativeScript', 'NS'].indexOf(product) < 0
-	  })(typeof navigator !== 'undefined' && navigator.product);
+	const hasStandardBrowserEnv = hasBrowserEnv &&
+	  (!_navigator || ['ReactNative', 'NativeScript', 'NS'].indexOf(_navigator.product) < 0);
 
 	/**
 	 * Determine if we're running in a standard browser webWorker environment
@@ -2130,6 +2175,7 @@
 	  hasBrowserEnv: hasBrowserEnv,
 	  hasStandardBrowserWebWorkerEnv: hasStandardBrowserWebWorkerEnv,
 	  hasStandardBrowserEnv: hasStandardBrowserEnv,
+	  navigator: _navigator,
 	  origin: origin
 	});
 
@@ -2878,31 +2924,42 @@
 	 */
 	function throttle(fn, freq) {
 	  let timestamp = 0;
-	  const threshold = 1000 / freq;
-	  let timer = null;
-	  return function throttled() {
-	    const force = this === true;
+	  let threshold = 1000 / freq;
+	  let lastArgs;
+	  let timer;
 
-	    const now = Date.now();
-	    if (force || now - timestamp > threshold) {
-	      if (timer) {
-	        clearTimeout(timer);
-	        timer = null;
-	      }
-	      timestamp = now;
-	      return fn.apply(null, arguments);
+	  const invoke = (args, now = Date.now()) => {
+	    timestamp = now;
+	    lastArgs = null;
+	    if (timer) {
+	      clearTimeout(timer);
+	      timer = null;
 	    }
-	    if (!timer) {
-	      timer = setTimeout(() => {
-	        timer = null;
-	        timestamp = Date.now();
-	        return fn.apply(null, arguments);
-	      }, threshold - (now - timestamp));
+	    fn.apply(null, args);
+	  };
+
+	  const throttled = (...args) => {
+	    const now = Date.now();
+	    const passed = now - timestamp;
+	    if ( passed >= threshold) {
+	      invoke(args, now);
+	    } else {
+	      lastArgs = args;
+	      if (!timer) {
+	        timer = setTimeout(() => {
+	          timer = null;
+	          invoke(lastArgs);
+	        }, threshold - passed);
+	      }
 	    }
 	  };
+
+	  const flush = () => lastArgs && invoke(lastArgs);
+
+	  return [throttled, flush];
 	}
 
-	var progressEventReducer = (listener, isDownloadStream, freq = 3) => {
+	const progressEventReducer = (listener, isDownloadStream, freq = 3) => {
 	  let bytesNotified = 0;
 	  const _speedometer = speedometer(50, 250);
 
@@ -2923,21 +2980,32 @@
 	      rate: rate ? rate : undefined,
 	      estimated: rate && total && inRange ? (total - loaded) / rate : undefined,
 	      event: e,
-	      lengthComputable: total != null
+	      lengthComputable: total != null,
+	      [isDownloadStream ? 'download' : 'upload']: true
 	    };
-
-	    data[isDownloadStream ? 'download' : 'upload'] = true;
 
 	    listener(data);
 	  }, freq);
 	};
+
+	const progressEventDecorator = (total, throttled) => {
+	  const lengthComputable = total != null;
+
+	  return [(loaded) => throttled[0]({
+	    lengthComputable,
+	    total,
+	    loaded
+	  }), throttled[1]];
+	};
+
+	const asyncDecorator = (fn) => (...args) => utils$1.asap(() => fn(...args));
 
 	var isURLSameOrigin = platform.hasStandardBrowserEnv ?
 
 	// Standard browser envs have full support of the APIs needed to test
 	// whether the request URL is of the same origin as current location.
 	  (function standardBrowserEnv() {
-	    const msie = /(msie|trident)/i.test(navigator.userAgent);
+	    const msie = platform.navigator && /(msie|trident)/i.test(platform.navigator.userAgent);
 	    const urlParsingNode = document.createElement('a');
 	    let originURL;
 
@@ -3236,16 +3304,18 @@
 	    const _config = resolveConfig(config);
 	    let requestData = _config.data;
 	    const requestHeaders = AxiosHeaders$1.from(_config.headers).normalize();
-	    let {responseType} = _config;
+	    let {responseType, onUploadProgress, onDownloadProgress} = _config;
 	    let onCanceled;
-	    function done() {
-	      if (_config.cancelToken) {
-	        _config.cancelToken.unsubscribe(onCanceled);
-	      }
+	    let uploadThrottled, downloadThrottled;
+	    let flushUpload, flushDownload;
 
-	      if (_config.signal) {
-	        _config.signal.removeEventListener('abort', onCanceled);
-	      }
+	    function done() {
+	      flushUpload && flushUpload(); // flush events
+	      flushDownload && flushDownload(); // flush events
+
+	      _config.cancelToken && _config.cancelToken.unsubscribe(onCanceled);
+
+	      _config.signal && _config.signal.removeEventListener('abort', onCanceled);
 	    }
 
 	    let request = new XMLHttpRequest();
@@ -3315,7 +3385,7 @@
 	        return;
 	      }
 
-	      reject(new AxiosError('Request aborted', AxiosError.ECONNABORTED, _config, request));
+	      reject(new AxiosError('Request aborted', AxiosError.ECONNABORTED, config, request));
 
 	      // Clean up request
 	      request = null;
@@ -3325,7 +3395,7 @@
 	    request.onerror = function handleError() {
 	      // Real errors are hidden from us by the browser
 	      // onerror should only fire if it's a network error
-	      reject(new AxiosError('Network Error', AxiosError.ERR_NETWORK, _config, request));
+	      reject(new AxiosError('Network Error', AxiosError.ERR_NETWORK, config, request));
 
 	      // Clean up request
 	      request = null;
@@ -3341,7 +3411,7 @@
 	      reject(new AxiosError(
 	        timeoutErrorMessage,
 	        transitional.clarifyTimeoutError ? AxiosError.ETIMEDOUT : AxiosError.ECONNABORTED,
-	        _config,
+	        config,
 	        request));
 
 	      // Clean up request
@@ -3369,13 +3439,18 @@
 	    }
 
 	    // Handle progress if needed
-	    if (typeof _config.onDownloadProgress === 'function') {
-	      request.addEventListener('progress', progressEventReducer(_config.onDownloadProgress, true));
+	    if (onDownloadProgress) {
+	      ([downloadThrottled, flushDownload] = progressEventReducer(onDownloadProgress, true));
+	      request.addEventListener('progress', downloadThrottled);
 	    }
 
 	    // Not all browsers support upload events
-	    if (typeof _config.onUploadProgress === 'function' && request.upload) {
-	      request.upload.addEventListener('progress', progressEventReducer(_config.onUploadProgress));
+	    if (onUploadProgress && request.upload) {
+	      ([uploadThrottled, flushUpload] = progressEventReducer(onUploadProgress));
+
+	      request.upload.addEventListener('progress', uploadThrottled);
+
+	      request.upload.addEventListener('loadend', flushUpload);
 	    }
 
 	    if (_config.cancelToken || _config.signal) {
@@ -3410,45 +3485,46 @@
 	};
 
 	const composeSignals = (signals, timeout) => {
-	  let controller = new AbortController();
+	  const {length} = (signals = signals ? signals.filter(Boolean) : []);
 
-	  let aborted;
+	  if (timeout || length) {
+	    let controller = new AbortController();
 
-	  const onabort = function (cancel) {
-	    if (!aborted) {
-	      aborted = true;
-	      unsubscribe();
-	      const err = cancel instanceof Error ? cancel : this.reason;
-	      controller.abort(err instanceof AxiosError ? err : new CanceledError(err instanceof Error ? err.message : err));
-	    }
-	  };
+	    let aborted;
 
-	  let timer = timeout && setTimeout(() => {
-	    onabort(new AxiosError(`timeout ${timeout} of ms exceeded`, AxiosError.ETIMEDOUT));
-	  }, timeout);
+	    const onabort = function (reason) {
+	      if (!aborted) {
+	        aborted = true;
+	        unsubscribe();
+	        const err = reason instanceof Error ? reason : this.reason;
+	        controller.abort(err instanceof AxiosError ? err : new CanceledError(err instanceof Error ? err.message : err));
+	      }
+	    };
 
-	  const unsubscribe = () => {
-	    if (signals) {
-	      timer && clearTimeout(timer);
+	    let timer = timeout && setTimeout(() => {
 	      timer = null;
-	      signals.forEach(signal => {
-	        signal &&
-	        (signal.removeEventListener ? signal.removeEventListener('abort', onabort) : signal.unsubscribe(onabort));
-	      });
-	      signals = null;
-	    }
-	  };
+	      onabort(new AxiosError(`timeout ${timeout} of ms exceeded`, AxiosError.ETIMEDOUT));
+	    }, timeout);
 
-	  signals.forEach((signal) => signal && signal.addEventListener && signal.addEventListener('abort', onabort));
+	    const unsubscribe = () => {
+	      if (signals) {
+	        timer && clearTimeout(timer);
+	        timer = null;
+	        signals.forEach(signal => {
+	          signal.unsubscribe ? signal.unsubscribe(onabort) : signal.removeEventListener('abort', onabort);
+	        });
+	        signals = null;
+	      }
+	    };
 
-	  const {signal} = controller;
+	    signals.forEach((signal) => signal.addEventListener('abort', onabort));
 
-	  signal.unsubscribe = unsubscribe;
+	    const {signal} = controller;
 
-	  return [signal, () => {
-	    timer && clearTimeout(timer);
-	    timer = null;
-	  }];
+	    signal.unsubscribe = () => utils$1.asap(unsubscribe);
+
+	    return signal;
+	  }
 	};
 
 	var composeSignals$1 = composeSignals;
@@ -3471,49 +3547,73 @@
 	  }
 	};
 
-	const readBytes = async function* (iterable, chunkSize, encode) {
-	  for await (const chunk of iterable) {
-	    yield* streamChunk(ArrayBuffer.isView(chunk) ? chunk : (await encode(String(chunk))), chunkSize);
+	const readBytes = async function* (iterable, chunkSize) {
+	  for await (const chunk of readStream(iterable)) {
+	    yield* streamChunk(chunk, chunkSize);
 	  }
 	};
 
-	const trackStream = (stream, chunkSize, onProgress, onFinish, encode) => {
-	  const iterator = readBytes(stream, chunkSize, encode);
+	const readStream = async function* (stream) {
+	  if (stream[Symbol.asyncIterator]) {
+	    yield* stream;
+	    return;
+	  }
+
+	  const reader = stream.getReader();
+	  try {
+	    for (;;) {
+	      const {done, value} = await reader.read();
+	      if (done) {
+	        break;
+	      }
+	      yield value;
+	    }
+	  } finally {
+	    await reader.cancel();
+	  }
+	};
+
+	const trackStream = (stream, chunkSize, onProgress, onFinish) => {
+	  const iterator = readBytes(stream, chunkSize);
 
 	  let bytes = 0;
+	  let done;
+	  let _onFinish = (e) => {
+	    if (!done) {
+	      done = true;
+	      onFinish && onFinish(e);
+	    }
+	  };
 
 	  return new ReadableStream({
-	    type: 'bytes',
-
 	    async pull(controller) {
-	      const {done, value} = await iterator.next();
+	      try {
+	        const {done, value} = await iterator.next();
 
-	      if (done) {
-	        controller.close();
-	        onFinish();
-	        return;
+	        if (done) {
+	         _onFinish();
+	          controller.close();
+	          return;
+	        }
+
+	        let len = value.byteLength;
+	        if (onProgress) {
+	          let loadedBytes = bytes += len;
+	          onProgress(loadedBytes);
+	        }
+	        controller.enqueue(new Uint8Array(value));
+	      } catch (err) {
+	        _onFinish(err);
+	        throw err;
 	      }
-
-	      let len = value.byteLength;
-	      onProgress && onProgress(bytes += len);
-	      controller.enqueue(new Uint8Array(value));
 	    },
 	    cancel(reason) {
-	      onFinish(reason);
+	      _onFinish(reason);
 	      return iterator.return();
 	    }
 	  }, {
 	    highWaterMark: 2
 	  })
-	};
-
-	const fetchProgressDecorator = (total, fn) => {
-	  const lengthComputable = total != null;
-	  return (loaded) => setTimeout(() => fn({
-	    lengthComputable,
-	    total,
-	    loaded
-	  }));
 	};
 
 	const isFetchSupported = typeof fetch === 'function' && typeof Request === 'function' && typeof Response === 'function';
@@ -3525,7 +3625,15 @@
 	    async (str) => new Uint8Array(await new Response(str).arrayBuffer())
 	);
 
-	const supportsRequestStream = isReadableStreamSupported && (() => {
+	const test = (fn, ...args) => {
+	  try {
+	    return !!fn(...args);
+	  } catch (e) {
+	    return false
+	  }
+	};
+
+	const supportsRequestStream = isReadableStreamSupported && test(() => {
 	  let duplexAccessed = false;
 
 	  const hasContentType = new Request(platform.origin, {
@@ -3538,17 +3646,13 @@
 	  }).headers.has('Content-Type');
 
 	  return duplexAccessed && !hasContentType;
-	})();
+	});
 
 	const DEFAULT_CHUNK_SIZE = 64 * 1024;
 
-	const supportsResponseStream = isReadableStreamSupported && !!(()=> {
-	  try {
-	    return utils$1.isReadableStream(new Response('').body);
-	  } catch(err) {
-	    // return undefined
-	  }
-	})();
+	const supportsResponseStream = isReadableStreamSupported &&
+	  test(() => utils$1.isReadableStream(new Response('').body));
+
 
 	const resolvers = {
 	  stream: supportsResponseStream && ((res) => res.body)
@@ -3573,10 +3677,14 @@
 	  }
 
 	  if(utils$1.isSpecCompliantForm(body)) {
-	    return (await new Request(body).arrayBuffer()).byteLength;
+	    const _request = new Request(platform.origin, {
+	      method: 'POST',
+	      body,
+	    });
+	    return (await _request.arrayBuffer()).byteLength;
 	  }
 
-	  if(utils$1.isArrayBufferView(body)) {
+	  if(utils$1.isArrayBufferView(body) || utils$1.isArrayBuffer(body)) {
 	    return body.byteLength;
 	  }
 
@@ -3613,18 +3721,13 @@
 
 	  responseType = responseType ? (responseType + '').toLowerCase() : 'text';
 
-	  let [composedSignal, stopTimeout] = (signal || cancelToken || timeout) ?
-	    composeSignals$1([signal, cancelToken], timeout) : [];
+	  let composedSignal = composeSignals$1([signal, cancelToken && cancelToken.toAbortSignal()], timeout);
 
-	  let finished, request;
+	  let request;
 
-	  const onFinish = () => {
-	    !finished && setTimeout(() => {
-	      composedSignal && composedSignal.unsubscribe();
-	    });
-
-	    finished = true;
-	  };
+	  const unsubscribe = composedSignal && composedSignal.unsubscribe && (() => {
+	      composedSignal.unsubscribe();
+	  });
 
 	  let requestContentLength;
 
@@ -3646,17 +3749,22 @@
 	      }
 
 	      if (_request.body) {
-	        data = trackStream(_request.body, DEFAULT_CHUNK_SIZE, fetchProgressDecorator(
+	        const [onProgress, flush] = progressEventDecorator(
 	          requestContentLength,
-	          progressEventReducer(onUploadProgress)
-	        ), null, encodeText);
+	          progressEventReducer(asyncDecorator(onUploadProgress))
+	        );
+
+	        data = trackStream(_request.body, DEFAULT_CHUNK_SIZE, onProgress, flush);
 	      }
 	    }
 
 	    if (!utils$1.isString(withCredentials)) {
-	      withCredentials = withCredentials ? 'cors' : 'omit';
+	      withCredentials = withCredentials ? 'include' : 'omit';
 	    }
 
+	    // Cloudflare Workers throws when credentials are defined
+	    // see https://github.com/cloudflare/workerd/issues/902
+	    const isCredentialsSupported = "credentials" in Request.prototype;
 	    request = new Request(url, {
 	      ...fetchOptions,
 	      signal: composedSignal,
@@ -3664,14 +3772,14 @@
 	      headers: headers.normalize().toJSON(),
 	      body: data,
 	      duplex: "half",
-	      withCredentials
+	      credentials: isCredentialsSupported ? withCredentials : undefined
 	    });
 
 	    let response = await fetch(request);
 
 	    const isStreamResponse = supportsResponseStream && (responseType === 'stream' || responseType === 'response');
 
-	    if (supportsResponseStream && (onDownloadProgress || isStreamResponse)) {
+	    if (supportsResponseStream && (onDownloadProgress || (isStreamResponse && unsubscribe))) {
 	      const options = {};
 
 	      ['status', 'statusText', 'headers'].forEach(prop => {
@@ -3680,11 +3788,16 @@
 
 	      const responseContentLength = utils$1.toFiniteNumber(response.headers.get('content-length'));
 
+	      const [onProgress, flush] = onDownloadProgress && progressEventDecorator(
+	        responseContentLength,
+	        progressEventReducer(asyncDecorator(onDownloadProgress), true)
+	      ) || [];
+
 	      response = new Response(
-	        trackStream(response.body, DEFAULT_CHUNK_SIZE, onDownloadProgress && fetchProgressDecorator(
-	          responseContentLength,
-	          progressEventReducer(onDownloadProgress, true)
-	        ), isStreamResponse && onFinish, encodeText),
+	        trackStream(response.body, DEFAULT_CHUNK_SIZE, onProgress, () => {
+	          flush && flush();
+	          unsubscribe && unsubscribe();
+	        }),
 	        options
 	      );
 	    }
@@ -3693,9 +3806,7 @@
 
 	    let responseData = await resolvers[utils$1.findKey(resolvers, responseType) || 'text'](response, config);
 
-	    !isStreamResponse && onFinish();
-
-	    stopTimeout && stopTimeout();
+	    !isStreamResponse && unsubscribe && unsubscribe();
 
 	    return await new Promise((resolve, reject) => {
 	      settle(resolve, reject, {
@@ -3708,7 +3819,7 @@
 	      });
 	    })
 	  } catch (err) {
-	    onFinish();
+	    unsubscribe && unsubscribe();
 
 	    if (err && err.name === 'TypeError' && /fetch/i.test(err.message)) {
 	      throw Object.assign(
@@ -3870,7 +3981,7 @@
 	  });
 	}
 
-	const VERSION = "1.7.2";
+	const VERSION = "1.7.7";
 
 	const validators$1 = {};
 
@@ -4277,6 +4388,20 @@
 	    }
 	  }
 
+	  toAbortSignal() {
+	    const controller = new AbortController();
+
+	    const abort = (err) => {
+	      controller.abort(err);
+	    };
+
+	    this.subscribe(abort);
+
+	    controller.signal.unsubscribe = () => this.unsubscribe(abort);
+
+	    return controller.signal;
+	  }
+
 	  /**
 	   * Returns an object that contains a new `CancelToken` and a function that, when called,
 	   * cancels the `CancelToken`.
@@ -4615,161 +4740,65 @@
 
 	var responseError = {};
 
-	var common = {};
+	var errors = {};
 
-	var payload = {};
-
-	var hasRequiredPayload;
-	function requirePayload () {
-		if (hasRequiredPayload) return payload;
-		hasRequiredPayload = 1;
-		Object.defineProperty(payload, "__esModule", { value: true });
-		payload.ResponsePayload = void 0;
-		const consts_1 = consts;
-		const responseError_1 = requireResponseError();
-		class ResponsePayload {
-		    constructor(payload) {
-		        this.offset = 0;
-		        this.internalBuffer = payload;
-		        this.offset = 0;
-		    }
-		    getCompleteBuffer() {
-		        return Buffer.from(this.internalBuffer);
-		    }
-		    getAvailableBuffer() {
-		        return Buffer.from(this.internalBuffer.subarray(this.offset));
-		    }
-		    length() {
-		        return this.internalBuffer.length - this.offset;
-		    }
-		    readBytes(length) {
-		        if (this.offset + length > this.internalBuffer.length) {
-		            throw new responseError_1.ResponseError(consts_1.LedgerError.UnknownError, 'Attempt to read beyond buffer length');
-		        }
-		        const response = this.internalBuffer.subarray(this.offset, this.offset + length);
-		        this.skipBytes(length);
-		        return response;
-		    }
-		    skipBytes(length) {
-		        if (this.offset + length > this.internalBuffer.length) {
-		            throw new responseError_1.ResponseError(consts_1.LedgerError.UnknownError, 'Attempt to skip beyond buffer length');
-		        }
-		        this.offset += length;
-		    }
-		    resetOffset() {
-		        this.offset = 0;
-		    }
-		}
-		payload.ResponsePayload = ResponsePayload;
-		return payload;
+	Object.defineProperty(errors, "__esModule", { value: true });
+	errors.errorCodeToString = void 0;
+	const consts_1$4 = consts;
+	function errorCodeToString(returnCode) {
+	    const returnCodeStr = returnCode.toString(16).toUpperCase();
+	    let errDescription = `Unknown Return Code: 0x${returnCodeStr}`;
+	    if (returnCode in consts_1$4.ERROR_DESCRIPTION_OVERRIDE) {
+	        errDescription = consts_1$4.ERROR_DESCRIPTION_OVERRIDE[returnCode];
+	    }
+	    return errDescription;
 	}
+	errors.errorCodeToString = errorCodeToString;
 
-	var hasRequiredCommon;
-	function requireCommon () {
-		if (hasRequiredCommon) return common;
-		hasRequiredCommon = 1;
-		Object.defineProperty(common, "__esModule", { value: true });
-		common.processErrorResponse = common.processResponse = common.errorCodeToString = void 0;
-		const consts_1 = consts;
-		const payload_1 = requirePayload();
-		const responseError_1 = requireResponseError();
-		function errorCodeToString(returnCode) {
-		    const returnCodeStr = returnCode.toString(16).toUpperCase();
-		    let errDescription = `Unknown Return Code: 0x${returnCodeStr}`;
-		    if (returnCode in consts_1.ERROR_DESCRIPTION_OVERRIDE) {
-		        errDescription = consts_1.ERROR_DESCRIPTION_OVERRIDE[returnCode];
-		    }
-		    return errDescription;
-		}
-		common.errorCodeToString = errorCodeToString;
-		function isDict(v) {
-		    return typeof v === 'object' && v !== null && !(v instanceof Array) && !(v instanceof Date);
-		}
-		function processResponse(responseRaw) {
-		    if (responseRaw.length < 2) {
-		        throw responseError_1.ResponseError.fromReturnCode(consts_1.LedgerError.EmptyBuffer);
-		    }
-		    const returnCode = responseRaw.readUInt16BE(responseRaw.length - 2);
-		    let errorMessage = errorCodeToString(returnCode);
-		    const payload = responseRaw.subarray(0, responseRaw.length - 2);
-		    if (returnCode === consts_1.LedgerError.NoErrors) {
-		        return new payload_1.ResponsePayload(payload);
-		    }
-		    if (payload.length > 0) {
-		        errorMessage += ` : ${payload.toString('ascii')}`;
-		    }
-		    throw {
-		        returnCode: returnCode,
-		        errorMessage: errorMessage,
-		    };
-		}
-		common.processResponse = processResponse;
-		function processErrorResponse(response) {
-		    if (isDict(response)) {
-		        if (Object.prototype.hasOwnProperty.call(response, 'statusCode')) {
-		            return responseError_1.ResponseError.fromReturnCode(response.statusCode);
-		        }
-		        if (Object.prototype.hasOwnProperty.call(response, 'returnCode') && Object.prototype.hasOwnProperty.call(response, 'errorMessage')) {
-		            return response;
-		        }
-		    }
-		    return responseError_1.ResponseError.fromReturnCode(consts_1.LedgerError.UnknownTransportError);
-		}
-		common.processErrorResponse = processErrorResponse;
-		return common;
+	Object.defineProperty(responseError, "__esModule", { value: true });
+	responseError.ResponseError = void 0;
+	const errors_1$1 = errors;
+	class ResponseError extends Error {
+	    constructor(returnCode, errorMessage) {
+	        super(errorMessage);
+	        this.errorMessage = errorMessage;
+	        this.returnCode = returnCode;
+	    }
+	    static fromReturnCode(returnCode) {
+	        return new ResponseError(returnCode, (0, errors_1$1.errorCodeToString)(returnCode));
+	    }
 	}
-
-	var hasRequiredResponseError;
-	function requireResponseError () {
-		if (hasRequiredResponseError) return responseError;
-		hasRequiredResponseError = 1;
-		Object.defineProperty(responseError, "__esModule", { value: true });
-		responseError.ResponseError = void 0;
-		const common_1 = requireCommon();
-		class ResponseError extends Error {
-		    constructor(returnCode, errorMessage) {
-		        super(errorMessage);
-		        this.errorMessage = errorMessage;
-		        this.returnCode = returnCode;
-		        this.name = 'ResponseReturnCode';
-		    }
-		    static fromReturnCode(returnCode) {
-		        return new ResponseError(returnCode, (0, common_1.errorCodeToString)(returnCode));
-		    }
-		}
-		responseError.ResponseError = ResponseError;
-		return responseError;
-	}
+	responseError.ResponseError = ResponseError;
 
 	Object.defineProperty(bip32, "__esModule", { value: true });
 	bip32.bufferToBip32Path = bip32.numbersToBip32Path = bip32.serializePath = void 0;
-	const consts_1$1 = consts;
-	const responseError_1$1 = requireResponseError();
+	const consts_1$3 = consts;
+	const responseError_1$3 = responseError;
 	function serializePath(path, requiredPathLengths) {
 	    if (typeof path !== 'string') {
-	        throw new responseError_1$1.ResponseError(consts_1$1.LedgerError.GenericError, "Path should be a string (e.g \"m/44'/461'/5'/0/3\")");
+	        throw new responseError_1$3.ResponseError(consts_1$3.LedgerError.GenericError, "Path should be a string (e.g \"m/44'/461'/5'/0/3\")");
 	    }
 	    if (!path.startsWith('m/')) {
-	        throw new responseError_1$1.ResponseError(consts_1$1.LedgerError.GenericError, 'Path should start with "m/" (e.g "m/44\'/461\'/5\'/0/3")');
+	        throw new responseError_1$3.ResponseError(consts_1$3.LedgerError.GenericError, 'Path should start with "m/" (e.g "m/44\'/461\'/5\'/0/3")');
 	    }
 	    const pathArray = path.split('/');
 	    pathArray.shift();
 	    if (requiredPathLengths && requiredPathLengths.length > 0 && !requiredPathLengths.includes(pathArray.length)) {
-	        throw new responseError_1$1.ResponseError(consts_1$1.LedgerError.GenericError, "Invalid path length. (e.g \"m/44'/5757'/5'/0/3\")");
+	        throw new responseError_1$3.ResponseError(consts_1$3.LedgerError.GenericError, "Invalid path length. (e.g \"m/44'/5757'/5'/0/3\")");
 	    }
 	    const buf = Buffer.alloc(4 * pathArray.length);
 	    pathArray.forEach((child, i) => {
 	        let value = 0;
 	        if (child.endsWith("'")) {
-	            value += consts_1$1.HARDENED;
+	            value += consts_1$3.HARDENED;
 	            child = child.slice(0, -1);
 	        }
 	        const numChild = Number(child);
 	        if (Number.isNaN(numChild)) {
-	            throw new responseError_1$1.ResponseError(consts_1$1.LedgerError.GenericError, `Invalid path : ${child} is not a number. (e.g "m/44'/461'/5'/0/3")`);
+	            throw new responseError_1$3.ResponseError(consts_1$3.LedgerError.GenericError, `Invalid path : ${child} is not a number. (e.g "m/44'/461'/5'/0/3")`);
 	        }
-	        if (numChild >= consts_1$1.HARDENED) {
-	            throw new responseError_1$1.ResponseError(consts_1$1.LedgerError.GenericError, 'Incorrect child value (bigger or equal to 0x80000000)');
+	        if (numChild >= consts_1$3.HARDENED) {
+	            throw new responseError_1$3.ResponseError(consts_1$3.LedgerError.GenericError, 'Incorrect child value (bigger or equal to 0x80000000)');
 	        }
 	        value += numChild;
 	        buf.writeUInt32LE(value, 4 * i);
@@ -4779,16 +4808,16 @@
 	bip32.serializePath = serializePath;
 	function numbersToBip32Path(items) {
 	    if (items.length === 0) {
-	        throw new responseError_1$1.ResponseError(consts_1$1.LedgerError.GenericError, 'The items array cannot be empty.');
+	        throw new responseError_1$3.ResponseError(consts_1$3.LedgerError.GenericError, 'The items array cannot be empty.');
 	    }
 	    const pathArray = [];
 	    for (let i = 0; i < items.length; i++) {
 	        let value = items[i];
 	        if (!Number.isInteger(value) || value < 0) {
-	            throw new responseError_1$1.ResponseError(consts_1$1.LedgerError.GenericError, 'Each item must be a positive integer.');
+	            throw new responseError_1$3.ResponseError(consts_1$3.LedgerError.GenericError, 'Each item must be a positive integer.');
 	        }
-	        let child = value & ~consts_1$1.HARDENED;
-	        if (value >= consts_1$1.HARDENED) {
+	        let child = value & ~consts_1$3.HARDENED;
+	        if (value >= consts_1$3.HARDENED) {
 	            pathArray.push(`${child}'`);
 	        }
 	        else {
@@ -4800,7 +4829,7 @@
 	bip32.numbersToBip32Path = numbersToBip32Path;
 	function bufferToBip32Path(buffer) {
 	    if (buffer.length % 4 !== 0) {
-	        throw new responseError_1$1.ResponseError(consts_1$1.LedgerError.GenericError, 'The buffer length must be a multiple of 4.');
+	        throw new responseError_1$3.ResponseError(consts_1$3.LedgerError.GenericError, 'The buffer length must be a multiple of 4.');
 	    }
 	    const items = [];
 	    for (let i = 0; i < buffer.length; i += 4) {
@@ -4810,11 +4839,187 @@
 	}
 	bip32.bufferToBip32Path = bufferToBip32Path;
 
+	var common = {};
+
+	var payload = {};
+
+	var byteStream = {};
+
+	Object.defineProperty(byteStream, "__esModule", { value: true });
+	byteStream.ByteStream = void 0;
+	const consts_1$2 = consts;
+	const responseError_1$2 = responseError;
+	class ByteStream {
+	    constructor(buffer) {
+	        this.readOffset = 0;
+	        this.writeOffset = 0;
+	        this.internalBuffer = buffer ? Buffer.from(buffer) : Buffer.alloc(0);
+	        this.readOffset = 0;
+	        this.writeOffset = this.internalBuffer.length;
+	    }
+	    appendUint8(value) {
+	        const byteBuffer = Buffer.from([value]);
+	        this.appendBytes(byteBuffer);
+	    }
+	    appendUint16(value) {
+	        const byteBuffer = Buffer.alloc(2);
+	        byteBuffer.writeUInt16LE(value, 0);
+	        this.appendBytes(byteBuffer);
+	    }
+	    appendUint32(value) {
+	        const byteBuffer = Buffer.alloc(4);
+	        byteBuffer.writeUInt32LE(value, 0);
+	        this.appendBytes(byteBuffer);
+	    }
+	    appendUint64(value) {
+	        const byteBuffer = Buffer.alloc(8);
+	        byteBuffer.writeBigUInt64LE(value, 0);
+	        this.appendBytes(byteBuffer);
+	    }
+	    readBytes(length) {
+	        if (this.readOffset + length > this.internalBuffer.length) {
+	            throw new responseError_1$2.ResponseError(consts_1$2.LedgerError.UnknownError, 'Attempt to read beyond buffer length');
+	        }
+	        const response = this.internalBuffer.subarray(this.readOffset, this.readOffset + length);
+	        this.readOffset += length;
+	        return response;
+	    }
+	    readBytesAt(length, offset) {
+	        if (offset + length > this.internalBuffer.length) {
+	            throw new responseError_1$2.ResponseError(consts_1$2.LedgerError.UnknownError, 'Attempt to read beyond buffer length');
+	        }
+	        return this.internalBuffer.subarray(offset, offset + length);
+	    }
+	    appendBytes(data) {
+	        if (this.writeOffset + data.length > this.internalBuffer.length) {
+	            const newBuffer = Buffer.alloc(this.writeOffset + data.length);
+	            this.internalBuffer.copy(newBuffer, 0, 0, this.writeOffset);
+	            this.internalBuffer = newBuffer;
+	        }
+	        data.copy(this.internalBuffer, this.writeOffset);
+	        this.writeOffset += data.length;
+	    }
+	    insertBytesAt(data, offset) {
+	        if (offset > this.internalBuffer.length) {
+	            const padding = Buffer.alloc(offset - this.internalBuffer.length, 0);
+	            this.internalBuffer = Buffer.concat([this.internalBuffer, padding, data]);
+	        }
+	        else {
+	            const before = this.internalBuffer.subarray(0, offset);
+	            const after = this.internalBuffer.subarray(offset);
+	            this.internalBuffer = Buffer.concat([before, data, after]);
+	        }
+	    }
+	    writeBytesAt(data, offset) {
+	        if (offset + data.length > this.internalBuffer.length) {
+	            const newBuffer = Buffer.alloc(offset + data.length);
+	            this.internalBuffer.copy(newBuffer, 0, 0, offset);
+	            this.internalBuffer = newBuffer;
+	        }
+	        data.copy(this.internalBuffer, offset);
+	        this.writeOffset = offset + data.length;
+	    }
+	    skipBytes(length) {
+	        if (this.readOffset + length > this.internalBuffer.length) {
+	            throw new responseError_1$2.ResponseError(consts_1$2.LedgerError.UnknownError, 'Attempt to skip beyond buffer length');
+	        }
+	        this.readOffset += length;
+	    }
+	    clear() {
+	        this.internalBuffer = Buffer.alloc(0);
+	        this.readOffset = 0;
+	        this.writeOffset = 0;
+	    }
+	    resetOffset() {
+	        this.readOffset = 0;
+	        this.writeOffset = 0;
+	    }
+	    getCompleteBuffer() {
+	        return Buffer.from(this.internalBuffer);
+	    }
+	    getAvailableBuffer() {
+	        return Buffer.from(this.internalBuffer.subarray(this.readOffset));
+	    }
+	    length() {
+	        return this.internalBuffer.length - this.readOffset;
+	    }
+	    capacity() {
+	        return this.internalBuffer.length;
+	    }
+	    getReadOffset() {
+	        return this.readOffset;
+	    }
+	    getWriteOffset() {
+	        return this.writeOffset;
+	    }
+	    setReadOffset(offset) {
+	        if (offset < 0 || offset > this.internalBuffer.length) {
+	            throw new responseError_1$2.ResponseError(consts_1$2.LedgerError.UnknownError, 'Invalid read offset');
+	        }
+	        this.readOffset = offset;
+	    }
+	    setWriteOffset(offset) {
+	        if (offset < 0 || offset > this.internalBuffer.length) {
+	            throw new responseError_1$2.ResponseError(consts_1$2.LedgerError.UnknownError, 'Invalid write offset');
+	        }
+	        this.writeOffset = offset;
+	    }
+	}
+	byteStream.ByteStream = ByteStream;
+
+	Object.defineProperty(payload, "__esModule", { value: true });
+	payload.ResponsePayload = void 0;
+	const byteStream_1 = byteStream;
+	class ResponsePayload extends byteStream_1.ByteStream {
+	    constructor(payload) {
+	        super(payload);
+	    }
+	}
+	payload.ResponsePayload = ResponsePayload;
+
+	Object.defineProperty(common, "__esModule", { value: true });
+	common.processErrorResponse = common.processResponse = void 0;
+	const consts_1$1 = consts;
+	const errors_1 = errors;
+	const payload_1 = payload;
+	const responseError_1$1 = responseError;
+	function isDict(v) {
+	    return typeof v === 'object' && v !== null && !(v instanceof Array) && !(v instanceof Date);
+	}
+	function processResponse(responseRaw) {
+	    if (responseRaw.length < 2) {
+	        throw responseError_1$1.ResponseError.fromReturnCode(consts_1$1.LedgerError.EmptyBuffer);
+	    }
+	    const returnCode = responseRaw.readUInt16BE(responseRaw.length - 2);
+	    let errorMessage = (0, errors_1.errorCodeToString)(returnCode);
+	    const payload = responseRaw.subarray(0, responseRaw.length - 2);
+	    if (returnCode === consts_1$1.LedgerError.NoErrors) {
+	        return new payload_1.ResponsePayload(payload);
+	    }
+	    if (payload.length > 0) {
+	        errorMessage += ` : ${payload.toString('ascii')}`;
+	    }
+	    throw new responseError_1$1.ResponseError(returnCode, errorMessage);
+	}
+	common.processResponse = processResponse;
+	function processErrorResponse(response) {
+	    if (isDict(response)) {
+	        if (Object.prototype.hasOwnProperty.call(response, 'statusCode')) {
+	            return responseError_1$1.ResponseError.fromReturnCode(response.statusCode);
+	        }
+	        if (Object.prototype.hasOwnProperty.call(response, 'returnCode') && Object.prototype.hasOwnProperty.call(response, 'errorMessage')) {
+	            return response;
+	        }
+	    }
+	    return responseError_1$1.ResponseError.fromReturnCode(consts_1$1.LedgerError.UnknownTransportError);
+	}
+	common.processErrorResponse = processErrorResponse;
+
 	Object.defineProperty(app, "__esModule", { value: true });
 	const bip32_1 = bip32;
-	const common_1 = requireCommon();
+	const common_1 = common;
 	const consts_1 = consts;
-	const responseError_1 = requireResponseError();
+	const responseError_1 = responseError;
 	class BaseApp {
 	    constructor(transport, params) {
 	        if (transport == null) {
@@ -4831,9 +5036,13 @@
 	        return (0, bip32_1.serializePath)(path, this.REQUIRED_PATH_LENGTHS);
 	    }
 	    prepareChunks(path, message) {
-	        const chunks = [];
 	        const serializedPathBuffer = this.serializePath(path);
-	        chunks.push(serializedPathBuffer);
+	        const chunks = this.messageToChunks(message);
+	        chunks.unshift(serializedPathBuffer);
+	        return chunks;
+	    }
+	    messageToChunks(message) {
+	        const chunks = [];
 	        const messageBuffer = Buffer.from(message);
 	        for (let i = 0; i < messageBuffer.length; i += this.CHUNK_SIZE) {
 	            const end = Math.min(i + this.CHUNK_SIZE, messageBuffer.length);
@@ -4841,7 +5050,7 @@
 	        }
 	        return chunks;
 	    }
-	    async signSendChunk(ins, chunkIdx, chunkNum, chunk) {
+	    async sendGenericChunk(ins, p2, chunkIdx, chunkNum, chunk) {
 	        let payloadType = consts_1.PAYLOAD_TYPE.ADD;
 	        if (chunkIdx === 1) {
 	            payloadType = consts_1.PAYLOAD_TYPE.INIT;
@@ -4850,9 +5059,12 @@
 	            payloadType = consts_1.PAYLOAD_TYPE.LAST;
 	        }
 	        const statusList = [consts_1.LedgerError.NoErrors, consts_1.LedgerError.DataIsInvalid, consts_1.LedgerError.BadKeyHandle];
-	        const responseBuffer = await this.transport.send(this.CLA, ins, payloadType, 0, chunk, statusList);
+	        const responseBuffer = await this.transport.send(this.CLA, ins, payloadType, p2, chunk, statusList);
 	        const response = (0, common_1.processResponse)(responseBuffer);
 	        return response;
+	    }
+	    async signSendChunk(ins, chunkIdx, chunkNum, chunk) {
+	        return this.sendGenericChunk(ins, 0, chunkIdx, chunkNum, chunk);
 	    }
 	    async getVersion() {
 	        try {
@@ -4871,6 +5083,12 @@
 	                major = response.readBytes(2).readUInt16BE();
 	                minor = response.readBytes(2).readUInt16BE();
 	                patch = response.readBytes(2).readUInt16BE();
+	            }
+	            else if (response.length() === 14 || response.length() === 18) {
+	                testMode = response.readBytes(1).readUInt8() !== 0;
+	                major = response.readBytes(4).readUInt32BE();
+	                minor = response.readBytes(4).readUInt32BE();
+	                patch = response.readBytes(4).readUInt32BE();
 	            }
 	            else {
 	                throw new responseError_1.ResponseError(consts_1.LedgerError.TechnicalProblem, 'Invalid response length');
@@ -4977,12 +5195,12 @@
 		Object.defineProperty(exports, "__esModule", { value: true });
 		const app_1 = __importDefault(app);
 		exports.default = app_1.default;
-		__exportStar(requireCommon(), exports);
+		__exportStar(common, exports);
 		__exportStar(consts, exports);
 		__exportStar(types, exports);
 		__exportStar(bip32, exports);
-		__exportStar(requireResponseError(), exports);
-		__exportStar(requirePayload(), exports);
+		__exportStar(responseError, exports);
+		__exportStar(payload, exports);
 	} (dist));
 	getDefaultExportFromCjs(dist);
 
@@ -5600,12 +5818,24 @@
 	  }
 	  return next();
 	}
+	function __rewriteRelativeImportExtension(path, preserveJsx) {
+	  if (typeof path === "string" && /^\.\.?\//.test(path)) {
+	      return path.replace(/\.(tsx)$|((?:\.d)?)((?:\.[^./]+?)?)\.([cm]?)ts$/i, function (m, tsx, d, ext, cm) {
+	          return tsx ? preserveJsx ? ".jsx" : ".js" : d && (!ext || !cm) ? m : (d + ext + "." + cm.toLowerCase() + "js");
+	      });
+	  }
+	  return path;
+	}
 	const tslib_es6 = {
 	  __extends,
 	  __assign,
 	  __rest,
 	  __decorate,
 	  __param,
+	  __esDecorate,
+	  __runInitializers,
+	  __propKey,
+	  __setFunctionName,
 	  __metadata,
 	  __awaiter: __awaiter$4,
 	  __generator,
@@ -5628,6 +5858,7 @@
 	  __classPrivateFieldIn,
 	  __addDisposableResource,
 	  __disposeResources,
+	  __rewriteRelativeImportExtension,
 	};
 
 	const tslib_es6$1 = /*#__PURE__*/Object.freeze({
@@ -5657,6 +5888,7 @@
 		__propKey: __propKey,
 		__read: __read,
 		__rest: __rest,
+		__rewriteRelativeImportExtension: __rewriteRelativeImportExtension,
 		__runInitializers: __runInitializers,
 		__setFunctionName: __setFunctionName,
 		__spread: __spread,
@@ -5771,6 +6003,7 @@
 	    INVALID_RESTORE_STATE: 0x6643,
 	    INVALID_CHUNK_LENGTH: 0x6734,
 	    INVALID_BACKUP_HEADER: 0x684a,
+	    TRUSTCHAIN_WRONG_SEED: 0xb007,
 	};
 	function getAltStatusMessage(code) {
 	    switch (code) {
@@ -9097,7 +9330,7 @@
 		hasRequiredPackageInfo = 1;
 		Object.defineProperty(packageInfo, "__esModule", { value: true });
 		packageInfo.packageInfo = void 0;
-		packageInfo.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.1.1' };
+		packageInfo.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.2.1' };
 		return packageInfo;
 	}
 
@@ -9162,6 +9395,7 @@
 	    zeitgeist: 'Zeitgeist'
 	};
 	const genericLedgerApps = {
+	    bittensor: 'Bittensor',
 	    encointer: 'Encointer',
 	    integritee: 'Integritee'
 	};
