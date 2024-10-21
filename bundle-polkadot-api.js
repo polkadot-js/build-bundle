@@ -119,14 +119,24 @@
         WS_URL
     };
 
-    const DEFAULT_CAPACITY = 128;
+    const DEFAULT_CAPACITY = 64;
     class LRUNode {
         key;
+        __internal__lastAccess;
+        createdAt;
         next;
         prev;
         constructor(key) {
             this.key = key;
+            this.__internal__lastAccess = Date.now();
+            this.createdAt = this.__internal__lastAccess;
             this.next = this.prev = this;
+        }
+        refresh() {
+            this.__internal__lastAccess = Date.now();
+        }
+        get lastAccess() {
+            return this.__internal__lastAccess;
         }
     }
     class LRUCache {
@@ -136,9 +146,23 @@
         __internal__length = 0;
         __internal__head;
         __internal__tail;
-        constructor(capacity = DEFAULT_CAPACITY) {
+        __internal__ttl;
+        __internal__ttlInterval;
+        __internal__ttlTimerId = null;
+        constructor(capacity = DEFAULT_CAPACITY, ttl = 30000, ttlInterval = 15000) {
             this.capacity = capacity;
+            this.__internal__ttl = ttl;
+            this.__internal__ttlInterval = ttlInterval;
             this.__internal__head = this.__internal__tail = new LRUNode('<empty>');
+            if (this.__internal__ttlInterval > this.__internal__ttl) {
+                this.__internal__ttlInterval = this.__internal__ttl;
+            }
+        }
+        get ttl() {
+            return this.__internal__ttl;
+        }
+        get ttlInterval() {
+            return this.__internal__ttlInterval;
         }
         get length() {
             return this.__internal__length;
@@ -204,11 +228,34 @@
                     this.__internal__length += 1;
                 }
             }
+            if (this.__internal__ttl > 0 && !this.__internal__ttlTimerId) {
+                this.__internal__ttlTimerId = setInterval(() => {
+                    this.__internal__ttlClean();
+                }, this.__internal__ttlInterval);
+            }
             this.__internal__data.set(key, value);
+        }
+        __internal__ttlClean() {
+            const expires = Date.now() - this.__internal__ttl;
+            while (this.__internal__tail.lastAccess && this.__internal__tail.lastAccess < expires && this.__internal__length > 0) {
+                if (this.__internal__ttlTimerId && this.__internal__length === 0) {
+                    clearInterval(this.__internal__ttlTimerId);
+                    this.__internal__ttlTimerId = null;
+                    this.__internal__head = this.__internal__tail = new LRUNode('<empty>');
+                }
+                else {
+                    this.__internal__refs.delete(this.__internal__tail.key);
+                    this.__internal__data.delete(this.__internal__tail.key);
+                    this.__internal__length -= 1;
+                    this.__internal__tail = this.__internal__tail.prev;
+                    this.__internal__tail.next = this.__internal__head;
+                }
+            }
         }
         __internal__toHead(key) {
             const ref = this.__internal__refs.get(key);
             if (ref && ref !== this.__internal__head) {
+                ref.refresh();
                 ref.prev.next = ref.next;
                 ref.next.prev = ref.prev;
                 ref.next = this.__internal__head;
@@ -216,23 +263,32 @@
                 this.__internal__head = ref;
             }
         }
+        async clearInterval() {
+            if (this.__internal__ttlTimerId) {
+                clearInterval(this.__internal__ttlTimerId);
+                this.__internal__ttlTimerId = null;
+            }
+        }
     }
 
     const ERROR_SUBSCRIBE = 'HTTP Provider does not have subscriptions, use WebSockets instead';
     const l$7 = util.logger('api-http');
     class HttpProvider {
-        __internal__callCache = new LRUCache();
+        __internal__callCache;
+        __internal__cacheCapacity;
         __internal__coder;
         __internal__endpoint;
         __internal__headers;
         __internal__stats;
-        constructor(endpoint = defaults.HTTP_URL, headers = {}) {
+        constructor(endpoint = defaults.HTTP_URL, headers = {}, cacheCapacity) {
             if (!/^(https|http):\/\//.test(endpoint)) {
                 throw new Error(`Endpoint should start with 'http://' or 'https://', received '${endpoint}'`);
             }
             this.__internal__coder = new RpcCoder();
             this.__internal__endpoint = endpoint;
             this.__internal__headers = headers;
+            this.__internal__callCache = new LRUCache(cacheCapacity === 0 ? 0 : cacheCapacity || DEFAULT_CAPACITY);
+            this.__internal__cacheCapacity = cacheCapacity === 0 ? 0 : cacheCapacity || DEFAULT_CAPACITY;
             this.__internal__stats = {
                 active: { requests: 0, subscriptions: 0 },
                 total: { bytesRecv: 0, bytesSent: 0, cached: 0, errors: 0, requests: 0, subscriptions: 0, timeout: 0 }
@@ -264,6 +320,9 @@
         async send(method, params, isCacheable) {
             this.__internal__stats.total.requests++;
             const [, body] = this.__internal__coder.encodeJson(method, params);
+            if (this.__internal__cacheCapacity === 0) {
+                return this.__internal__send(body);
+            }
             const cacheKey = isCacheable ? `${method}::${util.stringify(params)}` : '';
             let resultPromise = isCacheable
                 ? this.__internal__callCache.get(cacheKey)
@@ -1016,6 +1075,7 @@
         __internal__isReadyPromise;
         __internal__stats;
         __internal__waitingForId = {};
+        __internal__cacheCapacity;
         __internal__autoConnectMs;
         __internal__endpointIndex;
         __internal__endpointStats;
@@ -1037,6 +1097,7 @@
                 }
             });
             this.__internal__callCache = new LRUCache(cacheCapacity || DEFAULT_CAPACITY);
+            this.__internal__cacheCapacity = cacheCapacity || DEFAULT_CAPACITY;
             this.__internal__eventemitter = new EventEmitter();
             this.__internal__autoConnectMs = autoConnectMs || 0;
             this.__internal__coder = new RpcCoder();
@@ -1152,6 +1213,9 @@
             this.__internal__endpointStats.requests++;
             this.__internal__stats.total.requests++;
             const [id, body] = this.__internal__coder.encodeJson(method, params);
+            if (this.__internal__cacheCapacity === 0) {
+                return this.__internal__send(id, body, method, params, subscription);
+            }
             const cacheKey = isCacheable ? `${method}::${util.stringify(params)}` : '';
             let resultPromise = isCacheable
                 ? this.__internal__callCache.get(cacheKey)
@@ -1367,7 +1431,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '14.0.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '14.1.1' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -3564,9 +3628,8 @@
         __internal__instanceId;
         __internal__isPedantic;
         __internal__registryDefault;
-        __internal__storageCache = new Map();
+        __internal__storageCache;
         __internal__storageCacheHits = 0;
-        __internal__storageCacheSize = 0;
         __internal__getBlockRegistry;
         __internal__getBlockHash;
         mapping = new Map();
@@ -3582,6 +3645,7 @@
             this.provider = provider;
             const sectionNames = Object.keys(types.rpcDefinitions);
             this.sections.push(...sectionNames);
+            this.__internal__storageCache = new LRUCache(DEFAULT_CAPACITY);
             this.addUserInterfaces(userRpc);
         }
         get isConnected() {
@@ -3590,7 +3654,8 @@
         connect() {
             return this.provider.connect();
         }
-        disconnect() {
+        async disconnect() {
+            await this.__internal__storageCache.clearInterval();
             return this.provider.disconnect();
         }
         get stats() {
@@ -3600,7 +3665,7 @@
                     ...stats,
                     core: {
                         cacheHits: this.__internal__storageCacheHits,
-                        cacheSize: this.__internal__storageCacheSize
+                        cacheSize: this.__internal__storageCache.length
                     }
                 }
                 : undefined;
@@ -3837,9 +3902,11 @@
                 ? value
                 : util.u8aToU8a(value);
             const codec = this._newType(registry, blockHash, key, input, isEmpty, entryIndex);
-            this.__internal__storageCache.set(hexKey, codec);
-            this.__internal__storageCacheSize++;
+            this._setToCache(hexKey, codec);
             return codec;
+        }
+        _setToCache(key, value) {
+            this.__internal__storageCache.set(key, value);
         }
         _newType(registry, blockHash, key, input, isEmpty, entryIndex = -1) {
             const type = key.outputType || 'Raw';
@@ -3879,7 +3946,7 @@
         set: (_, value) => value
     };
 
-    const CHACHE_EXPIRY = 7 * (24 * 60) * (60 * 1000);
+    const CACHE_EXPIRY = 7 * (24 * 60) * (60 * 1000);
     let deriveCache;
     function wrapCache(keyStart, cache) {
         return {
@@ -3904,7 +3971,7 @@
         const now = Date.now();
         const all = [];
         cache.forEach((key, { x }) => {
-            ((now - x) > CHACHE_EXPIRY) && all.push(key);
+            ((now - x) > CACHE_EXPIRY) && all.push(key);
         });
         all.forEach((key) => cache.del(key));
     }
