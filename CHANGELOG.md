@@ -2,6 +2,7 @@
 
 ## master
 
+- react-{identicon, qr}, ui-{keyring, settings}, vue-identicon 3.11.1
 - phishing 0.24.1
 - api, api-contract, types 14.1.1
 - hw-ledger, keyring, util, util-crypto 13.2.1
