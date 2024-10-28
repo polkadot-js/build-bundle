@@ -7,7 +7,7 @@
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
     var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
-    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.2.1' };
+    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.2.2' };
 
     function evaluateThis(fn) {
         return fn('return this');
@@ -84,7 +84,7 @@
 
     Object.defineProperty(packageInfo$1, "__esModule", { value: true });
     packageInfo$1.packageInfo = void 0;
-    packageInfo$1.packageInfo = { name: '@polkadot/x-randomvalues', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.2.1' };
+    packageInfo$1.packageInfo = { name: '@polkadot/x-randomvalues', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.2.2' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -723,7 +723,7 @@
     cryptoWaitReady().catch(() => {
     });
 
-    const packageInfo = { name: '@polkadot/util-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.2.1' };
+    const packageInfo = { name: '@polkadot/util-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.2.2' };
 
     /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
     function assertNumber(n) {
@@ -3574,6 +3574,9 @@
         equilibrium: [
             '0x6f1a800de3daff7f5e037ddf66ab22ce03ab91874debeddb1086f5f7dbd48925'
         ],
+        frequency: [
+            '0x4a587bf17a404e3572747add7aab7bbe56e805a5479c6c436f07f36fcc8d3ae1'
+        ],
         genshiro: [
             '0x9b8cefc0eb5c568b527998bdd76c184e2b76ae561be76e4667072230217ea243'
         ],
@@ -3632,6 +3635,9 @@
         picasso: [
             '0x6811a339673c9daa897944dcdac99c6e2939cc88245ed21951a0a3c9a2be75bc',
             '0xe8e7f0f4c4f5a00720b4821dbfddefea7490bcf0b19009961cc46957984e2c1c'
+        ],
+        polimec: [
+            '0x7eb9354488318e7549c722669dcbdcdc526f1fef1420e7944667212f3601fdbd'
         ],
         polkadex: [
             '0x3920bcb4960a1eef5580cd5367ff3f430eef052774f78468852f7b9cb39f8a3c'
@@ -3721,6 +3727,7 @@
         encointer: 0x000001b2,
         enjin: 0x00000483,
         equilibrium: 0x05f5e0fd,
+        frequency: 0x0000082b,
         genshiro: 0x05f5e0fc,
         hydradx: 0x00000162,
         integritee: 0x000007df,
@@ -3736,6 +3743,7 @@
         pendulum: 0x00000162,
         phala: 0x00000162,
         picasso: 0x000001b2,
+        polimec: 0x00000d10,
         polkadex: 0x0000031f,
         polkadot: 0x00000162,
         polymesh: 0x00000253,
