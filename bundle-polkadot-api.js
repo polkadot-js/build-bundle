@@ -122,21 +122,23 @@
     const DEFAULT_CAPACITY = 64;
     class LRUNode {
         key;
-        __internal__lastAccess;
+        __internal__expires;
+        __internal__ttl;
         createdAt;
         next;
         prev;
-        constructor(key) {
+        constructor(key, ttl) {
             this.key = key;
-            this.__internal__lastAccess = Date.now();
-            this.createdAt = this.__internal__lastAccess;
+            this.__internal__ttl = ttl;
+            this.__internal__expires = Date.now() + ttl;
+            this.createdAt = Date.now();
             this.next = this.prev = this;
         }
         refresh() {
-            this.__internal__lastAccess = Date.now();
+            this.__internal__expires = Date.now() + this.__internal__ttl;
         }
-        get lastAccess() {
-            return this.__internal__lastAccess;
+        get expiry() {
+            return this.__internal__expires;
         }
     }
     class LRUCache {
@@ -147,22 +149,13 @@
         __internal__head;
         __internal__tail;
         __internal__ttl;
-        __internal__ttlInterval;
-        __internal__ttlTimerId = null;
-        constructor(capacity = DEFAULT_CAPACITY, ttl = 30000, ttlInterval = 15000) {
+        constructor(capacity = DEFAULT_CAPACITY, ttl = 30000) {
             this.capacity = capacity;
             this.__internal__ttl = ttl;
-            this.__internal__ttlInterval = ttlInterval;
-            this.__internal__head = this.__internal__tail = new LRUNode('<empty>');
-            if (this.__internal__ttlInterval > this.__internal__ttl) {
-                this.__internal__ttlInterval = this.__internal__ttl;
-            }
+            this.__internal__head = this.__internal__tail = new LRUNode('<empty>', ttl);
         }
         get ttl() {
             return this.__internal__ttl;
-        }
-        get ttlInterval() {
-            return this.__internal__ttlInterval;
         }
         get length() {
             return this.__internal__length;
@@ -199,8 +192,10 @@
             const data = this.__internal__data.get(key);
             if (data) {
                 this.__internal__toHead(key);
+                this.__internal__evictTTL();
                 return data;
             }
+            this.__internal__evictTTL();
             return null;
         }
         set(key, value) {
@@ -208,7 +203,7 @@
                 this.__internal__toHead(key);
             }
             else {
-                const node = new LRUNode(key);
+                const node = new LRUNode(key, this.__internal__ttl);
                 this.__internal__refs.set(node.key, node);
                 if (this.length === 0) {
                     this.__internal__head = this.__internal__tail = node;
@@ -228,28 +223,19 @@
                     this.__internal__length += 1;
                 }
             }
-            if (this.__internal__ttl > 0 && !this.__internal__ttlTimerId) {
-                this.__internal__ttlTimerId = setInterval(() => {
-                    this.__internal__ttlClean();
-                }, this.__internal__ttlInterval);
-            }
+            this.__internal__evictTTL();
             this.__internal__data.set(key, value);
         }
-        __internal__ttlClean() {
-            const expires = Date.now() - this.__internal__ttl;
-            while (this.__internal__tail.lastAccess && this.__internal__tail.lastAccess < expires && this.__internal__length > 0) {
-                if (this.__internal__ttlTimerId && this.__internal__length === 0) {
-                    clearInterval(this.__internal__ttlTimerId);
-                    this.__internal__ttlTimerId = null;
-                    this.__internal__head = this.__internal__tail = new LRUNode('<empty>');
-                }
-                else {
-                    this.__internal__refs.delete(this.__internal__tail.key);
-                    this.__internal__data.delete(this.__internal__tail.key);
-                    this.__internal__length -= 1;
-                    this.__internal__tail = this.__internal__tail.prev;
-                    this.__internal__tail.next = this.__internal__head;
-                }
+        __internal__evictTTL() {
+            while (this.__internal__tail.expiry && this.__internal__tail.expiry < Date.now() && this.__internal__length > 0) {
+                this.__internal__refs.delete(this.__internal__tail.key);
+                this.__internal__data.delete(this.__internal__tail.key);
+                this.__internal__length -= 1;
+                this.__internal__tail = this.__internal__tail.prev;
+                this.__internal__tail.next = this.__internal__head;
+            }
+            if (this.__internal__length === 0) {
+                this.__internal__head = this.__internal__tail = new LRUNode('<empty>', this.__internal__ttl);
             }
         }
         __internal__toHead(key) {
@@ -261,12 +247,6 @@
                 ref.next = this.__internal__head;
                 this.__internal__head.prev = ref;
                 this.__internal__head = ref;
-            }
-        }
-        async clearInterval() {
-            if (this.__internal__ttlTimerId) {
-                clearInterval(this.__internal__ttlTimerId);
-                this.__internal__ttlTimerId = null;
             }
         }
     }
@@ -1431,7 +1411,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '14.2.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '14.2.2' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -3655,7 +3635,6 @@
             return this.provider.connect();
         }
         async disconnect() {
-            await this.__internal__storageCache.clearInterval();
             return this.provider.disconnect();
         }
         get stats() {
@@ -6905,9 +6884,9 @@
 
     function nextElected(instanceId, api) {
         return memo(instanceId, () =>
-        api.query.staking.erasStakersPaged
+        api.query.staking.erasStakersOverview
             ? api.derive.session.indexes().pipe(
-            switchMap(({ currentEra }) => api.query.staking.erasStakersPaged.keys(currentEra)),
+            switchMap(({ currentEra }) => api.query.staking.erasStakersOverview.keys(currentEra)),
             map((keys) => [...new Set(keys.map(({ args: [, accountId] }) => accountId.toString()))].map((a) => api.registry.createType('AccountId', a))))
             : api.query.staking.erasStakers
                 ? api.derive.session.indexes().pipe(
