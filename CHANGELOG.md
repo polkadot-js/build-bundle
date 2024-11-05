@@ -2,6 +2,7 @@
 
 ## master
 
+- api, api-contract, types 14.2.3
 - api, api-contract, types 14.2.2
 - extension-dapp 0.56.1
 - react-{identicon, qr}, ui-{keyring, settings}, vue-identicon 3.11.2
