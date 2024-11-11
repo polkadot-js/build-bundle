@@ -9330,7 +9330,7 @@
 		hasRequiredPackageInfo = 1;
 		Object.defineProperty(packageInfo, "__esModule", { value: true });
 		packageInfo.packageInfo = void 0;
-		packageInfo.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.2.2' };
+		packageInfo.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.2.3' };
 		return packageInfo;
 	}
 
@@ -9399,7 +9399,8 @@
 	    encointer: 'Encointer',
 	    frequency: 'Frequency',
 	    integritee: 'Integritee',
-	    polimec: 'Polimec'
+	    polimec: 'Polimec',
+	    vara: 'Vara'
 	};
 	const ledgerApps = {
 	    ...prevLedgerRecord,
