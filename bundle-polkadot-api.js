@@ -1411,7 +1411,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '14.2.3' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '14.3.1' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -3595,6 +3595,7 @@
             isMap: false
         }
     };
+    const RPC_CORE_DEFAULT_CAPACITY = 1024 * 10 * 10;
     function logErrorMessage(method, { noErrorLog, params, type }, error) {
         if (noErrorLog) {
             return;
@@ -3615,7 +3616,7 @@
         mapping = new Map();
         provider;
         sections = [];
-        constructor(instanceId, registry, { isPedantic = true, provider, userRpc = {} }) {
+        constructor(instanceId, registry, { isPedantic = true, provider, rpcCacheCapacity, userRpc = {} }) {
             if (!provider || !util.isFunction(provider.send)) {
                 throw new Error('Expected Provider to API create');
             }
@@ -3625,7 +3626,7 @@
             this.provider = provider;
             const sectionNames = Object.keys(types.rpcDefinitions);
             this.sections.push(...sectionNames);
-            this.__internal__storageCache = new LRUCache(DEFAULT_CAPACITY * 10 * 10);
+            this.__internal__storageCache = new LRUCache(rpcCacheCapacity || RPC_CORE_DEFAULT_CAPACITY);
             this.addUserInterfaces(userRpc);
         }
         get isConnected() {
@@ -6799,10 +6800,23 @@
             return true;
         })
             .filter(({ validators }) => Object.keys(validators).length !== 0)
-            .map((reward) => util.objectSpread({}, reward, {
-            isClaimed: filter.some((f) => reward.era.eq(f)),
-            nominators: reward.nominating.filter((n) => reward.validators[n.validatorId])
-        }));
+            .map((reward) => {
+            let isClaimed = reward.isClaimed;
+            const valKeys = Object.keys(reward.validators);
+            if (!reward.isClaimed && valKeys.length) {
+                for (const key of valKeys) {
+                    const info = queryValidators.find((i) => i.accountId.toString() === key);
+                    if (info) {
+                        isClaimed = info.claimedRewardsEras.toArray().some((era) => era.eq(reward.era));
+                        break;
+                    }
+                }
+            }
+            return util.objectSpread({}, reward, {
+                isClaimed,
+                nominators: reward.nominating.filter((n) => reward.validators[n.validatorId])
+            });
+        });
     }
     function _stakerRewardsEras(instanceId, api) {
         return memo(instanceId, (eras, withActive = false) => combineLatest([
@@ -23584,6 +23598,7 @@
             this._rpcCore = new RpcCore(this.__internal__instanceId, this.__internal__registry, {
                 isPedantic: this._options.isPedantic,
                 provider,
+                rpcCacheCapacity: this._options.rpcCacheCapacity,
                 userRpc: this._options.rpc
             });
             this._isConnected = new BehaviorSubject(this._rpcCore.provider.isConnected);
