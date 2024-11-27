@@ -15533,7 +15533,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '14.3.1' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '15.0.1' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
@@ -15929,7 +15929,6 @@
     const VERSION_MASK = 0b00111111;
     const TYPE_MASK = 0b11000000;
     const BARE_EXTRINSIC = 0b00000000;
-    const SIGNED_EXTRINSIC = 0b10000000;
     const GENERAL_EXTRINSIC = 0b01000000;
     const LOWEST_SUPPORTED_EXTRINSIC_FORMAT_VERSION = 4;
 
@@ -15943,18 +15942,15 @@
     ];
     const PREAMBLE = {
         bare: 'ExtrinsicV5',
-        general: 'GeneralExtrinsic',
-        signed: 'ExtrinsicV5'
+        general: 'GeneralExtrinsic'
     };
     const PreambleMask = {
         bare: BARE_EXTRINSIC,
-        general: GENERAL_EXTRINSIC,
-        signed: SIGNED_EXTRINSIC
+        general: GENERAL_EXTRINSIC
     };
     const preambleUnMask = {
         0: 'bare',
-        64: 'general',
-        128: 'signed'
+        64: 'general'
     };
     function newFromValue(registry, value, version, preamble) {
         if (value instanceof GenericExtrinsic) {
@@ -16090,7 +16086,10 @@
                 return this.type | (this.isSigned ? BIT_SIGNED : BIT_UNSIGNED);
             }
             else {
-                return this.type | (this.isSigned ? PreambleMask.signed : this.isGeneral() ? PreambleMask.general : PreambleMask.bare);
+                if (this.isSigned) {
+                    throw new Error('Signed Extrinsics are currently only available for ExtrinsicV4');
+                }
+                return this.type | (this.isGeneral() ? PreambleMask.general : PreambleMask.bare);
             }
         }
         is(other) {
@@ -16341,8 +16340,7 @@
     ];
     const PREAMBLES = {
         bare: 'ExtrinsicPayloadV5',
-        general: 'ExtrinsicPayloadV5',
-        signed: 'ExtrinsicPayloadV5'
+        general: 'ExtrinsicPayloadV5'
     };
     function decodeExtrinsicPayload(registry, value, version = LATEST_EXTRINSIC_VERSION, preamble = DEFAULT_PREAMBLE) {
         if (value instanceof GenericExtrinsicPayload) {
@@ -16350,11 +16348,15 @@
         }
         const extVersion = version === 5 ? PREAMBLES[preamble] : VERSIONS[version] || VERSIONS[0];
         if (value && value.assetId && util.isHex(value.assetId)) {
-            const adjustedPayload = {
-                ...value,
-                assetId: registry.createType('TAssetConversion', util.hexToU8a(value.assetId)).toJSON()
-            };
-            return registry.createTypeUnsafe(extVersion, [adjustedPayload, { version }]);
+            const assetId = registry.createType('TAssetConversion', util.hexToU8a(value.assetId));
+            if (value.assetId === '0x00' ||
+                value.assetId === '0x01' + assetId.toHex().slice(2)) {
+                const adjustedPayload = {
+                    ...value,
+                    assetId: assetId.toJSON()
+                };
+                return registry.createTypeUnsafe(extVersion, [adjustedPayload, { version }]);
+            }
         }
         return registry.createTypeUnsafe(extVersion, [value, { version }]);
     }
@@ -16607,10 +16609,6 @@
             : u8a;
         return signerPair.sign(encoded, options);
     }
-    function signV5(registry, signerPair, u8a, options) {
-        const encoded = registry.hash(u8a);
-        return signerPair.sign(encoded, options);
-    }
 
     class GenericExtrinsicPayloadV4 extends Struct {
         __internal__signOptions;
@@ -16658,8 +16656,8 @@
         }
     }
 
-    const FAKE_SIGNATURE$1 = new Uint8Array(256).fill(1);
-    function toAddress$1(registry, address) {
+    const FAKE_SIGNATURE = new Uint8Array(256).fill(1);
+    function toAddress(registry, address) {
         return registry.createTypeUnsafe('Address', [util.isU8a(address) ? util.u8aToHex(address) : address]);
     }
     class GenericExtrinsicSignatureV4 extends Struct {
@@ -16730,7 +16728,7 @@
             return this;
         }
         addSignature(signer, signature, payload) {
-            return this._injectSignature(toAddress$1(this.registry, signer), this.registry.createTypeUnsafe('ExtrinsicSignature', [signature]), new GenericExtrinsicPayloadV4(this.registry, payload));
+            return this._injectSignature(toAddress(this.registry, signer), this.registry.createTypeUnsafe('ExtrinsicSignature', [signature]), new GenericExtrinsicPayloadV4(this.registry, payload));
         }
         createPayload(method, options) {
             const { era, runtimeVersion: { specVersion, transactionVersion } } = options;
@@ -16746,14 +16744,14 @@
                 throw new Error(`Expected a valid keypair for signing, found ${util.stringify(account)}`);
             }
             const payload = this.createPayload(method, options);
-            return this._injectSignature(toAddress$1(this.registry, account.addressRaw), this.registry.createTypeUnsafe('ExtrinsicSignature', [payload.sign(account)]), payload);
+            return this._injectSignature(toAddress(this.registry, account.addressRaw), this.registry.createTypeUnsafe('ExtrinsicSignature', [payload.sign(account)]), payload);
         }
         signFake(method, address, options) {
             if (!address) {
                 throw new Error(`Expected a valid address for signing, found ${util.stringify(address)}`);
             }
             const payload = this.createPayload(method, options);
-            return this._injectSignature(toAddress$1(this.registry, address), this.registry.createTypeUnsafe('ExtrinsicSignature', [FAKE_SIGNATURE$1]), payload);
+            return this._injectSignature(toAddress(this.registry, address), this.registry.createTypeUnsafe('ExtrinsicSignature', [FAKE_SIGNATURE]), payload);
         }
         toU8a(isBare) {
             return this.isSigned
@@ -16802,27 +16800,20 @@
         get preamble() {
             return this.getT('preamble');
         }
-        addSignature(signer, signature, payload) {
-            this.signature.addSignature(signer, signature, payload);
-            return this;
+        addSignature(_signer, _signature, _payload) {
+            throw new Error('Extrinsic: ExtrinsicV5 does not include signing support');
         }
-        sign(account, options) {
-            this.signature.sign(this.method, account, options);
-            return this;
+        sign(_account, _options) {
+            throw new Error('Extrinsic: ExtrinsicV5 does not include signing support');
         }
-        signFake(signer, options) {
-            this.signature.signFake(this.method, signer, options);
-            return this;
+        signFake(_signer, _options) {
+            throw new Error('Extrinsic: ExtrinsicV5 does not include signing support');
         }
     }
 
     class GenericExtrinsicPayloadV5 extends Struct {
-        __internal__signOptions;
         constructor(registry, value) {
             super(registry, util.objectSpread({ method: 'Bytes' }, registry.getSignedExtensionTypes(), registry.getSignedExtensionExtra()), value);
-            this.__internal__signOptions = {
-                withType: registry.createTypeUnsafe('ExtrinsicSignature', []) instanceof Enum
-            };
         }
         inspect() {
             return super.inspect({ method: true });
@@ -16857,24 +16848,17 @@
         get metadataHash() {
             return this.getT('metadataHash');
         }
-        sign(signerPair) {
-            return signV5(this.registry, signerPair, this.toU8a({ method: true }), this.__internal__signOptions);
+        sign(_signerPair) {
+            throw new Error('Extrinsic: ExtrinsicV5 does not include signing support');
         }
     }
 
-    const FAKE_SIGNATURE = new Uint8Array(256).fill(1);
-    function toAddress(registry, address) {
-        return registry.createTypeUnsafe('Address', [util.isU8a(address) ? util.u8aToHex(address) : address]);
-    }
     class GenericExtrinsicSignatureV5 extends Struct {
         __internal__signKeys;
-        __internal__transactionExtensionVersion;
         constructor(registry, value, { isSigned } = {}) {
             const signTypes = registry.getSignedExtensionTypes();
-            const signedVersion = registry.getTransactionExtensionVersion();
             super(registry, util.objectSpread(
             { signer: 'Address', signature: 'ExtrinsicSignature', transactionExtensionVersion: 'u8' }, signTypes), GenericExtrinsicSignatureV5.decodeExtrinsicSignature(value, isSigned));
-            this.__internal__transactionExtensionVersion = signedVersion;
             this.__internal__signKeys = Object.keys(signTypes);
             util.objectProperties(this, this.__internal__signKeys, (k) => this.get(k));
         }
@@ -16927,23 +16911,11 @@
         get transactionExtensionVersion() {
             return this.getT('transactionExtensionVersion');
         }
-        _injectSignature(signer, signature, payload) {
-            for (let i = 0, count = this.__internal__signKeys.length; i < count; i++) {
-                const k = this.__internal__signKeys[i];
-                const v = payload.get(k);
-                if (k === 'transactionExtensionVersion') {
-                    this.set(k, this.registry.createType('u8', this.__internal__transactionExtensionVersion));
-                }
-                else if (!util.isUndefined(v)) {
-                    this.set(k, v);
-                }
-            }
-            this.set('signer', signer);
-            this.set('signature', signature);
-            return this;
+        _injectSignature(_signer, _signature, _payload) {
+            throw new Error('Extrinsic: ExtrinsicV5 does not include signing support');
         }
-        addSignature(signer, signature, payload) {
-            return this._injectSignature(toAddress(this.registry, signer), this.registry.createTypeUnsafe('ExtrinsicSignature', [signature]), new GenericExtrinsicPayloadV5(this.registry, payload));
+        addSignature(_signer, _signature, _payload) {
+            throw new Error('Extrinsic: ExtrinsicV5 does not include signing support');
         }
         createPayload(method, options) {
             const { era, runtimeVersion: { specVersion, transactionVersion } } = options;
@@ -16954,19 +16926,11 @@
                 transactionVersion
             }));
         }
-        sign(method, account, options) {
-            if (!account?.addressRaw) {
-                throw new Error(`Expected a valid keypair for signing, found ${util.stringify(account)}`);
-            }
-            const payload = this.createPayload(method, options);
-            return this._injectSignature(toAddress(this.registry, account.addressRaw), this.registry.createTypeUnsafe('ExtrinsicSignature', [payload.sign(account)]), payload);
+        sign(_method, _account, _options) {
+            throw new Error('Extrinsic: ExtrinsicV5 does not include signing support');
         }
-        signFake(method, address, options) {
-            if (!address) {
-                throw new Error(`Expected a valid address for signing, found ${util.stringify(address)}`);
-            }
-            const payload = this.createPayload(method, options);
-            return this._injectSignature(toAddress(this.registry, address), this.registry.createTypeUnsafe('ExtrinsicSignature', [FAKE_SIGNATURE]), payload);
+        signFake(_method, _address, _options) {
+            throw new Error('Extrinsic: ExtrinsicV5 does not include signing support');
         }
         toU8a(isBare) {
             return this.isSigned
