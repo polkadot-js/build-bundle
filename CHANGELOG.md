@@ -2,6 +2,7 @@
 
 ## master
 
+- phishing 0.24.4
 - api, api-contract, types 15.0.1
 - extension-dapp 0.56.2
 - react-{identicon, qr}, ui-{keyring, settings}, vue-identicon 3.11.3
