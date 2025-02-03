@@ -15553,7 +15553,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '15.5.1' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '15.5.2' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
@@ -16362,23 +16362,26 @@
         bare: 'ExtrinsicPayloadV5',
         general: 'ExtrinsicPayloadV5'
     };
+    function decodeAssetId(registry, payload) {
+        const maybeAsset = payload?.assetId;
+        if (maybeAsset && util.isHex(maybeAsset)) {
+            const assetId = registry.createType('TAssetConversion', util.hexToU8a(maybeAsset));
+            if (maybeAsset === '0x00' || maybeAsset === '0x01' + assetId.toHex().slice(2)) {
+                return {
+                    ...payload,
+                    assetId: assetId.toJSON()
+                };
+            }
+        }
+        return payload;
+    }
     function decodeExtrinsicPayload(registry, value, version = LATEST_EXTRINSIC_VERSION, preamble = DEFAULT_PREAMBLE) {
         if (value instanceof GenericExtrinsicPayload) {
             return value.unwrap();
         }
         const extVersion = version === 5 ? PREAMBLES[preamble] : VERSIONS[version] || VERSIONS[0];
-        if (value && value.assetId && util.isHex(value.assetId)) {
-            const assetId = registry.createType('TAssetConversion', util.hexToU8a(value.assetId));
-            if (value.assetId === '0x00' ||
-                value.assetId === '0x01' + assetId.toHex().slice(2)) {
-                const adjustedPayload = {
-                    ...value,
-                    assetId: assetId.toJSON()
-                };
-                return registry.createTypeUnsafe(extVersion, [adjustedPayload, { version }]);
-            }
-        }
-        return registry.createTypeUnsafe(extVersion, [value, { version }]);
+        const payload = decodeAssetId(registry, value);
+        return registry.createTypeUnsafe(extVersion, [payload, { version }]);
     }
     class GenericExtrinsicPayload extends AbstractBase {
         constructor(registry, value, { preamble, version } = {}) {
@@ -16633,7 +16636,7 @@
     class GenericExtrinsicPayloadV4 extends Struct {
         __internal__signOptions;
         constructor(registry, value) {
-            super(registry, util.objectSpread({ method: 'Bytes' }, registry.getSignedExtensionTypes(), registry.getSignedExtensionExtra()), value);
+            super(registry, util.objectSpread({ method: 'Bytes' }, registry.getSignedExtensionTypes(), registry.getSignedExtensionExtra()), decodeAssetId(registry, value));
             this.__internal__signOptions = {
                 withType: registry.createTypeUnsafe('ExtrinsicSignature', []) instanceof Enum
             };
@@ -18941,6 +18944,10 @@
             docs: 'Wasm code of the runtime.',
             type: 'Bytes'
         }),
+        defaultChildStorageKeyPrefix: createSubstrateFn('defaultChildStorageKeyPrefix', ':child_storage:default:', {
+            docs: 'Prefix of the default child storage keys in the top trie.',
+            type: 'u32'
+        }),
         extrinsicIndex: createSubstrateFn('extrinsicIndex', ':extrinsic_index', {
             docs: 'Current extrinsic index (u32) is stored under this key.',
             type: 'u32'
@@ -18952,6 +18959,14 @@
         intrablockEntropy: createSubstrateFn('intrablockEntropy', ':intrablock_entropy', {
             docs: 'Current intra-block entropy (a universally unique `[u8; 32]` value) is stored here.',
             type: '[u8; 32]'
+        }),
+        storageVersionStorageKeyPostfix: createSubstrateFn('storageVersionStorageKeyPostfix', ':__STORAGE_VERSION__:', {
+            docs: 'The storage key postfix that is used to store the [`StorageVersion`] per pallet.',
+            type: 'u16'
+        }),
+        transactionLevelKey: createSubstrateFn('transactionLevelKey', ':transaction_level:', {
+            docs: 'The key that holds the current number of active layers.',
+            type: 'u32'
         })
     };
 
