@@ -2,6 +2,7 @@
 
 ## master
 
+- hw-ledger, keyring, util, util-crypto 13.4.3
 - hw-ledger, keyring, util, util-crypto 13.4.2
 - hw-ledger, keyring, util, util-crypto 13.4.1
 - extension-dapp 0.58.3
