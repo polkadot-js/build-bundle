@@ -344,7 +344,11 @@
             catch (e) {
                 this.__internal__stats.active.requests--;
                 this.__internal__stats.total.errors++;
-                throw e;
+                const { method, params } = JSON.parse(body);
+                const rpcError = e;
+                const failedRequest = `\nFailed HTTP Request: ${JSON.stringify({ method, params })}`;
+                rpcError.message = `${rpcError.message}${failedRequest}`;
+                throw rpcError;
             }
         }
         async subscribe(_types, _method, _params, _cb) {
@@ -1239,7 +1243,10 @@
                 catch (error) {
                     this.__internal__endpointStats.errors++;
                     this.__internal__stats.total.errors++;
-                    reject(error);
+                    const rpcError = error;
+                    const failedRequest = `\nFailed WS Request: ${JSON.stringify({ method, params })}`;
+                    rpcError.message = `${rpcError.message}${failedRequest}`;
+                    reject(rpcError);
                 }
             });
         }
@@ -1411,7 +1418,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '15.5.2' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '15.6.1' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -4124,7 +4131,7 @@
     }
     function getSubIdentities(identity, api, accountId) {
         const targetAccount = identity.parent || accountId;
-        if (!targetAccount) {
+        if (!targetAccount || !api.query.identity) {
             return of(identity);
         }
         return api.query.identity.subsOf(targetAccount).pipe(map((subsResponse) => {
