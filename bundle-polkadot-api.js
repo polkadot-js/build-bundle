@@ -1418,7 +1418,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '15.7.2' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '15.8.1' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -7101,6 +7101,50 @@
         ]).pipe(map(([block, events]) => ({ block, events }))));
     }
 
+    function extrinsicInfo(instanceId, api) {
+        return memo(instanceId, (at, transactionHash) => {
+            return api.derive.tx.events(at).pipe(map(({ block, events }) => {
+                const index = block.block.extrinsics.findIndex((ext) => ext.hash.toString() === transactionHash);
+                if (index === -1) {
+                    return null;
+                }
+                const extEvents = events.filter(({ phase }) => phase.isApplyExtrinsic && phase.asApplyExtrinsic.eq(index));
+                return {
+                    blockHash: block.hash.toHex(),
+                    blockNumber: block.block.header.number.toNumber(),
+                    events: extEvents,
+                    extrinsic: block.block.extrinsics[index],
+                    success: (extEvents.findIndex((ev) => ev.event.method === 'ExtrinsicSuccess') !== -1)
+                };
+            }));
+        });
+    }
+    function accountExtrinsics(instanceId, api) {
+        return memo(instanceId, (at, accountId) => {
+            return api.derive.tx.events(at).pipe(map(({ block, events }) => {
+                const indexes = [];
+                return {
+                    blockHash: block.hash.toHex(),
+                    blockNumber: block.block.header.number.toNumber(),
+                    extrinsics: block.block.extrinsics.filter((ext, index) => {
+                        if (ext.signer.toString() === accountId) {
+                            indexes.push(index);
+                            return true;
+                        }
+                        return false;
+                    }).map((ext, i) => {
+                        const extEvents = events.filter(({ phase }) => phase.isApplyExtrinsic && phase.asApplyExtrinsic.eq(indexes[i]));
+                        return {
+                            events: extEvents,
+                            extrinsic: ext,
+                            success: (extEvents.findIndex((ev) => ev.event.method === 'ExtrinsicSuccess') !== -1)
+                        };
+                    })
+                };
+            }));
+        });
+    }
+
     const FALLBACK_MAX_HASH_COUNT = 250;
     const FALLBACK_PERIOD = new util.BN(6 * 1000);
     const MAX_FINALITY_LAG = new util.BN(5);
@@ -7159,7 +7203,9 @@
 
     const tx = /*#__PURE__*/Object.freeze({
         __proto__: null,
+        accountExtrinsics: accountExtrinsics,
         events: events,
+        extrinsicInfo: extrinsicInfo,
         signingInfo: signingInfo
     });
 
