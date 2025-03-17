@@ -2,6 +2,7 @@
 
 ## master
 
+- phishing 0.25.6
 - api, api-contract, types 15.8.1
 - extension-dapp 0.58.5
 - phishing 0.25.5
