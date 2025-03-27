@@ -120,6 +120,7 @@
     };
 
     const DEFAULT_CAPACITY = 1024;
+    const DEFAULT_TTL = 30000;
     class LRUNode {
         key;
         __internal__expires;
@@ -149,7 +150,7 @@
         __internal__head;
         __internal__tail;
         __internal__ttl;
-        constructor(capacity = DEFAULT_CAPACITY, ttl = 30000) {
+        constructor(capacity = DEFAULT_CAPACITY, ttl = DEFAULT_TTL) {
             this.capacity = capacity;
             this.__internal__ttl = ttl;
             this.__internal__head = this.__internal__tail = new LRUNode('<empty>', ttl);
@@ -260,14 +261,14 @@
         __internal__endpoint;
         __internal__headers;
         __internal__stats;
-        constructor(endpoint = defaults.HTTP_URL, headers = {}, cacheCapacity) {
+        constructor(endpoint = defaults.HTTP_URL, headers = {}, cacheCapacity, cacheTtl) {
             if (!/^(https|http):\/\//.test(endpoint)) {
                 throw new Error(`Endpoint should start with 'http://' or 'https://', received '${endpoint}'`);
             }
             this.__internal__coder = new RpcCoder();
             this.__internal__endpoint = endpoint;
             this.__internal__headers = headers;
-            this.__internal__callCache = new LRUCache(cacheCapacity === 0 ? 0 : cacheCapacity || DEFAULT_CAPACITY);
+            this.__internal__callCache = new LRUCache(cacheCapacity === 0 ? 0 : cacheCapacity || DEFAULT_CAPACITY, cacheTtl || DEFAULT_TTL);
             this.__internal__cacheCapacity = cacheCapacity === 0 ? 0 : cacheCapacity || DEFAULT_CAPACITY;
             this.__internal__stats = {
                 active: { requests: 0, subscriptions: 0 },
@@ -1068,7 +1069,7 @@
         __internal__timeoutId = null;
         __internal__websocket;
         __internal__timeout;
-        constructor(endpoint = defaults.WS_URL, autoConnectMs = RETRY_DELAY, headers = {}, timeout, cacheCapacity) {
+        constructor(endpoint = defaults.WS_URL, autoConnectMs = RETRY_DELAY, headers = {}, timeout, cacheCapacity, cacheTtl) {
             const endpoints = Array.isArray(endpoint)
                 ? endpoint
                 : [endpoint];
@@ -1080,7 +1081,7 @@
                     throw new Error(`Endpoint should start with 'ws://', received '${endpoint}'`);
                 }
             });
-            this.__internal__callCache = new LRUCache(cacheCapacity || DEFAULT_CAPACITY);
+            this.__internal__callCache = new LRUCache(cacheCapacity || DEFAULT_CAPACITY, cacheTtl || DEFAULT_TTL);
             this.__internal__cacheCapacity = cacheCapacity || DEFAULT_CAPACITY;
             this.__internal__eventemitter = new EventEmitter();
             this.__internal__autoConnectMs = autoConnectMs || 0;
@@ -1418,7 +1419,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '15.8.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '15.9.1' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
