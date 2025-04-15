@@ -8343,16 +8343,18 @@
                     assign = jsonKey && value.get(jsonKey);
                 }
                 else {
-                    assign = jsonKey && value[jsonKey];
+                    assign = jsonKey && Object.prototype.hasOwnProperty.call(value, jsonKey) ? value[jsonKey] : undefined;
                     if (util.isUndefined(assign)) {
                         if (util.isUndefined(jsonObj)) {
                             const entries = Object.entries(value);
                             jsonObj = {};
                             for (let e = 0, ecount = entries.length; e < ecount; e++) {
-                                jsonObj[util.stringCamelCase(entries[e][0])] = entries[e][1];
+                                if (Object.prototype.hasOwnProperty.call(value, entries[e][0])) {
+                                    jsonObj[util.stringCamelCase(entries[e][0])] = entries[e][1];
+                                }
                             }
                         }
-                        assign = jsonKey && jsonObj[jsonKey];
+                        assign = jsonKey && Object.prototype.hasOwnProperty.call(jsonObj, jsonKey) ? jsonObj[jsonKey] : undefined;
                     }
                 }
                 raw[i] = [
@@ -15548,7 +15550,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '15.9.1' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '15.9.2' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
@@ -19128,8 +19130,8 @@
         __internal__moduleMap = {};
         createdAtHash;
         constructor(createdAtHash) {
-            this.__internal__knownDefaults = util.objectSpread({ Json, Metadata, PortableRegistry, Raw }, baseTypes);
-            this.__internal__knownDefaultsEntries = Object.entries(this.__internal__knownDefaults);
+            this.__internal__knownDefaults = new Map(Object.entries({ Json, Metadata, PortableRegistry, Raw, ...baseTypes }));
+            this.__internal__knownDefaultsEntries = Array.from(this.__internal__knownDefaults.entries());
             this.__internal__knownDefinitions = definitions;
             const allKnown = Object.values(this.__internal__knownDefinitions);
             for (let i = 0, count = allKnown.length; i < count; i++) {
@@ -19227,7 +19229,7 @@
             return this.getUnsafe(name, withUnknown, knownTypeDef);
         }
         getUnsafe(name, withUnknown, knownTypeDef) {
-            let Type = this.__internal__classes.get(name) || this.__internal__knownDefaults[name];
+            let Type = this.__internal__classes.get(name) || this.__internal__knownDefaults.get(name);
             if (!Type) {
                 const definition = this.__internal__definitions.get(name);
                 let BaseType;
@@ -19298,7 +19300,7 @@
             return expandExtensionTypes(this.__internal__signedExtensions, 'extrinsic', this.__internal__userExtensions);
         }
         hasClass(name) {
-            return this.__internal__classes.has(name) || !!this.__internal__knownDefaults[name];
+            return this.__internal__classes.has(name) || !!this.__internal__knownDefaults.has(name);
         }
         hasDef(name) {
             return this.__internal__definitions.has(name);
