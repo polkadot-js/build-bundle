@@ -543,6 +543,122 @@
         }
     };
 
+    const v16 = {
+        MetadataV16: {
+            lookup: 'PortableRegistry',
+            pallets: 'Vec<PalletMetadataV16>',
+            extrinsic: 'ExtrinsicMetadataV16',
+            apis: 'Vec<RuntimeApiMetadataV16>',
+            outerEnums: 'OuterEnums15',
+            custom: 'CustomMetadata15'
+        },
+        PalletMetadataV16: {
+            name: 'Text',
+            storage: 'Option<PalletStorageMetadataV16>',
+            calls: 'Option<PalletCallMetadataV16>',
+            events: 'Option<PalletEventMetadataV16>',
+            constants: 'Vec<PalletConstantMetadataV16>',
+            errors: 'Option<PalletErrorMetadataV16>',
+            associatedTypes: 'Vec<PalletAssociatedTypeMetadataV16>',
+            viewFunctions: 'Vec<PalletViewFunctionMetadataV16>',
+            index: 'u8',
+            docs: 'Vec<Text>',
+            deprecationInfo: 'ItemDeprecationInfoV16'
+        },
+        PalletStorageMetadataV16: {
+            prefix: 'Text',
+            items: 'Vec<StorageEntryMetadataV16>'
+        },
+        StorageEntryMetadataV16: {
+            name: 'Text',
+            modifier: 'StorageEntryModifierV14',
+            type: 'StorageEntryTypeV14',
+            fallback: 'Bytes',
+            docs: 'Vec<Text>',
+            deprecationInfo: 'ItemDeprecationInfoV16'
+        },
+        ItemDeprecationInfoV16: {
+            _enum: {
+                NotDeprecated: 'Null',
+                DeprecatedWithoutNote: 'Null',
+                Deprecated: {
+                    note: 'Text',
+                    since: 'Option<Text>'
+                }
+            }
+        },
+        PalletCallMetadataV16: {
+            type: 'SiLookupTypeId',
+            deprecationInfo: 'EnumDeprecationInfoV16'
+        },
+        EnumDeprecationInfoV16: 'BTreeMap<u8, VariantDeprecationInfoV16>',
+        VariantDeprecationInfoV16: {
+            _enum: {
+                DummyVariant: 'Null',
+                DeprecatedWithoutNote: 'Null',
+                Deprecated: {
+                    note: 'Text',
+                    since: 'Option<Text>'
+                }
+            }
+        },
+        PalletEventMetadataV16: {
+            type: 'SiLookupTypeId',
+            deprecationInfo: 'EnumDeprecationInfoV16'
+        },
+        PalletConstantMetadataV16: {
+            name: 'Text',
+            type: 'SiLookupTypeId',
+            value: 'Bytes',
+            docs: 'Vec<Text>',
+            deprecationInfo: 'ItemDeprecationInfoV16'
+        },
+        PalletErrorMetadataV16: {
+            type: 'SiLookupTypeId',
+            deprecationInfo: 'EnumDeprecationInfoV16'
+        },
+        PalletAssociatedTypeMetadataV16: {
+            name: 'Text',
+            type: 'SiLookupTypeId',
+            docs: 'Vec<Text>'
+        },
+        PalletViewFunctionMetadataV16: {
+            id: '[u8; 32]',
+            name: 'Text',
+            inputs: 'Vec<RuntimeApiMethodParamMetadataV15>',
+            output: 'SiLookupTypeId',
+            docs: 'Vec<T::String>',
+            deprecationInfo: 'ItemDeprecationInfoV16'
+        },
+        ExtrinsicMetadataV16: {
+            versions: 'Vec<u8>',
+            addressType: 'SiLookupTypeId',
+            callType: 'SiLookupTypeId',
+            signatureType: 'SiLookupTypeId',
+            transactionExtensionsByVersion: 'BTreeMap<u8, Vec<Compact<u32>>>',
+            transactionExtensions: 'Vec<TransactionExtensionMetadataV16>'
+        },
+        TransactionExtensionMetadataV16: {
+            identifier: 'Text',
+            type: 'SiLookupTypeId',
+            implicit: 'SiLookupTypeId'
+        },
+        RuntimeApiMetadataV16: {
+            name: 'Text',
+            methods: 'Vec<RuntimeApiMethodMetadataV16>',
+            docs: 'Vec<Text>',
+            version: 'Compact<u32>',
+            deprecationInfo: 'ItemDeprecationInfoV16'
+        },
+        RuntimeApiMethodMetadataV16: {
+            name: 'Text',
+            inputs: 'Vec<RuntimeApiMethodParamMetadataV15>',
+            output: 'SiLookupTypeId',
+            docs: 'Vec<Text>',
+            deprecationInfo: 'ItemDeprecationInfoV16'
+        }
+    };
+
     const definitions$1d = {
         rpc: {},
         runtime: runtime$z,
@@ -554,22 +670,24 @@
             ...v13,
             ...v14,
             ...v15,
+            ...v16,
             ErrorMetadataLatest: 'ErrorMetadataV14',
             EventMetadataLatest: 'EventMetadataV14',
-            ExtrinsicMetadataLatest: 'ExtrinsicMetadataV15',
+            ExtrinsicMetadataLatest: 'ExtrinsicMetadataV16',
             FunctionArgumentMetadataLatest: 'FunctionArgumentMetadataV14',
             FunctionMetadataLatest: 'FunctionMetadataV14',
-            MetadataLatest: 'MetadataV15',
-            PalletCallMetadataLatest: 'PalletCallMetadataV14',
-            PalletConstantMetadataLatest: 'PalletConstantMetadataV14',
-            PalletErrorMetadataLatest: 'PalletErrorMetadataV14',
-            PalletEventMetadataLatest: 'PalletEventMetadataV14',
-            PalletMetadataLatest: 'PalletMetadataV15',
-            PalletStorageMetadataLatest: 'PalletStorageMetadataV14',
+            MetadataLatest: 'MetadataV16',
+            PalletCallMetadataLatest: 'PalletCallMetadataV16',
+            PalletConstantMetadataLatest: 'PalletConstantMetadataV16',
+            PalletErrorMetadataLatest: 'PalletErrorMetadataV16',
+            PalletEventMetadataLatest: 'PalletEventMetadataV16',
+            PalletMetadataLatest: 'PalletMetadataV16',
+            PalletStorageMetadataLatest: 'PalletStorageMetadataV16',
             PortableType: 'PortableTypeV14',
-            RuntimeApiMetadataLatest: 'RuntimeApiMetadataV15',
+            RuntimeApiMetadataLatest: 'RuntimeApiMetadataV16',
             SignedExtensionMetadataLatest: 'SignedExtensionMetadataV14',
-            StorageEntryMetadataLatest: 'StorageEntryMetadataV14',
+            TransactionExtensionMetadataLatest: 'TransactionExtensionMetadataV16',
+            StorageEntryMetadataLatest: 'StorageEntryMetadataV16',
             StorageEntryModifierLatest: 'StorageEntryModifierV14',
             StorageEntryTypeLatest: 'StorageEntryTypeV14',
             StorageHasher: 'StorageHasherV14',
@@ -591,7 +709,8 @@
                     V12: 'MetadataV12',
                     V13: 'MetadataV13',
                     V14: 'MetadataV14',
-                    V15: 'MetadataV15'
+                    V15: 'MetadataV15',
+                    V16: 'MetadataV16'
                 }
             }
         }
@@ -6490,6 +6609,43 @@
                     }
                 },
                 version: 1
+            },
+            {
+                methods: {
+                    dry_run_call: {
+                        description: 'Dry run call',
+                        params: [
+                            {
+                                name: 'origin',
+                                type: 'OriginCaller'
+                            },
+                            {
+                                name: 'call',
+                                type: 'RuntimeCall'
+                            },
+                            {
+                                name: 'resultXcmsVersion',
+                                type: 'u32'
+                            }
+                        ],
+                        type: 'Result<CallDryRunEffects, XcmDryRunApiError>'
+                    },
+                    dry_run_xcm: {
+                        description: 'Dry run XCM program',
+                        params: [
+                            {
+                                name: 'originLocation',
+                                type: 'VersionedMultiLocation'
+                            },
+                            {
+                                name: 'xcm',
+                                type: 'VersionedXcm'
+                            }
+                        ],
+                        type: 'Result<XcmDryRunEffects, XcmDryRunApiError>'
+                    }
+                },
+                version: 2
             }
         ]
     };
@@ -15861,7 +16017,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '15.10.2' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.0.1' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
@@ -16432,7 +16588,9 @@
         __internal__hashCache;
         static LATEST_EXTRINSIC_VERSION = LATEST_EXTRINSIC_VERSION;
         constructor(registry, value, { preamble, version } = {}) {
-            super(registry, decodeExtrinsic(registry, value, version || registry.metadata.extrinsic.version?.toNumber(), preamble), undefined, preamble);
+            const versionsLength = registry.metadata.extrinsic.versions.length;
+            const highestSupportedVersion = versionsLength ? registry.metadata.extrinsic.versions[versionsLength - 1] : undefined;
+            super(registry, decodeExtrinsic(registry, value, version || highestSupportedVersion, preamble), undefined, preamble);
         }
         get hash() {
             if (!this.__internal__hashCache) {
@@ -18675,7 +18833,7 @@
             }
         });
     }
-    function convertCalls(specs, registry, modName, calls, sectionTypes) {
+    function convertCalls$1(specs, registry, modName, calls, sectionTypes) {
         const variants = calls.map(({ args, docs, name }, index) => {
             setTypeOverride(sectionTypes, args.map(({ type }) => type));
             return registry.createTypeUnsafe('SiVariant', [{
@@ -18689,7 +18847,7 @@
                 type: makeVariantType(modName, 'Call', specs, variants)
             }]);
     }
-    function convertConstants(specs, registry, constants, sectionTypes) {
+    function convertConstants$1(specs, registry, constants, sectionTypes) {
         return constants.map(({ docs, name, type, value }) => {
             setTypeOverride(sectionTypes, [type]);
             return registry.createTypeUnsafe('PalletConstantMetadataV14', [{
@@ -18711,7 +18869,7 @@
                 type: makeVariantType(modName, 'Error', specs, variants)
             }]);
     }
-    function convertEvents(specs, registry, modName, events, sectionTypes) {
+    function convertEvents$1(specs, registry, modName, events, sectionTypes) {
         const variants = events.map(({ args, docs, name }, index) => {
             setTypeOverride(sectionTypes, args);
             return registry.createTypeUnsafe('SiVariant', [{
@@ -18739,7 +18897,7 @@
                 }
             }]);
     }
-    function convertStorage(specs, registry, { items, prefix }, sectionTypes) {
+    function convertStorage$1(specs, registry, { items, prefix }, sectionTypes) {
         return registry.createTypeUnsafe('PalletStorageMetadataV14', [{
                 items: items.map(({ docs, fallback, modifier, name, type }) => {
                     let entryType;
@@ -18804,13 +18962,13 @@
     function createPallet(specs, registry, mod, { calls, constants, errors, events, storage }) {
         const sectionTypes = getAliasTypes(registry, util.stringCamelCase(mod.name));
         return registry.createTypeUnsafe('PalletMetadataV14', [{
-                calls: calls && convertCalls(specs, registry, mod.name, calls, sectionTypes),
-                constants: convertConstants(specs, registry, constants, sectionTypes),
+                calls: calls && convertCalls$1(specs, registry, mod.name, calls, sectionTypes),
+                constants: convertConstants$1(specs, registry, constants, sectionTypes),
                 errors: errors && convertErrors(specs, registry, mod.name, errors),
-                events: events && convertEvents(specs, registry, mod.name, events, sectionTypes),
+                events: events && convertEvents$1(specs, registry, mod.name, events, sectionTypes),
                 index: mod.index,
                 name: mod.name,
-                storage: storage && convertStorage(specs, registry, storage, sectionTypes)
+                storage: storage && convertStorage$1(specs, registry, storage, sectionTypes)
             }]);
     }
     function toV14(registry, v13, metaVersion) {
@@ -18854,8 +19012,109 @@
         ]);
     }
 
-    function toLatest(_registry, v15, _metaVersion) {
-        return v15;
+    function palletsFromV15(registry, palletV15) {
+        const deprecationInfo = registry.createTypeUnsafe('ItemDeprecationInfoV16', ['NotDeprecated']);
+        const associatedTypes = registry.createTypeUnsafe('Vec<PalletAssociatedTypeMetadataV16>', [[]]);
+        const viewFunctions = registry.createTypeUnsafe('Vec<PalletViewFunctionMetadataV16>', [[]]);
+        return registry.createTypeUnsafe('PalletMetadataV16', [
+            util.objectSpread({}, palletV15, {
+                associatedTypes,
+                calls: palletV15.calls.isSome ? convertCalls(registry, palletV15.calls.unwrap()) : null,
+                constants: convertConstants(registry, palletV15.constants),
+                deprecationInfo,
+                errors: palletV15.errors.isSome ? converErrors(registry, palletV15.errors.unwrap()) : null,
+                events: palletV15.events.isSome ? convertEvents(registry, palletV15.events.unwrap()) : null,
+                storage: palletV15.storage.isSome ? convertStorage(registry, palletV15.storage.unwrap()) : null,
+                viewFunctions
+            })
+        ]);
+    }
+    function convertStorage(registry, storage) {
+        const deprecationInfo = registry.createTypeUnsafe('ItemDeprecationInfoV16', ['NotDeprecated']);
+        const items = storage.items.map((item) => registry.createTypeUnsafe('StorageEntryMetadataV16', [
+            util.objectSpread({}, item, { deprecationInfo })
+        ]));
+        return registry.createTypeUnsafe('PalletStorageMetadataV16', [{
+                items: registry.createTypeUnsafe('Vec<StorageEntryMetadataV16>', [items]),
+                prefix: storage.prefix
+            }]);
+    }
+    function convertCalls(registry, calls) {
+        const deprecationInfo = registry.createTypeUnsafe('EnumDeprecationInfoV16', []);
+        return registry.createTypeUnsafe('PalletCallMetadataV16', [{
+                deprecationInfo,
+                type: calls.type
+            }]);
+    }
+    function convertEvents(registry, events) {
+        const deprecationInfo = registry.createTypeUnsafe('EnumDeprecationInfoV16', []);
+        return registry.createTypeUnsafe('PalletEventMetadataV16', [{
+                deprecationInfo,
+                type: events.type
+            }]);
+    }
+    function convertConstants(registry, constants) {
+        const deprecationInfo = registry.createTypeUnsafe('ItemDeprecationInfoV16', ['NotDeprecated']);
+        return registry.createTypeUnsafe('Vec<PalletConstantMetadataV16>', [
+            constants.map((constant) => registry.createTypeUnsafe('PalletConstantMetadataV16', [
+                util.objectSpread({}, constant, { deprecationInfo })
+            ]))
+        ]);
+    }
+    function converErrors(registry, errors) {
+        const deprecationInfo = registry.createTypeUnsafe('EnumDeprecationInfoV16', []);
+        return registry.createTypeUnsafe('PalletErrorMetadataV16', [{
+                deprecationInfo,
+                type: errors.type
+            }]);
+    }
+    function extrinsicFromV15(registry, extrinsicV15) {
+        const transactionExtensions = extrinsicV15.signedExtensions.map(({ additionalSigned, identifier, type }) => registry.createTypeUnsafe('TransactionExtensionMetadataV16', [{
+                identifier,
+                implict: additionalSigned,
+                type
+            }]));
+        const indexes = transactionExtensions.map((_, i) => registry.createTypeUnsafe('Compact<u32>', [i]));
+        const transactionExtensionsByVersion = registry.createTypeUnsafe('BTreeMap<u8, Vec<Compact<u32>>>', [new Map([[registry.createTypeUnsafe('u8', [extrinsicV15.version]), registry.createTypeUnsafe('Vec<Compact<u32>>', [indexes])]])]);
+        return registry.createTypeUnsafe('ExtrinsicMetadataV16', [
+            {
+                addressType: extrinsicV15.addressType,
+                callType: extrinsicV15.callType,
+                signatureType: extrinsicV15.signatureType,
+                transactionExtensions,
+                transactionExtensionsByVersion,
+                versions: [extrinsicV15.version]
+            }
+        ]);
+    }
+    function apisFromV15(registry, runtimeApiV15) {
+        const deprecationInfo = registry.createTypeUnsafe('ItemDeprecationInfoV16', ['NotDeprecated']);
+        const methods = runtimeApiV15.methods.map((method) => registry.createTypeUnsafe('RuntimeApiMethodMetadataV16', [util.objectSpread({}, method, { deprecationInfo })]));
+        return registry.createTypeUnsafe('RuntimeApiMetadataV16', [
+            util.objectSpread({}, runtimeApiV15, {
+                deprecationInfo,
+                methods,
+                version: registry.createTypeUnsafe('Compact<u32>', [0])
+            })
+        ]);
+    }
+    function toV16(registry, v15, _) {
+        const pallets = v15.pallets.map((pallet) => {
+            return palletsFromV15(registry, pallet);
+        });
+        const extrinsic = extrinsicFromV15(registry, v15.extrinsic);
+        const apis = v15.apis.map((runtimeApi) => apisFromV15(registry, runtimeApi));
+        return registry.createTypeUnsafe('MetadataV16', [
+            util.objectSpread({}, v15, {
+                apis,
+                extrinsic,
+                pallets
+            })
+        ]);
+    }
+
+    function toLatest(_registry, v16, _metaVersion) {
+        return v16;
     }
 
     const MAGIC_NUMBER = 0x6174656d;
@@ -18868,7 +19127,7 @@
         }
     }
 
-    const KNOWN_VERSIONS = [15, 14, 13, 12, 11, 10, 9];
+    const KNOWN_VERSIONS = [16, 15, 14, 13, 12, 11, 10, 9];
     const LATEST_VERSION = KNOWN_VERSIONS[0];
     const TO_CALLS_VERSION = 14;
 
@@ -18929,6 +19188,9 @@
         }
         get asV15() {
             return this.__internal__getVersion(15, toV15);
+        }
+        get asV16() {
+            return this.__internal__getVersion(16, toV16);
         }
         get asLatest() {
             return this.__internal__getVersion('latest', toLatest);
@@ -19710,8 +19972,8 @@
                     this.__internal__firstCallIndex = new Uint8Array([parseInt(defSection, 10), parseInt(defMethod, 10)]);
                 }
             }
-            this.setSignedExtensions(signedExtensions || (this.__internal__metadata.extrinsic.version.gt(util.BN_ZERO)
-                ? this.__internal__metadata.extrinsic.signedExtensions.map(({ identifier }) => identifier.toString())
+            this.setSignedExtensions(signedExtensions || (this.__internal__metadata.extrinsic.versions.length > 0 && this.__internal__metadata.extrinsic.versions.every((value) => value > 0)
+                ? this.__internal__metadata.extrinsic.transactionExtensions.map(({ identifier }) => identifier.toString())
                 : fallbackExtensions), userExtensions, noInitWarn);
             this.setChainProperties(extractProperties(this, metadata));
         }
