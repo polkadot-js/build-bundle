@@ -49,12 +49,14 @@
 
 	(function (exports) {
 		Object.defineProperty(exports, "__esModule", { value: true });
-		exports.ERROR_DESCRIPTION = exports.CHUNK_SIZE = void 0;
+		exports.ERROR_DESCRIPTION = exports.ECDSA_PUBKEY_LEN = exports.ED25519_PUBKEY_LEN = exports.CHUNK_SIZE = void 0;
 		exports.errorCodeToString = errorCodeToString;
 		exports.processErrorResponse = processErrorResponse;
 		exports.getVersion = getVersion;
 		exports.serializePath = serializePath;
 		exports.CHUNK_SIZE = 250;
+		exports.ED25519_PUBKEY_LEN = 32;
+		exports.ECDSA_PUBKEY_LEN = 33;
 		exports.ERROR_DESCRIPTION = {
 		    1: 'U2F: Unknown',
 		    2: 'U2F: Bad request',
@@ -178,7 +180,7 @@
 
 	Object.defineProperty(substrate_app, "__esModule", { value: true });
 	substrate_app.SubstrateApp = void 0;
-	const common_1$1 = common$1;
+	const common_1$2 = common$1;
 	class SubstrateApp {
 	    constructor(transport, cla, slip0044) {
 	        if (transport == null) {
@@ -206,8 +208,8 @@
 	    static GetChunks(message) {
 	        const chunks = [];
 	        const buffer = Buffer.from(message);
-	        for (let i = 0; i < buffer.length; i += common_1$1.CHUNK_SIZE) {
-	            let end = i + common_1$1.CHUNK_SIZE;
+	        for (let i = 0; i < buffer.length; i += common_1$2.CHUNK_SIZE) {
+	            let end = i + common_1$2.CHUNK_SIZE;
 	            if (i > buffer.length) {
 	                end = buffer.length;
 	            }
@@ -224,10 +226,10 @@
 	    }
 	    async getVersion() {
 	        try {
-	            return await (0, common_1$1.getVersion)(this.transport, this.cla);
+	            return await (0, common_1$2.getVersion)(this.transport, this.cla);
 	        }
 	        catch (e) {
-	            return (0, common_1$1.processErrorResponse)(e);
+	            return (0, common_1$2.processErrorResponse)(e);
 	        }
 	    }
 	    async appInfo() {
@@ -259,7 +261,7 @@
 	            }
 	            return {
 	                return_code: returnCode,
-	                error_message: (0, common_1$1.errorCodeToString)(returnCode),
+	                error_message: (0, common_1$2.errorCodeToString)(returnCode),
 	                appName: appName === '' || 'err',
 	                appVersion: appVersion === '' || 'err',
 	                flagLen,
@@ -269,7 +271,7 @@
 	                flag_onboarded: (flagsValue & 4) !== 0,
 	                flag_pin_validated: (flagsValue & 128) !== 0,
 	            };
-	        }, common_1$1.processErrorResponse);
+	        }, common_1$2.processErrorResponse);
 	    }
 	    async getAddress(account, change, addressIndex, requireConfirmation = false, scheme = 0 ) {
 	        const bip44Path = SubstrateApp.serializePath(this.slip0044, account, change, addressIndex);
@@ -290,9 +292,9 @@
 	                pubKey: response.subarray(0, pubkeyLen).toString('hex'),
 	                address: response.subarray(pubkeyLen, response.length - 2).toString('ascii'),
 	                return_code: errorCode,
-	                error_message: (0, common_1$1.errorCodeToString)(errorCode),
+	                error_message: (0, common_1$2.errorCodeToString)(errorCode),
 	            };
-	        }, common_1$1.processErrorResponse);
+	        }, common_1$2.processErrorResponse);
 	    }
 	    async signSendChunk(chunkIdx, chunkNum, chunk, scheme = 0 , ins = 2 ) {
 	        let payloadType = 1 ;
@@ -308,7 +310,7 @@
 	        return await this.transport.send(this.cla, ins, payloadType, p2, chunk, [36864 , 0x6984, 0x6a80]).then(response => {
 	            const errorCodeData = response.subarray(-2);
 	            const returnCode = errorCodeData[0] * 256 + errorCodeData[1];
-	            let errorMessage = (0, common_1$1.errorCodeToString)(returnCode);
+	            let errorMessage = (0, common_1$2.errorCodeToString)(returnCode);
 	            let signature = null;
 	            if (returnCode === 0x6a80 || returnCode === 0x6984) {
 	                errorMessage = response.subarray(0, response.length - 2).toString('ascii');
@@ -321,7 +323,7 @@
 	                return_code: returnCode,
 	                error_message: errorMessage,
 	            };
-	        }, common_1$1.processErrorResponse);
+	        }, common_1$2.processErrorResponse);
 	    }
 	    async signImpl(account, change, addressIndex, message, ins, scheme = 0 ) {
 	        const chunks = SubstrateApp.signGetChunks(this.slip0044, account, change, addressIndex, message);
@@ -338,7 +340,7 @@
 	                error_message: result.error_message,
 	                signature: result.signature,
 	            };
-	        }, common_1$1.processErrorResponse);
+	        }, common_1$2.processErrorResponse);
 	    }
 	    async sign(account, change, addressIndex, message, scheme = 0 ) {
 	        return await this.signImpl(account, change, addressIndex, message, 2 , scheme);
@@ -355,15 +357,15 @@
 	            if (response.length !== 34) {
 	                return {
 	                    return_code: 0x6984,
-	                    error_message: (0, common_1$1.errorCodeToString)(0x6984),
+	                    error_message: (0, common_1$2.errorCodeToString)(0x6984),
 	                };
 	            }
 	            return {
 	                return_code: returnCode,
-	                error_message: (0, common_1$1.errorCodeToString)(returnCode),
+	                error_message: (0, common_1$2.errorCodeToString)(returnCode),
 	                pubkey,
 	            };
-	        }, common_1$1.processErrorResponse);
+	        }, common_1$2.processErrorResponse);
 	    }
 	    async setAllowlistPubKey(pk) {
 	        return await this.transport.send(this.cla, 145 , 0, 0, pk).then(response => {
@@ -371,9 +373,9 @@
 	            const returnCode = errorCodeData[0] * 256 + errorCodeData[1];
 	            return {
 	                return_code: returnCode,
-	                error_message: (0, common_1$1.errorCodeToString)(returnCode),
+	                error_message: (0, common_1$2.errorCodeToString)(returnCode),
 	            };
-	        }, common_1$1.processErrorResponse);
+	        }, common_1$2.processErrorResponse);
 	    }
 	    async getAllowlistHash() {
 	        return await this.transport.send(this.cla, 146 , 0, 0).then(response => {
@@ -384,15 +386,15 @@
 	            if (response.length !== 34) {
 	                return {
 	                    return_code: 0x6984,
-	                    error_message: (0, common_1$1.errorCodeToString)(0x6984),
+	                    error_message: (0, common_1$2.errorCodeToString)(0x6984),
 	                };
 	            }
 	            return {
 	                return_code: returnCode,
-	                error_message: (0, common_1$1.errorCodeToString)(returnCode),
+	                error_message: (0, common_1$2.errorCodeToString)(returnCode),
 	                hash,
 	            };
-	        }, common_1$1.processErrorResponse);
+	        }, common_1$2.processErrorResponse);
 	    }
 	    async uploadSendChunk(chunkIdx, chunkNum, chunk) {
 	        let payloadType = 1 ;
@@ -405,12 +407,12 @@
 	        return await this.transport.send(this.cla, 147 , payloadType, 0, chunk, [36864 ]).then(response => {
 	            const errorCodeData = response.subarray(-2);
 	            const returnCode = errorCodeData[0] * 256 + errorCodeData[1];
-	            const errorMessage = (0, common_1$1.errorCodeToString)(returnCode);
+	            const errorMessage = (0, common_1$2.errorCodeToString)(returnCode);
 	            return {
 	                return_code: returnCode,
 	                error_message: errorMessage,
 	            };
-	        }, common_1$1.processErrorResponse);
+	        }, common_1$2.processErrorResponse);
 	    }
 	    async uploadAllowlist(message) {
 	        const chunks = [];
@@ -433,7 +435,7 @@
 	                return_code: result.return_code,
 	                error_message: result.error_message,
 	            };
-	        }, common_1$1.processErrorResponse);
+	        }, common_1$2.processErrorResponse);
 	    }
 	}
 	substrate_app.SubstrateApp = SubstrateApp;
@@ -736,6 +738,12 @@
 		        slip0044: 0x8000003c,
 		        ss58_addr_type: 42,
 		    },
+		    {
+		        name: 'AvailRecovery',
+		        cla: 0xbe,
+		        slip0044: 0x80000162,
+		        ss58_addr_type: 42,
+		    },
 		];
 	} (supported_apps));
 	getDefaultExportFromCjs(supported_apps);
@@ -849,6 +857,8 @@
 
 	var generic_app = {};
 
+	/*! Axios v1.9.0 Copyright (c) 2025 Matt Zabriskie and contributors */
+
 	function bind(fn, thisArg) {
 	  return function wrap() {
 	    return fn.apply(thisArg, arguments);
@@ -859,6 +869,7 @@
 
 	const {toString} = Object.prototype;
 	const {getPrototypeOf} = Object;
+	const {iterator: iterator$1, toStringTag} = Symbol;
 
 	const kindOf = (cache => thing => {
 	    const str = toString.call(thing);
@@ -985,7 +996,7 @@
 	  }
 
 	  const prototype = getPrototypeOf(val);
-	  return (prototype === null || prototype === Object.prototype || Object.getPrototypeOf(prototype) === null) && !(Symbol.toStringTag in val) && !(Symbol.iterator in val);
+	  return (prototype === null || prototype === Object.prototype || Object.getPrototypeOf(prototype) === null) && !(toStringTag in val) && !(iterator$1 in val);
 	};
 
 	/**
@@ -1336,13 +1347,13 @@
 	 * @returns {void}
 	 */
 	const forEachEntry = (obj, fn) => {
-	  const generator = obj && obj[Symbol.iterator];
+	  const generator = obj && obj[iterator$1];
 
-	  const iterator = generator.call(obj);
+	  const _iterator = generator.call(obj);
 
 	  let result;
 
-	  while ((result = iterator.next()) && !result.done) {
+	  while ((result = _iterator.next()) && !result.done) {
 	    const pair = result.value;
 	    fn.call(obj, pair[0], pair[1]);
 	  }
@@ -1455,26 +1466,6 @@
 	  return value != null && Number.isFinite(value = +value) ? value : defaultValue;
 	};
 
-	const ALPHA = 'abcdefghijklmnopqrstuvwxyz';
-
-	const DIGIT = '0123456789';
-
-	const ALPHABET = {
-	  DIGIT,
-	  ALPHA,
-	  ALPHA_DIGIT: ALPHA + ALPHA.toUpperCase() + DIGIT
-	};
-
-	const generateString = (size = 16, alphabet = ALPHABET.ALPHA_DIGIT) => {
-	  let str = '';
-	  const {length} = alphabet;
-	  while (size--) {
-	    str += alphabet[Math.random() * length|0];
-	  }
-
-	  return str;
-	};
-
 	/**
 	 * If the thing is a FormData object, return true, otherwise return false.
 	 *
@@ -1483,7 +1474,7 @@
 	 * @returns {boolean}
 	 */
 	function isSpecCompliantForm(thing) {
-	  return !!(thing && isFunction(thing.append) && thing[Symbol.toStringTag] === 'FormData' && thing[Symbol.iterator]);
+	  return !!(thing && isFunction(thing.append) && thing[toStringTag] === 'FormData' && thing[iterator$1]);
 	}
 
 	const toJSONObject = (obj) => {
@@ -1552,6 +1543,10 @@
 
 	// *********************
 
+
+	const isIterable = (thing) => thing != null && isFunction(thing[iterator$1]);
+
+
 	var utils$1 = {
 	  isArray,
 	  isArrayBuffer,
@@ -1602,14 +1597,13 @@
 	  findKey,
 	  global: _global,
 	  isContextDefined,
-	  ALPHABET,
-	  generateString,
 	  isSpecCompliantForm,
 	  toJSONObject,
 	  isAsyncFn,
 	  isThenable,
 	  setImmediate: _setImmediate,
-	  asap
+	  asap,
+	  isIterable
 	};
 
 	/**
@@ -2000,7 +1994,7 @@
 	 *
 	 * @param {string} url The base of the url (e.g., http://www.google.com)
 	 * @param {object} [params] The params to be appended
-	 * @param {?object} options
+	 * @param {?(object|Function)} options
 	 *
 	 * @returns {string} The formatted url
 	 */
@@ -2011,6 +2005,12 @@
 	  }
 	  
 	  const _encode = options && options.encode || encode;
+
+	  if (utils$1.isFunction(options)) {
+	    options = {
+	      serialize: options
+	    };
+	  } 
 
 	  const serializeFn = options && options.serialize;
 
@@ -2588,10 +2588,18 @@
 	      setHeaders(header, valueOrRewrite);
 	    } else if(utils$1.isString(header) && (header = header.trim()) && !isValidHeaderName(header)) {
 	      setHeaders(parseHeaders(header), valueOrRewrite);
-	    } else if (utils$1.isHeaders(header)) {
-	      for (const [key, value] of header.entries()) {
-	        setHeader(value, key, rewrite);
+	    } else if (utils$1.isObject(header) && utils$1.isIterable(header)) {
+	      let obj = {}, dest, key;
+	      for (const entry of header) {
+	        if (!utils$1.isArray(entry)) {
+	          throw TypeError('Object iterator must return a key-value pair');
+	        }
+
+	        obj[key = entry[0]] = (dest = obj[key]) ?
+	          (utils$1.isArray(dest) ? [...dest, entry[1]] : [dest, entry[1]]) : entry[1];
 	      }
+
+	      setHeaders(obj, valueOrRewrite);
 	    } else {
 	      header != null && setHeader(valueOrRewrite, header, rewrite);
 	    }
@@ -2731,6 +2739,10 @@
 
 	  toString() {
 	    return Object.entries(this.toJSON()).map(([header, value]) => header + ': ' + value).join('\n');
+	  }
+
+	  getSetCookie() {
+	    return this.get("set-cookie") || [];
 	  }
 
 	  get [Symbol.toStringTag]() {
@@ -3000,68 +3012,18 @@
 
 	const asyncDecorator = (fn) => (...args) => utils$1.asap(() => fn(...args));
 
-	var isURLSameOrigin = platform.hasStandardBrowserEnv ?
+	var isURLSameOrigin = platform.hasStandardBrowserEnv ? ((origin, isMSIE) => (url) => {
+	  url = new URL(url, platform.origin);
 
-	// Standard browser envs have full support of the APIs needed to test
-	// whether the request URL is of the same origin as current location.
-	  (function standardBrowserEnv() {
-	    const msie = platform.navigator && /(msie|trident)/i.test(platform.navigator.userAgent);
-	    const urlParsingNode = document.createElement('a');
-	    let originURL;
-
-	    /**
-	    * Parse a URL to discover its components
-	    *
-	    * @param {String} url The URL to be parsed
-	    * @returns {Object}
-	    */
-	    function resolveURL(url) {
-	      let href = url;
-
-	      if (msie) {
-	        // IE needs attribute set twice to normalize properties
-	        urlParsingNode.setAttribute('href', href);
-	        href = urlParsingNode.href;
-	      }
-
-	      urlParsingNode.setAttribute('href', href);
-
-	      // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
-	      return {
-	        href: urlParsingNode.href,
-	        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
-	        host: urlParsingNode.host,
-	        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
-	        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
-	        hostname: urlParsingNode.hostname,
-	        port: urlParsingNode.port,
-	        pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
-	          urlParsingNode.pathname :
-	          '/' + urlParsingNode.pathname
-	      };
-	    }
-
-	    originURL = resolveURL(window.location.href);
-
-	    /**
-	    * Determine if a URL shares the same origin as the current location
-	    *
-	    * @param {String} requestURL The URL to test
-	    * @returns {boolean} True if URL shares the same origin, otherwise false
-	    */
-	    return function isURLSameOrigin(requestURL) {
-	      const parsed = (utils$1.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
-	      return (parsed.protocol === originURL.protocol &&
-	          parsed.host === originURL.host);
-	    };
-	  })() :
-
-	  // Non standard browser envs (web workers, react-native) lack needed support.
-	  (function nonStandardBrowserEnv() {
-	    return function isURLSameOrigin() {
-	      return true;
-	    };
-	  })();
+	  return (
+	    origin.protocol === url.protocol &&
+	    origin.host === url.host &&
+	    (isMSIE || origin.port === url.port)
+	  );
+	})(
+	  new URL(platform.origin),
+	  platform.navigator && /(msie|trident)/i.test(platform.navigator.userAgent)
+	) : () => true;
 
 	var cookies = platform.hasStandardBrowserEnv ?
 
@@ -3140,8 +3102,9 @@
 	 *
 	 * @returns {string} The combined full path
 	 */
-	function buildFullPath(baseURL, requestedURL) {
-	  if (baseURL && !isAbsoluteURL(requestedURL)) {
+	function buildFullPath(baseURL, requestedURL, allowAbsoluteUrls) {
+	  let isRelativeUrl = !isAbsoluteURL(requestedURL);
+	  if (baseURL && (isRelativeUrl || allowAbsoluteUrls == false)) {
 	    return combineURLs(baseURL, requestedURL);
 	  }
 	  return requestedURL;
@@ -3163,7 +3126,7 @@
 	  config2 = config2 || {};
 	  const config = {};
 
-	  function getMergedValue(target, source, caseless) {
+	  function getMergedValue(target, source, prop, caseless) {
 	    if (utils$1.isPlainObject(target) && utils$1.isPlainObject(source)) {
 	      return utils$1.merge.call({caseless}, target, source);
 	    } else if (utils$1.isPlainObject(source)) {
@@ -3175,11 +3138,11 @@
 	  }
 
 	  // eslint-disable-next-line consistent-return
-	  function mergeDeepProperties(a, b, caseless) {
+	  function mergeDeepProperties(a, b, prop , caseless) {
 	    if (!utils$1.isUndefined(b)) {
-	      return getMergedValue(a, b, caseless);
+	      return getMergedValue(a, b, prop , caseless);
 	    } else if (!utils$1.isUndefined(a)) {
-	      return getMergedValue(undefined, a, caseless);
+	      return getMergedValue(undefined, a, prop , caseless);
 	    }
 	  }
 
@@ -3237,7 +3200,7 @@
 	    socketPath: defaultToConfig2,
 	    responseEncoding: defaultToConfig2,
 	    validateStatus: mergeDirectKeys,
-	    headers: (a, b) => mergeDeepProperties(headersToObject(a), headersToObject(b), true)
+	    headers: (a, b , prop) => mergeDeepProperties(headersToObject(a), headersToObject(b),prop, true)
 	  };
 
 	  utils$1.forEach(Object.keys(Object.assign({}, config1, config2)), function computeConfigValue(prop) {
@@ -3256,7 +3219,7 @@
 
 	  newConfig.headers = headers = AxiosHeaders$1.from(headers);
 
-	  newConfig.url = buildURL(buildFullPath(newConfig.baseURL, newConfig.url), config.params, config.paramsSerializer);
+	  newConfig.url = buildURL(buildFullPath(newConfig.baseURL, newConfig.url, newConfig.allowAbsoluteUrls), config.params, config.paramsSerializer);
 
 	  // HTTP basic authentication
 	  if (auth) {
@@ -3821,7 +3784,7 @@
 	  } catch (err) {
 	    unsubscribe && unsubscribe();
 
-	    if (err && err.name === 'TypeError' && /fetch/i.test(err.message)) {
+	    if (err && err.name === 'TypeError' && /Load failed|fetch/i.test(err.message)) {
 	      throw Object.assign(
 	        new AxiosError('Network Error', AxiosError.ERR_NETWORK, config, request),
 	        {
@@ -3981,7 +3944,7 @@
 	  });
 	}
 
-	const VERSION = "1.7.7";
+	const VERSION = "1.9.0";
 
 	const validators$1 = {};
 
@@ -4030,6 +3993,14 @@
 
 	    return validator ? validator(value, opt, opts) : true;
 	  };
+	};
+
+	validators$1.spelling = function spelling(correctSpelling) {
+	  return (value, opt) => {
+	    // eslint-disable-next-line no-console
+	    console.warn(`${opt} is likely a misspelling of ${correctSpelling}`);
+	    return true;
+	  }
 	};
 
 	/**
@@ -4081,7 +4052,7 @@
 	 */
 	class Axios {
 	  constructor(instanceConfig) {
-	    this.defaults = instanceConfig;
+	    this.defaults = instanceConfig || {};
 	    this.interceptors = {
 	      request: new InterceptorManager$1(),
 	      response: new InterceptorManager$1()
@@ -4101,9 +4072,9 @@
 	      return await this._request(configOrUrl, config);
 	    } catch (err) {
 	      if (err instanceof Error) {
-	        let dummy;
+	        let dummy = {};
 
-	        Error.captureStackTrace ? Error.captureStackTrace(dummy = {}) : (dummy = new Error());
+	        Error.captureStackTrace ? Error.captureStackTrace(dummy) : (dummy = new Error());
 
 	        // slice off the Error: ... line
 	        const stack = dummy.stack ? dummy.stack.replace(/^.+\n/, '') : '';
@@ -4157,6 +4128,18 @@
 	        }, true);
 	      }
 	    }
+
+	    // Set config.allowAbsoluteUrls
+	    if (config.allowAbsoluteUrls !== undefined) ; else if (this.defaults.allowAbsoluteUrls !== undefined) {
+	      config.allowAbsoluteUrls = this.defaults.allowAbsoluteUrls;
+	    } else {
+	      config.allowAbsoluteUrls = true;
+	    }
+
+	    validator.assertOptions(config, {
+	      baseUrl: validators.spelling('baseURL'),
+	      withXsrfToken: validators.spelling('withXSRFToken')
+	    }, true);
 
 	    // Set config.method
 	    config.method = (config.method || this.defaults.method || 'get').toLowerCase();
@@ -4248,7 +4231,7 @@
 
 	  getUri(config) {
 	    config = mergeConfig(this.defaults, config);
-	    const fullPath = buildFullPath(config.baseURL, config.url);
+	    const fullPath = buildFullPath(config.baseURL, config.url, config.allowAbsoluteUrls);
 	    return buildURL(fullPath, config.params, config.paramsSerializer);
 	  }
 	}
@@ -4745,11 +4728,14 @@
 	Object.defineProperty(errors, "__esModule", { value: true });
 	errors.errorCodeToString = void 0;
 	const consts_1$4 = consts;
-	function errorCodeToString(returnCode) {
+	function errorCodeToString(returnCode, customErrorList) {
 	    const returnCodeStr = returnCode.toString(16).toUpperCase();
 	    let errDescription = `Unknown Return Code: 0x${returnCodeStr}`;
 	    if (returnCode in consts_1$4.ERROR_DESCRIPTION_OVERRIDE) {
-	        errDescription = consts_1$4.ERROR_DESCRIPTION_OVERRIDE[returnCode];
+	        return consts_1$4.ERROR_DESCRIPTION_OVERRIDE[returnCode];
+	    }
+	    if (customErrorList && returnCode in customErrorList) {
+	        return customErrorList[returnCode];
 	    }
 	    return errDescription;
 	}
@@ -4764,8 +4750,8 @@
 	        this.errorMessage = errorMessage;
 	        this.returnCode = returnCode;
 	    }
-	    static fromReturnCode(returnCode) {
-	        return new ResponseError(returnCode, (0, errors_1$1.errorCodeToString)(returnCode));
+	    static fromReturnCode(returnCode, customErrorList) {
+	        return new ResponseError(returnCode, (0, errors_1$1.errorCodeToString)(returnCode, customErrorList));
 	    }
 	}
 	responseError.ResponseError = ResponseError;
@@ -4986,12 +4972,12 @@
 	function isDict(v) {
 	    return typeof v === 'object' && v !== null && !(v instanceof Array) && !(v instanceof Date);
 	}
-	function processResponse(responseRaw) {
+	function processResponse(responseRaw, customErrorList) {
 	    if (responseRaw.length < 2) {
 	        throw responseError_1$1.ResponseError.fromReturnCode(consts_1$1.LedgerError.EmptyBuffer);
 	    }
 	    const returnCode = responseRaw.readUInt16BE(responseRaw.length - 2);
-	    let errorMessage = (0, errors_1.errorCodeToString)(returnCode);
+	    let errorMessage = (0, errors_1.errorCodeToString)(returnCode, customErrorList);
 	    const payload = responseRaw.subarray(0, responseRaw.length - 2);
 	    if (returnCode === consts_1$1.LedgerError.NoErrors) {
 	        return new payload_1.ResponsePayload(payload);
@@ -5002,10 +4988,10 @@
 	    throw new responseError_1$1.ResponseError(returnCode, errorMessage);
 	}
 	common.processResponse = processResponse;
-	function processErrorResponse(response) {
+	function processErrorResponse(response, customErrorList) {
 	    if (isDict(response)) {
 	        if (Object.prototype.hasOwnProperty.call(response, 'statusCode')) {
-	            return responseError_1$1.ResponseError.fromReturnCode(response.statusCode);
+	            return responseError_1$1.ResponseError.fromReturnCode(response.statusCode, customErrorList);
 	        }
 	        if (Object.prototype.hasOwnProperty.call(response, 'returnCode') && Object.prototype.hasOwnProperty.call(response, 'errorMessage')) {
 	            return response;
@@ -5017,7 +5003,7 @@
 
 	Object.defineProperty(app, "__esModule", { value: true });
 	const bip32_1 = bip32;
-	const common_1 = common;
+	const common_1$1 = common;
 	const consts_1 = consts;
 	const responseError_1 = responseError;
 	class BaseApp {
@@ -5031,6 +5017,7 @@
 	        this.P1_VALUES = params.p1Values;
 	        this.CHUNK_SIZE = params.chunkSize;
 	        this.REQUIRED_PATH_LENGTHS = params.acceptedPathLengths;
+	        this.CUSTOM_APP_ERROR_DESCRIPTION = params.customAppErrorDescription;
 	    }
 	    serializePath(path) {
 	        return (0, bip32_1.serializePath)(path, this.REQUIRED_PATH_LENGTHS);
@@ -5060,7 +5047,7 @@
 	        }
 	        const statusList = [consts_1.LedgerError.NoErrors, consts_1.LedgerError.DataIsInvalid, consts_1.LedgerError.BadKeyHandle];
 	        const responseBuffer = await this.transport.send(this.CLA, ins, payloadType, p2, chunk, statusList);
-	        const response = (0, common_1.processResponse)(responseBuffer);
+	        const response = (0, common_1$1.processResponse)(responseBuffer, this.CUSTOM_APP_ERROR_DESCRIPTION);
 	        return response;
 	    }
 	    async signSendChunk(ins, chunkIdx, chunkNum, chunk) {
@@ -5069,7 +5056,7 @@
 	    async getVersion() {
 	        try {
 	            const responseBuffer = await this.transport.send(this.CLA, this.INS.GET_VERSION, 0, 0);
-	            const response = (0, common_1.processResponse)(responseBuffer);
+	            const response = (0, common_1$1.processResponse)(responseBuffer, this.CUSTOM_APP_ERROR_DESCRIPTION);
 	            let testMode;
 	            let major, minor, patch;
 	            if (response.length() === 5 || response.length() === 9) {
@@ -5108,13 +5095,13 @@
 	            };
 	        }
 	        catch (error) {
-	            throw (0, common_1.processErrorResponse)(error);
+	            throw (0, common_1$1.processErrorResponse)(error);
 	        }
 	    }
 	    async appInfo() {
 	        try {
 	            const responseBuffer = await this.transport.send(consts_1.LEDGER_DASHBOARD_CLA, 0x01, 0, 0);
-	            const response = (0, common_1.processResponse)(responseBuffer);
+	            const response = (0, common_1$1.processResponse)(responseBuffer, this.CUSTOM_APP_ERROR_DESCRIPTION);
 	            const formatId = response.readBytes(1).readUInt8();
 	            if (formatId !== 1) {
 	                throw new responseError_1.ResponseError(consts_1.LedgerError.TechnicalProblem, 'Format ID not recognized');
@@ -5137,13 +5124,13 @@
 	            };
 	        }
 	        catch (error) {
-	            throw (0, common_1.processErrorResponse)(error);
+	            throw (0, common_1$1.processErrorResponse)(error);
 	        }
 	    }
 	    async deviceInfo() {
 	        try {
 	            const responseBuffer = await this.transport.send(0xe0, 0x01, 0, 0, Buffer.from([]), [consts_1.LedgerError.NoErrors, 0x6e00]);
-	            const response = (0, common_1.processResponse)(responseBuffer);
+	            const response = (0, common_1$1.processResponse)(responseBuffer, this.CUSTOM_APP_ERROR_DESCRIPTION);
 	            const targetId = response.readBytes(4).toString('hex');
 	            const secureElementVersionLen = response.readBytes(1).readUInt8();
 	            const seVersion = response.readBytes(secureElementVersionLen).toString();
@@ -5164,7 +5151,7 @@
 	            };
 	        }
 	        catch (error) {
-	            throw (0, common_1.processErrorResponse)(error);
+	            throw (0, common_1$1.processErrorResponse)(error);
 	        }
 	    }
 	}
@@ -5220,13 +5207,23 @@
 	}) : function(o, v) {
 	    o["default"] = v;
 	});
-	var __importStar$1 = (commonjsGlobal && commonjsGlobal.__importStar) || function (mod) {
-	    if (mod && mod.__esModule) return mod;
-	    var result = {};
-	    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding$1(result, mod, k);
-	    __setModuleDefault$1(result, mod);
-	    return result;
-	};
+	var __importStar$1 = (commonjsGlobal && commonjsGlobal.__importStar) || (function () {
+	    var ownKeys = function(o) {
+	        ownKeys = Object.getOwnPropertyNames || function (o) {
+	            var ar = [];
+	            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+	            return ar;
+	        };
+	        return ownKeys(o);
+	    };
+	    return function (mod) {
+	        if (mod && mod.__esModule) return mod;
+	        var result = {};
+	        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding$1(result, mod, k[i]);
+	        __setModuleDefault$1(result, mod);
+	        return result;
+	    };
+	})();
 	var __importDefault$1 = (commonjsGlobal && commonjsGlobal.__importDefault) || function (mod) {
 	    return (mod && mod.__esModule) ? mod : { "default": mod };
 	};
@@ -5234,6 +5231,7 @@
 	generic_app.PolkadotGenericApp = void 0;
 	const axios_1 = __importDefault$1(axios_1$1);
 	const ledger_js_1$1 = __importStar$1(dist);
+	const common_1 = common$1;
 	class PolkadotGenericApp extends ledger_js_1$1.default {
 	    constructor(transport, txMetadataChainId, txMetadataSrvUrl) {
 	        super(transport, PolkadotGenericApp._params);
@@ -5262,20 +5260,34 @@
 	        }
 	        return Buffer.from(txMetadata, 'hex');
 	    }
-	    async getAddress(bip44Path, ss58prefix, showAddrInDevice = false) {
+	    async getAddress(bip44Path, ss58prefix, showAddrInDevice = false, scheme = 0 ) {
 	        if (!Number.isInteger(ss58prefix) || ss58prefix < 0 || ss58prefix >> 16 !== 0) {
 	            throw new ledger_js_1$1.ResponseError(ledger_js_1$1.LedgerError.ConditionsOfUseNotSatisfied, `Unexpected ss58prefix ${ss58prefix}. Needs to be a non-negative integer up to 2^16`);
+	        }
+	        if (scheme != 2  && scheme != 0 ) {
+	            throw new ledger_js_1$1.ResponseError(ledger_js_1$1.LedgerError.ConditionsOfUseNotSatisfied, `Unexpected scheme ${scheme}. Needs to be ECDSA (2) or ED25519 (0)`);
 	        }
 	        const bip44PathBuffer = this.serializePath(bip44Path);
 	        const prefixBuffer = Buffer.alloc(2);
 	        prefixBuffer.writeUInt16LE(ss58prefix);
-	        const payload = Buffer.concat([bip44PathBuffer, prefixBuffer]);
+	        let payload = bip44PathBuffer;
+	        if (scheme === 0 ) {
+	            payload = Buffer.concat([payload, prefixBuffer]);
+	        }
 	        const p1 = showAddrInDevice ? 1  : 0 ;
 	        try {
-	            const responseBuffer = await this.transport.send(this.CLA, this.INS.GET_ADDR, p1, 0, payload);
+	            const responseBuffer = await this.transport.send(this.CLA, this.INS.GET_ADDR, p1, scheme ?? 0 , payload);
 	            const response = (0, ledger_js_1$1.processResponse)(responseBuffer);
-	            const pubKey = response.readBytes(32).toString('hex');
-	            const address = response.readBytes(response.length()).toString('ascii');
+	            const currentScheme = (scheme ?? 0 );
+	            const pubKeyLen = currentScheme === 2  ? common_1.ECDSA_PUBKEY_LEN : common_1.ED25519_PUBKEY_LEN;
+	            const pubKey = response.readBytes(pubKeyLen).toString('hex');
+	            let address = '';
+	            if (currentScheme === 2 ) {
+	                address = response.readBytes(response.length()).toString('hex');
+	            }
+	            else {
+	                address = response.readBytes(response.length()).toString('ascii');
+	            }
 	            return {
 	                pubKey,
 	                address,
@@ -5284,6 +5296,12 @@
 	        catch (e) {
 	            throw (0, ledger_js_1$1.processErrorResponse)(e);
 	        }
+	    }
+	    async getAddressEcdsa(bip44Path, showAddrInDevice = false) {
+	        return this.getAddress(bip44Path, 0, showAddrInDevice, 2 );
+	    }
+	    async getAddressEd25519(bip44Path, ss58prefix, showAddrInDevice = false) {
+	        return this.getAddress(bip44Path, ss58prefix, showAddrInDevice);
 	    }
 	    splitBufferToChunks(message, chunkSize) {
 	        const chunks = [];
@@ -5311,12 +5329,12 @@
 	        }
 	        return chunks;
 	    }
-	    async signImpl(path, ins, blob, metadata) {
+	    async signImplEd25519(path, ins, blob, metadata) {
 	        const chunks = this.getSignReqChunks(path, blob, metadata);
 	        try {
-	            let result = await this.signSendChunk(ins, 1, chunks.length, chunks[0]);
+	            let result = await this.sendGenericChunk(ins, 0 , 1, chunks.length, chunks[0]);
 	            for (let i = 1; i < chunks.length; i += 1) {
-	                result = await this.signSendChunk(ins, 1 + i, chunks.length, chunks[i]);
+	                result = await this.sendGenericChunk(ins, 0 , 1 + i, chunks.length, chunks[i]);
 	            }
 	            return {
 	                signature: result.readBytes(result.length()),
@@ -5326,7 +5344,33 @@
 	            throw (0, ledger_js_1$1.processErrorResponse)(e);
 	        }
 	    }
-	    async sign(path, txBlob) {
+	    async signImplEcdsa(path, ins, blob, metadata) {
+	        const chunks = this.getSignReqChunks(path, blob, metadata);
+	        try {
+	            let result = await this.sendGenericChunk(ins, 2 , 1, chunks.length, chunks[0]);
+	            for (let i = 1; i < chunks.length; i += 1) {
+	                result = await this.sendGenericChunk(ins, 2 , 1 + i, chunks.length, chunks[i]);
+	            }
+	            return {
+	                r: result.readBytes(32),
+	                s: result.readBytes(32),
+	                v: result.readBytes(1),
+	            };
+	        }
+	        catch (e) {
+	            throw (0, ledger_js_1$1.processErrorResponse)(e);
+	        }
+	    }
+	    async sign(path, txBlob, scheme = 0 ) {
+	        if (scheme != 2  && scheme != 0 ) {
+	            throw new ledger_js_1$1.ResponseError(ledger_js_1$1.LedgerError.ConditionsOfUseNotSatisfied, `Unexpected scheme ${scheme}. Needs to be ECDSA (2) or ED25519 (0)`);
+	        }
+	        if (scheme === 2 ) {
+	            return await this.signEcdsa(path, txBlob);
+	        }
+	        return await this.signEd25519(path, txBlob);
+	    }
+	    async signEd25519(path, txBlob) {
 	        if (!this.txMetadataSrvUrl) {
 	            throw new ledger_js_1$1.ResponseError(ledger_js_1$1.LedgerError.GenericError, 'txMetadataSrvUrl is not defined or is empty. The use of the method requires access to a metadata shortening service.');
 	        }
@@ -5334,7 +5378,17 @@
 	            throw new ledger_js_1$1.ResponseError(ledger_js_1$1.LedgerError.GenericError, 'txMetadataChainId is not defined or is empty. These values are configured in the metadata shortening service. Check the corresponding configuration in the service.');
 	        }
 	        const txMetadata = await this.getTxMetadata(txBlob);
-	        return await this.signImpl(path, this.INS.SIGN, txBlob, txMetadata);
+	        return await this.signImplEd25519(path, this.INS.SIGN, txBlob, txMetadata);
+	    }
+	    async signEcdsa(path, txBlob) {
+	        if (!this.txMetadataSrvUrl) {
+	            throw new ledger_js_1$1.ResponseError(ledger_js_1$1.LedgerError.GenericError, 'txMetadataSrvUrl is not defined or is empty. The use of the method requires access to a metadata shortening service.');
+	        }
+	        if (!this.txMetadataChainId) {
+	            throw new ledger_js_1$1.ResponseError(ledger_js_1$1.LedgerError.GenericError, 'txMetadataChainId is not defined or is empty. These values are configured in the metadata shortening service. Check the corresponding configuration in the service.');
+	        }
+	        const txMetadata = await this.getTxMetadata(txBlob);
+	        return await this.signImplEcdsa(path, this.INS.SIGN, txBlob, txMetadata);
 	    }
 	    async signMigration(path, txBlob, txMetadataChainId, txMetadataSrvUrl) {
 	        if (!this.txMetadataSrvUrl) {
@@ -5344,13 +5398,37 @@
 	            throw new ledger_js_1$1.ResponseError(ledger_js_1$1.LedgerError.GenericError, 'txMetadataChainId is not defined or is empty. These values are configured in the metadata shortening service. Check the corresponding configuration in the service.');
 	        }
 	        const txMetadata = await this.getTxMetadata(txBlob, txMetadataChainId, txMetadataSrvUrl);
-	        return await this.signImpl(path, this.INS.SIGN, txBlob, txMetadata);
+	        return await this.signImplEd25519(path, this.INS.SIGN, txBlob, txMetadata);
 	    }
-	    async signRaw(path, txBlob) {
-	        return await this.signImpl(path, this.INS.SIGN_RAW, txBlob);
+	    async signRaw(path, txBlob, scheme = 0 ) {
+	        if (scheme != 2  && scheme != 0 ) {
+	            throw new ledger_js_1$1.ResponseError(ledger_js_1$1.LedgerError.ConditionsOfUseNotSatisfied, `Unexpected scheme ${scheme}. Needs to be ECDSA (2) or ED25519 (0)`);
+	        }
+	        if (scheme === 2 ) {
+	            return await this.signRawEcdsa(path, txBlob);
+	        }
+	        return await this.signRawEd25519(path, txBlob);
 	    }
-	    async signWithMetadata(path, txBlob, txMetadata) {
-	        return await this.signImpl(path, this.INS.SIGN, txBlob, txMetadata);
+	    async signRawEd25519(path, txBlob) {
+	        return await this.signImplEd25519(path, this.INS.SIGN_RAW, txBlob);
+	    }
+	    async signRawEcdsa(path, txBlob) {
+	        return await this.signImplEcdsa(path, this.INS.SIGN_RAW, txBlob);
+	    }
+	    async signWithMetadata(path, txBlob, txMetadata, scheme) {
+	        if (scheme != 2  && scheme != 0 ) {
+	            throw new ledger_js_1$1.ResponseError(ledger_js_1$1.LedgerError.ConditionsOfUseNotSatisfied, `Unexpected scheme ${scheme}. Needs to be ECDSA (2) or ED25519 (0)`);
+	        }
+	        if (scheme === 2 ) {
+	            return await this.signWithMetadataEcdsa(path, txBlob, txMetadata);
+	        }
+	        return await this.signWithMetadataEd25519(path, txBlob, txMetadata);
+	    }
+	    async signWithMetadataEcdsa(path, txBlob, txMetadata) {
+	        return await this.signImplEcdsa(path, this.INS.SIGN, txBlob, txMetadata);
+	    }
+	    async signWithMetadataEd25519(path, txBlob, txMetadata) {
+	        return await this.signImplEd25519(path, this.INS.SIGN, txBlob, txMetadata);
 	    }
 	}
 	generic_app.PolkadotGenericApp = PolkadotGenericApp;
@@ -5457,7 +5535,7 @@
 	                throw ledger_js_1.ResponseError.fromReturnCode(ledger_js_1.LedgerError.AlgorithmNotSupported);
 	            }
 	            const bip44Path = this.convertLegacyPath(account, change, addressIndex);
-	            const signature = await this.genericApp.sign(bip44Path, message);
+	            const signature = await this.genericApp.signEd25519(bip44Path, message);
 	            const legacyError = this.convertToLegacyError(ledger_js_1.ResponseError.fromReturnCode(ledger_js_1.LedgerError.NoErrors));
 	            return {
 	                ...legacyError,
@@ -5478,7 +5556,7 @@
 	                throw ledger_js_1.ResponseError.fromReturnCode(ledger_js_1.LedgerError.AlgorithmNotSupported);
 	            }
 	            const bip44Path = this.convertLegacyPath(account, change, addressIndex);
-	            const signature = await this.genericApp.signRaw(bip44Path, message);
+	            const signature = await this.genericApp.signRawEd25519(bip44Path, message);
 	            const legacyError = this.convertToLegacyError(ledger_js_1.ResponseError.fromReturnCode(ledger_js_1.LedgerError.NoErrors));
 	            return {
 	                ...legacyError,
@@ -9330,7 +9408,7 @@
 		hasRequiredPackageInfo = 1;
 		Object.defineProperty(packageInfo, "__esModule", { value: true });
 		packageInfo.packageInfo = void 0;
-		packageInfo.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.4.4' };
+		packageInfo.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.5.1' };
 		return packageInfo;
 	}
 
@@ -9500,6 +9578,16 @@
 	        };
 	    };
 	}
+	function signEcdsa(method, message, slip44, accountIndex = 0, addressOffset = 0) {
+	    const bip42Path = `m/44'/${slip44}'/${accountIndex}'/${0}'/${addressOffset}'`;
+	    return async (app) => {
+	        const { r, s, v } = await wrapError(app[method](bip42Path, util$1.u8aToBuffer(message)));
+	        const signature = Buffer.concat([r, s, v]);
+	        return {
+	            signature: util$1.hexAddPrefix(signature.toString('hex'))
+	        };
+	    };
+	}
 	function signWithMetadata(message, slip44, accountIndex = 0, addressOffset = 0, { metadata } = {}) {
 	    const bip42Path = `m/44'/${slip44}'/${accountIndex}'/${0}'/${addressOffset}'`;
 	    return async (app) => {
@@ -9507,7 +9595,21 @@
 	            throw new Error('The metadata option must be present when using signWithMetadata');
 	        }
 	        const bufferMsg = Buffer.from(message);
-	        const { signature } = await wrapError(app.signWithMetadata(bip42Path, bufferMsg, metadata));
+	        const { signature } = await wrapError(app.signWithMetadataEd25519(bip42Path, bufferMsg, metadata));
+	        return {
+	            signature: util$1.hexAddPrefix(signature.toString('hex'))
+	        };
+	    };
+	}
+	function signWithMetadataEcdsa(message, slip44, accountIndex = 0, addressOffset = 0, { metadata } = {}) {
+	    const bip42Path = `m/44'/${slip44}'/${accountIndex}'/${0}'/${addressOffset}'`;
+	    return async (app) => {
+	        if (!metadata) {
+	            throw new Error('The metadata option must be present when using signWithMetadata');
+	        }
+	        const bufferMsg = Buffer.from(message);
+	        const { r, s, v } = await wrapError(app.signWithMetadataEcdsa(bip42Path, bufferMsg, metadata));
+	        const signature = Buffer.concat([r, s, v]);
 	        return {
 	            signature: util$1.hexAddPrefix(signature.toString('hex'))
 	        };
@@ -9536,7 +9638,17 @@
 	    async getAddress(ss58Prefix, confirm = false, accountIndex = 0, addressOffset = 0) {
 	        const bip42Path = `m/44'/${this.__internal__slip44}'/${accountIndex}'/${0}'/${addressOffset}'`;
 	        return this.withApp(async (app) => {
-	            const { address, pubKey } = await wrapError(app.getAddress(bip42Path, ss58Prefix, confirm));
+	            const { address, pubKey } = await wrapError(app.getAddressEd25519(bip42Path, ss58Prefix, confirm));
+	            return {
+	                address,
+	                publicKey: util$1.hexAddPrefix(pubKey)
+	            };
+	        });
+	    }
+	    async getAddressEcdsa(confirm = false, accountIndex = 0, addressOffset = 0) {
+	        const bip42Path = `m/44'/${this.__internal__slip44}'/${accountIndex}'/${0}'/${addressOffset}'`;
+	        return this.withApp(async (app) => {
+	            const { address, pubKey } = await wrapError(app.getAddressEcdsa(bip42Path, confirm));
 	            return {
 	                address,
 	                publicKey: util$1.hexAddPrefix(pubKey)
@@ -9554,13 +9666,22 @@
 	        });
 	    }
 	    async sign(message, accountIndex, addressOffset) {
-	        return this.withApp(sign('sign', message, this.__internal__slip44, accountIndex, addressOffset));
+	        return this.withApp(sign('signEd25519', message, this.__internal__slip44, accountIndex, addressOffset));
 	    }
 	    async signRaw(message, accountIndex, addressOffset) {
-	        return this.withApp(sign('signRaw', util$1.u8aWrapBytes(message), this.__internal__slip44, accountIndex, addressOffset));
+	        return this.withApp(sign('signRawEd25519', util$1.u8aWrapBytes(message), this.__internal__slip44, accountIndex, addressOffset));
+	    }
+	    async signEcdsa(message, accountIndex, addressOffset) {
+	        return this.withApp(signEcdsa('signEcdsa', util$1.u8aWrapBytes(message), this.__internal__slip44, accountIndex, addressOffset));
+	    }
+	    async signRawEcdsa(message, accountIndex, addressOffset) {
+	        return this.withApp(signEcdsa('signRawEcdsa', util$1.u8aWrapBytes(message), this.__internal__slip44, accountIndex, addressOffset));
 	    }
 	    async signWithMetadata(message, accountIndex, addressOffset, options) {
 	        return this.withApp(signWithMetadata(message, this.__internal__slip44, accountIndex, addressOffset, options));
+	    }
+	    async signWithMetadataEcdsa(message, accountIndex, addressOffset, options) {
+	        return this.withApp(signWithMetadataEcdsa(message, this.__internal__slip44, accountIndex, addressOffset, options));
 	    }
 	    async withApp(fn) {
 	        try {
