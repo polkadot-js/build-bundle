@@ -121,6 +121,7 @@
 
     const DEFAULT_CAPACITY = 1024;
     const DEFAULT_TTL = 30000;
+    const DISABLED_TTL = 31_536_000_000;
     class LRUNode {
         key;
         __internal__expires;
@@ -152,8 +153,8 @@
         __internal__ttl;
         constructor(capacity = DEFAULT_CAPACITY, ttl = DEFAULT_TTL) {
             this.capacity = capacity;
-            this.__internal__ttl = ttl;
-            this.__internal__head = this.__internal__tail = new LRUNode('<empty>', ttl);
+            ttl ? this.__internal__ttl = ttl : this.__internal__ttl = DISABLED_TTL;
+            this.__internal__head = this.__internal__tail = new LRUNode('<empty>', this.__internal__ttl);
         }
         get ttl() {
             return this.__internal__ttl;
@@ -261,6 +262,7 @@
         __internal__endpoint;
         __internal__headers;
         __internal__stats;
+        __internal__ttl;
         constructor(endpoint = defaults.HTTP_URL, headers = {}, cacheCapacity, cacheTtl) {
             if (!/^(https|http):\/\//.test(endpoint)) {
                 throw new Error(`Endpoint should start with 'http://' or 'https://', received '${endpoint}'`);
@@ -268,8 +270,10 @@
             this.__internal__coder = new RpcCoder();
             this.__internal__endpoint = endpoint;
             this.__internal__headers = headers;
-            this.__internal__callCache = new LRUCache(cacheCapacity === 0 ? 0 : cacheCapacity || DEFAULT_CAPACITY, cacheTtl || DEFAULT_TTL);
             this.__internal__cacheCapacity = cacheCapacity === 0 ? 0 : cacheCapacity || DEFAULT_CAPACITY;
+            const ttl = cacheTtl === undefined ? DEFAULT_TTL : cacheTtl;
+            this.__internal__callCache = new LRUCache(cacheCapacity === 0 ? 0 : cacheCapacity || DEFAULT_CAPACITY, ttl);
+            this.__internal__ttl = cacheTtl;
             this.__internal__stats = {
                 active: { requests: 0, subscriptions: 0 },
                 total: { bytesRecv: 0, bytesSent: 0, cached: 0, errors: 0, requests: 0, subscriptions: 0, timeout: 0 }
@@ -287,6 +291,9 @@
         }
         get stats() {
             return this.__internal__stats;
+        }
+        get ttl() {
+            return this.__internal__ttl;
         }
         get isClonable() {
             return !!true;
@@ -1061,6 +1068,7 @@
         __internal__stats;
         __internal__waitingForId = {};
         __internal__cacheCapacity;
+        __internal__ttl;
         __internal__autoConnectMs;
         __internal__endpointIndex;
         __internal__endpointStats;
@@ -1081,7 +1089,9 @@
                     throw new Error(`Endpoint should start with 'ws://', received '${endpoint}'`);
                 }
             });
-            this.__internal__callCache = new LRUCache(cacheCapacity || DEFAULT_CAPACITY, cacheTtl || DEFAULT_TTL);
+            const ttl = cacheTtl === undefined ? DEFAULT_TTL : cacheTtl;
+            this.__internal__callCache = new LRUCache(cacheCapacity === 0 ? 0 : cacheCapacity || DEFAULT_CAPACITY, ttl);
+            this.__internal__ttl = cacheTtl;
             this.__internal__cacheCapacity = cacheCapacity || DEFAULT_CAPACITY;
             this.__internal__eventemitter = new EventEmitter();
             this.__internal__autoConnectMs = autoConnectMs || 0;
@@ -1184,6 +1194,9 @@
                 },
                 total: this.__internal__stats.total
             };
+        }
+        get ttl() {
+            return this.__internal__ttl;
         }
         get endpointStats() {
             return this.__internal__endpointStats;
@@ -1419,7 +1432,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.0.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.1.1' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -3624,7 +3637,7 @@
         mapping = new Map();
         provider;
         sections = [];
-        constructor(instanceId, registry, { isPedantic = true, provider, rpcCacheCapacity, userRpc = {} }) {
+        constructor(instanceId, registry, { isPedantic = true, provider, rpcCacheCapacity, ttl, userRpc = {} }) {
             if (!provider || !util.isFunction(provider.send)) {
                 throw new Error('Expected Provider to API create');
             }
@@ -3634,7 +3647,7 @@
             this.provider = provider;
             const sectionNames = Object.keys(types.rpcDefinitions);
             this.sections.push(...sectionNames);
-            this.__internal__storageCache = new LRUCache(rpcCacheCapacity || RPC_CORE_DEFAULT_CAPACITY);
+            this.__internal__storageCache = new LRUCache(rpcCacheCapacity || RPC_CORE_DEFAULT_CAPACITY, ttl);
             this.addUserInterfaces(userRpc);
         }
         get isConnected() {
@@ -24158,6 +24171,7 @@
                 isPedantic: this._options.isPedantic,
                 provider,
                 rpcCacheCapacity: this._options.rpcCacheCapacity,
+                ttl: this._options.provider?.ttl,
                 userRpc: this._options.rpc
             });
             this._isConnected = new BehaviorSubject(this._rpcCore.provider.isConnected);
