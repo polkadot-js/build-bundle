@@ -16017,7 +16017,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.1.1' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.1.2' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
@@ -16410,7 +16410,7 @@
     const IMMORTAL_ERA = new Uint8Array([0]);
     const UNMASK_VERSION = 0b01111111;
     const DEFAULT_PREAMBLE = 'bare';
-    const LATEST_EXTRINSIC_VERSION = 5;
+    const LATEST_EXTRINSIC_VERSION = 4;
     const VERSION_MASK = 0b00111111;
     const TYPE_MASK = 0b11000000;
     const BARE_EXTRINSIC = 0b00000000;
@@ -16589,8 +16589,8 @@
         static LATEST_EXTRINSIC_VERSION = LATEST_EXTRINSIC_VERSION;
         constructor(registry, value, { preamble, version } = {}) {
             const versionsLength = registry.metadata.extrinsic.versions.length;
-            const highestSupportedVersion = versionsLength ? registry.metadata.extrinsic.versions[versionsLength - 1] : undefined;
-            super(registry, decodeExtrinsic(registry, value, version || highestSupportedVersion, preamble), undefined, preamble);
+            const supportedVersion = versionsLength ? registry.metadata.extrinsic.versions[0] : undefined;
+            super(registry, decodeExtrinsic(registry, value, version || supportedVersion, preamble), undefined, preamble);
         }
         get hash() {
             if (!this.__internal__hashCache) {
