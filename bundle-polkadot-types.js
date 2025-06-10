@@ -12359,6 +12359,13 @@
             docs: 'Vec<Text>',
             environment: 'ContractEnvironmentV4'
         },
+        ContractContractSpecV6: {
+            constructors: 'Vec<ContractConstructorSpecV4>',
+            messages: 'Vec<ContractMessageSpecV3>',
+            events: 'Vec<ContractEventSpecV3>',
+            docs: 'Vec<Text>',
+            environment: 'ContractEnvironmentV4'
+        },
         ContractDisplayName: 'SiPath',
         ContractEventParamSpecV0: {
             name: 'Text',
@@ -12451,7 +12458,7 @@
         ContractEventParamSpecLatest: 'ContractEventParamSpecV2',
         ContractMessageParamSpecLatest: 'ContractMessageParamSpecV2',
         ContractMessageSpecLatest: 'ContractMessageSpecV3',
-        ContractMetadataLatest: 'ContractMetadataV5'
+        ContractMetadataLatest: 'ContractMetadataV6'
     };
     const definitions$c = {
         rpc: {},
@@ -12461,6 +12468,10 @@
             ...latest,
             ContractProjectInfo: {
                 source: 'ContractProjectSource',
+                contract: 'ContractProjectContract'
+            },
+            ContractReviveProjectInfo: {
+                source: 'ContractReviveProjectSource',
                 contract: 'ContractProjectContract'
             },
             ContractMetadataV0: {
@@ -12490,6 +12501,11 @@
                 spec: 'ContractContractSpecV5',
                 version: 'u64'
             },
+            ContractMetadataV6: {
+                types: 'Vec<PortableType>',
+                spec: 'ContractContractSpecV6',
+                version: 'u64'
+            },
             ContractMetadata: {
                 _enum: {
                     V0: 'ContractMetadataV0',
@@ -12497,7 +12513,8 @@
                     V2: 'ContractMetadataV2',
                     V3: 'ContractMetadataV3',
                     V4: 'ContractMetadataV4',
-                    V5: 'ContractMetadataV5'
+                    V5: 'ContractMetadataV5',
+                    V6: 'ContractMetadataV6'
                 }
             },
             ContractProjectV0: {
@@ -12524,6 +12541,16 @@
             ContractProjectSource: {
                 _alias: {
                     wasmHash: 'hash'
+                },
+                wasmHash: '[u8; 32]',
+                language: 'Text',
+                compiler: 'Text',
+                wasm: 'Raw'
+            },
+            ContractReviveProjectSource: {
+                _alias: {
+                    wasmHash: 'hash',
+                    wasm: 'contract_binary'
                 },
                 wasmHash: '[u8; 32]',
                 language: 'Text',
@@ -16017,7 +16044,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.1.2' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.2.1' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {

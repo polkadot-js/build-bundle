@@ -100,9 +100,12 @@
         }));
     }
 
-    const enumVersions = ['V5', 'V4', 'V3', 'V2', 'V1'];
+    const enumVersions = ['V6', 'V5', 'V4', 'V3', 'V2', 'V1'];
     function createConverter(next, step) {
         return (registry, input) => next(registry, step(registry, input));
+    }
+    function v6ToLatestCompatible(_registry, v6) {
+        return v6;
     }
     function v5ToLatestCompatible(_registry, v5) {
         return v5;
@@ -115,6 +118,7 @@
     const v1ToLatestCompatible =  createConverter(v2ToLatestCompatible, v1ToV2);
     const v0ToLatestCompatible =  createConverter(v1ToLatestCompatible, v0ToV1);
     const convertVersions = [
+        ['V6', v6ToLatestCompatible],
         ['V5', v5ToLatestCompatible],
         ['V4', v4ToLatestCompatible],
         ['V3', v3ToLatestCompatible],
@@ -124,7 +128,7 @@
     ];
 
     const l$1 = util.logger('Abi');
-    const PRIMITIVE_ALWAYS = ['AccountId', 'AccountIndex', 'Address', 'Balance'];
+    const PRIMITIVE_ALWAYS = ['AccountId', 'AccountId20', 'AccountIndex', 'Address', 'Balance'];
     function findMessage(list, messageOrId) {
         const message = util.isNumber(messageOrId)
             ? list[messageOrId]
@@ -151,9 +155,20 @@
         const upgradedMetadata = converter[1](registry, metadata[`as${converter[0]}`]);
         return upgradedMetadata;
     }
+    function isRevive(json) {
+        const source = json['source'];
+        const version = json['version'];
+        const hasContractBinary = typeof source === 'object' &&
+            source !== null &&
+            'contract_binary' in source;
+        const hasVersion = typeof version === 'number' && version >= 6;
+        return hasContractBinary || hasVersion;
+    }
     function parseJson(json, chainProperties) {
         const registry = new types.TypeRegistry();
-        const info = registry.createType('ContractProjectInfo', json);
+        const revive = isRevive(json);
+        const typeName = revive ? 'ContractReviveProjectInfo' : 'ContractProjectInfo';
+        const info = registry.createType(typeName, json);
         const metadata = getMetadata(registry, json);
         const lookup = registry.createType('PortableRegistry', { types: metadata.types }, true);
         registry.setLookup(lookup);
@@ -161,7 +176,7 @@
             registry.setChainProperties(chainProperties);
         }
         lookup.types.forEach(({ id }) => lookup.getTypeDef(id));
-        return [json, registry, metadata, info];
+        return [json, registry, metadata, info, revive];
     }
     function isTypeSpec(value) {
         return !!value && value instanceof Map && !util.isUndefined(value.type) && !util.isUndefined(value.displayName);
@@ -178,8 +193,9 @@
         metadata;
         registry;
         environment = new Map();
+        isRevive;
         constructor(abiJson, chainProperties) {
-            [this.json, this.registry, this.metadata, this.info] = parseJson(util.isString(abiJson)
+            [this.json, this.registry, this.metadata, this.info, this.isRevive] = parseJson(util.isString(abiJson)
                 ? JSON.parse(abiJson)
                 : abiJson, chainProperties);
             this.constructors = this.metadata.spec.constructors.map((spec, index) => this.__internal__createMessage(spec, index, {
@@ -396,7 +412,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api-contract', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.1.2' };
+    const packageInfo = { name: '@polkadot/api-contract', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.2.1' };
 
     function applyOnEvent(result, types, fn) {
         if (result.isInBlock || result.isFinalized) {
@@ -413,15 +429,10 @@
         api;
         _decorateMethod;
         _isWeightV1;
+        _isRevive;
         constructor(api, abi, decorateMethod) {
             if (!api || !api.isConnected || !api.tx) {
                 throw new Error('Your API has not been initialized correctly and is not connected to a chain');
-            }
-            else if (!api.tx.contracts || !util.isFunction(api.tx.contracts.instantiateWithCode) || api.tx.contracts.instantiateWithCode.meta.args.length !== 6) {
-                throw new Error('The runtime does not expose api.tx.contracts.instantiateWithCode with storageDepositLimit');
-            }
-            else if (!api.call.contractsApi || !util.isFunction(api.call.contractsApi.call)) {
-                throw new Error('Your runtime does not expose the api.call.contractsApi.call runtime interfaces');
             }
             this.abi = abi instanceof Abi
                 ? abi
@@ -429,6 +440,23 @@
             this.api = api;
             this._decorateMethod = decorateMethod;
             this._isWeightV1 = !api.registry.createType('Weight').proofSize;
+            this._isRevive = this.abi.isRevive;
+            if (this._isRevive) {
+                if (!api.tx.revive || !util.isFunction(api.tx.revive.instantiateWithCode) || api.tx.revive.instantiateWithCode.meta.args.length !== 6) {
+                    throw new Error('The runtime does not expose api.tx.revive.instantiateWithCode with storageDepositLimit');
+                }
+                else if (!api.call.reviveApi || !util.isFunction(api.call.reviveApi.call)) {
+                    throw new Error('Your runtime does not expose the api.call.reviveApi.call runtime interfaces');
+                }
+            }
+            else {
+                if (!api.tx.contracts || !util.isFunction(api.tx.contracts.instantiateWithCode) || api.tx.contracts.instantiateWithCode.meta.args.length !== 6) {
+                    throw new Error('The runtime does not expose api.tx.contracts.instantiateWithCode with storageDepositLimit');
+                }
+                else if (!api.call.contractsApi || !util.isFunction(api.call.contractsApi.call)) {
+                    throw new Error('Your runtime does not expose the api.call.contractsApi.call runtime interfaces');
+                }
+            }
         }
         get registry() {
             return this.api.registry;
@@ -988,7 +1016,7 @@
         __internal__tx = {};
         constructor(api, abi, address, decorateMethod) {
             super(api, abi, decorateMethod);
-            this.address = this.registry.createType('AccountId', address);
+            this.address = this.registry.createType(this._isRevive ? 'AccountId20' : 'AccountId', address);
             this.abi.messages.forEach((m) => {
                 if (util.isUndefined(this.__internal__tx[m.method])) {
                     this.__internal__tx[m.method] = createTx(m, (o, p) => this.__internal__exec(m, o, p));
@@ -1016,7 +1044,8 @@
                     : this.api.consts.system['maximumBlockWeight']).v1Weight.muln(64).div(util.BN_HUNDRED));
         };
         __internal__exec = (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
-            return this.api.tx.contracts.call(this.address, value,
+            const palletTx = this._isRevive ? this.api.tx.revive : this.api.tx.contracts;
+            return palletTx.call(this.address, value,
             this._isWeightV1
                 ? convertWeight(gasLimit).v1Weight
                 : convertWeight(gasLimit).v2Weight, storageDepositLimit, this.abi.findMessage(messageOrId).toU8a(params)).withResultTransform((result) =>
@@ -1035,7 +1064,9 @@
         __internal__read = (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
             const message = this.abi.findMessage(messageOrId);
             return {
-                send: this._decorateMethod((origin) => this.api.rx.call.contractsApi.call(origin, this.address, value,
+                send: this._decorateMethod((origin) => (this._isRevive
+                    ? this.api.rx.call.reviveApi.call
+                    : this.api.rx.call.contractsApi.call)(origin, this.address, value,
                 this._isWeightV1
                     ? this.__internal__getGas(gasLimit, true).v1Weight
                     : this.__internal__getGas(gasLimit, true).v2Weight, storageDepositLimit, message.toU8a(params)).pipe(map(({ debugMessage, gasConsumed, gasRequired, result, storageDeposit }) => ({
@@ -1077,10 +1108,18 @@
             return this.__internal__tx;
         }
         __internal__deploy = (constructorOrId, { gasLimit = util.BN_ZERO, salt, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
-            return this.api.tx.contracts.instantiate(value,
+            const palletTx = this._isRevive
+                ? this.api.tx.revive
+                : this.api.tx.contracts;
+            return palletTx.instantiate(value,
             this._isWeightV1
                 ? convertWeight(gasLimit).v1Weight
-                : convertWeight(gasLimit).v2Weight, storageDepositLimit, this.codeHash, this.abi.findConstructor(constructorOrId).toU8a(params), encodeSalt(salt)).withResultTransform((result) => new BlueprintSubmittableResult(result, applyOnEvent(result, ['Instantiated'], ([record]) => new Contract(this.api, this.abi, record.event.data[1], this._decorateMethod))));
+                : convertWeight(gasLimit).v2Weight, storageDepositLimit, this.codeHash, this.abi.findConstructor(constructorOrId).toU8a(params), encodeSalt(salt)).withResultTransform((result) => new BlueprintSubmittableResult(result, this._isRevive
+                ? ((result.status.isInBlock || result.status.isFinalized)
+                    ? new Contract(this.api, this.abi,
+                    this.registry.createType('AccountId', '0x'), this._decorateMethod)
+                    : undefined)
+                : applyOnEvent(result, ['Instantiated'], ([record]) => new Contract(this.api, this.abi, record.event.data[1], this._decorateMethod))));
         };
     }
 
@@ -1117,7 +1156,14 @@
             return this.__internal__tx;
         }
         __internal__instantiate = (constructorOrId, { gasLimit = util.BN_ZERO, salt, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
-            return this.api.tx.contracts.instantiateWithCode(value,
+            const palletTx = this._isRevive ? this.api.tx.revive : this.api.tx.contracts;
+            if (this._isRevive) {
+                return palletTx.instantiateWithCode(value,
+                this._isWeightV1
+                    ? convertWeight(gasLimit).v1Weight
+                    : convertWeight(gasLimit).v2Weight, storageDepositLimit, util.compactAddLength(this.code), this.abi.findConstructor(constructorOrId).toU8a(params), encodeSalt(salt)).withResultTransform((result) => new CodeSubmittableResult(result, new Blueprint(this.api, this.abi, this.abi.info.source.hash, this._decorateMethod), new Contract(this.api, this.abi, '0x', this._decorateMethod)));
+            }
+            return palletTx.instantiateWithCode(value,
             this._isWeightV1
                 ? convertWeight(gasLimit).v1Weight
                 : convertWeight(gasLimit).v2Weight, storageDepositLimit, util.compactAddLength(this.code), this.abi.findConstructor(constructorOrId).toU8a(params), encodeSalt(salt)).withResultTransform((result) => new CodeSubmittableResult(result, ...(applyOnEvent(result, ['CodeStored', 'Instantiated'], (records) => records.reduce(([blueprint, contract], { event }) => this.api.events.contracts.Instantiated.is(event)
