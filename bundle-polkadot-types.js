@@ -6824,10 +6824,10 @@
         createdAtHash;
         initialU8aLength;
         isStorageFallback;
-        __internal__raw;
+        #raw;
         constructor(registry, value, initialU8aLength) {
             this.initialU8aLength = initialU8aLength;
-            this.__internal__raw = value;
+            this.#raw = value;
             this.registry = registry;
         }
         get encodedLength() {
@@ -6837,40 +6837,40 @@
             return this.registry.hash(this.toU8a());
         }
         get inner() {
-            return this.__internal__raw;
+            return this.#raw;
         }
         get isEmpty() {
-            return this.__internal__raw.isEmpty;
+            return this.#raw.isEmpty;
         }
         eq(other) {
-            return this.__internal__raw.eq(other);
+            return this.#raw.eq(other);
         }
         inspect() {
-            return this.__internal__raw.inspect();
+            return this.#raw.inspect();
         }
         toHex(isLe) {
-            return this.__internal__raw.toHex(isLe);
+            return this.#raw.toHex(isLe);
         }
         toHuman(isExtended, disableAscii) {
-            return this.__internal__raw.toHuman(isExtended, disableAscii);
+            return this.#raw.toHuman(isExtended, disableAscii);
         }
         toJSON() {
-            return this.__internal__raw.toJSON();
+            return this.#raw.toJSON();
         }
         toPrimitive(disableAscii) {
-            return this.__internal__raw.toPrimitive(disableAscii);
+            return this.#raw.toPrimitive(disableAscii);
         }
         toString() {
-            return this.__internal__raw.toString();
+            return this.#raw.toString();
         }
         toU8a(isBare) {
-            return this.__internal__raw.toU8a(isBare);
+            return this.#raw.toU8a(isBare);
         }
         unwrap() {
-            return this.__internal__raw;
+            return this.#raw;
         }
         valueOf() {
-            return this.__internal__raw;
+            return this.#raw;
         }
     }
 
@@ -6930,7 +6930,7 @@
         createdAtHash;
         initialU8aLength;
         isStorageFallback;
-        __internal__bitLength;
+        #bitLength;
         constructor(registry, value = 0, bitLength = DEFAULT_UINT_BITS, isSigned = false) {
             super(
             util.isU8a(value)
@@ -6939,9 +6939,9 @@
                     : util.u8aToBn(value.subarray(0, bitLength / 8), { isLe: true, isNegative: isSigned }).toString()
                 : decodeAbstractInt(value, isSigned));
             this.registry = registry;
-            this.__internal__bitLength = bitLength;
-            this.encodedLength = this.__internal__bitLength / 8;
-            this.initialU8aLength = this.__internal__bitLength / 8;
+            this.#bitLength = bitLength;
+            this.encodedLength = this.#bitLength / 8;
+            this.initialU8aLength = this.#bitLength / 8;
             this.isUnsigned = !isSigned;
             const isNegative = this.isNeg();
             const maxBits = bitLength - (isSigned && !isNegative ? 1 : 0);
@@ -6959,7 +6959,7 @@
             return this.isZero();
         }
         bitLength() {
-            return this.__internal__bitLength;
+            return this.#bitLength;
         }
         eq(other) {
             return super.eq(util.isHex(other)
@@ -6973,7 +6973,7 @@
         }
         isMax() {
             const u8a = this.toU8a().filter((b) => b === 0xff);
-            return u8a.length === (this.__internal__bitLength / 8);
+            return u8a.length === (this.#bitLength / 8);
         }
         toBigInt() {
             return BigInt(this.toString());
@@ -7001,7 +7001,7 @@
                 : util.formatNumber(this);
         }
         toJSON(onlyHex = false) {
-            return onlyHex || (this.__internal__bitLength > 128) || (super.bitLength() > MAX_NUMBER_BITS)
+            return onlyHex || (this.#bitLength > 128) || (super.bitLength() > MAX_NUMBER_BITS)
                 ? this.toHex()
                 : this.toNumber();
         }
@@ -7068,6 +7068,11 @@
         return false;
     }
 
+    const MAX_DEPTH = 1024;
+    function isComplexType(Type) {
+        const typeName = Type.name?.toLowerCase() || '';
+        return ['enum', 'hashmap', 'linkage', 'null', 'option', 'range', 'rangeinclusive', 'result', 'struct', 'tuple', 'vec', 'vecfixed'].includes(typeName);
+    }
     function formatFailure(registry, fn, _result, { message }, u8a, i, count, Type, key) {
         let type = '';
         try {
@@ -7098,6 +7103,9 @@
         const count = result.length;
         let offset = 0;
         let i = 0;
+        if (count > MAX_DEPTH && isComplexType(Types[i])) {
+            throw new Error(`decodeU8aStruct: Maximum depth exceeded, received ${count} elements, limit ${MAX_DEPTH}`);
+        }
         try {
             while (i < count) {
                 const value = new Types[i](registry, u8a.subarray(offset));
@@ -7113,6 +7121,9 @@
     }
     function decodeU8aVec(registry, result, u8a, startAt, Type) {
         const count = result.length;
+        if (count > MAX_DEPTH && isComplexType(Type)) {
+            throw new Error(`decodeU8aVec: Maximum depth exceeded, received ${count} elements, limit ${MAX_DEPTH}`);
+        }
         let offset = startAt;
         let i = 0;
         try {
@@ -7440,14 +7451,14 @@
         createdAtHash;
         initialU8aLength;
         isStorageFallback;
-        __internal__Type;
-        __internal__raw;
+        #Type;
+        #raw;
         constructor(registry, Type, value = 0, { definition, setDefinition = util.identity } = {}) {
             this.registry = registry;
-            this.__internal__Type = definition || setDefinition(typeToConstructor(registry, Type));
-            const [raw, decodedLength] = decodeCompact(registry, this.__internal__Type, value);
+            this.#Type = definition || setDefinition(typeToConstructor(registry, Type));
+            const [raw, decodedLength] = decodeCompact(registry, this.#Type, value);
             this.initialU8aLength = decodedLength;
-            this.__internal__raw = raw;
+            this.#raw = raw;
         }
         static with(Type) {
             let definition;
@@ -7465,14 +7476,14 @@
             return this.registry.hash(this.toU8a());
         }
         get isEmpty() {
-            return this.__internal__raw.isEmpty;
+            return this.#raw.isEmpty;
         }
         bitLength() {
-            return this.__internal__raw.bitLength();
+            return this.#raw.bitLength();
         }
         eq(other) {
-            return this.__internal__raw.eq(other instanceof Compact
-                ? other.__internal__raw
+            return this.#raw.eq(other instanceof Compact
+                ? other.#raw
                 : other);
         }
         inspect() {
@@ -7481,37 +7492,37 @@
             };
         }
         toBigInt() {
-            return this.__internal__raw.toBigInt();
+            return this.#raw.toBigInt();
         }
         toBn() {
-            return this.__internal__raw.toBn();
+            return this.#raw.toBn();
         }
         toHex(isLe) {
-            return this.__internal__raw.toHex(isLe);
+            return this.#raw.toHex(isLe);
         }
         toHuman(isExtended, disableAscii) {
-            return this.__internal__raw.toHuman(isExtended, disableAscii);
+            return this.#raw.toHuman(isExtended, disableAscii);
         }
         toJSON() {
-            return this.__internal__raw.toJSON();
+            return this.#raw.toJSON();
         }
         toNumber() {
-            return this.__internal__raw.toNumber();
+            return this.#raw.toNumber();
         }
         toPrimitive(disableAscii) {
-            return this.__internal__raw.toPrimitive(disableAscii);
+            return this.#raw.toPrimitive(disableAscii);
         }
         toRawType() {
-            return `Compact<${this.registry.getClassName(this.__internal__Type) || this.__internal__raw.toRawType()}>`;
+            return `Compact<${this.registry.getClassName(this.#Type) || this.#raw.toRawType()}>`;
         }
         toString() {
-            return this.__internal__raw.toString();
+            return this.#raw.toString();
         }
         toU8a(_isBare) {
-            return util.compactToU8a(this.__internal__raw.toBn());
+            return util.compactToU8a(this.#raw.toBn());
         }
         unwrap() {
-            return this.__internal__raw;
+            return this.#raw;
         }
     }
 
@@ -7519,11 +7530,11 @@
         registry;
         createdAtHash;
         isStorageFallback;
-        __internal__neverError;
+        #neverError;
         constructor(registry, typeName = 'DoNotConstruct') {
             this.registry = registry;
-            this.__internal__neverError = new Error(`DoNotConstruct: Cannot construct unknown type ${typeName}`);
-            throw this.__internal__neverError;
+            this.#neverError = new Error(`DoNotConstruct: Cannot construct unknown type ${typeName}`);
+            throw this.#neverError;
         }
         static with(typeName) {
             return class extends DoNotConstruct {
@@ -7533,40 +7544,40 @@
             };
         }
         get encodedLength() {
-            throw this.__internal__neverError;
+            throw this.#neverError;
         }
         get hash() {
-            throw this.__internal__neverError;
+            throw this.#neverError;
         }
         get isEmpty() {
-            throw this.__internal__neverError;
+            throw this.#neverError;
         }
         eq() {
-            throw this.__internal__neverError;
+            throw this.#neverError;
         }
         inspect() {
-            throw this.__internal__neverError;
+            throw this.#neverError;
         }
         toHex() {
-            throw this.__internal__neverError;
+            throw this.#neverError;
         }
         toHuman() {
-            throw this.__internal__neverError;
+            throw this.#neverError;
         }
         toJSON() {
-            throw this.__internal__neverError;
+            throw this.#neverError;
         }
         toPrimitive() {
-            throw this.__internal__neverError;
+            throw this.#neverError;
         }
         toRawType() {
-            throw this.__internal__neverError;
+            throw this.#neverError;
         }
         toString() {
-            throw this.__internal__neverError;
+            throw this.#neverError;
         }
         toU8a() {
-            throw this.__internal__neverError;
+            throw this.#neverError;
         }
     }
 
@@ -7726,26 +7737,26 @@
         createdAtHash;
         initialU8aLength;
         isStorageFallback;
-        __internal__def;
-        __internal__entryIndex;
-        __internal__indexes;
-        __internal__isBasic;
-        __internal__isIndexed;
-        __internal__raw;
+        #def;
+        #entryIndex;
+        #indexes;
+        #isBasic;
+        #isIndexed;
+        #raw;
         constructor(registry, Types, value, index, { definition, setDefinition = util.identity } = {}) {
             const { def, isBasic, isIndexed } = definition || setDefinition(extractDef(registry, Types));
             const decoded = util.isU8a(value) && value.length && !util.isNumber(index)
                 ? createFromU8a(registry, def, value[0], value.subarray(1))
                 : decodeEnum(registry, def, value, index);
             this.registry = registry;
-            this.__internal__def = def;
-            this.__internal__isBasic = isBasic;
-            this.__internal__isIndexed = isIndexed;
-            this.__internal__indexes = Object.values(def).map(({ index }) => index);
-            this.__internal__entryIndex = this.__internal__indexes.indexOf(decoded.index);
-            this.__internal__raw = decoded.value;
-            if (this.__internal__raw.initialU8aLength) {
-                this.initialU8aLength = 1 + this.__internal__raw.initialU8aLength;
+            this.#def = def;
+            this.#isBasic = isBasic;
+            this.#isIndexed = isIndexed;
+            this.#indexes = Object.values(def).map(({ index }) => index);
+            this.#entryIndex = this.#indexes.indexOf(decoded.index);
+            this.#raw = decoded.value;
+            if (this.#raw.initialU8aLength) {
+                this.initialU8aLength = 1 + this.#raw.initialU8aLength;
             }
         }
         static with(Types) {
@@ -7778,37 +7789,37 @@
             };
         }
         get encodedLength() {
-            return 1 + this.__internal__raw.encodedLength;
+            return 1 + this.#raw.encodedLength;
         }
         get hash() {
             return this.registry.hash(this.toU8a());
         }
         get index() {
-            return this.__internal__indexes[this.__internal__entryIndex];
+            return this.#indexes[this.#entryIndex];
         }
         get inner() {
-            return this.__internal__raw;
+            return this.#raw;
         }
         get isBasic() {
-            return this.__internal__isBasic;
+            return this.#isBasic;
         }
         get isEmpty() {
-            return this.__internal__raw.isEmpty;
+            return this.#raw.isEmpty;
         }
         get isNone() {
-            return this.__internal__raw instanceof Null;
+            return this.#raw instanceof Null;
         }
         get defIndexes() {
-            return this.__internal__indexes;
+            return this.#indexes;
         }
         get defKeys() {
-            return Object.keys(this.__internal__def);
+            return Object.keys(this.#def);
         }
         get type() {
-            return this.defKeys[this.__internal__entryIndex];
+            return this.defKeys[this.#entryIndex];
         }
         get value() {
-            return this.__internal__raw;
+            return this.#raw;
         }
         eq(other) {
             if (util.isU8a(other)) {
@@ -7817,7 +7828,7 @@
             else if (util.isNumber(other)) {
                 return this.toNumber() === other;
             }
-            else if (this.__internal__isBasic && util.isString(other)) {
+            else if (this.#isBasic && util.isString(other)) {
                 return this.type === other;
             }
             else if (util.isHex(other)) {
@@ -7832,10 +7843,10 @@
             return this.value.eq(other);
         }
         inspect() {
-            if (this.__internal__isBasic) {
+            if (this.#isBasic) {
                 return { outer: [new Uint8Array([this.index])] };
             }
-            const { inner, outer = [] } = this.__internal__raw.inspect();
+            const { inner, outer = [] } = this.#raw.inspect();
             return {
                 inner,
                 outer: [new Uint8Array([this.index]), ...outer]
@@ -7845,33 +7856,33 @@
             return util.u8aToHex(this.toU8a());
         }
         toHuman(isExtended, disableAscii) {
-            return this.__internal__isBasic || this.isNone
+            return this.#isBasic || this.isNone
                 ? this.type
-                : { [this.type]: this.__internal__raw.toHuman(isExtended, disableAscii) };
+                : { [this.type]: this.#raw.toHuman(isExtended, disableAscii) };
         }
         toJSON() {
-            return this.__internal__isBasic
+            return this.#isBasic
                 ? this.type
-                : { [util.stringCamelCase(this.type)]: this.__internal__raw.toJSON() };
+                : { [util.stringCamelCase(this.type)]: this.#raw.toJSON() };
         }
         toNumber() {
             return this.index;
         }
         toPrimitive(disableAscii) {
-            return this.__internal__isBasic
+            return this.#isBasic
                 ? this.type
-                : { [util.stringCamelCase(this.type)]: this.__internal__raw.toPrimitive(disableAscii) };
+                : { [util.stringCamelCase(this.type)]: this.#raw.toPrimitive(disableAscii) };
         }
         _toRawStruct() {
-            if (this.__internal__isBasic) {
-                return this.__internal__isIndexed
+            if (this.#isBasic) {
+                return this.#isIndexed
                     ? this.defKeys.reduce((out, key, index) => {
-                        out[key] = this.__internal__indexes[index];
+                        out[key] = this.#indexes[index];
                         return out;
                     }, {})
                     : this.defKeys;
             }
-            const entries = Object.entries(this.__internal__def);
+            const entries = Object.entries(this.#def);
             return typesToMap(this.registry, entries.reduce((out, [key, { Type }], i) => {
                 out[0][i] = Type;
                 out[1][i] = key;
@@ -7888,10 +7899,10 @@
         }
         toU8a(isBare) {
             return isBare
-                ? this.__internal__raw.toU8a(isBare)
+                ? this.#raw.toU8a(isBare)
                 : util.u8aConcatStrict([
                     new Uint8Array([this.index]),
-                    this.__internal__raw.toU8a(isBare)
+                    this.#raw.toU8a(isBare)
                 ]);
         }
     }
@@ -7945,8 +7956,8 @@
         createdAtHash;
         initialU8aLength;
         isStorageFallback;
-        __internal__Type;
-        __internal__raw;
+        #Type;
+        #raw;
         constructor(registry, typeName, value, { definition, setDefinition = util.identity } = {}) {
             const Type = definition || setDefinition(typeToConstructor(registry, typeName));
             const decoded = util.isU8a(value) && value.length && !util.isCodec(value)
@@ -7955,8 +7966,8 @@
                     : new Type(registry, value.subarray(1))
                 : decodeOption(registry, Type, value);
             this.registry = registry;
-            this.__internal__Type = Type;
-            this.__internal__raw = decoded;
+            this.#Type = Type;
+            this.#raw = decoded;
             if (decoded?.initialU8aLength) {
                 this.initialU8aLength = 1 + decoded.initialU8aLength;
             }
@@ -7974,7 +7985,7 @@
             };
         }
         get encodedLength() {
-            return 1 + this.__internal__raw.encodedLength;
+            return 1 + this.#raw.encodedLength;
         }
         get hash() {
             return this.registry.hash(this.toU8a());
@@ -7983,13 +7994,13 @@
             return this.isNone;
         }
         get isNone() {
-            return this.__internal__raw instanceof None;
+            return this.#raw instanceof None;
         }
         get isSome() {
             return !this.isNone;
         }
         get value() {
-            return this.__internal__raw;
+            return this.#raw;
         }
         eq(other) {
             if (other instanceof Option) {
@@ -8001,7 +8012,7 @@
             if (this.isNone) {
                 return { outer: [new Uint8Array([0])] };
             }
-            const { inner, outer = [] } = this.__internal__raw.inspect();
+            const { inner, outer = [] } = this.#raw.inspect();
             return {
                 inner,
                 outer: [new Uint8Array([1]), ...outer]
@@ -8013,35 +8024,35 @@
                 : util.u8aToHex(this.toU8a().subarray(1));
         }
         toHuman(isExtended, disableAscii) {
-            return this.__internal__raw.toHuman(isExtended, disableAscii);
+            return this.#raw.toHuman(isExtended, disableAscii);
         }
         toJSON() {
             return this.isNone
                 ? null
-                : this.__internal__raw.toJSON();
+                : this.#raw.toJSON();
         }
         toPrimitive(disableAscii) {
             return this.isNone
                 ? null
-                : this.__internal__raw.toPrimitive(disableAscii);
+                : this.#raw.toPrimitive(disableAscii);
         }
         toRawType(isBare) {
-            const wrapped = this.registry.getClassName(this.__internal__Type) || new this.__internal__Type(this.registry).toRawType();
+            const wrapped = this.registry.getClassName(this.#Type) || new this.#Type(this.registry).toRawType();
             return isBare
                 ? wrapped
                 : `Option<${wrapped}>`;
         }
         toString() {
-            return this.__internal__raw.toString();
+            return this.#raw.toString();
         }
         toU8a(isBare) {
             if (isBare) {
-                return this.__internal__raw.toU8a(true);
+                return this.#raw.toU8a(true);
             }
             const u8a = new Uint8Array(this.encodedLength);
             if (this.isSome) {
                 u8a.set([1]);
-                u8a.set(this.__internal__raw.toU8a(), 1);
+                u8a.set(this.#raw.toU8a(), 1);
             }
             return u8a;
         }
@@ -8049,7 +8060,7 @@
             if (this.isNone) {
                 throw new Error('Option: unwrapping a None value');
             }
-            return this.__internal__raw;
+            return this.#raw;
         }
         unwrapOr(defaultValue) {
             return this.isSome
@@ -8059,7 +8070,7 @@
         unwrapOrDefault() {
             return this.isSome
                 ? this.unwrap()
-                : new this.__internal__Type(this.registry);
+                : new this.#Type(this.registry);
         }
     }
 
@@ -8130,7 +8141,7 @@
         throw new Error(`Expected array input to Tuple decoding, found ${typeof value}: ${util.stringify(value)}`);
     }
     class Tuple extends AbstractArray {
-        __internal__Types;
+        #Types;
         constructor(registry, Types, value, { definition, setDefinition = util.identity } = {}) {
             const Classes = definition || setDefinition(Array.isArray(Types)
                 ? [typesToConstructors(registry, Types), []]
@@ -8141,7 +8152,7 @@
             this.initialU8aLength = (util.isU8a(value)
                 ? decodeU8a$7(registry, this, value, Classes)
                 : decodeTuple(registry, this, value, Classes))[1];
-            this.__internal__Types = Classes;
+            this.#Types = Classes;
         }
         static with(Types) {
             let definition;
@@ -8160,9 +8171,9 @@
             return total;
         }
         get Types() {
-            return this.__internal__Types[1].length
-                ? this.__internal__Types[1]
-                : this.__internal__Types[0].map((T) => new T(this.registry).toRawType());
+            return this.#Types[1].length
+                ? this.#Types[1]
+                : this.#Types[0].map((T) => new T(this.registry).toRawType());
         }
         inspect() {
             return {
@@ -8170,7 +8181,7 @@
             };
         }
         toRawType() {
-            const types = this.__internal__Types[0].map((T) => this.registry.getClassName(T) || new T(this.registry).toRawType());
+            const types = this.#Types[0].map((T) => this.registry.getClassName(T) || new T(this.registry).toRawType());
             return `(${types.join(',')})`;
         }
         toString() {
@@ -8236,14 +8247,14 @@
         return decodeU8aVec(registry, result, util.u8aToU8a(value), startAt, Type);
     }
     class Vec extends AbstractArray {
-        __internal__Type;
+        #Type;
         constructor(registry, Type, value = [], { definition, setDefinition = util.identity } = {}) {
             const [decodeFrom, length, startAt] = decodeVecLength(value);
             super(registry, length);
-            this.__internal__Type = definition || setDefinition(typeToConstructor(registry, Type));
+            this.#Type = definition || setDefinition(typeToConstructor(registry, Type));
             this.initialU8aLength = (util.isU8a(decodeFrom)
-                ? decodeU8aVec(registry, this, decodeFrom, startAt, this.__internal__Type)
-                : decodeVec(registry, this, decodeFrom, startAt, this.__internal__Type))[0];
+                ? decodeU8aVec(registry, this, decodeFrom, startAt, this.#Type)
+                : decodeVec(registry, this, decodeFrom, startAt, this.#Type))[0];
         }
         static with(Type) {
             let definition;
@@ -8255,12 +8266,12 @@
             };
         }
         get Type() {
-            return this.__internal__Type.name;
+            return this.#Type.name;
         }
         indexOf(other) {
-            const check = other instanceof this.__internal__Type
+            const check = other instanceof this.#Type
                 ? other
-                : new this.__internal__Type(this.registry, other);
+                : new this.#Type(this.registry, other);
             for (let i = 0, count = this.length; i < count; i++) {
                 if (check.eq(this[i])) {
                     return i;
@@ -8269,18 +8280,18 @@
             return -1;
         }
         toRawType() {
-            return `Vec<${this.registry.getClassName(this.__internal__Type) || new this.__internal__Type(this.registry).toRawType()}>`;
+            return `Vec<${this.registry.getClassName(this.#Type) || new this.#Type(this.registry).toRawType()}>`;
         }
     }
 
     class VecFixed extends AbstractArray {
-        __internal__Type;
+        #Type;
         constructor(registry, Type, length, value = [], { definition, setDefinition = util.identity } = {}) {
             super(registry, length);
-            this.__internal__Type = definition || setDefinition(typeToConstructor(registry, Type));
+            this.#Type = definition || setDefinition(typeToConstructor(registry, Type));
             this.initialU8aLength = (util.isU8a(value)
-                ? decodeU8aVec(registry, this, value, 0, this.__internal__Type)
-                : decodeVec(registry, this, value, 0, this.__internal__Type))[1];
+                ? decodeU8aVec(registry, this, value, 0, this.#Type)
+                : decodeVec(registry, this, value, 0, this.#Type))[1];
         }
         static with(Type, length) {
             let definition;
@@ -8292,7 +8303,7 @@
             };
         }
         get Type() {
-            return new this.__internal__Type(this.registry).toRawType();
+            return new this.#Type(this.registry).toRawType();
         }
         get encodedLength() {
             let total = 0;
@@ -8414,20 +8425,20 @@
         return decodeBitVecU8a(value);
     }
     class BitVec extends Raw {
-        __internal__decodedLength;
-        __internal__isMsb;
+        #decodedLength;
+        #isMsb;
         constructor(registry, value, isMsb = false) {
             const [decodedLength, u8a] = decodeBitVec(value);
             super(registry, u8a);
-            this.__internal__decodedLength = decodedLength;
-            this.__internal__isMsb = isMsb;
+            this.#decodedLength = decodedLength;
+            this.#isMsb = isMsb;
         }
         get encodedLength() {
-            return this.length + util.compactToU8a(this.__internal__decodedLength).length;
+            return this.length + util.compactToU8a(this.#decodedLength).length;
         }
         inspect() {
             return {
-                outer: [util.compactToU8a(this.__internal__decodedLength), super.toU8a()]
+                outer: [util.compactToU8a(this.#decodedLength), super.toU8a()]
             };
         }
         toBoolArray() {
@@ -8447,7 +8458,7 @@
                 const off = i * 8;
                 const v = map[i];
                 for (let j = 0; j < 8; j++) {
-                    result[off + j] = this.__internal__isMsb
+                    result[off + j] = this.#isMsb
                         ? v[j]
                         : v[7 - j];
                 }
@@ -8457,7 +8468,7 @@
         toHuman() {
             return `0b${[...this.toU8a(true)]
             .map((d) => `00000000${d.toString(2)}`.slice(-8))
-            .map((s) => this.__internal__isMsb ? s : s.split('').reverse().join(''))
+            .map((s) => this.#isMsb ? s : s.split('').reverse().join(''))
             .join('_')}`;
         }
         toRawType() {
@@ -8467,7 +8478,7 @@
             const bitVec = super.toU8a(isBare);
             return isBare
                 ? bitVec
-                : util.u8aConcatStrict([util.compactToU8a(this.__internal__decodedLength), bitVec]);
+                : util.u8aConcatStrict([util.compactToU8a(this.#decodedLength), bitVec]);
         }
     }
 
@@ -8537,8 +8548,8 @@
         createdAtHash;
         initialU8aLength;
         isStorageFallback;
-        __internal__jsonMap;
-        __internal__Types;
+        #jsonMap;
+        #Types;
         constructor(registry, Types, value, jsonMap = new Map(), { definition, setDefinition = noopSetDefinition } = {}) {
             const typeMap = definition || setDefinition(mapToTypeMap(registry, Types));
             const [decoded, decodedLength] = util.isU8a(value) || util.isHex(value)
@@ -8549,8 +8560,8 @@
             super(decoded);
             this.initialU8aLength = decodedLength;
             this.registry = registry;
-            this.__internal__jsonMap = jsonMap;
-            this.__internal__Types = typeMap;
+            this.#jsonMap = jsonMap;
+            this.#Types = typeMap;
         }
         static with(Types, jsonMap) {
             let definition;
@@ -8566,7 +8577,7 @@
             };
         }
         get defKeys() {
-            return this.__internal__Types[1];
+            return this.#Types[1];
         }
         get isEmpty() {
             return [...this.keys()].length === 0;
@@ -8583,7 +8594,7 @@
         }
         get Type() {
             const result = {};
-            const [Types, keys] = this.__internal__Types;
+            const [Types, keys] = this.#Types;
             for (let i = 0, count = keys.length; i < count; i++) {
                 result[keys[i]] = new Types[i](this.registry).toRawType();
             }
@@ -8631,7 +8642,7 @@
         toJSON() {
             const json = {};
             for (const [k, v] of this.entries()) {
-                json[(this.__internal__jsonMap.get(k) || k)] = v.toJSON();
+                json[(this.#jsonMap.get(k) || k)] = v.toJSON();
             }
             return json;
         }
@@ -8643,7 +8654,7 @@
             return json;
         }
         toRawType() {
-            return util.stringify(typesToMap(this.registry, this.__internal__Types));
+            return util.stringify(typesToMap(this.registry, this.#Types));
         }
         toString() {
             return util.stringify(this.toJSON());
@@ -8715,17 +8726,17 @@
         createdAtHash;
         initialU8aLength;
         isStorageFallback;
-        __internal__KeyClass;
-        __internal__ValClass;
-        __internal__type;
+        #KeyClass;
+        #ValClass;
+        #type;
         constructor(registry, keyType, valType, rawValue, type = 'HashMap') {
             const [KeyClass, ValClass, decoded, decodedLength] = decodeMap(registry, keyType, valType, rawValue);
             super(type === 'BTreeMap' ? sortMap(decoded) : decoded);
             this.registry = registry;
             this.initialU8aLength = decodedLength;
-            this.__internal__KeyClass = KeyClass;
-            this.__internal__ValClass = ValClass;
-            this.__internal__type = type;
+            this.#KeyClass = KeyClass;
+            this.#ValClass = ValClass;
+            this.#type = type;
         }
         get encodedLength() {
             let len = util.compactToU8a(this.size).length;
@@ -8783,7 +8794,7 @@
             return json;
         }
         toRawType() {
-            return `${this.__internal__type}<${this.registry.getClassName(this.__internal__KeyClass) || new this.__internal__KeyClass(this.registry).toRawType()},${this.registry.getClassName(this.__internal__ValClass) || new this.__internal__ValClass(this.registry).toRawType()}>`;
+            return `${this.#type}<${this.registry.getClassName(this.#KeyClass) || new this.#KeyClass(this.registry).toRawType()},${this.registry.getClassName(this.#ValClass) || new this.#ValClass(this.registry).toRawType()}>`;
         }
         toString() {
             return util.stringify(this.toJSON());
@@ -8852,13 +8863,13 @@
         createdAtHash;
         initialU8aLength;
         isStorageFallback;
-        __internal__ValClass;
+        #ValClass;
         constructor(registry, valType, rawValue) {
             const [ValClass, values, decodedLength] = decodeSet$1(registry, valType, rawValue);
             super(sortSet(values));
             this.registry = registry;
             this.initialU8aLength = decodedLength;
-            this.__internal__ValClass = ValClass;
+            this.#ValClass = ValClass;
         }
         static with(valType) {
             return class extends BTreeSet {
@@ -8914,7 +8925,7 @@
             return json;
         }
         toRawType() {
-            return `BTreeSet<${this.registry.getClassName(this.__internal__ValClass) || new this.__internal__ValClass(this.registry).toRawType()}>`;
+            return `BTreeSet<${this.registry.getClassName(this.#ValClass) || new this.#ValClass(this.registry).toRawType()}>`;
         }
         toPrimitive(disableAscii) {
             const json = [];
@@ -9131,10 +9142,10 @@
     }
 
     class Range extends Tuple {
-        __internal__rangeName;
+        #rangeName;
         constructor(registry, Type, value, { rangeName = 'Range' } = {}) {
             super(registry, [Type, Type], value);
-            this.__internal__rangeName = rangeName;
+            this.#rangeName = rangeName;
         }
         static with(Type) {
             return class extends Range {
@@ -9150,7 +9161,7 @@
             return this[1];
         }
         toRawType() {
-            return `${this.__internal__rangeName}<${this.start.toRawType()}>`;
+            return `${this.#rangeName}<${this.start.toRawType()}>`;
         }
     }
 
@@ -9196,7 +9207,7 @@
         createdAtHash;
         initialU8aLength;
         isStorageFallback;
-        __internal__override = null;
+        #override = null;
         constructor(registry, value) {
             const [str, decodedLength] = decodeText(value);
             super(str);
@@ -9229,7 +9240,7 @@
             };
         }
         setOverride(override) {
-            this.__internal__override = override;
+            this.#override = override;
         }
         toHex() {
             return util.u8aToHex(this.toU8a(true));
@@ -9247,7 +9258,7 @@
             return 'Text';
         }
         toString() {
-            return this.__internal__override || super.toString();
+            return this.#override || super.toString();
         }
         toU8a(isBare) {
             const encoded = util.stringToU8a(super.toString());
@@ -9317,15 +9328,15 @@
         return [Type, instance, util.compactAddLength(instance.toU8a())];
     }
     class WrapperKeepOpaque extends Bytes {
-        __internal__Type;
-        __internal__decoded;
-        __internal__opaqueName;
+        #Type;
+        #decoded;
+        #opaqueName;
         constructor(registry, typeName, value, { opaqueName = 'WrapperKeepOpaque' } = {}) {
             const [Type, decoded, u8a] = decodeRaw(registry, typeName, value);
             super(registry, u8a);
-            this.__internal__Type = Type;
-            this.__internal__decoded = decoded;
-            this.__internal__opaqueName = opaqueName;
+            this.#Type = Type;
+            this.#decoded = decoded;
+            this.#opaqueName = opaqueName;
         }
         static with(Type) {
             return class extends WrapperKeepOpaque {
@@ -9335,12 +9346,12 @@
             };
         }
         get isDecoded() {
-            return !!this.__internal__decoded;
+            return !!this.#decoded;
         }
         inspect() {
-            return this.__internal__decoded
+            return this.#decoded
                 ? {
-                    inner: [this.__internal__decoded.inspect()],
+                    inner: [this.#decoded.inspect()],
                     outer: [util.compactToU8a(this.length)]
                 }
                 : {
@@ -9348,28 +9359,28 @@
                 };
         }
         toHuman(isExtended, disableAscii) {
-            return this.__internal__decoded
-                ? this.__internal__decoded.toHuman(isExtended, disableAscii)
+            return this.#decoded
+                ? this.#decoded.toHuman(isExtended, disableAscii)
                 : super.toHuman(isExtended, disableAscii);
         }
         toPrimitive(disableAscii) {
-            return this.__internal__decoded
-                ? this.__internal__decoded.toPrimitive(disableAscii)
+            return this.#decoded
+                ? this.#decoded.toPrimitive(disableAscii)
                 : super.toPrimitive(disableAscii);
         }
         toRawType() {
-            return `${this.__internal__opaqueName}<${this.registry.getClassName(this.__internal__Type) || (this.__internal__decoded ? this.__internal__decoded.toRawType() : new this.__internal__Type(this.registry).toRawType())}>`;
+            return `${this.#opaqueName}<${this.registry.getClassName(this.#Type) || (this.#decoded ? this.#decoded.toRawType() : new this.#Type(this.registry).toRawType())}>`;
         }
         toString() {
-            return this.__internal__decoded
-                ? this.__internal__decoded.toString()
+            return this.#decoded
+                ? this.#decoded.toString()
                 : super.toString();
         }
         unwrap() {
-            if (!this.__internal__decoded) {
-                throw new Error(`${this.__internal__opaqueName}: unwrapping an undecodable value`);
+            if (!this.#decoded) {
+                throw new Error(`${this.#opaqueName}: unwrapping an undecodable value`);
             }
-            return this.__internal__decoded;
+            return this.#decoded;
         }
     }
 
@@ -9395,14 +9406,14 @@
         createdAtHash;
         initialU8aLength;
         isStorageFallback;
-        __internal__bitLength;
+        #bitLength;
         constructor(registry, value, { bitLength = 32 } = {}) {
             super(util.isU8a(value) || util.isHex(value)
                 ? value.length === 0
                     ? 0
                     : util.u8aToFloat(util.u8aToU8a(value), { bitLength })
                 : (value || 0));
-            this.__internal__bitLength = bitLength;
+            this.#bitLength = bitLength;
             this.encodedLength = bitLength / 8;
             this.initialU8aLength = this.encodedLength;
             this.registry = registry;
@@ -9444,11 +9455,11 @@
             return this.toNumber();
         }
         toRawType() {
-            return `f${this.__internal__bitLength}`;
+            return `f${this.#bitLength}`;
         }
         toU8a(_isBare) {
             return util.floatToU8a(this, {
-                bitLength: this.__internal__bitLength
+                bitLength: this.#bitLength
             });
         }
     }
@@ -9582,13 +9593,13 @@
         createdAtHash;
         initialU8aLength;
         isStorageFallback;
-        __internal__allowed;
-        __internal__byteLength;
+        #allowed;
+        #byteLength;
         constructor(registry, setValues, value, bitLength = 8) {
             super(decodeSet(setValues, value, bitLength));
             this.registry = registry;
-            this.__internal__allowed = setValues;
-            this.__internal__byteLength = bitLength / 8;
+            this.#allowed = setValues;
+            this.#byteLength = bitLength / 8;
         }
         static with(values, bitLength) {
             return class extends CodecSet {
@@ -9607,7 +9618,7 @@
             };
         }
         get encodedLength() {
-            return this.__internal__byteLength;
+            return this.#byteLength;
         }
         get hash() {
             return this.registry.hash(this.toU8a());
@@ -9619,10 +9630,10 @@
             return [...super.values()];
         }
         get valueEncoded() {
-            return encodeSet(this.__internal__allowed, this.strings);
+            return encodeSet(this.#allowed, this.strings);
         }
         add = (key) => {
-            if (this.__internal__allowed && util.isUndefined(this.__internal__allowed[key])) {
+            if (this.#allowed && util.isUndefined(this.#allowed[key])) {
                 throw new Error(`Set: Invalid key '${key}' on add`);
             }
             super.add(key);
@@ -9661,14 +9672,14 @@
             return this.toJSON();
         }
         toRawType() {
-            return util.stringify({ _set: this.__internal__allowed });
+            return util.stringify({ _set: this.#allowed });
         }
         toString() {
             return `[${this.strings.join(', ')}]`;
         }
         toU8a(_isBare) {
             return util.bnToU8a(this.valueEncoded, {
-                bitLength: this.__internal__byteLength * 8,
+                bitLength: this.#byteLength * 8,
                 isLe: true
             });
         }
@@ -15484,49 +15495,49 @@
         return { lookups, names, params, types };
     }
     class PortableRegistry extends Struct {
-        __internal__alias;
-        __internal__lookups;
-        __internal__names;
-        __internal__params;
-        __internal__typeDefs = {};
-        __internal__types;
+        #alias;
+        #lookups;
+        #names;
+        #params;
+        #typeDefs = {};
+        #types;
         constructor(registry, value, isContract) {
             super(registry, {
                 types: 'Vec<PortableType>'
             }, value);
             const { lookups, names, params, types } = extractTypeInfo(this, this.types);
-            this.__internal__alias = extractAliases(params, isContract);
-            this.__internal__lookups = lookups;
-            this.__internal__names = names;
-            this.__internal__params = params;
-            this.__internal__types = types;
+            this.#alias = extractAliases(params, isContract);
+            this.#lookups = lookups;
+            this.#names = names;
+            this.#params = params;
+            this.#types = types;
         }
         get names() {
-            return Object.values(this.__internal__names).sort();
+            return Object.values(this.#names).sort();
         }
         get paramTypes() {
-            return this.__internal__params;
+            return this.#params;
         }
         get types() {
             return this.getT('types');
         }
         register() {
-            registerTypes(this, this.__internal__lookups, this.__internal__names, this.__internal__params);
+            registerTypes(this, this.#lookups, this.#names, this.#params);
         }
         getName(lookupId) {
-            return this.__internal__names[this.__internal__getLookupId(lookupId)];
+            return this.#names[this.#getLookupId(lookupId)];
         }
         getSiType(lookupId) {
-            const found = (this.__internal__types || this.types)[this.__internal__getLookupId(lookupId)];
+            const found = (this.#types || this.types)[this.#getLookupId(lookupId)];
             if (!found) {
                 throw new Error(`PortableRegistry: Unable to find type with lookupId ${lookupId.toString()}`);
             }
             return found.type;
         }
         getTypeDef(lookupId) {
-            const lookupIndex = this.__internal__getLookupId(lookupId);
-            if (!this.__internal__typeDefs[lookupIndex]) {
-                const lookupName = this.__internal__names[lookupIndex];
+            const lookupIndex = this.#getLookupId(lookupId);
+            if (!this.#typeDefs[lookupIndex]) {
+                const lookupName = this.#names[lookupIndex];
                 const empty = {
                     info: exports.TypeDefInfo.DoNotConstruct,
                     lookupIndex,
@@ -15534,23 +15545,23 @@
                     type: this.registry.createLookupType(lookupIndex)
                 };
                 if (lookupName) {
-                    this.__internal__typeDefs[lookupIndex] = empty;
+                    this.#typeDefs[lookupIndex] = empty;
                 }
-                const extracted = this.__internal__extract(this.getSiType(lookupId), lookupIndex);
+                const extracted = this.#extract(this.getSiType(lookupId), lookupIndex);
                 if (!lookupName) {
-                    this.__internal__typeDefs[lookupIndex] = empty;
+                    this.#typeDefs[lookupIndex] = empty;
                 }
                 Object.keys(extracted).forEach((k) => {
                     if (k !== 'lookupName' || extracted[k]) {
-                        this.__internal__typeDefs[lookupIndex][k] = extracted[k];
+                        this.#typeDefs[lookupIndex][k] = extracted[k];
                     }
                 });
                 if (extracted.info === exports.TypeDefInfo.Plain) {
-                    this.__internal__typeDefs[lookupIndex].lookupNameRoot = this.__internal__typeDefs[lookupIndex].lookupName;
-                    delete this.__internal__typeDefs[lookupIndex].lookupName;
+                    this.#typeDefs[lookupIndex].lookupNameRoot = this.#typeDefs[lookupIndex].lookupName;
+                    delete this.#typeDefs[lookupIndex].lookupName;
                 }
             }
-            return this.__internal__typeDefs[lookupIndex];
+            return this.#typeDefs[lookupIndex];
         }
         sanitizeField(name) {
             let nameField = null;
@@ -15568,7 +15579,7 @@
             }
             return [nameField, nameOrig];
         }
-        __internal__createSiDef(lookupId) {
+        #createSiDef(lookupId) {
             const typeDef = this.getTypeDef(lookupId);
             const lookupIndex = lookupId.toNumber();
             return [exports.TypeDefInfo.DoNotConstruct, exports.TypeDefInfo.Enum, exports.TypeDefInfo.Struct].includes(typeDef.info) && typeDef.lookupName
@@ -15576,12 +15587,12 @@
                     docs: typeDef.docs,
                     info: exports.TypeDefInfo.Si,
                     lookupIndex,
-                    lookupName: this.__internal__names[lookupIndex],
+                    lookupName: this.#names[lookupIndex],
                     type: this.registry.createLookupType(lookupId)
                 }
                 : typeDef;
         }
-        __internal__getLookupId(lookupId) {
+        #getLookupId(lookupId) {
             if (util.isString(lookupId)) {
                 if (!this.registry.isLookupType(lookupId)) {
                     throw new Error(`PortableRegistry: Expected a lookup string type, found ${lookupId}`);
@@ -15593,42 +15604,42 @@
             }
             return lookupId.toNumber();
         }
-        __internal__extract(type, lookupIndex) {
+        #extract(type, lookupIndex) {
             const namespace = type.path.join('::');
             let typeDef;
-            const aliasType = this.__internal__alias[lookupIndex] || getAliasPath(type);
+            const aliasType = this.#alias[lookupIndex] || getAliasPath(type);
             try {
                 if (aliasType) {
-                    typeDef = this.__internal__extractAliasPath(lookupIndex, aliasType);
+                    typeDef = this.#extractAliasPath(lookupIndex, aliasType);
                 }
                 else {
                     switch (type.def.type) {
                         case 'Array':
-                            typeDef = this.__internal__extractArray(lookupIndex, type.def.asArray);
+                            typeDef = this.#extractArray(lookupIndex, type.def.asArray);
                             break;
                         case 'BitSequence':
-                            typeDef = this.__internal__extractBitSequence(lookupIndex, type.def.asBitSequence);
+                            typeDef = this.#extractBitSequence(lookupIndex, type.def.asBitSequence);
                             break;
                         case 'Compact':
-                            typeDef = this.__internal__extractCompact(lookupIndex, type.def.asCompact);
+                            typeDef = this.#extractCompact(lookupIndex, type.def.asCompact);
                             break;
                         case 'Composite':
-                            typeDef = this.__internal__extractComposite(lookupIndex, type, type.def.asComposite);
+                            typeDef = this.#extractComposite(lookupIndex, type, type.def.asComposite);
                             break;
                         case 'HistoricMetaCompat':
-                            typeDef = this.__internal__extractHistoric(lookupIndex, type.def.asHistoricMetaCompat);
+                            typeDef = this.#extractHistoric(lookupIndex, type.def.asHistoricMetaCompat);
                             break;
                         case 'Primitive':
-                            typeDef = this.__internal__extractPrimitive(lookupIndex, type);
+                            typeDef = this.#extractPrimitive(lookupIndex, type);
                             break;
                         case 'Sequence':
-                            typeDef = this.__internal__extractSequence(lookupIndex, type.def.asSequence);
+                            typeDef = this.#extractSequence(lookupIndex, type.def.asSequence);
                             break;
                         case 'Tuple':
-                            typeDef = this.__internal__extractTuple(lookupIndex, type.def.asTuple);
+                            typeDef = this.#extractTuple(lookupIndex, type.def.asTuple);
                             break;
                         case 'Variant':
-                            typeDef = this.__internal__extractVariant(lookupIndex, type, type.def.asVariant);
+                            typeDef = this.#extractVariant(lookupIndex, type, type.def.asVariant);
                             break;
                         default: util.assertUnreachable(type.def.type);
                     }
@@ -15642,7 +15653,7 @@
                 namespace
             }, typeDef);
         }
-        __internal__extractArray(_, { len, type }) {
+        #extractArray(_, { len, type }) {
             const length = len.toNumber();
             if (length > 2048) {
                 throw new Error('Only support for [Type; <length>], where length <= 2048');
@@ -15650,12 +15661,12 @@
             return withTypeString(this.registry, {
                 info: exports.TypeDefInfo.VecFixed,
                 length,
-                sub: this.__internal__createSiDef(type)
+                sub: this.#createSiDef(type)
             });
         }
-        __internal__extractBitSequence(_, { bitOrderType, bitStoreType }) {
-            const a = this.__internal__createSiDef(bitOrderType);
-            const b = this.__internal__createSiDef(bitStoreType);
+        #extractBitSequence(_, { bitOrderType, bitStoreType }) {
+            const a = this.#createSiDef(bitOrderType);
+            const b = this.#createSiDef(bitStoreType);
             const [bitOrder, bitStore] = BITVEC_NS.includes(a.namespace || '')
                 ? [a, b]
                 : [b, a];
@@ -15671,13 +15682,13 @@
                 type: 'BitVec'
             };
         }
-        __internal__extractCompact(_, { type }) {
+        #extractCompact(_, { type }) {
             return withTypeString(this.registry, {
                 info: exports.TypeDefInfo.Compact,
-                sub: this.__internal__createSiDef(type)
+                sub: this.#createSiDef(type)
             });
         }
-        __internal__extractComposite(lookupIndex, { params, path }, { fields }) {
+        #extractComposite(lookupIndex, { params, path }, { fields }) {
             if (path.length) {
                 const pathFirst = path[0].toString();
                 const pathLast = path[path.length - 1].toString();
@@ -15687,7 +15698,7 @@
                     }
                     return withTypeString(this.registry, {
                         info: exports.TypeDefInfo.BTreeMap,
-                        sub: params.map(({ type }) => this.__internal__createSiDef(type.unwrap()))
+                        sub: params.map(({ type }) => this.#createSiDef(type.unwrap()))
                     });
                 }
                 else if (path.length === 1 && pathFirst === 'BTreeSet') {
@@ -15696,7 +15707,7 @@
                     }
                     return withTypeString(this.registry, {
                         info: exports.TypeDefInfo.BTreeSet,
-                        sub: this.__internal__createSiDef(params[0].type.unwrap())
+                        sub: this.#createSiDef(params[0].type.unwrap())
                     });
                 }
                 else if (['Range', 'RangeInclusive'].includes(pathFirst)) {
@@ -15707,7 +15718,7 @@
                         info: pathFirst === 'Range'
                             ? exports.TypeDefInfo.Range
                             : exports.TypeDefInfo.RangeInclusive,
-                        sub: this.__internal__createSiDef(params[0].type.unwrap()),
+                        sub: this.#createSiDef(params[0].type.unwrap()),
                         type: pathFirst
                     });
                 }
@@ -15719,16 +15730,16 @@
                         info: pathLast === 'WrapperKeepOpaque'
                             ? exports.TypeDefInfo.WrapperKeepOpaque
                             : exports.TypeDefInfo.WrapperOpaque,
-                        sub: this.__internal__createSiDef(params[0].type.unwrap()),
+                        sub: this.#createSiDef(params[0].type.unwrap()),
                         type: pathLast
                     });
                 }
             }
             return PATHS_SET.some((p) => matchParts(p, path))
-                ? this.__internal__extractCompositeSet(lookupIndex, params, fields)
-                : this.__internal__extractFields(lookupIndex, fields);
+                ? this.#extractCompositeSet(lookupIndex, params, fields)
+                : this.#extractFields(lookupIndex, fields);
         }
-        __internal__extractCompositeSet(_, params, fields) {
+        #extractCompositeSet(_, params, fields) {
             if (params.length !== 1 || fields.length !== 1) {
                 throw new Error('Set handling expects param/field as single entries');
             }
@@ -15743,7 +15754,7 @@
                 }))
             });
         }
-        __internal__extractFields(lookupIndex, fields) {
+        #extractFields(lookupIndex, fields) {
             let isStruct = true;
             let isTuple = true;
             const count = fields.length;
@@ -15762,18 +15773,18 @@
                 };
             }
             else if (isTuple && count === 1) {
-                const typeDef = this.__internal__createSiDef(fields[0].type);
+                const typeDef = this.#createSiDef(fields[0].type);
                 return util.objectSpread({}, typeDef, lookupIndex === -1
                     ? null
                     : {
                         lookupIndex,
-                        lookupName: this.__internal__names[lookupIndex],
+                        lookupName: this.#names[lookupIndex],
                         lookupNameRoot: typeDef.lookupName
                     }, fields[0].typeName.isSome
                     ? { typeName: sanitize(fields[0].typeName.unwrap()) }
                     : null);
             }
-            const [sub, alias] = this.__internal__extractFieldsAlias(fields);
+            const [sub, alias] = this.#extractFieldsAlias(fields);
             return withTypeString(this.registry, util.objectSpread({
                 info: isTuple
                     ? exports.TypeDefInfo.Tuple
@@ -15785,16 +15796,16 @@
                 ? null
                 : {
                     lookupIndex,
-                    lookupName: this.__internal__names[lookupIndex]
+                    lookupName: this.#names[lookupIndex]
                 }));
         }
-        __internal__extractFieldsAlias(fields) {
+        #extractFieldsAlias(fields) {
             const alias = new Map();
             const count = fields.length;
             const sub = new Array(count);
             for (let i = 0; i < count; i++) {
                 const { docs, name, type, typeName } = fields[i];
-                const typeDef = this.__internal__createSiDef(type);
+                const typeDef = this.#createSiDef(type);
                 if (name.isNone) {
                     sub[i] = typeDef;
                 }
@@ -15813,27 +15824,27 @@
             }
             return [sub, alias];
         }
-        __internal__extractHistoric(_, type) {
+        #extractHistoric(_, type) {
             return util.objectSpread({
                 displayName: type.toString(),
                 isFromSi: true
             }, getTypeDef(type));
         }
-        __internal__extractPrimitive(_, type) {
+        #extractPrimitive(_, type) {
             const typeStr = type.def.asPrimitive.type.toString();
             return {
                 info: exports.TypeDefInfo.Plain,
                 type: PRIMITIVE_ALIAS[typeStr] || typeStr.toLowerCase()
             };
         }
-        __internal__extractAliasPath(_, type) {
+        #extractAliasPath(_, type) {
             return {
                 info: exports.TypeDefInfo.Plain,
                 type
             };
         }
-        __internal__extractSequence(lookupIndex, { type }) {
-            const sub = this.__internal__createSiDef(type);
+        #extractSequence(lookupIndex, { type }) {
+            const sub = this.#createSiDef(type);
             if (sub.type === 'u8') {
                 return {
                     info: exports.TypeDefInfo.Plain,
@@ -15843,11 +15854,11 @@
             return withTypeString(this.registry, {
                 info: exports.TypeDefInfo.Vec,
                 lookupIndex,
-                lookupName: this.__internal__names[lookupIndex],
+                lookupName: this.#names[lookupIndex],
                 sub
             });
         }
-        __internal__extractTuple(lookupIndex, ids) {
+        #extractTuple(lookupIndex, ids) {
             if (ids.length === 0) {
                 return {
                     info: exports.TypeDefInfo.Null,
@@ -15857,15 +15868,15 @@
             else if (ids.length === 1) {
                 return this.getTypeDef(ids[0]);
             }
-            const sub = ids.map((t) => this.__internal__createSiDef(t));
+            const sub = ids.map((t) => this.#createSiDef(t));
             return withTypeString(this.registry, {
                 info: exports.TypeDefInfo.Tuple,
                 lookupIndex,
-                lookupName: this.__internal__names[lookupIndex],
+                lookupName: this.#names[lookupIndex],
                 sub
             });
         }
-        __internal__extractVariant(lookupIndex, { params, path }, { variants }) {
+        #extractVariant(lookupIndex, { params, path }, { variants }) {
             if (path.length) {
                 const specialVariant = path[0].toString();
                 if (specialVariant === 'Option') {
@@ -15874,7 +15885,7 @@
                     }
                     return withTypeString(this.registry, {
                         info: exports.TypeDefInfo.Option,
-                        sub: this.__internal__createSiDef(params[0].type.unwrap())
+                        sub: this.#createSiDef(params[0].type.unwrap())
                     });
                 }
                 else if (specialVariant === 'Result') {
@@ -15885,7 +15896,7 @@
                         info: exports.TypeDefInfo.Result,
                         sub: params.map(({ type }, index) => util.objectSpread({
                             name: ['Ok', 'Error'][index]
-                        }, this.__internal__createSiDef(type.unwrap())))
+                        }, this.#createSiDef(type.unwrap())))
                     });
                 }
             }
@@ -15895,9 +15906,9 @@
                     type: 'Null'
                 };
             }
-            return this.__internal__extractVariantEnum(lookupIndex, variants);
+            return this.#extractVariantEnum(lookupIndex, variants);
         }
-        __internal__extractVariantEnum(lookupIndex, variants) {
+        #extractVariantEnum(lookupIndex, variants) {
             const sub = [];
             variants
                 .slice()
@@ -15912,7 +15923,7 @@
                         type: 'Null'
                     });
                 }
-                sub.push(util.objectSpread(this.__internal__extractFields(-1, fields), {
+                sub.push(util.objectSpread(this.#extractFields(-1, fields), {
                     index,
                     name: name.toString()
                 }));
@@ -15920,7 +15931,7 @@
             return withTypeString(this.registry, {
                 info: exports.TypeDefInfo.Enum,
                 lookupIndex,
-                lookupName: this.__internal__names[lookupIndex],
+                lookupName: this.#names[lookupIndex],
                 sub
             });
         }
@@ -16044,7 +16055,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.2.1' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.2.2' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
@@ -16349,46 +16360,46 @@
         };
     }
     class GenericEventData extends Tuple {
-        __internal__meta;
-        __internal__method;
-        __internal__names = null;
-        __internal__section;
-        __internal__typeDef;
+        #meta;
+        #method;
+        #names = null;
+        #section;
+        #typeDef;
         constructor(registry, value, meta, section = '<unknown>', method = '<unknown>') {
             const fields = meta?.fields || [];
             super(registry, fields.map(({ type }) => registry.createLookupType(type)), value);
-            this.__internal__meta = meta;
-            this.__internal__method = method;
-            this.__internal__section = section;
-            this.__internal__typeDef = fields.map(({ type }) => registry.lookup.getTypeDef(type));
+            this.#meta = meta;
+            this.#method = method;
+            this.#section = section;
+            this.#typeDef = fields.map(({ type }) => registry.lookup.getTypeDef(type));
             const names = fields
                 .map(({ name }) => registry.lookup.sanitizeField(name)[0])
                 .filter((n) => !!n);
             if (names.length === fields.length) {
-                this.__internal__names = names;
+                this.#names = names;
                 util.objectProperties(this, names, (_, i) => this[i]);
             }
         }
         get meta() {
-            return this.__internal__meta;
+            return this.#meta;
         }
         get method() {
-            return this.__internal__method;
+            return this.#method;
         }
         get names() {
-            return this.__internal__names;
+            return this.#names;
         }
         get section() {
-            return this.__internal__section;
+            return this.#section;
         }
         get typeDef() {
-            return this.__internal__typeDef;
+            return this.#typeDef;
         }
         toHuman(isExtended, disableAscii) {
-            if (this.__internal__names !== null) {
+            if (this.#names !== null) {
                 const json = {};
-                for (let i = 0, count = this.__internal__names.length; i < count; i++) {
-                    json[this.__internal__names[i]] = this[i].toHuman(isExtended, disableAscii);
+                for (let i = 0, count = this.#names.length; i < count; i++) {
+                    json[this.#names[i]] = this[i].toHuman(isExtended, disableAscii);
                 }
                 return json;
             }
@@ -16500,7 +16511,7 @@
         }
     }
     class ExtrinsicBase extends AbstractBase {
-        __internal__preamble;
+        #preamble;
         constructor(registry, value, initialU8aLength, preamble) {
             super(registry, value, initialU8aLength);
             const signKeys = Object.keys(registry.getSignedExtensionTypes());
@@ -16511,10 +16522,10 @@
                 }
             }
             const unmaskedPreamble = this.type & TYPE_MASK;
-            this.__internal__preamble = preamble || preambleUnMask[`${unmaskedPreamble}`];
+            this.#preamble = preamble || preambleUnMask[`${unmaskedPreamble}`];
         }
         isGeneral() {
-            return this.__internal__preamble === 'general';
+            return this.#preamble === 'general';
         }
         get args() {
             return this.method.args;
@@ -16612,7 +16623,7 @@
         }
     }
     class GenericExtrinsic extends ExtrinsicBase {
-        __internal__hashCache;
+        #hashCache;
         static LATEST_EXTRINSIC_VERSION = LATEST_EXTRINSIC_VERSION;
         constructor(registry, value, { preamble, version } = {}) {
             const versionsLength = registry.metadata.extrinsic.versions.length;
@@ -16620,14 +16631,14 @@
             super(registry, decodeExtrinsic(registry, value, version || supportedVersion, preamble), undefined, preamble);
         }
         get hash() {
-            if (!this.__internal__hashCache) {
-                this.__internal__hashCache = super.hash;
+            if (!this.#hashCache) {
+                this.#hashCache = super.hash;
             }
-            return this.__internal__hashCache;
+            return this.#hashCache;
         }
         addSignature(signer, signature, payload) {
             this.inner.addSignature(signer, signature, payload);
-            this.__internal__hashCache = undefined;
+            this.#hashCache = undefined;
             return this;
         }
         inspect() {
@@ -16641,12 +16652,12 @@
         }
         sign(account, options) {
             this.inner.sign(account, options);
-            this.__internal__hashCache = undefined;
+            this.#hashCache = undefined;
             return this;
         }
         signFake(signer, options) {
             this.inner.signFake(signer, options);
-            this.__internal__hashCache = undefined;
+            this.#hashCache = undefined;
             return this;
         }
         toHex(isBare) {
@@ -16968,15 +16979,15 @@
         version: 'u8'
     };
     class GenericSignerPayload extends Struct {
-        __internal__extraTypes;
+        #extraTypes;
         constructor(registry, value) {
             const extensionTypes = util.objectSpread({}, registry.getSignedExtensionTypes(), registry.getSignedExtensionExtra());
             super(registry, util.objectSpread({}, extensionTypes, knownTypes, { withSignedTransaction: 'bool' }), value);
-            this.__internal__extraTypes = {};
+            this.#extraTypes = {};
             const getter = (key) => this.get(key);
             for (const [key, type] of Object.entries(extensionTypes)) {
                 if (!knownTypes[key]) {
-                    this.__internal__extraTypes[key] = type;
+                    this.#extraTypes[key] = type;
                 }
                 util.objectProperty(this, key, getter);
             }
@@ -17029,7 +17040,7 @@
         }
         toPayload() {
             const result = {};
-            const keys = Object.keys(this.__internal__extraTypes);
+            const keys = Object.keys(this.#extraTypes);
             for (let i = 0, count = keys.length; i < count; i++) {
                 const key = keys[i];
                 const value = this.getT(key);
@@ -17128,10 +17139,10 @@
     }
 
     class GenericExtrinsicPayloadV4 extends Struct {
-        __internal__signOptions;
+        #signOptions;
         constructor(registry, value) {
             super(registry, util.objectSpread({ method: 'Bytes' }, registry.getSignedExtensionTypes(), registry.getSignedExtensionExtra()), decodeAssetId(registry, value));
-            this.__internal__signOptions = {
+            this.#signOptions = {
                 withType: registry.createTypeUnsafe('ExtrinsicSignature', []) instanceof Enum
             };
         }
@@ -17169,7 +17180,7 @@
             return this.getT('metadataHash');
         }
         sign(signerPair) {
-            return sign(this.registry, signerPair, this.toU8a({ method: true }), this.__internal__signOptions);
+            return sign(this.registry, signerPair, this.toU8a({ method: true }), this.#signOptions);
         }
     }
 
@@ -17178,13 +17189,13 @@
         return registry.createTypeUnsafe('Address', [util.isU8a(address) ? util.u8aToHex(address) : address]);
     }
     class GenericExtrinsicSignatureV4 extends Struct {
-        __internal__signKeys;
+        #signKeys;
         constructor(registry, value, { isSigned } = {}) {
             const signTypes = registry.getSignedExtensionTypes();
             super(registry, util.objectSpread(
             { signer: 'Address', signature: 'ExtrinsicSignature' }, signTypes), GenericExtrinsicSignatureV4.decodeExtrinsicSignature(value, isSigned));
-            this.__internal__signKeys = Object.keys(signTypes);
-            util.objectProperties(this, this.__internal__signKeys, (k) => this.get(k));
+            this.#signKeys = Object.keys(signTypes);
+            util.objectProperties(this, this.#signKeys, (k) => this.get(k));
         }
         static decodeExtrinsicSignature(value, isSigned = false) {
             if (!value) {
@@ -17233,8 +17244,8 @@
             return this.getT('metadataHash');
         }
         _injectSignature(signer, signature, payload) {
-            for (let i = 0, count = this.__internal__signKeys.length; i < count; i++) {
-                const k = this.__internal__signKeys[i];
+            for (let i = 0, count = this.#signKeys.length; i < count; i++) {
+                const k = this.#signKeys[i];
                 const v = payload.get(k);
                 if (!util.isUndefined(v)) {
                     this.set(k, v);
@@ -17371,13 +17382,13 @@
     }
 
     class GenericExtrinsicSignatureV5 extends Struct {
-        __internal__signKeys;
+        #signKeys;
         constructor(registry, value, { isSigned } = {}) {
             const signTypes = registry.getSignedExtensionTypes();
             super(registry, util.objectSpread(
             { signer: 'Address', signature: 'ExtrinsicSignature', transactionExtensionVersion: 'u8' }, signTypes), GenericExtrinsicSignatureV5.decodeExtrinsicSignature(value, isSigned));
-            this.__internal__signKeys = Object.keys(signTypes);
-            util.objectProperties(this, this.__internal__signKeys, (k) => this.get(k));
+            this.#signKeys = Object.keys(signTypes);
+            util.objectProperties(this, this.#signKeys, (k) => this.get(k));
         }
         static decodeExtrinsicSignature(value, isSigned = false) {
             if (!value) {
@@ -17472,8 +17483,8 @@
         return data.subarray(1);
     }
     class GeneralExtrinsic extends Struct {
-        __internal__version;
-        __internal__preamble;
+        #version;
+        #preamble;
         constructor(registry, value, opt) {
             const extTypes = registry.getSignedExtensionTypes();
             super(registry, util.objectSpread({
@@ -17481,8 +17492,8 @@
             }, extTypes, {
                 method: 'Call'
             }), GeneralExtrinsic.decodeExtrinsic(registry, value));
-            this.__internal__version = opt?.version || 0b00000101;
-            this.__internal__preamble = 0b01000000;
+            this.#version = opt?.version || 0b00000101;
+            this.#preamble = 0b01000000;
         }
         static decodeExtrinsic(registry, value) {
             if (!value) {
@@ -17530,10 +17541,10 @@
             return this.getT('method');
         }
         get version() {
-            return this.__internal__version;
+            return this.#version;
         }
         get preamble() {
-            return this.__internal__preamble;
+            return this.#preamble;
         }
         toHex(isBare) {
             return util.u8aToHex(this.toU8a(isBare));
@@ -18113,19 +18124,19 @@
         return decodeVoteType(registry, value);
     }
     class GenericVote extends U8aFixed {
-        __internal__aye;
-        __internal__conviction;
+        #aye;
+        #conviction;
         constructor(registry, value) {
             const decoded = decodeVote(registry, value);
             super(registry, decoded, 8);
-            this.__internal__aye = (decoded[0] & AYE_BITS) === AYE_BITS;
-            this.__internal__conviction = this.registry.createTypeUnsafe('Conviction', [decoded[0] & CON_MASK]);
+            this.#aye = (decoded[0] & AYE_BITS) === AYE_BITS;
+            this.#conviction = this.registry.createTypeUnsafe('Conviction', [decoded[0] & CON_MASK]);
         }
         get conviction() {
-            return this.__internal__conviction;
+            return this.#conviction;
         }
         get isAye() {
-            return this.__internal__aye;
+            return this.#aye;
         }
         get isNay() {
             return !this.isAye;
@@ -18436,52 +18447,52 @@
         return 'Raw';
     }
     class StorageKey extends Bytes {
-        __internal__args;
-        __internal__meta;
-        __internal__outputType;
-        __internal__method;
-        __internal__section;
+        #args;
+        #meta;
+        #outputType;
+        #method;
+        #section;
         constructor(registry, value, override = {}) {
             const { key, method, section } = decodeStorageKey(value);
             super(registry, key);
-            this.__internal__outputType = getType(registry, value);
+            this.#outputType = getType(registry, value);
             this.setMeta(getMeta(value), override.section || section, override.method || method);
         }
         get args() {
-            return this.__internal__args;
+            return this.#args;
         }
         get meta() {
-            return this.__internal__meta;
+            return this.#meta;
         }
         get method() {
-            return this.__internal__method;
+            return this.#method;
         }
         get outputType() {
-            return this.__internal__outputType;
+            return this.#outputType;
         }
         get section() {
-            return this.__internal__section;
+            return this.#section;
         }
         is(key) {
             return key.section === this.section && key.method === this.method;
         }
         setMeta(meta, section, method) {
-            this.__internal__meta = meta;
-            this.__internal__method = method || this.__internal__method;
-            this.__internal__section = section || this.__internal__section;
+            this.#meta = meta;
+            this.#method = method || this.#method;
+            this.#section = section || this.#section;
             if (meta) {
-                this.__internal__outputType = unwrapStorageType(this.registry, meta.type);
+                this.#outputType = unwrapStorageType(this.registry, meta.type);
             }
             try {
-                this.__internal__args = decodeArgsFromMeta(this.registry, this.toU8a(true), meta);
+                this.#args = decodeArgsFromMeta(this.registry, this.toU8a(true), meta);
             }
             catch {
             }
             return this;
         }
         toHuman(_isExtended, disableAscii) {
-            return this.__internal__args.length
-                ? this.__internal__args.map((a) => a.toHuman(undefined, disableAscii))
+            return this.#args.length
+                ? this.#args.map((a) => a.toHuman(undefined, disableAscii))
                 : super.toHuman(undefined, disableAscii);
         }
         toRawType() {
@@ -19159,33 +19170,33 @@
     const TO_CALLS_VERSION = 14;
 
     class MetadataVersioned extends Struct {
-        __internal__converted = new Map();
+        #converted = new Map();
         constructor(registry, value) {
             super(registry, {
                 magicNumber: MagicNumber,
                 metadata: 'MetadataAll'
             }, value);
         }
-        __internal__assertVersion = (version) => {
+        #assertVersion = (version) => {
             if (this.version > version) {
                 throw new Error(`Cannot convert metadata from version ${this.version} to ${version}`);
             }
             return this.version === version;
         };
-        __internal__getVersion = (version, fromPrev) => {
-            if (version !== 'latest' && this.__internal__assertVersion(version)) {
+        #getVersion = (version, fromPrev) => {
+            if (version !== 'latest' && this.#assertVersion(version)) {
                 const asCurr = `asV${version}`;
-                return this.__internal__metadata()[asCurr];
+                return this.#metadata()[asCurr];
             }
-            if (!this.__internal__converted.has(version)) {
+            if (!this.#converted.has(version)) {
                 const asPrev = version === 'latest'
                     ? `asV${LATEST_VERSION}`
                     : `asV${(version - 1)}`;
-                this.__internal__converted.set(version, fromPrev(this.registry, this[asPrev], this.version));
+                this.#converted.set(version, fromPrev(this.registry, this[asPrev], this.version));
             }
-            return this.__internal__converted.get(version);
+            return this.#converted.get(version);
         };
-        __internal__metadata = () => {
+        #metadata = () => {
             return this.getT('metadata');
         };
         get asCallsOnly() {
@@ -19195,38 +19206,38 @@
             });
         }
         get asV9() {
-            this.__internal__assertVersion(9);
-            return this.__internal__metadata().asV9;
+            this.#assertVersion(9);
+            return this.#metadata().asV9;
         }
         get asV10() {
-            return this.__internal__getVersion(10, toV10);
+            return this.#getVersion(10, toV10);
         }
         get asV11() {
-            return this.__internal__getVersion(11, toV11);
+            return this.#getVersion(11, toV11);
         }
         get asV12() {
-            return this.__internal__getVersion(12, toV12);
+            return this.#getVersion(12, toV12);
         }
         get asV13() {
-            return this.__internal__getVersion(13, toV13);
+            return this.#getVersion(13, toV13);
         }
         get asV14() {
-            return this.__internal__getVersion(14, toV14);
+            return this.#getVersion(14, toV14);
         }
         get asV15() {
-            return this.__internal__getVersion(15, toV15);
+            return this.#getVersion(15, toV15);
         }
         get asV16() {
-            return this.__internal__getVersion(16, toV16);
+            return this.#getVersion(16, toV16);
         }
         get asLatest() {
-            return this.__internal__getVersion('latest', toLatest);
+            return this.#getVersion('latest', toLatest);
         }
         get magicNumber() {
             return this.getT('magicNumber');
         }
         get version() {
-            return this.__internal__metadata().index;
+            return this.#metadata().index;
         }
         getUniqTypes(throwError) {
             return getUniqTypes(this.registry, this.asLatest, throwError);
@@ -19709,31 +19720,31 @@
         return registry.createTypeUnsafe('ChainProperties', [{ isEthereum, ss58Format, tokenDecimals, tokenSymbol }]);
     }
     class TypeRegistry {
-        __internal__chainProperties;
-        __internal__classes = new Map();
-        __internal__definitions = new Map();
-        __internal__firstCallIndex = null;
-        __internal__hasher = utilCrypto.blake2AsU8a;
-        __internal__knownTypes = {};
-        __internal__lookup;
-        __internal__metadata;
-        __internal__metadataVersion = 0;
-        __internal__signedExtensions = fallbackExtensions;
-        __internal__unknownTypes = new Map();
-        __internal__userExtensions;
-        __internal__knownDefaults;
-        __internal__knownDefaultsEntries;
-        __internal__knownDefinitions;
-        __internal__metadataCalls = {};
-        __internal__metadataErrors = {};
-        __internal__metadataEvents = {};
-        __internal__moduleMap = {};
+        #chainProperties;
+        #classes = new Map();
+        #definitions = new Map();
+        #firstCallIndex = null;
+        #hasher = utilCrypto.blake2AsU8a;
+        #knownTypes = {};
+        #lookup;
+        #metadata;
+        #metadataVersion = 0;
+        #signedExtensions = fallbackExtensions;
+        #unknownTypes = new Map();
+        #userExtensions;
+        #knownDefaults;
+        #knownDefaultsEntries;
+        #knownDefinitions;
+        #metadataCalls = {};
+        #metadataErrors = {};
+        #metadataEvents = {};
+        #moduleMap = {};
         createdAtHash;
         constructor(createdAtHash) {
-            this.__internal__knownDefaults = new Map(Object.entries({ Json, Metadata, PortableRegistry, Raw, ...baseTypes }));
-            this.__internal__knownDefaultsEntries = Array.from(this.__internal__knownDefaults.entries());
-            this.__internal__knownDefinitions = definitions;
-            const allKnown = Object.values(this.__internal__knownDefinitions);
+            this.#knownDefaults = new Map(Object.entries({ Json, Metadata, PortableRegistry, Raw, ...baseTypes }));
+            this.#knownDefaultsEntries = Array.from(this.#knownDefaults.entries());
+            this.#knownDefinitions = definitions;
+            const allKnown = Object.values(this.#knownDefinitions);
             for (let i = 0, count = allKnown.length; i < count; i++) {
                 this.register(allKnown[i].types);
             }
@@ -19742,8 +19753,8 @@
             }
         }
         get chainDecimals() {
-            if (this.__internal__chainProperties?.tokenDecimals.isSome) {
-                const allDecimals = this.__internal__chainProperties.tokenDecimals.unwrap();
+            if (this.#chainProperties?.tokenDecimals.isSome) {
+                const allDecimals = this.#chainProperties.tokenDecimals.unwrap();
                 if (allDecimals.length) {
                     return allDecimals.map((b) => b.toNumber());
                 }
@@ -19751,16 +19762,16 @@
             return [12];
         }
         get chainIsEthereum() {
-            return this.__internal__chainProperties?.isEthereum.isTrue || false;
+            return this.#chainProperties?.isEthereum.isTrue || false;
         }
         get chainSS58() {
-            return this.__internal__chainProperties?.ss58Format.isSome
-                ? this.__internal__chainProperties.ss58Format.unwrap().toNumber()
+            return this.#chainProperties?.ss58Format.isSome
+                ? this.#chainProperties.ss58Format.unwrap().toNumber()
                 : undefined;
         }
         get chainTokens() {
-            if (this.__internal__chainProperties?.tokenSymbol.isSome) {
-                const allTokens = this.__internal__chainProperties.tokenSymbol.unwrap();
+            if (this.#chainProperties?.tokenSymbol.isSome) {
+                const allTokens = this.#chainProperties.tokenSymbol.unwrap();
                 if (allTokens.length) {
                     return allTokens.map(valueToString);
                 }
@@ -19768,7 +19779,7 @@
             return [util.formatBalance.getDefaults().unit];
         }
         get firstCallIndex() {
-            return this.__internal__firstCallIndex || DEFAULT_FIRST_CALL_IDX;
+            return this.#firstCallIndex || DEFAULT_FIRST_CALL_IDX;
         }
         isLookupType(value) {
             return /Lookup\d+$/.test(value);
@@ -19777,22 +19788,22 @@
             return `Lookup${typeof lookupId === 'number' ? lookupId : lookupId.toNumber()}`;
         }
         get knownTypes() {
-            return this.__internal__knownTypes;
+            return this.#knownTypes;
         }
         get lookup() {
-            return util.assertReturn(this.__internal__lookup, 'PortableRegistry has not been set on this registry');
+            return util.assertReturn(this.#lookup, 'PortableRegistry has not been set on this registry');
         }
         get metadata() {
-            return util.assertReturn(this.__internal__metadata, 'Metadata has not been set on this registry');
+            return util.assertReturn(this.#metadata, 'Metadata has not been set on this registry');
         }
         get unknownTypes() {
-            return [...this.__internal__unknownTypes.keys()];
+            return [...this.#unknownTypes.keys()];
         }
         get signedExtensions() {
-            return this.__internal__signedExtensions;
+            return this.#signedExtensions;
         }
         clearCache() {
-            this.__internal__classes = new Map();
+            this.#classes = new Map();
         }
         createClass(type) {
             return createClassUnsafe(this, type);
@@ -19808,7 +19819,7 @@
         }
         findMetaCall(callIndex) {
             const [section, method] = [callIndex[0], callIndex[1]];
-            return util.assertReturn(this.__internal__metadataCalls[`${section}`] && this.__internal__metadataCalls[`${section}`][`${method}`], () => `findMetaCall: Unable to find Call with index [${section}, ${method}]/[${callIndex.toString()}]`);
+            return util.assertReturn(this.#metadataCalls[`${section}`] && this.#metadataCalls[`${section}`][`${method}`], () => `findMetaCall: Unable to find Call with index [${section}, ${method}]/[${callIndex.toString()}]`);
         }
         findMetaError(errorIndex) {
             const [section, method] = util.isU8a(errorIndex)
@@ -19819,19 +19830,19 @@
                         ? errorIndex.error[0]
                         : errorIndex.error.toNumber()
                 ];
-            return util.assertReturn(this.__internal__metadataErrors[`${section}`] && this.__internal__metadataErrors[`${section}`][`${method}`], () => `findMetaError: Unable to find Error with index [${section}, ${method}]/[${errorIndex.toString()}]`);
+            return util.assertReturn(this.#metadataErrors[`${section}`] && this.#metadataErrors[`${section}`][`${method}`], () => `findMetaError: Unable to find Error with index [${section}, ${method}]/[${errorIndex.toString()}]`);
         }
         findMetaEvent(eventIndex) {
             const [section, method] = [eventIndex[0], eventIndex[1]];
-            return util.assertReturn(this.__internal__metadataEvents[`${section}`] && this.__internal__metadataEvents[`${section}`][`${method}`], () => `findMetaEvent: Unable to find Event with index [${section}, ${method}]/[${eventIndex.toString()}]`);
+            return util.assertReturn(this.#metadataEvents[`${section}`] && this.#metadataEvents[`${section}`][`${method}`], () => `findMetaEvent: Unable to find Event with index [${section}, ${method}]/[${eventIndex.toString()}]`);
         }
         get(name, withUnknown, knownTypeDef) {
             return this.getUnsafe(name, withUnknown, knownTypeDef);
         }
         getUnsafe(name, withUnknown, knownTypeDef) {
-            let Type = this.__internal__classes.get(name) || this.__internal__knownDefaults.get(name);
+            let Type = this.#classes.get(name) || this.#knownDefaults.get(name);
             if (!Type) {
-                const definition = this.__internal__definitions.get(name);
+                const definition = this.#definitions.get(name);
                 let BaseType;
                 if (definition) {
                     BaseType = createClassUnsafe(this, definition);
@@ -19841,31 +19852,31 @@
                 }
                 else if (withUnknown) {
                     l.warn(`Unable to resolve type ${name}, it will fail on construction`);
-                    this.__internal__unknownTypes.set(name, true);
+                    this.#unknownTypes.set(name, true);
                     BaseType = DoNotConstruct.with(name);
                 }
                 if (BaseType) {
                     Type = class extends BaseType {
                     };
-                    this.__internal__classes.set(name, Type);
+                    this.#classes.set(name, Type);
                     if (knownTypeDef && util.isNumber(knownTypeDef.lookupIndex)) {
-                        this.__internal__classes.set(this.createLookupType(knownTypeDef.lookupIndex), Type);
+                        this.#classes.set(this.createLookupType(knownTypeDef.lookupIndex), Type);
                     }
                 }
             }
             return Type;
         }
         getChainProperties() {
-            return this.__internal__chainProperties;
+            return this.#chainProperties;
         }
         getClassName(Type) {
             const names = [];
-            for (const [name, Clazz] of this.__internal__knownDefaultsEntries) {
+            for (const [name, Clazz] of this.#knownDefaultsEntries) {
                 if (Type === Clazz) {
                     names.push(name);
                 }
             }
-            for (const [name, Clazz] of this.__internal__classes.entries()) {
+            for (const [name, Clazz] of this.#classes.entries()) {
                 if (Type === Clazz) {
                     names.push(name);
                 }
@@ -19875,10 +19886,10 @@
                 : undefined;
         }
         getDefinition(typeName) {
-            return this.__internal__definitions.get(typeName);
+            return this.#definitions.get(typeName);
         }
         getModuleInstances(specName, moduleName) {
-            return this.__internal__knownTypes?.typesBundle?.spec?.[specName.toString()]?.instances?.[moduleName] || this.__internal__moduleMap[moduleName];
+            return this.#knownTypes?.typesBundle?.spec?.[specName.toString()]?.instances?.[moduleName] || this.#moduleMap[moduleName];
         }
         getOrThrow(name) {
             const Clazz = this.get(name);
@@ -19894,26 +19905,26 @@
             return 0;
         }
         getSignedExtensionExtra() {
-            return expandExtensionTypes(this.__internal__signedExtensions, 'payload', this.__internal__userExtensions);
+            return expandExtensionTypes(this.#signedExtensions, 'payload', this.#userExtensions);
         }
         getSignedExtensionTypes() {
-            return expandExtensionTypes(this.__internal__signedExtensions, 'extrinsic', this.__internal__userExtensions);
+            return expandExtensionTypes(this.#signedExtensions, 'extrinsic', this.#userExtensions);
         }
         hasClass(name) {
-            return this.__internal__classes.has(name) || !!this.__internal__knownDefaults.has(name);
+            return this.#classes.has(name) || !!this.#knownDefaults.has(name);
         }
         hasDef(name) {
-            return this.__internal__definitions.has(name);
+            return this.#definitions.has(name);
         }
         hasType(name) {
-            return !this.__internal__unknownTypes.get(name) && (this.hasClass(name) || this.hasDef(name));
+            return !this.#unknownTypes.get(name) && (this.hasClass(name) || this.hasDef(name));
         }
         hash(data) {
-            return this.createType('CodecHash', this.__internal__hasher(data));
+            return this.createType('CodecHash', this.#hasher(data));
         }
         register(arg1, arg2) {
             if (util.isFunction(arg1)) {
-                this.__internal__classes.set(arg1.name, arg1);
+                this.#classes.set(arg1.name, arg1);
             }
             else if (util.isString(arg1)) {
                 if (!util.isFunction(arg2)) {
@@ -19922,18 +19933,18 @@
                 else if (arg1 === arg2.toString()) {
                     throw new Error(`Unable to register circular ${arg1} === ${arg1}`);
                 }
-                this.__internal__classes.set(arg1, arg2);
+                this.#classes.set(arg1, arg2);
             }
             else {
-                this.__internal__registerObject(arg1);
+                this.#registerObject(arg1);
             }
         }
-        __internal__registerObject = (obj) => {
+        #registerObject = (obj) => {
             const entries = Object.entries(obj);
             for (let e = 0, count = entries.length; e < count; e++) {
                 const [name, type] = entries[e];
                 if (util.isFunction(type)) {
-                    this.__internal__classes.set(name, type);
+                    this.#classes.set(name, type);
                 }
                 else {
                     const def = util.isString(type)
@@ -19942,29 +19953,29 @@
                     if (name === def) {
                         throw new Error(`Unable to register circular ${name} === ${def}`);
                     }
-                    if (this.__internal__classes.has(name)) {
-                        this.__internal__classes.delete(name);
+                    if (this.#classes.has(name)) {
+                        this.#classes.delete(name);
                     }
-                    this.__internal__definitions.set(name, def);
+                    this.#definitions.set(name, def);
                 }
             }
         };
         setChainProperties(properties) {
             if (properties) {
-                this.__internal__chainProperties = properties;
+                this.#chainProperties = properties;
             }
         }
         setHasher(hasher) {
-            this.__internal__hasher = hasher || utilCrypto.blake2AsU8a;
+            this.#hasher = hasher || utilCrypto.blake2AsU8a;
         }
         setKnownTypes(knownTypes) {
-            this.__internal__knownTypes = knownTypes;
+            this.#knownTypes = knownTypes;
         }
         setLookup(lookup) {
-            this.__internal__lookup = lookup;
+            this.#lookup = lookup;
             lookup.register();
         }
-        __internal__registerLookup = (lookup) => {
+        #registerLookup = (lookup) => {
             this.setLookup(lookup);
             let Weight = null;
             if (this.hasType('SpWeightsWeightV2Weight')) {
@@ -19981,34 +19992,34 @@
             }
         };
         setMetadata(metadata, signedExtensions, userExtensions, noInitWarn) {
-            this.__internal__metadata = metadata.asLatest;
-            this.__internal__metadataVersion = metadata.version;
-            this.__internal__firstCallIndex = null;
-            this.__internal__registerLookup(this.__internal__metadata.lookup);
-            injectExtrinsics(this, this.__internal__metadata, this.__internal__metadataVersion, this.__internal__metadataCalls, this.__internal__moduleMap);
-            injectErrors(this, this.__internal__metadata, this.__internal__metadataVersion, this.__internal__metadataErrors);
-            injectEvents(this, this.__internal__metadata, this.__internal__metadataVersion, this.__internal__metadataEvents);
+            this.#metadata = metadata.asLatest;
+            this.#metadataVersion = metadata.version;
+            this.#firstCallIndex = null;
+            this.#registerLookup(this.#metadata.lookup);
+            injectExtrinsics(this, this.#metadata, this.#metadataVersion, this.#metadataCalls, this.#moduleMap);
+            injectErrors(this, this.#metadata, this.#metadataVersion, this.#metadataErrors);
+            injectEvents(this, this.#metadata, this.#metadataVersion, this.#metadataEvents);
             const [defSection] = Object
-                .keys(this.__internal__metadataCalls)
+                .keys(this.#metadataCalls)
                 .sort(sortDecimalStrings);
             if (defSection) {
                 const [defMethod] = Object
-                    .keys(this.__internal__metadataCalls[defSection])
+                    .keys(this.#metadataCalls[defSection])
                     .sort(sortDecimalStrings);
                 if (defMethod) {
-                    this.__internal__firstCallIndex = new Uint8Array([parseInt(defSection, 10), parseInt(defMethod, 10)]);
+                    this.#firstCallIndex = new Uint8Array([parseInt(defSection, 10), parseInt(defMethod, 10)]);
                 }
             }
-            this.setSignedExtensions(signedExtensions || (this.__internal__metadata.extrinsic.versions.length > 0 && this.__internal__metadata.extrinsic.versions.every((value) => value > 0)
-                ? this.__internal__metadata.extrinsic.transactionExtensions.map(({ identifier }) => identifier.toString())
+            this.setSignedExtensions(signedExtensions || (this.#metadata.extrinsic.versions.length > 0 && this.#metadata.extrinsic.versions.every((value) => value > 0)
+                ? this.#metadata.extrinsic.transactionExtensions.map(({ identifier }) => identifier.toString())
                 : fallbackExtensions), userExtensions, noInitWarn);
             this.setChainProperties(extractProperties(this, metadata));
         }
         setSignedExtensions(signedExtensions = fallbackExtensions, userExtensions, noInitWarn) {
-            this.__internal__signedExtensions = signedExtensions;
-            this.__internal__userExtensions = userExtensions;
+            this.#signedExtensions = signedExtensions;
+            this.#userExtensions = userExtensions;
             if (!noInitWarn) {
-                const unknown = findUnknownExtensions(this.__internal__signedExtensions, this.__internal__userExtensions);
+                const unknown = findUnknownExtensions(this.#signedExtensions, this.#userExtensions);
                 if (unknown.length) {
                     l.warn(`Unknown signed extensions ${unknown.join(', ')} found, treating them as no-effect`);
                 }

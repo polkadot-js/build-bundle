@@ -76,7 +76,7 @@
         }
     }
     class RpcCoder {
-        __internal__id = 0;
+        #id = 0;
         decodeResponse(response) {
             if (!response || response.jsonrpc !== '2.0') {
                 throw new Error('Invalid jsonrpc field in decoded object');
@@ -102,7 +102,7 @@
             return [id, util.stringify(data)];
         }
         encodeObject(method, params) {
-            const id = ++this.__internal__id;
+            const id = ++this.#id;
             return [id, {
                     id,
                     jsonrpc: '2.0',
@@ -124,49 +124,49 @@
     const DISABLED_TTL = 31_536_000_000;
     class LRUNode {
         key;
-        __internal__expires;
-        __internal__ttl;
+        #expires;
+        #ttl;
         createdAt;
         next;
         prev;
         constructor(key, ttl) {
             this.key = key;
-            this.__internal__ttl = ttl;
-            this.__internal__expires = Date.now() + ttl;
+            this.#ttl = ttl;
+            this.#expires = Date.now() + ttl;
             this.createdAt = Date.now();
             this.next = this.prev = this;
         }
         refresh() {
-            this.__internal__expires = Date.now() + this.__internal__ttl;
+            this.#expires = Date.now() + this.#ttl;
         }
         get expiry() {
-            return this.__internal__expires;
+            return this.#expires;
         }
     }
     class LRUCache {
         capacity;
-        __internal__data = new Map();
-        __internal__refs = new Map();
-        __internal__length = 0;
-        __internal__head;
-        __internal__tail;
-        __internal__ttl;
+        #data = new Map();
+        #refs = new Map();
+        #length = 0;
+        #head;
+        #tail;
+        #ttl;
         constructor(capacity = DEFAULT_CAPACITY, ttl = DEFAULT_TTL) {
             this.capacity = capacity;
-            ttl ? this.__internal__ttl = ttl : this.__internal__ttl = DISABLED_TTL;
-            this.__internal__head = this.__internal__tail = new LRUNode('<empty>', this.__internal__ttl);
+            ttl ? this.#ttl = ttl : this.#ttl = DISABLED_TTL;
+            this.#head = this.#tail = new LRUNode('<empty>', this.#ttl);
         }
         get ttl() {
-            return this.__internal__ttl;
+            return this.#ttl;
         }
         get length() {
-            return this.__internal__length;
+            return this.#length;
         }
         get lengthData() {
-            return this.__internal__data.size;
+            return this.#data.size;
         }
         get lengthRefs() {
-            return this.__internal__refs.size;
+            return this.#refs.size;
         }
         entries() {
             const keys = this.keys();
@@ -174,15 +174,15 @@
             const entries = new Array(count);
             for (let i = 0; i < count; i++) {
                 const key = keys[i];
-                entries[i] = [key, this.__internal__data.get(key)];
+                entries[i] = [key, this.#data.get(key)];
             }
             return entries;
         }
         keys() {
             const keys = [];
-            if (this.__internal__length) {
-                let curr = this.__internal__head;
-                while (curr !== this.__internal__tail) {
+            if (this.#length) {
+                let curr = this.#head;
+                while (curr !== this.#tail) {
                     keys.push(curr.key);
                     curr = curr.next;
                 }
@@ -191,64 +191,64 @@
             return keys;
         }
         get(key) {
-            const data = this.__internal__data.get(key);
+            const data = this.#data.get(key);
             if (data) {
-                this.__internal__toHead(key);
-                this.__internal__evictTTL();
+                this.#toHead(key);
+                this.#evictTTL();
                 return data;
             }
-            this.__internal__evictTTL();
+            this.#evictTTL();
             return null;
         }
         set(key, value) {
-            if (this.__internal__data.has(key)) {
-                this.__internal__toHead(key);
+            if (this.#data.has(key)) {
+                this.#toHead(key);
             }
             else {
-                const node = new LRUNode(key, this.__internal__ttl);
-                this.__internal__refs.set(node.key, node);
+                const node = new LRUNode(key, this.#ttl);
+                this.#refs.set(node.key, node);
                 if (this.length === 0) {
-                    this.__internal__head = this.__internal__tail = node;
+                    this.#head = this.#tail = node;
                 }
                 else {
-                    this.__internal__head.prev = node;
-                    node.next = this.__internal__head;
-                    this.__internal__head = node;
+                    this.#head.prev = node;
+                    node.next = this.#head;
+                    this.#head = node;
                 }
-                if (this.__internal__length === this.capacity) {
-                    this.__internal__data.delete(this.__internal__tail.key);
-                    this.__internal__refs.delete(this.__internal__tail.key);
-                    this.__internal__tail = this.__internal__tail.prev;
-                    this.__internal__tail.next = this.__internal__head;
+                if (this.#length === this.capacity) {
+                    this.#data.delete(this.#tail.key);
+                    this.#refs.delete(this.#tail.key);
+                    this.#tail = this.#tail.prev;
+                    this.#tail.next = this.#head;
                 }
                 else {
-                    this.__internal__length += 1;
+                    this.#length += 1;
                 }
             }
-            this.__internal__evictTTL();
-            this.__internal__data.set(key, value);
+            this.#evictTTL();
+            this.#data.set(key, value);
         }
-        __internal__evictTTL() {
-            while (this.__internal__tail.expiry && this.__internal__tail.expiry < Date.now() && this.__internal__length > 0) {
-                this.__internal__refs.delete(this.__internal__tail.key);
-                this.__internal__data.delete(this.__internal__tail.key);
-                this.__internal__length -= 1;
-                this.__internal__tail = this.__internal__tail.prev;
-                this.__internal__tail.next = this.__internal__head;
+        #evictTTL() {
+            while (this.#tail.expiry && this.#tail.expiry < Date.now() && this.#length > 0) {
+                this.#refs.delete(this.#tail.key);
+                this.#data.delete(this.#tail.key);
+                this.#length -= 1;
+                this.#tail = this.#tail.prev;
+                this.#tail.next = this.#head;
             }
-            if (this.__internal__length === 0) {
-                this.__internal__head = this.__internal__tail = new LRUNode('<empty>', this.__internal__ttl);
+            if (this.#length === 0) {
+                this.#head = this.#tail = new LRUNode('<empty>', this.#ttl);
             }
         }
-        __internal__toHead(key) {
-            const ref = this.__internal__refs.get(key);
-            if (ref && ref !== this.__internal__head) {
+        #toHead(key) {
+            const ref = this.#refs.get(key);
+            if (ref && ref !== this.#head) {
                 ref.refresh();
                 ref.prev.next = ref.next;
                 ref.next.prev = ref.prev;
-                ref.next = this.__internal__head;
-                this.__internal__head.prev = ref;
-                this.__internal__head = ref;
+                ref.next = this.#head;
+                this.#head.prev = ref;
+                this.#head = ref;
             }
         }
     }
@@ -256,25 +256,25 @@
     const ERROR_SUBSCRIBE = 'HTTP Provider does not have subscriptions, use WebSockets instead';
     const l$7 = util.logger('api-http');
     class HttpProvider {
-        __internal__callCache;
-        __internal__cacheCapacity;
-        __internal__coder;
-        __internal__endpoint;
-        __internal__headers;
-        __internal__stats;
-        __internal__ttl;
+        #callCache;
+        #cacheCapacity;
+        #coder;
+        #endpoint;
+        #headers;
+        #stats;
+        #ttl;
         constructor(endpoint = defaults.HTTP_URL, headers = {}, cacheCapacity, cacheTtl) {
             if (!/^(https|http):\/\//.test(endpoint)) {
                 throw new Error(`Endpoint should start with 'http://' or 'https://', received '${endpoint}'`);
             }
-            this.__internal__coder = new RpcCoder();
-            this.__internal__endpoint = endpoint;
-            this.__internal__headers = headers;
-            this.__internal__cacheCapacity = cacheCapacity === 0 ? 0 : cacheCapacity || DEFAULT_CAPACITY;
+            this.#coder = new RpcCoder();
+            this.#endpoint = endpoint;
+            this.#headers = headers;
+            this.#cacheCapacity = cacheCapacity === 0 ? 0 : cacheCapacity || DEFAULT_CAPACITY;
             const ttl = cacheTtl === undefined ? DEFAULT_TTL : cacheTtl;
-            this.__internal__callCache = new LRUCache(cacheCapacity === 0 ? 0 : cacheCapacity || DEFAULT_CAPACITY, ttl);
-            this.__internal__ttl = cacheTtl;
-            this.__internal__stats = {
+            this.#callCache = new LRUCache(cacheCapacity === 0 ? 0 : cacheCapacity || DEFAULT_CAPACITY, ttl);
+            this.#ttl = cacheTtl;
+            this.#stats = {
                 active: { requests: 0, subscriptions: 0 },
                 total: { bytesRecv: 0, bytesSent: 0, cached: 0, errors: 0, requests: 0, subscriptions: 0, timeout: 0 }
             };
@@ -283,17 +283,17 @@
             return !!false;
         }
         clone() {
-            return new HttpProvider(this.__internal__endpoint, this.__internal__headers);
+            return new HttpProvider(this.#endpoint, this.#headers);
         }
         async connect() {
         }
         async disconnect() {
         }
         get stats() {
-            return this.__internal__stats;
+            return this.#stats;
         }
         get ttl() {
-            return this.__internal__ttl;
+            return this.#ttl;
         }
         get isClonable() {
             return !!true;
@@ -306,37 +306,37 @@
             return util.noop;
         }
         async send(method, params, isCacheable) {
-            this.__internal__stats.total.requests++;
-            const [, body] = this.__internal__coder.encodeJson(method, params);
-            if (this.__internal__cacheCapacity === 0) {
-                return this.__internal__send(body);
+            this.#stats.total.requests++;
+            const [, body] = this.#coder.encodeJson(method, params);
+            if (this.#cacheCapacity === 0) {
+                return this.#send(body);
             }
             const cacheKey = isCacheable ? `${method}::${util.stringify(params)}` : '';
             let resultPromise = isCacheable
-                ? this.__internal__callCache.get(cacheKey)
+                ? this.#callCache.get(cacheKey)
                 : null;
             if (!resultPromise) {
-                resultPromise = this.__internal__send(body);
+                resultPromise = this.#send(body);
                 if (isCacheable) {
-                    this.__internal__callCache.set(cacheKey, resultPromise);
+                    this.#callCache.set(cacheKey, resultPromise);
                 }
             }
             else {
-                this.__internal__stats.total.cached++;
+                this.#stats.total.cached++;
             }
             return resultPromise;
         }
-        async __internal__send(body) {
-            this.__internal__stats.active.requests++;
-            this.__internal__stats.total.bytesSent += body.length;
+        async #send(body) {
+            this.#stats.active.requests++;
+            this.#stats.total.bytesSent += body.length;
             try {
-                const response = await fetch(this.__internal__endpoint, {
+                const response = await fetch(this.#endpoint, {
                     body,
                     headers: {
                         Accept: 'application/json',
                         'Content-Length': `${body.length}`,
                         'Content-Type': 'application/json',
-                        ...this.__internal__headers
+                        ...this.#headers
                     },
                     method: 'POST'
                 });
@@ -344,14 +344,14 @@
                     throw new Error(`[${response.status}]: ${response.statusText}`);
                 }
                 const result = await response.text();
-                this.__internal__stats.total.bytesRecv += result.length;
-                const decoded = this.__internal__coder.decodeResponse(JSON.parse(result));
-                this.__internal__stats.active.requests--;
+                this.#stats.total.bytesRecv += result.length;
+                const decoded = this.#coder.decodeResponse(JSON.parse(result));
+                this.#stats.active.requests--;
                 return decoded;
             }
             catch (e) {
-                this.__internal__stats.active.requests--;
-                this.__internal__stats.total.errors++;
+                this.#stats.active.requests--;
+                this.#stats.total.errors++;
                 const { method, params } = JSON.parse(body);
                 const rpcError = e;
                 const failedRequest = `\nFailed HTTP Request: ${JSON.stringify({ method, params })}`;
@@ -581,17 +581,17 @@
         };
     }
     class InnerChecker {
-        __internal__healthCallback;
-        __internal__currentHealthCheckId = null;
-        __internal__currentHealthTimeout = null;
-        __internal__currentSubunsubRequestId = null;
-        __internal__currentSubscriptionId = null;
-        __internal__requestToSmoldot;
-        __internal__isSyncing = false;
-        __internal__nextRequestId = 0;
+        #healthCallback;
+        #currentHealthCheckId = null;
+        #currentHealthTimeout = null;
+        #currentSubunsubRequestId = null;
+        #currentSubscriptionId = null;
+        #requestToSmoldot;
+        #isSyncing = false;
+        #nextRequestId = 0;
         constructor(healthCallback, requestToSmoldot) {
-            this.__internal__healthCallback = healthCallback;
-            this.__internal__requestToSmoldot = (request) => requestToSmoldot(util.stringify(request));
+            this.#healthCallback = healthCallback;
+            this.#requestToSmoldot = (request) => requestToSmoldot(util.stringify(request));
         }
         sendJsonRpc = (request) => {
             let parsedRequest;
@@ -605,7 +605,7 @@
                 const newId = 'extern:' + util.stringify(parsedRequest.id);
                 parsedRequest.id = newId;
             }
-            this.__internal__requestToSmoldot(parsedRequest);
+            this.#requestToSmoldot(parsedRequest);
         };
         responsePassThrough = (jsonRpcResponse) => {
             let parsedResponse;
@@ -615,36 +615,36 @@
             catch {
                 return jsonRpcResponse;
             }
-            if (parsedResponse.id && this.__internal__currentHealthCheckId === parsedResponse.id) {
-                this.__internal__currentHealthCheckId = null;
+            if (parsedResponse.id && this.#currentHealthCheckId === parsedResponse.id) {
+                this.#currentHealthCheckId = null;
                 if (!parsedResponse.result) {
                     this.update(false);
                     return null;
                 }
-                this.__internal__healthCallback(parsedResponse.result);
-                this.__internal__isSyncing = parsedResponse.result.isSyncing;
+                this.#healthCallback(parsedResponse.result);
+                this.#isSyncing = parsedResponse.result.isSyncing;
                 this.update(false);
                 return null;
             }
             if (parsedResponse.id &&
-                this.__internal__currentSubunsubRequestId === parsedResponse.id) {
-                this.__internal__currentSubunsubRequestId = null;
+                this.#currentSubunsubRequestId === parsedResponse.id) {
+                this.#currentSubunsubRequestId = null;
                 if (!parsedResponse.result) {
                     this.update(false);
                     return null;
                 }
-                if (this.__internal__currentSubscriptionId) {
-                    this.__internal__currentSubscriptionId = null;
+                if (this.#currentSubscriptionId) {
+                    this.#currentSubscriptionId = null;
                 }
                 else {
-                    this.__internal__currentSubscriptionId = parsedResponse.result;
+                    this.#currentSubscriptionId = parsedResponse.result;
                 }
                 this.update(false);
                 return null;
             }
             if (parsedResponse.params &&
-                this.__internal__currentSubscriptionId &&
-                parsedResponse.params.subscription === this.__internal__currentSubscriptionId) {
+                this.#currentSubscriptionId &&
+                parsedResponse.params.subscription === this.#currentSubscriptionId) {
                 this.update(true);
                 return null;
             }
@@ -659,20 +659,20 @@
             return util.stringify(parsedResponse);
         };
         update = (startNow) => {
-            if (startNow && this.__internal__currentHealthTimeout) {
-                clearTimeout(this.__internal__currentHealthTimeout);
-                this.__internal__currentHealthTimeout = null;
+            if (startNow && this.#currentHealthTimeout) {
+                clearTimeout(this.#currentHealthTimeout);
+                this.#currentHealthTimeout = null;
             }
-            if (!this.__internal__currentHealthTimeout) {
+            if (!this.#currentHealthTimeout) {
                 const startHealthRequest = () => {
-                    this.__internal__currentHealthTimeout = null;
-                    if (this.__internal__currentHealthCheckId) {
+                    this.#currentHealthTimeout = null;
+                    if (this.#currentHealthCheckId) {
                         return;
                     }
-                    this.__internal__currentHealthCheckId = `health-checker:${this.__internal__nextRequestId}`;
-                    this.__internal__nextRequestId += 1;
-                    this.__internal__requestToSmoldot({
-                        id: this.__internal__currentHealthCheckId,
+                    this.#currentHealthCheckId = `health-checker:${this.#nextRequestId}`;
+                    this.#nextRequestId += 1;
+                    this.#requestToSmoldot({
+                        id: this.#currentHealthCheckId,
                         jsonrpc: '2.0',
                         method: 'system_health',
                         params: []
@@ -682,50 +682,50 @@
                     startHealthRequest();
                 }
                 else {
-                    this.__internal__currentHealthTimeout = setTimeout(startHealthRequest, 1000);
+                    this.#currentHealthTimeout = setTimeout(startHealthRequest, 1000);
                 }
             }
-            if (this.__internal__isSyncing &&
-                !this.__internal__currentSubscriptionId &&
-                !this.__internal__currentSubunsubRequestId) {
+            if (this.#isSyncing &&
+                !this.#currentSubscriptionId &&
+                !this.#currentSubunsubRequestId) {
                 this.startSubscription();
             }
-            if (!this.__internal__isSyncing &&
-                this.__internal__currentSubscriptionId &&
-                !this.__internal__currentSubunsubRequestId) {
+            if (!this.#isSyncing &&
+                this.#currentSubscriptionId &&
+                !this.#currentSubunsubRequestId) {
                 this.endSubscription();
             }
         };
         startSubscription = () => {
-            if (this.__internal__currentSubunsubRequestId || this.__internal__currentSubscriptionId) {
+            if (this.#currentSubunsubRequestId || this.#currentSubscriptionId) {
                 throw new Error('Internal error in health checker');
             }
-            this.__internal__currentSubunsubRequestId = `health-checker:${this.__internal__nextRequestId}`;
-            this.__internal__nextRequestId += 1;
-            this.__internal__requestToSmoldot({
-                id: this.__internal__currentSubunsubRequestId,
+            this.#currentSubunsubRequestId = `health-checker:${this.#nextRequestId}`;
+            this.#nextRequestId += 1;
+            this.#requestToSmoldot({
+                id: this.#currentSubunsubRequestId,
                 jsonrpc: '2.0',
                 method: 'chain_subscribeNewHeads',
                 params: []
             });
         };
         endSubscription = () => {
-            if (this.__internal__currentSubunsubRequestId || !this.__internal__currentSubscriptionId) {
+            if (this.#currentSubunsubRequestId || !this.#currentSubscriptionId) {
                 throw new Error('Internal error in health checker');
             }
-            this.__internal__currentSubunsubRequestId = `health-checker:${this.__internal__nextRequestId}`;
-            this.__internal__nextRequestId += 1;
-            this.__internal__requestToSmoldot({
-                id: this.__internal__currentSubunsubRequestId,
+            this.#currentSubunsubRequestId = `health-checker:${this.#nextRequestId}`;
+            this.#nextRequestId += 1;
+            this.#requestToSmoldot({
+                id: this.#currentSubunsubRequestId,
                 jsonrpc: '2.0',
                 method: 'chain_unsubscribeNewHeads',
-                params: [this.__internal__currentSubscriptionId]
+                params: [this.#currentSubscriptionId]
             });
         };
         destroy = () => {
-            if (this.__internal__currentHealthTimeout) {
-                clearTimeout(this.__internal__currentHealthTimeout);
-                this.__internal__currentHealthTimeout = null;
+            if (this.#currentHealthTimeout) {
+                clearTimeout(this.#currentHealthTimeout);
+                this.#currentHealthTimeout = null;
             }
         };
     }
@@ -745,25 +745,25 @@
     ]);
     const scClients = new WeakMap();
     class ScProvider {
-        __internal__Sc;
-        __internal__coder = new RpcCoder();
-        __internal__spec;
-        __internal__sharedSandbox;
-        __internal__subscriptions = new Map();
-        __internal__resubscribeMethods = new Map();
-        __internal__requests = new Map();
-        __internal__wellKnownChains;
-        __internal__eventemitter = new EventEmitter();
-        __internal__chain = null;
-        __internal__isChainReady = false;
+        #Sc;
+        #coder = new RpcCoder();
+        #spec;
+        #sharedSandbox;
+        #subscriptions = new Map();
+        #resubscribeMethods = new Map();
+        #requests = new Map();
+        #wellKnownChains;
+        #eventemitter = new EventEmitter();
+        #chain = null;
+        #isChainReady = false;
         constructor(Sc, spec, sharedSandbox) {
             if (!util.isObject(Sc) || !util.isObject(Sc.WellKnownChain) || !util.isFunction(Sc.createScClient)) {
                 throw new Error('Expected an @substrate/connect interface as first parameter to ScProvider');
             }
-            this.__internal__Sc = Sc;
-            this.__internal__spec = spec;
-            this.__internal__sharedSandbox = sharedSandbox;
-            this.__internal__wellKnownChains = new Set(Object.values(Sc.WellKnownChain));
+            this.#Sc = Sc;
+            this.#spec = spec;
+            this.#sharedSandbox = sharedSandbox;
+            this.#wellKnownChains = new Set(Object.values(Sc.WellKnownChain));
         }
         get hasSubscriptions() {
             return !!true;
@@ -772,7 +772,7 @@
             return !!false;
         }
         get isConnected() {
-            return !!this.__internal__chain && this.__internal__isChainReady;
+            return !!this.#chain && this.#isChainReady;
         }
         clone() {
             throw new Error('clone() is not supported.');
@@ -781,16 +781,16 @@
             if (this.isConnected) {
                 throw new Error('Already connected!');
             }
-            if (this.__internal__chain) {
-                await this.__internal__chain;
+            if (this.#chain) {
+                await this.#chain;
                 return;
             }
-            if (this.__internal__sharedSandbox && !this.__internal__sharedSandbox.isConnected) {
-                await this.__internal__sharedSandbox.connect();
+            if (this.#sharedSandbox && !this.#sharedSandbox.isConnected) {
+                await this.#sharedSandbox.connect();
             }
-            const client = this.__internal__sharedSandbox
-                ? scClients.get(this.__internal__sharedSandbox)
-                : this.__internal__Sc.createScClient(config);
+            const client = this.#sharedSandbox
+                ? scClients.get(this.#sharedSandbox)
+                : this.#Sc.createScClient(config);
             if (!client) {
                 throw new Error('Unknown ScProvider!');
             }
@@ -804,34 +804,34 @@
                 const response = JSON.parse(hcRes);
                 let decodedResponse;
                 try {
-                    decodedResponse = this.__internal__coder.decodeResponse(response);
+                    decodedResponse = this.#coder.decodeResponse(response);
                 }
                 catch (e) {
                     decodedResponse = e;
                 }
                 if (response.params?.subscription === undefined || !response.method) {
-                    return this.__internal__requests.get(response.id)?.(decodedResponse);
+                    return this.#requests.get(response.id)?.(decodedResponse);
                 }
                 const subscriptionId = `${response.method}::${response.params.subscription}`;
-                const callback = this.__internal__subscriptions.get(subscriptionId)?.[0];
+                const callback = this.#subscriptions.get(subscriptionId)?.[0];
                 callback?.(decodedResponse);
             };
-            const addChain = this.__internal__sharedSandbox
+            const addChain = this.#sharedSandbox
                 ? (async (...args) => {
-                    const source = this.__internal__sharedSandbox;
-                    return (await source.__internal__chain).addChain(...args);
+                    const source = this.#sharedSandbox;
+                    return (await source.#chain).addChain(...args);
                 })
-                : this.__internal__wellKnownChains.has(this.__internal__spec)
+                : this.#wellKnownChains.has(this.#spec)
                     ? client.addWellKnownChain
                     : client.addChain;
-            this.__internal__chain = addChain(this.__internal__spec, onResponse).then((chain) => {
+            this.#chain = addChain(this.#spec, onResponse).then((chain) => {
                 hc.setSendJsonRpc(chain.sendJsonRpc);
-                this.__internal__isChainReady = false;
+                this.#isChainReady = false;
                 const cleanup = () => {
                     const disconnectionError = new Error('Disconnected');
-                    this.__internal__requests.forEach((cb) => cb(disconnectionError));
-                    this.__internal__subscriptions.forEach(([cb]) => cb(disconnectionError));
-                    this.__internal__subscriptions.clear();
+                    this.#requests.forEach((cb) => cb(disconnectionError));
+                    this.#subscriptions.forEach(([cb]) => cb(disconnectionError));
+                    this.#subscriptions.clear();
                 };
                 const staleSubscriptions = [];
                 const killStaleSubscriptions = () => {
@@ -853,22 +853,22 @@
                 };
                 hc.start((health) => {
                     const isReady = !health.isSyncing && (health.peers > 0 || !health.shouldHavePeers);
-                    if (this.__internal__isChainReady === isReady) {
+                    if (this.#isChainReady === isReady) {
                         return;
                     }
-                    this.__internal__isChainReady = isReady;
+                    this.#isChainReady = isReady;
                     if (!isReady) {
-                        [...this.__internal__subscriptions.values()].forEach((s) => {
+                        [...this.#subscriptions.values()].forEach((s) => {
                             staleSubscriptions.push(s[1]);
                         });
                         cleanup();
-                        this.__internal__eventemitter.emit('disconnected');
+                        this.#eventemitter.emit('disconnected');
                     }
                     else {
                         killStaleSubscriptions();
-                        this.__internal__eventemitter.emit('connected');
-                        if (this.__internal__resubscribeMethods.size) {
-                            this.__internal__resubscribe();
+                        this.#eventemitter.emit('connected');
+                        if (this.#resubscribeMethods.size) {
+                            this.#resubscribe();
                         }
                     }
                 });
@@ -882,17 +882,17 @@
                 });
             });
             try {
-                await this.__internal__chain;
+                await this.#chain;
             }
             catch (e) {
-                this.__internal__chain = null;
-                this.__internal__eventemitter.emit('error', e);
+                this.#chain = null;
+                this.#eventemitter.emit('error', e);
                 throw e;
             }
         }
-        __internal__resubscribe = () => {
+        #resubscribe = () => {
             const promises = [];
-            this.__internal__resubscribeMethods.forEach((subDetails) => {
+            this.#resubscribeMethods.forEach((subDetails) => {
                 if (subDetails.type.startsWith('author_')) {
                     return;
                 }
@@ -910,54 +910,54 @@
             Promise.all(promises).catch((err) => l$6.log(err));
         };
         async disconnect() {
-            if (!this.__internal__chain) {
+            if (!this.#chain) {
                 return;
             }
-            const chain = await this.__internal__chain;
-            this.__internal__chain = null;
-            this.__internal__isChainReady = false;
+            const chain = await this.#chain;
+            this.#chain = null;
+            this.#isChainReady = false;
             try {
                 chain.remove();
             }
             catch (_) { }
-            this.__internal__eventemitter.emit('disconnected');
+            this.#eventemitter.emit('disconnected');
         }
         on(type, sub) {
             if (type === 'connected' && this.isConnected) {
                 sub();
             }
-            this.__internal__eventemitter.on(type, sub);
+            this.#eventemitter.on(type, sub);
             return () => {
-                this.__internal__eventemitter.removeListener(type, sub);
+                this.#eventemitter.removeListener(type, sub);
             };
         }
         async send(method, params) {
-            if (!this.isConnected || !this.__internal__chain) {
+            if (!this.isConnected || !this.#chain) {
                 throw new Error('Provider is not connected');
             }
-            const chain = await this.__internal__chain;
-            const [id, json] = this.__internal__coder.encodeJson(method, params);
+            const chain = await this.#chain;
+            const [id, json] = this.#coder.encodeJson(method, params);
             const result = new Promise((resolve, reject) => {
-                this.__internal__requests.set(id, (response) => {
+                this.#requests.set(id, (response) => {
                     (util.isError(response) ? reject : resolve)(response);
                 });
                 try {
                     chain.sendJsonRpc(json);
                 }
                 catch (e) {
-                    this.__internal__chain = null;
+                    this.#chain = null;
                     try {
                         chain.remove();
                     }
                     catch (_) { }
-                    this.__internal__eventemitter.emit('error', e);
+                    this.#eventemitter.emit('error', e);
                 }
             });
             try {
                 return await result;
             }
             finally {
-                this.__internal__requests.delete(id);
+                this.#requests.delete(id);
             }
         }
         async subscribe(type, method, params, callback) {
@@ -978,8 +978,8 @@
             if (!unsubscribeMethod) {
                 throw new Error('Invalid unsubscribe method found');
             }
-            this.__internal__resubscribeMethods.set(subscriptionId, { callback, method, params, type });
-            this.__internal__subscriptions.set(subscriptionId, [cb, { id, unsubscribeMethod }]);
+            this.#resubscribeMethods.set(subscriptionId, { callback, method, params, type });
+            this.#subscriptions.set(subscriptionId, [cb, { id, unsubscribeMethod }]);
             return id;
         }
         unsubscribe(type, method, id) {
@@ -987,11 +987,11 @@
                 throw new Error('Provider is not connected');
             }
             const subscriptionId = `${type}::${id}`;
-            if (!this.__internal__subscriptions.has(subscriptionId)) {
+            if (!this.#subscriptions.has(subscriptionId)) {
                 return Promise.reject(new Error(`Unable to find active subscription=${subscriptionId}`));
             }
-            this.__internal__resubscribeMethods.delete(subscriptionId);
-            this.__internal__subscriptions.delete(subscriptionId);
+            this.#resubscribeMethods.delete(subscriptionId);
+            this.#subscriptions.delete(subscriptionId);
             return this.send(method, [id]);
         }
     }
@@ -1058,25 +1058,25 @@
         return { bytesRecv: 0, bytesSent: 0, cached: 0, errors: 0, requests: 0, subscriptions: 0, timeout: 0 };
     }
     class WsProvider {
-        __internal__callCache;
-        __internal__coder;
-        __internal__endpoints;
-        __internal__headers;
-        __internal__eventemitter;
-        __internal__handlers = {};
-        __internal__isReadyPromise;
-        __internal__stats;
-        __internal__waitingForId = {};
-        __internal__cacheCapacity;
-        __internal__ttl;
-        __internal__autoConnectMs;
-        __internal__endpointIndex;
-        __internal__endpointStats;
-        __internal__isConnected = false;
-        __internal__subscriptions = {};
-        __internal__timeoutId = null;
-        __internal__websocket;
-        __internal__timeout;
+        #callCache;
+        #coder;
+        #endpoints;
+        #headers;
+        #eventemitter;
+        #handlers = {};
+        #isReadyPromise;
+        #stats;
+        #waitingForId = {};
+        #cacheCapacity;
+        #ttl;
+        #autoConnectMs;
+        #endpointIndex;
+        #endpointStats;
+        #isConnected = false;
+        #subscriptions = {};
+        #timeoutId = null;
+        #websocket;
+        #timeout;
         constructor(endpoint = defaults.WS_URL, autoConnectMs = RETRY_DELAY, headers = {}, timeout, cacheCapacity, cacheTtl) {
             const endpoints = Array.isArray(endpoint)
                 ? endpoint
@@ -1090,27 +1090,27 @@
                 }
             });
             const ttl = cacheTtl === undefined ? DEFAULT_TTL : cacheTtl;
-            this.__internal__callCache = new LRUCache(cacheCapacity === 0 ? 0 : cacheCapacity || DEFAULT_CAPACITY, ttl);
-            this.__internal__ttl = cacheTtl;
-            this.__internal__cacheCapacity = cacheCapacity || DEFAULT_CAPACITY;
-            this.__internal__eventemitter = new EventEmitter();
-            this.__internal__autoConnectMs = autoConnectMs || 0;
-            this.__internal__coder = new RpcCoder();
-            this.__internal__endpointIndex = -1;
-            this.__internal__endpoints = endpoints;
-            this.__internal__headers = headers;
-            this.__internal__websocket = null;
-            this.__internal__stats = {
+            this.#callCache = new LRUCache(cacheCapacity === 0 ? 0 : cacheCapacity || DEFAULT_CAPACITY, ttl);
+            this.#ttl = cacheTtl;
+            this.#cacheCapacity = cacheCapacity || DEFAULT_CAPACITY;
+            this.#eventemitter = new EventEmitter();
+            this.#autoConnectMs = autoConnectMs || 0;
+            this.#coder = new RpcCoder();
+            this.#endpointIndex = -1;
+            this.#endpoints = endpoints;
+            this.#headers = headers;
+            this.#websocket = null;
+            this.#stats = {
                 active: { requests: 0, subscriptions: 0 },
                 total: defaultEndpointStats()
             };
-            this.__internal__endpointStats = defaultEndpointStats();
-            this.__internal__timeout = timeout || DEFAULT_TIMEOUT_MS;
+            this.#endpointStats = defaultEndpointStats();
+            this.#timeout = timeout || DEFAULT_TIMEOUT_MS;
             if (autoConnectMs && autoConnectMs > 0) {
                 this.connectWithRetry().catch(util.noop);
             }
-            this.__internal__isReadyPromise = new Promise((resolve) => {
-                this.__internal__eventemitter.once('connected', () => {
+            this.#isReadyPromise = new Promise((resolve) => {
+                this.#eventemitter.once('connected', () => {
                     resolve(this);
                 });
             });
@@ -1122,118 +1122,118 @@
             return !!true;
         }
         get isConnected() {
-            return this.__internal__isConnected;
+            return this.#isConnected;
         }
         get isReady() {
-            return this.__internal__isReadyPromise;
+            return this.#isReadyPromise;
         }
         get endpoint() {
-            return this.__internal__endpoints[this.__internal__endpointIndex];
+            return this.#endpoints[this.#endpointIndex];
         }
         clone() {
-            return new WsProvider(this.__internal__endpoints);
+            return new WsProvider(this.#endpoints);
         }
         selectEndpointIndex(endpoints) {
-            return (this.__internal__endpointIndex + 1) % endpoints.length;
+            return (this.#endpointIndex + 1) % endpoints.length;
         }
         async connect() {
-            if (this.__internal__websocket) {
+            if (this.#websocket) {
                 throw new Error('WebSocket is already connected');
             }
             try {
-                this.__internal__endpointIndex = this.selectEndpointIndex(this.__internal__endpoints);
-                this.__internal__websocket = typeof xglobal.WebSocket !== 'undefined' && util.isChildClass(xglobal.WebSocket, WebSocket)
+                this.#endpointIndex = this.selectEndpointIndex(this.#endpoints);
+                this.#websocket = typeof xglobal.WebSocket !== 'undefined' && util.isChildClass(xglobal.WebSocket, WebSocket)
                     ? new WebSocket(this.endpoint)
                     : new WebSocket(this.endpoint, undefined, {
-                        headers: this.__internal__headers
+                        headers: this.#headers
                     });
-                if (this.__internal__websocket) {
-                    this.__internal__websocket.onclose = this.__internal__onSocketClose;
-                    this.__internal__websocket.onerror = this.__internal__onSocketError;
-                    this.__internal__websocket.onmessage = this.__internal__onSocketMessage;
-                    this.__internal__websocket.onopen = this.__internal__onSocketOpen;
+                if (this.#websocket) {
+                    this.#websocket.onclose = this.#onSocketClose;
+                    this.#websocket.onerror = this.#onSocketError;
+                    this.#websocket.onmessage = this.#onSocketMessage;
+                    this.#websocket.onopen = this.#onSocketOpen;
                 }
-                this.__internal__timeoutId = setInterval(() => this.__internal__timeoutHandlers(), TIMEOUT_INTERVAL);
+                this.#timeoutId = setInterval(() => this.#timeoutHandlers(), TIMEOUT_INTERVAL);
             }
             catch (error) {
                 l$5.error(error);
-                this.__internal__emit('error', error);
+                this.#emit('error', error);
                 throw error;
             }
         }
         async connectWithRetry() {
-            if (this.__internal__autoConnectMs > 0) {
+            if (this.#autoConnectMs > 0) {
                 try {
                     await this.connect();
                 }
                 catch {
                     setTimeout(() => {
                         this.connectWithRetry().catch(util.noop);
-                    }, this.__internal__autoConnectMs);
+                    }, this.#autoConnectMs);
                 }
             }
         }
         async disconnect() {
-            this.__internal__autoConnectMs = 0;
+            this.#autoConnectMs = 0;
             try {
-                if (this.__internal__websocket) {
-                    this.__internal__websocket.close(1000);
+                if (this.#websocket) {
+                    this.#websocket.close(1000);
                 }
             }
             catch (error) {
                 l$5.error(error);
-                this.__internal__emit('error', error);
+                this.#emit('error', error);
                 throw error;
             }
         }
         get stats() {
             return {
                 active: {
-                    requests: Object.keys(this.__internal__handlers).length,
-                    subscriptions: Object.keys(this.__internal__subscriptions).length
+                    requests: Object.keys(this.#handlers).length,
+                    subscriptions: Object.keys(this.#subscriptions).length
                 },
-                total: this.__internal__stats.total
+                total: this.#stats.total
             };
         }
         get ttl() {
-            return this.__internal__ttl;
+            return this.#ttl;
         }
         get endpointStats() {
-            return this.__internal__endpointStats;
+            return this.#endpointStats;
         }
         on(type, sub) {
-            this.__internal__eventemitter.on(type, sub);
+            this.#eventemitter.on(type, sub);
             return () => {
-                this.__internal__eventemitter.removeListener(type, sub);
+                this.#eventemitter.removeListener(type, sub);
             };
         }
         send(method, params, isCacheable, subscription) {
-            this.__internal__endpointStats.requests++;
-            this.__internal__stats.total.requests++;
-            const [id, body] = this.__internal__coder.encodeJson(method, params);
-            if (this.__internal__cacheCapacity === 0) {
-                return this.__internal__send(id, body, method, params, subscription);
+            this.#endpointStats.requests++;
+            this.#stats.total.requests++;
+            const [id, body] = this.#coder.encodeJson(method, params);
+            if (this.#cacheCapacity === 0) {
+                return this.#send(id, body, method, params, subscription);
             }
             const cacheKey = isCacheable ? `${method}::${util.stringify(params)}` : '';
             let resultPromise = isCacheable
-                ? this.__internal__callCache.get(cacheKey)
+                ? this.#callCache.get(cacheKey)
                 : null;
             if (!resultPromise) {
-                resultPromise = this.__internal__send(id, body, method, params, subscription);
+                resultPromise = this.#send(id, body, method, params, subscription);
                 if (isCacheable) {
-                    this.__internal__callCache.set(cacheKey, resultPromise);
+                    this.#callCache.set(cacheKey, resultPromise);
                 }
             }
             else {
-                this.__internal__endpointStats.cached++;
-                this.__internal__stats.total.cached++;
+                this.#endpointStats.cached++;
+                this.#stats.total.cached++;
             }
             return resultPromise;
         }
-        async __internal__send(id, body, method, params, subscription) {
+        async #send(id, body, method, params, subscription) {
             return new Promise((resolve, reject) => {
                 try {
-                    if (!this.isConnected || this.__internal__websocket === null) {
+                    if (!this.isConnected || this.#websocket === null) {
                         throw new Error('WebSocket is not connected');
                     }
                     const callback = (error, result) => {
@@ -1242,7 +1242,7 @@
                             : resolve(result);
                     };
                     l$5.debug(() => ['calling', method, body]);
-                    this.__internal__handlers[id] = {
+                    this.#handlers[id] = {
                         callback,
                         method,
                         params,
@@ -1250,13 +1250,13 @@
                         subscription
                     };
                     const bytesSent = body.length;
-                    this.__internal__endpointStats.bytesSent += bytesSent;
-                    this.__internal__stats.total.bytesSent += bytesSent;
-                    this.__internal__websocket.send(body);
+                    this.#endpointStats.bytesSent += bytesSent;
+                    this.#stats.total.bytesSent += bytesSent;
+                    this.#websocket.send(body);
                 }
                 catch (error) {
-                    this.__internal__endpointStats.errors++;
-                    this.__internal__stats.total.errors++;
+                    this.#endpointStats.errors++;
+                    this.#stats.total.errors++;
                     const rpcError = error;
                     const failedRequest = `\nFailed WS Request: ${JSON.stringify({ method, params })}`;
                     rpcError.message = `${rpcError.message}${failedRequest}`;
@@ -1265,19 +1265,19 @@
             });
         }
         subscribe(type, method, params, callback) {
-            this.__internal__endpointStats.subscriptions++;
-            this.__internal__stats.total.subscriptions++;
+            this.#endpointStats.subscriptions++;
+            this.#stats.total.subscriptions++;
             return this.send(method, params, false, { callback, type });
         }
         async unsubscribe(type, method, id) {
             const subscription = `${type}::${id}`;
-            if (util.isUndefined(this.__internal__subscriptions[subscription])) {
+            if (util.isUndefined(this.#subscriptions[subscription])) {
                 l$5.debug(() => `Unable to find active subscription=${subscription}`);
                 return false;
             }
-            delete this.__internal__subscriptions[subscription];
+            delete this.#subscriptions[subscription];
             try {
-                return this.isConnected && !util.isNull(this.__internal__websocket)
+                return this.isConnected && !util.isNull(this.#websocket)
                     ? this.send(method, [id])
                     : true;
             }
@@ -1285,27 +1285,27 @@
                 return false;
             }
         }
-        __internal__emit = (type, ...args) => {
-            this.__internal__eventemitter.emit(type, ...args);
+        #emit = (type, ...args) => {
+            this.#eventemitter.emit(type, ...args);
         };
-        __internal__onSocketClose = (event) => {
+        #onSocketClose = (event) => {
             const error = new Error(`disconnected from ${this.endpoint}: ${event.code}:: ${event.reason || getWSErrorString(event.code)}`);
-            if (this.__internal__autoConnectMs > 0) {
+            if (this.#autoConnectMs > 0) {
                 l$5.error(error.message);
             }
-            this.__internal__isConnected = false;
-            if (this.__internal__websocket) {
-                this.__internal__websocket.onclose = null;
-                this.__internal__websocket.onerror = null;
-                this.__internal__websocket.onmessage = null;
-                this.__internal__websocket.onopen = null;
-                this.__internal__websocket = null;
+            this.#isConnected = false;
+            if (this.#websocket) {
+                this.#websocket.onclose = null;
+                this.#websocket.onerror = null;
+                this.#websocket.onmessage = null;
+                this.#websocket.onopen = null;
+                this.#websocket = null;
             }
-            if (this.__internal__timeoutId) {
-                clearInterval(this.__internal__timeoutId);
-                this.__internal__timeoutId = null;
+            if (this.#timeoutId) {
+                clearInterval(this.#timeoutId);
+                this.#timeoutId = null;
             }
-            eraseRecord(this.__internal__handlers, (h) => {
+            eraseRecord(this.#handlers, (h) => {
                 try {
                     h.callback(error, undefined);
                 }
@@ -1313,93 +1313,93 @@
                     l$5.error(err);
                 }
             });
-            eraseRecord(this.__internal__waitingForId);
-            this.__internal__endpointStats = defaultEndpointStats();
-            this.__internal__emit('disconnected');
-            if (this.__internal__autoConnectMs > 0) {
+            eraseRecord(this.#waitingForId);
+            this.#endpointStats = defaultEndpointStats();
+            this.#emit('disconnected');
+            if (this.#autoConnectMs > 0) {
                 setTimeout(() => {
                     this.connectWithRetry().catch(util.noop);
-                }, this.__internal__autoConnectMs);
+                }, this.#autoConnectMs);
             }
         };
-        __internal__onSocketError = (error) => {
+        #onSocketError = (error) => {
             l$5.debug(() => ['socket error', error]);
-            this.__internal__emit('error', error);
+            this.#emit('error', error);
         };
-        __internal__onSocketMessage = (message) => {
+        #onSocketMessage = (message) => {
             l$5.debug(() => ['received', message.data]);
             const bytesRecv = message.data.length;
-            this.__internal__endpointStats.bytesRecv += bytesRecv;
-            this.__internal__stats.total.bytesRecv += bytesRecv;
+            this.#endpointStats.bytesRecv += bytesRecv;
+            this.#stats.total.bytesRecv += bytesRecv;
             const response = JSON.parse(message.data);
             return util.isUndefined(response.method)
-                ? this.__internal__onSocketMessageResult(response)
-                : this.__internal__onSocketMessageSubscribe(response);
+                ? this.#onSocketMessageResult(response)
+                : this.#onSocketMessageSubscribe(response);
         };
-        __internal__onSocketMessageResult = (response) => {
-            const handler = this.__internal__handlers[response.id];
+        #onSocketMessageResult = (response) => {
+            const handler = this.#handlers[response.id];
             if (!handler) {
                 l$5.debug(() => `Unable to find handler for id=${response.id}`);
                 return;
             }
             try {
                 const { method, params, subscription } = handler;
-                const result = this.__internal__coder.decodeResponse(response);
+                const result = this.#coder.decodeResponse(response);
                 handler.callback(null, result);
                 if (subscription) {
                     const subId = `${subscription.type}::${result}`;
-                    this.__internal__subscriptions[subId] = util.objectSpread({}, subscription, {
+                    this.#subscriptions[subId] = util.objectSpread({}, subscription, {
                         method,
                         params
                     });
-                    if (this.__internal__waitingForId[subId]) {
-                        this.__internal__onSocketMessageSubscribe(this.__internal__waitingForId[subId]);
+                    if (this.#waitingForId[subId]) {
+                        this.#onSocketMessageSubscribe(this.#waitingForId[subId]);
                     }
                 }
             }
             catch (error) {
-                this.__internal__endpointStats.errors++;
-                this.__internal__stats.total.errors++;
+                this.#endpointStats.errors++;
+                this.#stats.total.errors++;
                 handler.callback(error, undefined);
             }
-            delete this.__internal__handlers[response.id];
+            delete this.#handlers[response.id];
         };
-        __internal__onSocketMessageSubscribe = (response) => {
+        #onSocketMessageSubscribe = (response) => {
             if (!response.method) {
                 throw new Error('No method found in JSONRPC response');
             }
             const method = ALIASES[response.method] || response.method;
             const subId = `${method}::${response.params.subscription}`;
-            const handler = this.__internal__subscriptions[subId];
+            const handler = this.#subscriptions[subId];
             if (!handler) {
-                this.__internal__waitingForId[subId] = response;
+                this.#waitingForId[subId] = response;
                 l$5.debug(() => `Unable to find handler for subscription=${subId}`);
                 return;
             }
-            delete this.__internal__waitingForId[subId];
+            delete this.#waitingForId[subId];
             try {
-                const result = this.__internal__coder.decodeResponse(response);
+                const result = this.#coder.decodeResponse(response);
                 handler.callback(null, result);
             }
             catch (error) {
-                this.__internal__endpointStats.errors++;
-                this.__internal__stats.total.errors++;
+                this.#endpointStats.errors++;
+                this.#stats.total.errors++;
                 handler.callback(error, undefined);
             }
         };
-        __internal__onSocketOpen = () => {
-            if (this.__internal__websocket === null) {
+        #onSocketOpen = () => {
+            if (this.#websocket === null) {
                 throw new Error('WebSocket cannot be null in onOpen');
             }
             l$5.debug(() => ['connected to', this.endpoint]);
-            this.__internal__isConnected = true;
-            this.__internal__resubscribe();
-            this.__internal__emit('connected');
+            this.#isConnected = true;
+            this.#resubscribe();
+            this.#emit('connected');
             return true;
         };
-        __internal__resubscribe = () => {
-            const subscriptions = this.__internal__subscriptions;
-            this.__internal__subscriptions = {};
+        #resubscribe = () => {
+            const subscriptions = this.#subscriptions;
+            this.#subscriptions = {};
             Promise.all(Object.keys(subscriptions).map(async (id) => {
                 const { callback, method, params, type } = subscriptions[id];
                 if (type.startsWith('author_')) {
@@ -1413,26 +1413,26 @@
                 }
             })).catch(l$5.error);
         };
-        __internal__timeoutHandlers = () => {
+        #timeoutHandlers = () => {
             const now = Date.now();
-            const ids = Object.keys(this.__internal__handlers);
+            const ids = Object.keys(this.#handlers);
             for (let i = 0, count = ids.length; i < count; i++) {
-                const handler = this.__internal__handlers[ids[i]];
-                if ((now - handler.start) > this.__internal__timeout) {
+                const handler = this.#handlers[ids[i]];
+                if ((now - handler.start) > this.#timeout) {
                     try {
-                        handler.callback(new Error(`No response received from RPC endpoint in ${this.__internal__timeout / 1000}s`), undefined);
+                        handler.callback(new Error(`No response received from RPC endpoint in ${this.#timeout / 1000}s`), undefined);
                     }
                     catch {
                     }
-                    this.__internal__endpointStats.timeout++;
-                    this.__internal__stats.total.timeout++;
-                    delete this.__internal__handlers[ids[i]];
+                    this.#endpointStats.timeout++;
+                    this.#stats.total.timeout++;
+                    delete this.#handlers[ids[i]];
                 }
             }
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.2.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.2.2' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -3627,13 +3627,13 @@
         return ['0x3a636f6465'].includes(key.toHex());
     }
     class RpcCore {
-        __internal__instanceId;
-        __internal__isPedantic;
-        __internal__registryDefault;
-        __internal__storageCache;
-        __internal__storageCacheHits = 0;
-        __internal__getBlockRegistry;
-        __internal__getBlockHash;
+        #instanceId;
+        #isPedantic;
+        #registryDefault;
+        #storageCache;
+        #storageCacheHits = 0;
+        #getBlockRegistry;
+        #getBlockHash;
         mapping = new Map();
         provider;
         sections = [];
@@ -3641,13 +3641,13 @@
             if (!provider || !util.isFunction(provider.send)) {
                 throw new Error('Expected Provider to API create');
             }
-            this.__internal__instanceId = instanceId;
-            this.__internal__isPedantic = isPedantic;
-            this.__internal__registryDefault = registry;
+            this.#instanceId = instanceId;
+            this.#isPedantic = isPedantic;
+            this.#registryDefault = registry;
             this.provider = provider;
             const sectionNames = Object.keys(types.rpcDefinitions);
             this.sections.push(...sectionNames);
-            this.__internal__storageCache = new LRUCache(rpcCacheCapacity || RPC_CORE_DEFAULT_CAPACITY, ttl);
+            this.#storageCache = new LRUCache(rpcCacheCapacity || RPC_CORE_DEFAULT_CAPACITY, ttl);
             this.addUserInterfaces(userRpc);
         }
         get isConnected() {
@@ -3665,20 +3665,20 @@
                 ? {
                     ...stats,
                     core: {
-                        cacheHits: this.__internal__storageCacheHits,
-                        cacheSize: this.__internal__storageCache.length
+                        cacheHits: this.#storageCacheHits,
+                        cacheSize: this.#storageCache.length
                     }
                 }
                 : undefined;
         }
         setRegistrySwap(registrySwap) {
-            this.__internal__getBlockRegistry = util.memoize(registrySwap, {
-                getInstanceId: () => this.__internal__instanceId
+            this.#getBlockRegistry = util.memoize(registrySwap, {
+                getInstanceId: () => this.#instanceId
             });
         }
         setResolveBlockHash(resolveBlockHash) {
-            this.__internal__getBlockHash = util.memoize(resolveBlockHash, {
-                getInstanceId: () => this.__internal__instanceId
+            this.#getBlockHash = util.memoize(resolveBlockHash, {
+                getInstanceId: () => this.#instanceId
             });
         }
         addUserInterfaces(userRpc) {
@@ -3705,7 +3705,7 @@
             }
         }
         _memomize(creator, def) {
-            const memoOpts = { getInstanceId: () => this.__internal__instanceId };
+            const memoOpts = { getInstanceId: () => this.#instanceId };
             const memoized = util.memoize(creator(true), memoOpts);
             memoized.raw = util.memoize(creator(false), memoOpts);
             memoized.meta = def;
@@ -3725,11 +3725,11 @@
                     ? null
                     : values[hashIndex];
                 const blockHash = blockId && def.params[hashIndex].type === 'BlockNumber'
-                    ? await this.__internal__getBlockHash?.(blockId)
+                    ? await this.#getBlockHash?.(blockId)
                     : blockId;
-                const { registry } = isScale && blockHash && this.__internal__getBlockRegistry
-                    ? await this.__internal__getBlockRegistry(util.u8aToU8a(blockHash))
-                    : { registry: this.__internal__registryDefault };
+                const { registry } = isScale && blockHash && this.#getBlockRegistry
+                    ? await this.#getBlockRegistry(util.u8aToU8a(blockHash))
+                    : { registry: this.#registryDefault };
                 const params = this._formatParams(registry, null, def, values);
                 const result = await this.provider.send(rpcName, params.map((p) => p.toJSON()), !!blockHash);
                 return this._formatResult(isScale, registry, blockHash, method, def, params, result);
@@ -3784,7 +3784,7 @@
             const creator = (isScale) => (...values) => {
                 return new Observable((observer) => {
                     let subscriptionPromise = Promise.resolve(null);
-                    const registry = this.__internal__registryDefault;
+                    const registry = this.#registryDefault;
                     const errorHandler = (error) => {
                         logErrorMessage(method, def, error);
                         observer.error(error);
@@ -3889,9 +3889,9 @@
             const found = changes.find(([key]) => key === hexKey);
             const isNotFound = util.isUndefined(found);
             if (isNotFound && withCache) {
-                const cached = this.__internal__storageCache.get(hexKey);
+                const cached = this.#storageCache.get(hexKey);
                 if (cached) {
-                    this.__internal__storageCacheHits++;
+                    this.#storageCacheHits++;
                     return cached;
                 }
             }
@@ -3907,7 +3907,7 @@
             return codec;
         }
         _setToCache(key, value) {
-            this.__internal__storageCache.set(key, value);
+            this.#storageCache.set(key, value);
         }
         _newType(registry, blockHash, key, input, isEmpty, entryIndex = -1) {
             const type = key.outputType || 'Raw';
@@ -3924,9 +3924,9 @@
                                 : util.hexToU8a(meta.fallback.toHex())
                             : undefined
                         : meta.modifier.isOptional
-                            ? registry.createTypeUnsafe(type, [input], { blockHash, isPedantic: this.__internal__isPedantic })
+                            ? registry.createTypeUnsafe(type, [input], { blockHash, isPedantic: this.#isPedantic })
                             : input
-                ], { blockHash, isFallback: isEmpty && !!meta.fallback, isOptional: meta.modifier.isOptional, isPedantic: this.__internal__isPedantic && !meta.modifier.isOptional });
+                ], { blockHash, isFallback: isEmpty && !!meta.fallback, isOptional: meta.modifier.isOptional, isPedantic: this.#isPedantic && !meta.modifier.isOptional });
             }
             catch (error) {
                 throw new Error(`Unable to decode storage ${key.section || 'unknown'}.${key.method || 'unknown'}:${entryNum}: ${error.message}`);
@@ -4817,14 +4817,14 @@
     function createHeaderExtended(registry, header, validators, author) {
         const HeaderBase = registry.createClass('Header');
         class Implementation extends HeaderBase {
-            __internal__author;
+            #author;
             constructor(registry, header, validators, author) {
                 super(registry, header);
-                this.__internal__author = author || extractAuthor(this.digest, validators || []);
+                this.#author = author || extractAuthor(this.digest, validators || []);
                 this.createdAtHash = header?.createdAtHash;
             }
             get author() {
-                return this.__internal__author;
+                return this.#author;
             }
         }
         return new Implementation(registry, header, validators, author);
@@ -4854,24 +4854,24 @@
     function createSignedBlockExtended(registry, block, events, validators, author) {
         const SignedBlockBase = registry.createClass('SignedBlock');
         class Implementation extends SignedBlockBase {
-            __internal__author;
-            __internal__events;
-            __internal__extrinsics;
+            #author;
+            #events;
+            #extrinsics;
             constructor(registry, block, events, validators, author) {
                 super(registry, block);
-                this.__internal__author = author || extractAuthor(this.block.header.digest, validators || []);
-                this.__internal__events = events || [];
-                this.__internal__extrinsics = mapExtrinsics(this.block.extrinsics, this.__internal__events);
+                this.#author = author || extractAuthor(this.block.header.digest, validators || []);
+                this.#events = events || [];
+                this.#extrinsics = mapExtrinsics(this.block.extrinsics, this.#events);
                 this.createdAtHash = block?.createdAtHash;
             }
             get author() {
-                return this.__internal__author;
+                return this.#author;
             }
             get events() {
-                return this.__internal__events;
+                return this.#events;
             }
             get extrinsics() {
-                return this.__internal__extrinsics;
+                return this.#extrinsics;
             }
         }
         return new Implementation(registry, block, events, validators, author);
@@ -7446,11 +7446,11 @@
     function createClass({ api, apiType, blockHash, decorateMethod }) {
         const ExtrinsicBase = api.registry.createClass('Extrinsic');
         class Submittable extends ExtrinsicBase {
-            __internal__ignoreStatusCb;
-            __internal__transformResult = (util.identity);
+            #ignoreStatusCb;
+            #transformResult = (util.identity);
             constructor(registry, extrinsic) {
                 super(registry, extrinsic, { version: api.extrinsicType });
-                this.__internal__ignoreStatusCb = apiType === 'rxjs';
+                this.#ignoreStatusCb = apiType === 'rxjs';
             }
             get hasDryRun() {
                 return util.isFunction(api.rpc.system?.dryRun);
@@ -7465,7 +7465,7 @@
                 if (blockHash || util.isString(optionsOrHash) || util.isU8a(optionsOrHash)) {
                     return decorateMethod(() => api.rpc.system.dryRun(this.toHex(), blockHash || optionsOrHash));
                 }
-                return decorateMethod(() => this.__internal__observeSign(account, optionsOrHash).pipe(switchMap(() => api.rpc.system.dryRun(this.toHex()))))();
+                return decorateMethod(() => this.#observeSign(account, optionsOrHash).pipe(switchMap(() => api.rpc.system.dryRun(this.toHex()))))();
             }
             paymentInfo(account, optionsOrHash) {
                 if (!this.hasPaymentInfo) {
@@ -7487,27 +7487,27 @@
                 })))();
             }
             send(statusCb) {
-                const isSubscription = api.hasSubscriptions && (this.__internal__ignoreStatusCb || !!statusCb);
+                const isSubscription = api.hasSubscriptions && (this.#ignoreStatusCb || !!statusCb);
                 return decorateMethod(isSubscription
-                    ? this.__internal__observeSubscribe
-                    : this.__internal__observeSend)(statusCb);
+                    ? this.#observeSubscribe
+                    : this.#observeSend)(statusCb);
             }
             signAsync(account, partialOptions) {
-                return decorateMethod(() => this.__internal__observeSign(account, partialOptions).pipe(map(() => this)))();
+                return decorateMethod(() => this.#observeSign(account, partialOptions).pipe(map(() => this)))();
             }
             signAndSend(account, partialOptions, optionalStatusCb) {
                 const [options, statusCb] = makeSignAndSendOptions(partialOptions, optionalStatusCb);
-                const isSubscription = api.hasSubscriptions && (this.__internal__ignoreStatusCb || !!statusCb);
-                return decorateMethod(() => this.__internal__observeSign(account, options).pipe(switchMap((info) => isSubscription
-                    ? this.__internal__observeSubscribe(info)
-                    : this.__internal__observeSend(info)))
+                const isSubscription = api.hasSubscriptions && (this.#ignoreStatusCb || !!statusCb);
+                return decorateMethod(() => this.#observeSign(account, options).pipe(switchMap((info) => isSubscription
+                    ? this.#observeSubscribe(info)
+                    : this.#observeSend(info)))
                 )(statusCb);
             }
             withResultTransform(transform) {
-                this.__internal__transformResult = transform;
+                this.#transformResult = transform;
                 return this;
             }
-            __internal__observeSign = (account, partialOptions) => {
+            #observeSign = (account, partialOptions) => {
                 const address = isKeyringPair(account) ? account.address : account.toString();
                 const options = optionsOrNonce(partialOptions);
                 return api.derive.tx.signingInfo(address, options.nonce, options.era).pipe(first(), mergeMap(async (signingInfo) => {
@@ -7518,7 +7518,7 @@
                         this.sign(account, eraOptions);
                     }
                     else {
-                        const result = await this.__internal__signViaSigner(address, eraOptions, signingInfo.header);
+                        const result = await this.#signViaSigner(address, eraOptions, signingInfo.header);
                         updateId = result.id;
                         if (result.signedTransaction) {
                             signedTx = result.signedTransaction;
@@ -7527,9 +7527,9 @@
                     return { options: eraOptions, signedTransaction: signedTx, updateId };
                 }));
             };
-            __internal__observeStatus = (txHash, status) => {
+            #observeStatus = (txHash, status) => {
                 if (!status.isFinalized && !status.isInBlock) {
-                    return of(this.__internal__transformResult(new SubmittableResult({
+                    return of(this.#transformResult(new SubmittableResult({
                         status,
                         txHash
                     })));
@@ -7537,28 +7537,28 @@
                 const blockHash = status.isInBlock
                     ? status.asInBlock
                     : status.asFinalized;
-                return api.derive.tx.events(blockHash).pipe(map(({ block, events }) => this.__internal__transformResult(new SubmittableResult({
+                return api.derive.tx.events(blockHash).pipe(map(({ block, events }) => this.#transformResult(new SubmittableResult({
                     ...filterEvents(txHash, block, events, status),
                     status,
                     txHash
-                }))), catchError((internalError) => of(this.__internal__transformResult(new SubmittableResult({
+                }))), catchError((internalError) => of(this.#transformResult(new SubmittableResult({
                     internalError,
                     status,
                     txHash
                 })))));
             };
-            __internal__observeSend = (info) => {
+            #observeSend = (info) => {
                 return api.rpc.author.submitExtrinsic(info?.signedTransaction || this).pipe(tap((hash) => {
-                    this.__internal__updateSigner(hash, info);
+                    this.#updateSigner(hash, info);
                 }));
             };
-            __internal__observeSubscribe = (info) => {
+            #observeSubscribe = (info) => {
                 const txHash = this.hash;
-                return api.rpc.author.submitAndWatchExtrinsic(info?.signedTransaction || this).pipe(switchMap((status) => this.__internal__observeStatus(txHash, status)), tap((status) => {
-                    this.__internal__updateSigner(status, info);
+                return api.rpc.author.submitAndWatchExtrinsic(info?.signedTransaction || this).pipe(switchMap((status) => this.#observeStatus(txHash, status)), tap((status) => {
+                    this.#updateSigner(status, info);
                 }));
             };
-            __internal__signViaSigner = async (address, options, header) => {
+            #signViaSigner = async (address, options, header) => {
                 const signer = options.signer || api.signer;
                 const allowCallDataAlteration = options.allowCallDataAlteration ?? true;
                 if (!signer) {
@@ -7597,7 +7597,7 @@
                             throw new Error(`When using the signedTransaction field, the transaction must be signed. Recieved isSigned: ${ext.isSigned}`);
                         }
                         if (!allowCallDataAlteration) {
-                            this.__internal__validateSignedTransaction(payload, ext);
+                            this.#validateSignedTransaction(payload, ext);
                         }
                         super.addSignature(address, result.signature, newSignerPayload.toPayload());
                         return { id: result.id, signedTransaction: result.signedTransaction };
@@ -7612,7 +7612,7 @@
                 super.addSignature(address, result.signature, payload.toPayload());
                 return { id: result.id };
             };
-            __internal__updateSigner = (status, info) => {
+            #updateSigner = (status, info) => {
                 if (info && (info.updateId !== -1)) {
                     const { options, updateId } = info;
                     const signer = options.signer || api.signer;
@@ -7621,7 +7621,7 @@
                     }
                 }
             };
-            __internal__validateSignedTransaction = (signerPayload, signedExt) => {
+            #validateSignedTransaction = (signerPayload, signedExt) => {
                 const payload = signerPayload.toPayload();
                 const errMsg = (field) => `signAndSend: ${field} does not match the original payload`;
                 if (payload.method !== signedExt.method.toHex()) {
@@ -24097,20 +24097,20 @@
     }
 
     class Events {
-        __internal__eventemitter = new EventEmitter();
+        #eventemitter = new EventEmitter();
         emit(type, ...args) {
-            return this.__internal__eventemitter.emit(type, ...args);
+            return this.#eventemitter.emit(type, ...args);
         }
         on(type, handler) {
-            this.__internal__eventemitter.on(type, handler);
+            this.#eventemitter.on(type, handler);
             return this;
         }
         off(type, handler) {
-            this.__internal__eventemitter.removeListener(type, handler);
+            this.#eventemitter.removeListener(type, handler);
             return this;
         }
         once(type, handler) {
-            this.__internal__eventemitter.once(type, handler);
+            this.#eventemitter.once(type, handler);
             return this;
         }
     }
@@ -24124,11 +24124,11 @@
         return util.assertReturn(api.rx.query[section] && api.rx.query[section][method], () => `query.${section}.${method} is not available in this version of the metadata`);
     }
     class Decorate extends Events {
-        __internal__instanceId;
-        __internal__runtimeLog = {};
-        __internal__registry;
-        __internal__storageGetQ = [];
-        __internal__storageSubQ = [];
+        #instanceId;
+        #runtimeLog = {};
+        #registry;
+        #storageGetQ = [];
+        #storageSubQ = [];
         __phantom = new util.BN(0);
         _type;
         _call = {};
@@ -24154,11 +24154,11 @@
         _decorateMethod;
         constructor(options, type, decorateMethod) {
             super();
-            this.__internal__instanceId = `${++instanceCounter}`;
-            this.__internal__registry = options.source?.registry || options.registry || new types.TypeRegistry();
+            this.#instanceId = `${++instanceCounter}`;
+            this.#registry = options.source?.registry || options.registry || new types.TypeRegistry();
             this._rx.callAt = (blockHash, knownVersion) => from(this.at(blockHash, knownVersion)).pipe(map((a) => a.rx.call));
             this._rx.queryAt = (blockHash, knownVersion) => from(this.at(blockHash, knownVersion)).pipe(map((a) => a.rx.query));
-            this._rx.registry = this.__internal__registry;
+            this._rx.registry = this.#registry;
             this._decorateMethod = decorateMethod;
             this._options = options;
             this._type = type;
@@ -24167,7 +24167,7 @@
                     ? options.source._rpcCore.provider.clone()
                     : options.source._rpcCore.provider
                 : (options.provider || new WsProvider());
-            this._rpcCore = new RpcCore(this.__internal__instanceId, this.__internal__registry, {
+            this._rpcCore = new RpcCore(this.#instanceId, this.#registry, {
                 isPedantic: this._options.isPedantic,
                 provider,
                 rpcCacheCapacity: this._options.rpcCacheCapacity,
@@ -24178,13 +24178,13 @@
             this._rx.hasSubscriptions = this._rpcCore.provider.hasSubscriptions;
         }
         get registry() {
-            return this.__internal__registry;
+            return this.#registry;
         }
         createType(type, ...params) {
-            return this.__internal__registry.createType(type, ...params);
+            return this.#registry.createType(type, ...params);
         }
         registerTypes(types) {
-            types && this.__internal__registry.register(types);
+            types && this.#registry.register(types);
         }
         get hasSubscriptions() {
             return this._rpcCore.provider.hasSubscriptions;
@@ -24263,7 +24263,7 @@
             this.emit('decorated');
         }
         injectMetadata(metadata, fromEmpty, registry) {
-            this._injectMetadata({ counter: 0, metadata, registry: registry || this.__internal__registry, runtimeVersion: this.__internal__registry.createType('RuntimeVersionPartial') }, fromEmpty);
+            this._injectMetadata({ counter: 0, metadata, registry: registry || this.#registry, runtimeVersion: this.#registry.createType('RuntimeVersionPartial') }, fromEmpty);
         }
         _decorateFunctionMeta(input, output) {
             output.meta = input.meta;
@@ -24430,8 +24430,8 @@
             const sections = isApiInMetadata ? this._getRuntimeDefsViaMetadata(registry) : this._getRuntimeDefs(registry, specName, this._runtimeChain);
             const older = [];
             const implName = `${specName.toString()}/${specVersion.toString()}`;
-            const hasLogged = this.__internal__runtimeLog[implName] || false;
-            this.__internal__runtimeLog[implName] = true;
+            const hasLogged = this.#runtimeLog[implName] || false;
+            this.#runtimeLog[implName] = true;
             if (isApiInMetadata) {
                 for (let i = 0, scount = sections.length; i < scount; i++) {
                     const [_section, secs] = sections[i];
@@ -24567,7 +24567,7 @@
             return result;
         }
         _decorateStorageEntry(creator, decorateMethod) {
-            const getArgs = (args, registry) => extractStorageArgs(registry || this.__internal__registry, creator, args);
+            const getArgs = (args, registry) => extractStorageArgs(registry || this.#registry, creator, args);
             const getQueryAt = (blockHash) => from(this.at(blockHash)).pipe(map((api) => getAtQueryFn(api, creator)));
             const decorated = this._decorateStorageCall(creator, decorateMethod);
             decorated.creator = creator;
@@ -24580,12 +24580,12 @@
             decorated.size = decorateMethod((...args) => this._rpcCore.state.getStorageSize(getArgs(args)));
             decorated.sizeAt = decorateMethod((blockHash, ...args) => getQueryAt(blockHash).pipe(switchMap((q) => this._rpcCore.state.getStorageSize(getArgs(args, q.creator.meta.registry), blockHash))));
             if (creator.iterKey && creator.meta.type.isMap) {
-                decorated.entries = decorateMethod(memo(this.__internal__instanceId, (...args) => this._retrieveMapEntries(creator, null, args)));
-                decorated.entriesAt = decorateMethod(memo(this.__internal__instanceId, (blockHash, ...args) => getQueryAt(blockHash).pipe(switchMap((q) => this._retrieveMapEntries(q.creator, blockHash, args)))));
-                decorated.entriesPaged = decorateMethod(memo(this.__internal__instanceId, (opts) => this._retrieveMapEntriesPaged(creator, undefined, opts)));
-                decorated.keys = decorateMethod(memo(this.__internal__instanceId, (...args) => this._retrieveMapKeys(creator, null, args)));
-                decorated.keysAt = decorateMethod(memo(this.__internal__instanceId, (blockHash, ...args) => getQueryAt(blockHash).pipe(switchMap((q) => this._retrieveMapKeys(q.creator, blockHash, args)))));
-                decorated.keysPaged = decorateMethod(memo(this.__internal__instanceId, (opts) => this._retrieveMapKeysPaged(creator, undefined, opts)));
+                decorated.entries = decorateMethod(memo(this.#instanceId, (...args) => this._retrieveMapEntries(creator, null, args)));
+                decorated.entriesAt = decorateMethod(memo(this.#instanceId, (blockHash, ...args) => getQueryAt(blockHash).pipe(switchMap((q) => this._retrieveMapEntries(q.creator, blockHash, args)))));
+                decorated.entriesPaged = decorateMethod(memo(this.#instanceId, (opts) => this._retrieveMapEntriesPaged(creator, undefined, opts)));
+                decorated.keys = decorateMethod(memo(this.#instanceId, (...args) => this._retrieveMapKeys(creator, null, args)));
+                decorated.keysAt = decorateMethod(memo(this.#instanceId, (blockHash, ...args) => getQueryAt(blockHash).pipe(switchMap((q) => this._retrieveMapKeys(q.creator, blockHash, args)))));
+                decorated.keysPaged = decorateMethod(memo(this.#instanceId, (opts) => this._retrieveMapKeysPaged(creator, undefined, opts)));
             }
             if (this.supportMulti && creator.meta.type.isMap) {
                 decorated.multi = decorateMethod((args) => creator.meta.type.asMap.hashers.length === 1
@@ -24605,10 +24605,10 @@
             decorated.keyPrefix = (...keys) => util.u8aToHex(creator.keyPrefix(...keys));
             decorated.size = decorateMethod((...args) => this._rpcCore.state.getStorageSize(getArgs(args), blockHash));
             if (creator.iterKey && creator.meta.type.isMap) {
-                decorated.entries = decorateMethod(memo(this.__internal__instanceId, (...args) => this._retrieveMapEntries(creator, blockHash, args)));
-                decorated.entriesPaged = decorateMethod(memo(this.__internal__instanceId, (opts) => this._retrieveMapEntriesPaged(creator, blockHash, opts)));
-                decorated.keys = decorateMethod(memo(this.__internal__instanceId, (...args) => this._retrieveMapKeys(creator, blockHash, args)));
-                decorated.keysPaged = decorateMethod(memo(this.__internal__instanceId, (opts) => this._retrieveMapKeysPaged(creator, blockHash, opts)));
+                decorated.entries = decorateMethod(memo(this.#instanceId, (...args) => this._retrieveMapEntries(creator, blockHash, args)));
+                decorated.entriesPaged = decorateMethod(memo(this.#instanceId, (opts) => this._retrieveMapEntriesPaged(creator, blockHash, opts)));
+                decorated.keys = decorateMethod(memo(this.#instanceId, (...args) => this._retrieveMapKeys(creator, blockHash, args)));
+                decorated.keysPaged = decorateMethod(memo(this.#instanceId, (opts) => this._retrieveMapKeysPaged(creator, blockHash, opts)));
             }
             if (this.supportMulti && creator.meta.type.isMap) {
                 decorated.multi = decorateMethod((args) => creator.meta.type.asMap.hashers.length === 1
@@ -24618,7 +24618,7 @@
             return this._decorateFunctionMeta(creator, decorated);
         }
         _queueStorage(call, queue) {
-            const query = queue === this.__internal__storageSubQ
+            const query = queue === this.#storageSubQ
                 ? this._rpcCore.state.subscribeStorage
                 : this._rpcCore.state.queryStorageAt;
             let queueIdx = queue.length - 1;
@@ -24645,16 +24645,16 @@
             map((values) => values[valueIdx]));
         }
         _decorateStorageCall(creator, decorateMethod) {
-            const memoed = memo(this.__internal__instanceId, (...args) => {
-                const call = extractStorageArgs(this.__internal__registry, creator, args);
+            const memoed = memo(this.#instanceId, (...args) => {
+                const call = extractStorageArgs(this.#registry, creator, args);
                 if (!this.hasSubscriptions) {
                     return this._rpcCore.state.getStorage(call);
                 }
-                return this._queueStorage(call, this.__internal__storageSubQ);
+                return this._queueStorage(call, this.#storageSubQ);
             });
             return decorateMethod(memoed, {
                 methodName: creator.method,
-                overrideNoSub: (...args) => this._queueStorage(extractStorageArgs(this.__internal__registry, creator, args), this.__internal__storageGetQ)
+                overrideNoSub: (...args) => this._queueStorage(extractStorageArgs(this.#registry, creator, args), this.#storageGetQ)
             });
         }
         _retrieveMulti(keys, blockHash) {
@@ -24718,7 +24718,7 @@
         }
         _decorateDeriveRx(decorateMethod) {
             const specName = this._runtimeVersion?.specName.toString();
-            const available = getAvailableDerives(this.__internal__instanceId, this._rx, util.objectSpread({}, this._options.derives, this._options.typesBundle?.spec?.[specName || '']?.derives));
+            const available = getAvailableDerives(this.#instanceId, this._rx, util.objectSpread({}, this._options.derives, this._options.typesBundle?.spec?.[specName || '']?.derives));
             return decorateDeriveSections(decorateMethod, available);
         }
         _decorateDerive(decorateMethod) {
@@ -24736,11 +24736,11 @@
         return t.toString();
     }
     class Init extends Decorate {
-        __internal__atLast = null;
-        __internal__healthTimer = null;
-        __internal__registries = [];
-        __internal__updateSub = null;
-        __internal__waitingRegistries = {};
+        #atLast = null;
+        #healthTimer = null;
+        #registries = [];
+        #updateSub = null;
+        #waitingRegistries = {};
         constructor(options, type, decorateMethod) {
             super(options, type, decorateMethod);
             this.registry.setKnownTypes(options);
@@ -24748,7 +24748,7 @@
                 this.registerTypes(options.types);
             }
             else {
-                this.__internal__registries = options.source.__internal__registries;
+                this.#registries = options.source.#registries;
             }
             this._rpc = this._decorateRpc(this._rpcCore, this._decorateMethod);
             this._rx.rpc = this._decorateRpc(this._rpcCore, this._rxDecorateMethod);
@@ -24760,15 +24760,15 @@
             this._rpcCore.setRegistrySwap((blockHash) => this.getBlockRegistry(blockHash));
             this._rpcCore.setResolveBlockHash((blockNumber) => firstValueFrom(this._rpcCore.chain.getBlockHash(blockNumber)));
             if (this.hasSubscriptions) {
-                this._rpcCore.provider.on('disconnected', () => this.__internal__onProviderDisconnect());
-                this._rpcCore.provider.on('error', (e) => this.__internal__onProviderError(e));
-                this._rpcCore.provider.on('connected', () => this.__internal__onProviderConnect());
+                this._rpcCore.provider.on('disconnected', () => this.#onProviderDisconnect());
+                this._rpcCore.provider.on('error', (e) => this.#onProviderError(e));
+                this._rpcCore.provider.on('connected', () => this.#onProviderConnect());
             }
             else if (!this._options.noInitWarn) {
                 l.warn('Api will be available in a limited mode since the provider does not support subscriptions');
             }
             if (this._rpcCore.provider.isConnected) {
-                this.__internal__onProviderConnect().catch(util.noop);
+                this.#onProviderConnect().catch(util.noop);
             }
         }
         _initRegistry(registry, chain, version, metadata, chainProps) {
@@ -24783,16 +24783,16 @@
             registry.setMetadata(metadata, undefined, util.objectSpread({}, getSpecExtensions(registry, chain, version.specName), this._options.signedExtensions), this._options.noInitWarn);
         }
         _getDefaultRegistry() {
-            return util.assertReturn(this.__internal__registries.find(({ isDefault }) => isDefault), 'Initialization error, cannot find the default registry');
+            return util.assertReturn(this.#registries.find(({ isDefault }) => isDefault), 'Initialization error, cannot find the default registry');
         }
         async at(blockHash, knownVersion) {
             const u8aHash = util.u8aToU8a(blockHash);
             const u8aHex = util.u8aToHex(u8aHash);
             const registry = await this.getBlockRegistry(u8aHash, knownVersion);
-            if (!this.__internal__atLast || this.__internal__atLast[0] !== u8aHex) {
-                this.__internal__atLast = [u8aHex, this._createDecorated(registry, true, null, u8aHash).decoratedApi];
+            if (!this.#atLast || this.#atLast[0] !== u8aHex) {
+                this.#atLast = [u8aHex, this._createDecorated(registry, true, null, u8aHash).decoratedApi];
             }
-            return this.__internal__atLast[1];
+            return this.#atLast[1];
         }
         async _createBlockRegistry(blockHash, header, version) {
             const registry = new types.TypeRegistry(blockHash);
@@ -24803,20 +24803,20 @@
             }
             this._initRegistry(registry, runtimeChain, version, metadata);
             const result = { counter: 0, lastBlockHash: blockHash, metadata, registry, runtimeVersion: version };
-            this.__internal__registries.push(result);
+            this.#registries.push(result);
             return result;
         }
         _cacheBlockRegistryProgress(key, creator) {
-            let waiting = this.__internal__waitingRegistries[key];
+            let waiting = this.#waitingRegistries[key];
             if (util.isUndefined(waiting)) {
-                waiting = this.__internal__waitingRegistries[key] = new Promise((resolve, reject) => {
+                waiting = this.#waitingRegistries[key] = new Promise((resolve, reject) => {
                     creator()
                         .then((registry) => {
-                        delete this.__internal__waitingRegistries[key];
+                        delete this.#waitingRegistries[key];
                         resolve(registry);
                     })
                         .catch((error) => {
-                        delete this.__internal__waitingRegistries[key];
+                        delete this.#waitingRegistries[key];
                         reject(error);
                     });
                 });
@@ -24825,7 +24825,7 @@
         }
         _getBlockRegistryViaVersion(blockHash, version) {
             if (version) {
-                const existingViaVersion = this.__internal__registries.find(({ runtimeVersion: { specName, specVersion } }) => specName.eq(version.specName) &&
+                const existingViaVersion = this.#registries.find(({ runtimeVersion: { specName, specVersion } }) => specName.eq(version.specName) &&
                     specVersion.eq(version.specVersion));
                 if (existingViaVersion) {
                     existingViaVersion.counter++;
@@ -24854,7 +24854,7 @@
         }
         async getBlockRegistry(blockHash, knownVersion) {
             return (
-            this.__internal__registries.find(({ lastBlockHash }) => lastBlockHash && util.u8aEq(lastBlockHash, blockHash)) ||
+            this.#registries.find(({ lastBlockHash }) => lastBlockHash && util.u8aEq(lastBlockHash, blockHash)) ||
                 this._getBlockRegistryViaVersion(blockHash, knownVersion) ||
                 await this._cacheBlockRegistryProgress(util.u8aToHex(blockHash), () => this._getBlockRegistryViaHash(blockHash)));
         }
@@ -24888,10 +24888,10 @@
             return [source.genesisHash, source.runtimeMetadata];
         }
         _subscribeUpdates() {
-            if (this.__internal__updateSub || !this.hasSubscriptions) {
+            if (this.#updateSub || !this.hasSubscriptions) {
                 return;
             }
-            this.__internal__updateSub = this._rpcCore.state.subscribeRuntimeVersion().pipe(switchMap((version) =>
+            this.#updateSub = this._rpcCore.state.subscribeRuntimeVersion().pipe(switchMap((version) =>
             this._runtimeVersion?.specVersion.eq(version.specVersion)
                 ? of(false)
                 : this._rpcCore.state.getMetadata().pipe(map((metadata) => {
@@ -24929,8 +24929,8 @@
             this._initRegistry(this.registry, chain, runtimeVersion, metadata, chainProps);
             this._filterRpc(rpcMethods.methods.map(textToString), getSpecRpc(this.registry, chain, runtimeVersion.specName));
             this._subscribeUpdates();
-            if (!this.__internal__registries.length) {
-                this.__internal__registries.push({ counter: 0, isDefault: true, metadata, registry: this.registry, runtimeVersion });
+            if (!this.#registries.length) {
+                this.#registries.push({ counter: 0, isDefault: true, metadata, registry: this.registry, runtimeVersion });
             }
             metadata.getUniqTypes(this._options.throwOnUnknown || false);
             return [genesisHash, metadata];
@@ -24997,29 +24997,29 @@
         }
         _subscribeHealth() {
             this._unsubscribeHealth();
-            this.__internal__healthTimer = this.hasSubscriptions
+            this.#healthTimer = this.hasSubscriptions
                 ? setInterval(() => {
                     firstValueFrom(this._rpcCore.system.health.raw()).catch(util.noop);
                 }, KEEPALIVE_INTERVAL)
                 : null;
         }
         _unsubscribeHealth() {
-            if (this.__internal__healthTimer) {
-                clearInterval(this.__internal__healthTimer);
-                this.__internal__healthTimer = null;
+            if (this.#healthTimer) {
+                clearInterval(this.#healthTimer);
+                this.#healthTimer = null;
             }
         }
         _unsubscribeUpdates() {
-            if (this.__internal__updateSub) {
-                this.__internal__updateSub.unsubscribe();
-                this.__internal__updateSub = null;
+            if (this.#updateSub) {
+                this.#updateSub.unsubscribe();
+                this.#updateSub = null;
             }
         }
         _unsubscribe() {
             this._unsubscribeHealth();
             this._unsubscribeUpdates();
         }
-        async __internal__onProviderConnect() {
+        async #onProviderConnect() {
             this._isConnected.next(true);
             this.emit('connected');
             try {
@@ -25039,12 +25039,12 @@
                 this.emit('error', error);
             }
         }
-        __internal__onProviderDisconnect() {
+        #onProviderDisconnect() {
             this._isConnected.next(false);
             this._unsubscribe();
             this.emit('disconnected');
         }
-        __internal__onProviderError(error) {
+        #onProviderError(error) {
             this.emit('error', error);
         }
     }
@@ -25148,54 +25148,54 @@
     }
 
     class Combinator {
-        __internal__allHasFired = false;
-        __internal__callback;
-        __internal__fired = [];
-        __internal__fns = [];
-        __internal__isActive = true;
-        __internal__results = [];
-        __internal__subscriptions = [];
+        #allHasFired = false;
+        #callback;
+        #fired = [];
+        #fns = [];
+        #isActive = true;
+        #results = [];
+        #subscriptions = [];
         constructor(fns, callback) {
-            this.__internal__callback = callback;
-            this.__internal__subscriptions = fns.map(async (input, index) => {
+            this.#callback = callback;
+            this.#subscriptions = fns.map(async (input, index) => {
                 const [fn, ...args] = Array.isArray(input)
                     ? input
                     : [input];
-                this.__internal__fired.push(false);
-                this.__internal__fns.push(fn);
+                this.#fired.push(false);
+                this.#fns.push(fn);
                 return fn(...args, this._createCallback(index));
             });
         }
         _allHasFired() {
-            this.__internal__allHasFired ||= this.__internal__fired.filter((hasFired) => !hasFired).length === 0;
-            return this.__internal__allHasFired;
+            this.#allHasFired ||= this.#fired.filter((hasFired) => !hasFired).length === 0;
+            return this.#allHasFired;
         }
         _createCallback(index) {
             return (value) => {
-                this.__internal__fired[index] = true;
-                this.__internal__results[index] = value;
+                this.#fired[index] = true;
+                this.#results[index] = value;
                 this._triggerUpdate();
             };
         }
         _triggerUpdate() {
-            if (!this.__internal__isActive || !util.isFunction(this.__internal__callback) || !this._allHasFired()) {
+            if (!this.#isActive || !util.isFunction(this.#callback) || !this._allHasFired()) {
                 return;
             }
             try {
                 Promise
-                    .resolve(this.__internal__callback(this.__internal__results))
+                    .resolve(this.#callback(this.#results))
                     .catch(util.noop);
             }
             catch {
             }
         }
         unsubscribe() {
-            if (!this.__internal__isActive) {
+            if (!this.#isActive) {
                 return;
             }
-            this.__internal__isActive = false;
+            this.#isActive = false;
             Promise
-                .all(this.__internal__subscriptions.map(async (subscription) => {
+                .all(this.#subscriptions.map(async (subscription) => {
                 try {
                     const unsubscribe = await subscription;
                     if (util.isFunction(unsubscribe)) {
@@ -25269,14 +25269,14 @@
     }
 
     class ApiPromise extends ApiBase {
-        __internal__isReadyPromise;
-        __internal__isReadyOrErrorPromise;
+        #isReadyPromise;
+        #isReadyOrErrorPromise;
         constructor(options) {
             super(options, 'promise', toPromiseMethod);
-            this.__internal__isReadyPromise = new Promise((resolve) => {
+            this.#isReadyPromise = new Promise((resolve) => {
                 super.once('ready', () => resolve(this));
             });
-            this.__internal__isReadyOrErrorPromise = new Promise((resolve, reject) => {
+            this.#isReadyOrErrorPromise = new Promise((resolve, reject) => {
                 const tracker = promiseTracker(resolve, reject);
                 super.once('ready', () => tracker.resolve(this));
                 super.once('error', (error) => tracker.reject(error));
@@ -25291,10 +25291,10 @@
             return instance.isReady;
         }
         get isReady() {
-            return this.__internal__isReadyPromise;
+            return this.#isReadyPromise;
         }
         get isReadyOrError() {
-            return this.__internal__isReadyOrErrorPromise;
+            return this.#isReadyOrErrorPromise;
         }
         clone() {
             return new ApiPromise(util.objectSpread({}, this._options, { source: this }));
@@ -25312,10 +25312,10 @@
     }
 
     class ApiRx extends ApiBase {
-        __internal__isReadyRx;
+        #isReadyRx;
         constructor(options) {
             super(options, 'rxjs', toRxMethod);
-            this.__internal__isReadyRx = from(
+            this.#isReadyRx = from(
             new Promise((resolve) => {
                 super.on('ready', () => resolve(this));
             }));
@@ -25324,7 +25324,7 @@
             return new ApiRx(options).isReady;
         }
         get isReady() {
-            return this.__internal__isReadyRx;
+            return this.#isReadyRx;
         }
         clone() {
             return new ApiRx(util.objectSpread({}, this._options, { source: this }));

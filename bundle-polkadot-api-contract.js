@@ -198,7 +198,7 @@
             [this.json, this.registry, this.metadata, this.info, this.isRevive] = parseJson(util.isString(abiJson)
                 ? JSON.parse(abiJson)
                 : abiJson, chainProperties);
-            this.constructors = this.metadata.spec.constructors.map((spec, index) => this.__internal__createMessage(spec, index, {
+            this.constructors = this.metadata.spec.constructors.map((spec, index) => this.#createMessage(spec, index, {
                 isConstructor: true,
                 isDefault: spec.default.isTrue,
                 isPayable: spec.payable.isTrue,
@@ -206,8 +206,8 @@
                     ? this.registry.lookup.getTypeDef(spec.returnType.unwrap().type)
                     : null
             }));
-            this.events = this.metadata.spec.events.map((_, index) => this.__internal__createEvent(index));
-            this.messages = this.metadata.spec.messages.map((spec, index) => this.__internal__createMessage(spec, index, {
+            this.events = this.metadata.spec.events.map((_, index) => this.#createEvent(index));
+            this.messages = this.metadata.spec.messages.map((spec, index) => this.#createMessage(spec, index, {
                 isDefault: spec.default.isTrue,
                 isMutating: spec.mutates.isTrue,
                 isPayable: spec.payable.isTrue,
@@ -238,12 +238,12 @@
         decodeEvent(record) {
             switch (this.metadata.version.toString()) {
                 case '4':
-                    return this.__internal__decodeEventV4(record);
+                    return this.#decodeEventV4(record);
                 default:
-                    return this.__internal__decodeEventV5(record);
+                    return this.#decodeEventV5(record);
             }
         }
-        __internal__decodeEventV5 = (record) => {
+        #decodeEventV5 = (record) => {
             const signatureTopic = record.topics[0];
             const data = record.event.data[1];
             if (signatureTopic) {
@@ -268,7 +268,7 @@
             }
             throw new Error('Unable to determine event');
         };
-        __internal__decodeEventV4 = (record) => {
+        #decodeEventV4 = (record) => {
             const data = record.event.data[1];
             const index = data[0];
             const event = this.events[index];
@@ -278,10 +278,10 @@
             return event.fromU8a(data.subarray(1));
         };
         decodeConstructor(data) {
-            return this.__internal__decodeMessage('message', this.constructors, data);
+            return this.#decodeMessage('message', this.constructors, data);
         }
         decodeMessage(data) {
-            return this.__internal__decodeMessage('message', this.messages, data);
+            return this.#decodeMessage('message', this.messages, data);
         }
         findConstructor(constructorOrId) {
             return findMessage(this.constructors, constructorOrId);
@@ -289,7 +289,7 @@
         findMessage(messageOrId) {
             return findMessage(this.messages, messageOrId);
         }
-        __internal__createArgs = (args, spec) => {
+        #createArgs = (args, spec) => {
             return args.map(({ label, type }, index) => {
                 try {
                     if (!util.isObject(type)) {
@@ -322,28 +322,28 @@
                 }
             });
         };
-        __internal__createMessageParams = (args, spec) => {
-            return this.__internal__createArgs(args, spec);
+        #createMessageParams = (args, spec) => {
+            return this.#createArgs(args, spec);
         };
-        __internal__createEventParams = (args, spec) => {
-            const params = this.__internal__createArgs(args, spec);
+        #createEventParams = (args, spec) => {
+            const params = this.#createArgs(args, spec);
             return params.map((p, index) => ({ ...p, indexed: args[index].indexed.toPrimitive() }));
         };
-        __internal__createEvent = (index) => {
+        #createEvent = (index) => {
             switch (this.metadata.version.toString()) {
                 case '4':
-                    return this.__internal__createEventV4(this.metadata.spec.events[index], index);
+                    return this.#createEventV4(this.metadata.spec.events[index], index);
                 default:
-                    return this.__internal__createEventV5(this.metadata.spec.events[index], index);
+                    return this.#createEventV5(this.metadata.spec.events[index], index);
             }
         };
-        __internal__createEventV5 = (spec, index) => {
-            const args = this.__internal__createEventParams(spec.args, spec);
+        #createEventV5 = (spec, index) => {
+            const args = this.#createEventParams(spec.args, spec);
             const event = {
                 args,
                 docs: spec.docs.map((d) => d.toString()),
                 fromU8a: (data) => ({
-                    args: this.__internal__decodeArgs(args, data),
+                    args: this.#decodeArgs(args, data),
                     event
                 }),
                 identifier: [spec.module_path, spec.label].join('::'),
@@ -352,13 +352,13 @@
             };
             return event;
         };
-        __internal__createEventV4 = (spec, index) => {
-            const args = this.__internal__createEventParams(spec.args, spec);
+        #createEventV4 = (spec, index) => {
+            const args = this.#createEventParams(spec.args, spec);
             const event = {
                 args,
                 docs: spec.docs.map((d) => d.toString()),
                 fromU8a: (data) => ({
-                    args: this.__internal__decodeArgs(args, data),
+                    args: this.#decodeArgs(args, data),
                     event
                 }),
                 identifier: spec.label.toString(),
@@ -366,15 +366,15 @@
             };
             return event;
         };
-        __internal__createMessage = (spec, index, add = {}) => {
-            const args = this.__internal__createMessageParams(spec.args, spec);
+        #createMessage = (spec, index, add = {}) => {
+            const args = this.#createMessageParams(spec.args, spec);
             const identifier = spec.label.toString();
             const message = {
                 ...add,
                 args,
                 docs: spec.docs.map((d) => d.toString()),
                 fromU8a: (data) => ({
-                    args: this.__internal__decodeArgs(args, data),
+                    args: this.#decodeArgs(args, data),
                     message
                 }),
                 identifier,
@@ -383,11 +383,11 @@
                 method: util.stringCamelCase(identifier),
                 path: identifier.split('::').map((s) => util.stringCamelCase(s)),
                 selector: spec.selector,
-                toU8a: (params) => this.__internal__encodeMessageArgs(spec, args, params)
+                toU8a: (params) => this.#encodeMessageArgs(spec, args, params)
             };
             return message;
         };
-        __internal__decodeArgs = (args, data) => {
+        #decodeArgs = (args, data) => {
             let offset = 0;
             return args.map(({ type: { lookupName, type } }) => {
                 const value = this.registry.createType(lookupName || type, data.subarray(offset));
@@ -395,7 +395,7 @@
                 return value;
             });
         };
-        __internal__decodeMessage = (type, list, data) => {
+        #decodeMessage = (type, list, data) => {
             const [, trimmed] = util.compactStripLength(data);
             const selector = trimmed.subarray(0, 4);
             const message = list.find((m) => m.selector.eq(selector));
@@ -404,7 +404,7 @@
             }
             return message.fromU8a(trimmed.subarray(4));
         };
-        __internal__encodeMessageArgs = ({ label, selector }, args, data) => {
+        #encodeMessageArgs = ({ label, selector }, args, data) => {
             if (data.length !== args.length) {
                 throw new Error(`Expected ${args.length} arguments to contract message '${label.toString()}', found ${data.length}`);
             }
@@ -412,7 +412,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api-contract', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.2.1' };
+    const packageInfo = { name: '@polkadot/api-contract', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.2.2' };
 
     function applyOnEvent(result, types, fn) {
         if (result.isInBlock || result.isFinalized) {
@@ -1012,27 +1012,27 @@
     }
     class Contract extends Base {
         address;
-        __internal__query = {};
-        __internal__tx = {};
+        #query = {};
+        #tx = {};
         constructor(api, abi, address, decorateMethod) {
             super(api, abi, decorateMethod);
             this.address = this.registry.createType(this._isRevive ? 'AccountId20' : 'AccountId', address);
             this.abi.messages.forEach((m) => {
-                if (util.isUndefined(this.__internal__tx[m.method])) {
-                    this.__internal__tx[m.method] = createTx(m, (o, p) => this.__internal__exec(m, o, p));
+                if (util.isUndefined(this.#tx[m.method])) {
+                    this.#tx[m.method] = createTx(m, (o, p) => this.#exec(m, o, p));
                 }
-                if (util.isUndefined(this.__internal__query[m.method])) {
-                    this.__internal__query[m.method] = createQuery(m, (f, o, p) => this.__internal__read(m, o, p).send(f));
+                if (util.isUndefined(this.#query[m.method])) {
+                    this.#query[m.method] = createQuery(m, (f, o, p) => this.#read(m, o, p).send(f));
                 }
             });
         }
         get query() {
-            return this.__internal__query;
+            return this.#query;
         }
         get tx() {
-            return this.__internal__tx;
+            return this.#tx;
         }
-        __internal__getGas = (_gasLimit, isCall = false) => {
+        #getGas = (_gasLimit, isCall = false) => {
             const weight = convertWeight(_gasLimit);
             if (weight.v1Weight.gt(util.BN_ZERO)) {
                 return weight;
@@ -1043,7 +1043,7 @@
                     ? this.api.consts.system.blockWeights.maxBlock
                     : this.api.consts.system['maximumBlockWeight']).v1Weight.muln(64).div(util.BN_HUNDRED));
         };
-        __internal__exec = (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
+        #exec = (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
             const palletTx = this._isRevive ? this.api.tx.revive : this.api.tx.contracts;
             return palletTx.call(this.address, value,
             this._isWeightV1
@@ -1061,15 +1061,15 @@
             })
                 .filter((decoded) => !!decoded))));
         };
-        __internal__read = (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
+        #read = (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
             const message = this.abi.findMessage(messageOrId);
             return {
                 send: this._decorateMethod((origin) => (this._isRevive
                     ? this.api.rx.call.reviveApi.call
                     : this.api.rx.call.contractsApi.call)(origin, this.address, value,
                 this._isWeightV1
-                    ? this.__internal__getGas(gasLimit, true).v1Weight
-                    : this.__internal__getGas(gasLimit, true).v2Weight, storageDepositLimit, message.toU8a(params)).pipe(map(({ debugMessage, gasConsumed, gasRequired, result, storageDeposit }) => ({
+                    ? this.#getGas(gasLimit, true).v1Weight
+                    : this.#getGas(gasLimit, true).v2Weight, storageDepositLimit, message.toU8a(params)).pipe(map(({ debugMessage, gasConsumed, gasRequired, result, storageDeposit }) => ({
                     debugMessage,
                     gasConsumed,
                     gasRequired: gasRequired && !convertWeight(gasRequired).v1Weight.isZero()
@@ -1094,20 +1094,20 @@
     }
     class Blueprint extends Base {
         codeHash;
-        __internal__tx = {};
+        #tx = {};
         constructor(api, abi, codeHash, decorateMethod) {
             super(api, abi, decorateMethod);
             this.codeHash = this.registry.createType('Hash', codeHash);
             this.abi.constructors.forEach((c) => {
-                if (util.isUndefined(this.__internal__tx[c.method])) {
-                    this.__internal__tx[c.method] = createBluePrintTx(c, (o, p) => this.__internal__deploy(c, o, p));
+                if (util.isUndefined(this.#tx[c.method])) {
+                    this.#tx[c.method] = createBluePrintTx(c, (o, p) => this.#deploy(c, o, p));
                 }
             });
         }
         get tx() {
-            return this.__internal__tx;
+            return this.#tx;
         }
-        __internal__deploy = (constructorOrId, { gasLimit = util.BN_ZERO, salt, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
+        #deploy = (constructorOrId, { gasLimit = util.BN_ZERO, salt, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
             const palletTx = this._isRevive
                 ? this.api.tx.revive
                 : this.api.tx.contracts;
@@ -1137,7 +1137,7 @@
     }
     class Code extends Base {
         code;
-        __internal__tx = {};
+        #tx = {};
         constructor(api, abi, wasm, decorateMethod) {
             super(api, abi, decorateMethod);
             this.code = isValidCode(this.abi.info.source.wasm)
@@ -1147,15 +1147,15 @@
                 throw new Error('Invalid code provided');
             }
             this.abi.constructors.forEach((c) => {
-                if (util.isUndefined(this.__internal__tx[c.method])) {
-                    this.__internal__tx[c.method] = createBluePrintTx(c, (o, p) => this.__internal__instantiate(c, o, p));
+                if (util.isUndefined(this.#tx[c.method])) {
+                    this.#tx[c.method] = createBluePrintTx(c, (o, p) => this.#instantiate(c, o, p));
                 }
             });
         }
         get tx() {
-            return this.__internal__tx;
+            return this.#tx;
         }
-        __internal__instantiate = (constructorOrId, { gasLimit = util.BN_ZERO, salt, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
+        #instantiate = (constructorOrId, { gasLimit = util.BN_ZERO, salt, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
             const palletTx = this._isRevive ? this.api.tx.revive : this.api.tx.contracts;
             if (this._isRevive) {
                 return palletTx.instantiateWithCode(value,
