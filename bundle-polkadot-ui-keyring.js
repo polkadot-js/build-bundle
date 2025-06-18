@@ -1442,7 +1442,7 @@
       return 0;
   };
   class KeyringOption {
-      __internal__allSub = null;
+      #allSub = null;
       optionsSubject = new BehaviorSubject(this.emptyOptions());
       createOptionHeader(name) {
           return {
@@ -1455,7 +1455,7 @@
           if (hasCalledInitOptions) {
               throw new Error('Unable to initialise options more than once');
           }
-          this.__internal__allSub = obervableAll.subscribe(() => {
+          this.#allSub = obervableAll.subscribe(() => {
               const opts = this.emptyOptions();
               this.addAccounts(keyring, opts);
               this.addAddresses(keyring, opts);
@@ -1470,8 +1470,8 @@
           hasCalledInitOptions = true;
       }
       clear() {
-          if (this.__internal__allSub) {
-              this.__internal__allSub.unsubscribe();
+          if (this.#allSub) {
+              this.#allSub.unsubscribe();
           }
       }
       linkItems(items) {
@@ -2353,36 +2353,36 @@
   }
 
   class Base {
-      __internal__accounts;
-      __internal__addresses;
-      __internal__contracts;
-      __internal__isEthereum;
-      __internal__keyring;
+      #accounts;
+      #addresses;
+      #contracts;
+      #isEthereum;
+      #keyring;
       _store;
       _genesisHash;
       _genesisHashAdd = [];
       constructor() {
-          this.__internal__accounts = accounts;
-          this.__internal__addresses = addresses;
-          this.__internal__contracts = contracts;
-          this.__internal__isEthereum = false;
+          this.#accounts = accounts;
+          this.#addresses = addresses;
+          this.#contracts = contracts;
+          this.#isEthereum = false;
           this._store = new BrowserStore();
       }
       get accounts() {
-          return this.__internal__accounts;
+          return this.#accounts;
       }
       get addresses() {
-          return this.__internal__addresses;
+          return this.#addresses;
       }
       get contracts() {
-          return this.__internal__contracts;
+          return this.#contracts;
       }
       get isEthereum() {
-          return this.__internal__isEthereum;
+          return this.#isEthereum;
       }
       get keyring() {
-          if (this.__internal__keyring) {
-              return this.__internal__keyring;
+          if (this.#keyring) {
+              return this.#keyring;
           }
           throw new Error('Keyring should be initialised via \'loadAll\' before use');
       }
@@ -2419,8 +2419,8 @@
           return password.length > 0;
       }
       setSS58Format(ss58Format) {
-          if (this.__internal__keyring && util$7.isNumber(ss58Format)) {
-              this.__internal__keyring.setSS58Format(ss58Format);
+          if (this.#keyring && util$7.isNumber(ss58Format)) {
+              this.#keyring.setSS58Format(ss58Format);
           }
       }
       setDevMode(isDevelopment) {
@@ -2431,8 +2431,8 @@
           if (util$7.isBoolean(options.isDevelopment)) {
               this.setDevMode(options.isDevelopment);
           }
-          this.__internal__isEthereum = keyring.type === 'ethereum';
-          this.__internal__keyring = keyring;
+          this.#isEthereum = keyring.type === 'ethereum';
+          this.#keyring = keyring;
           this._genesisHash = options.genesisHash && (util$7.isString(options.genesisHash)
               ? options.genesisHash.toString()
               : options.genesisHash.toHex());
@@ -2457,7 +2457,7 @@
   const RECENT_EXPIRY = 24 * 60 * 60;
   class Keyring extends Base {
       keyringOption = new KeyringOption();
-      __internal__stores = {
+      #stores = {
           account: () => this.accounts,
           address: () => this.addresses,
           contract: () => this.contracts
@@ -2557,8 +2557,8 @@
               : this.encodeAddress(_address);
           const publicKey = this.decodeAddress(address);
           const stores = type
-              ? [this.__internal__stores[type]]
-              : Object.values(this.__internal__stores);
+              ? [this.#stores[type]]
+              : Object.values(this.#stores);
           const info = stores.reduce((lastInfo, store) => (store().subject.getValue()[address] || lastInfo), undefined);
           return info && {
               address,
@@ -2718,7 +2718,7 @@
               json.meta[key] = meta[key];
           });
           delete json.meta.isRecent;
-          this.__internal__stores[type]().add(this._store, address, json);
+          this.#stores[type]().add(this._store, address, json);
           return json;
       }
       saveContract(address, meta) {
@@ -2740,7 +2740,7 @@
       }
   }
 
-  const packageInfo = { name: '@polkadot/ui-keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.14.1' };
+  const packageInfo = { name: '@polkadot/ui-keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.15.1' };
 
   const keyring = new Keyring();
 

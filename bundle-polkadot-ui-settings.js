@@ -1182,80 +1182,80 @@
 	        : fallback;
 	}
 	class Settings {
-	    __internal__emitter;
-	    __internal__apiType;
-	    __internal__apiUrl;
-	    __internal__camera;
-	    __internal__i18nLang;
-	    __internal__icon;
-	    __internal__ledgerApp;
-	    __internal__ledgerConn;
-	    __internal__locking;
-	    __internal__metadataUp;
-	    __internal__prefix;
-	    __internal__storage;
-	    __internal__uiMode;
-	    __internal__uiTheme;
-	    __internal__notification;
+	    #emitter;
+	    #apiType;
+	    #apiUrl;
+	    #camera;
+	    #i18nLang;
+	    #icon;
+	    #ledgerApp;
+	    #ledgerConn;
+	    #locking;
+	    #metadataUp;
+	    #prefix;
+	    #storage;
+	    #uiMode;
+	    #uiTheme;
+	    #notification;
 	    constructor() {
 	        const settings = store.get('settings') || {};
-	        this.__internal__emitter = new EventEmitter();
-	        this.__internal__apiUrl = (typeof settings.apiUrl === 'string' && settings.apiUrl) || (util$7.hasProcess && process.env?.['WS_URL']) || ENDPOINT_DEFAULT.value;
-	        this.__internal__apiType = { param: this.__internal__apiUrl, type: 'json-rpc' };
-	        this.__internal__camera = withDefault(CAMERA, settings.camera, CAMERA_DEFAULT);
-	        this.__internal__ledgerApp = withDefault(LEDGER_APP, settings.ledgerApp, LEDGER_APP_DEFAULT);
-	        this.__internal__ledgerConn = withDefault(LEDGER_CONN, settings.ledgerConn, LEDGER_CONN_DEFAULT);
-	        this.__internal__i18nLang = settings.i18nLang || LANGUAGE_DEFAULT;
-	        this.__internal__icon = settings.icon || ICON_DEFAULT;
-	        this.__internal__locking = settings.locking || LOCKING_DEFAULT;
-	        this.__internal__metadataUp = withDefault(METADATA_UP, settings.storage, METADATA_UP_DEFAULT);
-	        this.__internal__notification = settings.notification || NOTIFICATION_DEFAULT;
-	        this.__internal__prefix = util$7.isUndefined(settings.prefix) ? PREFIX_DEFAULT : settings.prefix;
-	        this.__internal__storage = withDefault(STORAGE, settings.storage, STORAGE_DEFAULT);
-	        this.__internal__uiMode = settings.uiMode || UIMODE_DEFAULT;
-	        this.__internal__uiTheme = settings.uiTheme || UITHEME_DEFAULT;
+	        this.#emitter = new EventEmitter();
+	        this.#apiUrl = (typeof settings.apiUrl === 'string' && settings.apiUrl) || (util$7.hasProcess && process.env?.['WS_URL']) || ENDPOINT_DEFAULT.value;
+	        this.#apiType = { param: this.#apiUrl, type: 'json-rpc' };
+	        this.#camera = withDefault(CAMERA, settings.camera, CAMERA_DEFAULT);
+	        this.#ledgerApp = withDefault(LEDGER_APP, settings.ledgerApp, LEDGER_APP_DEFAULT);
+	        this.#ledgerConn = withDefault(LEDGER_CONN, settings.ledgerConn, LEDGER_CONN_DEFAULT);
+	        this.#i18nLang = settings.i18nLang || LANGUAGE_DEFAULT;
+	        this.#icon = settings.icon || ICON_DEFAULT;
+	        this.#locking = settings.locking || LOCKING_DEFAULT;
+	        this.#metadataUp = withDefault(METADATA_UP, settings.storage, METADATA_UP_DEFAULT);
+	        this.#notification = settings.notification || NOTIFICATION_DEFAULT;
+	        this.#prefix = util$7.isUndefined(settings.prefix) ? PREFIX_DEFAULT : settings.prefix;
+	        this.#storage = withDefault(STORAGE, settings.storage, STORAGE_DEFAULT);
+	        this.#uiMode = settings.uiMode || UIMODE_DEFAULT;
+	        this.#uiTheme = settings.uiTheme || UITHEME_DEFAULT;
 	    }
 	    get camera() {
-	        return this.__internal__camera;
+	        return this.#camera;
 	    }
 	    get apiType() {
-	        return this.__internal__apiType;
+	        return this.#apiType;
 	    }
 	    get apiUrl() {
-	        return this.__internal__apiUrl;
+	        return this.#apiUrl;
 	    }
 	    get i18nLang() {
-	        return this.__internal__i18nLang;
+	        return this.#i18nLang;
 	    }
 	    get icon() {
-	        return this.__internal__icon;
+	        return this.#icon;
 	    }
 	    get notification() {
-	        return this.__internal__notification;
+	        return this.#notification;
 	    }
 	    get ledgerApp() {
-	        return this.__internal__ledgerApp;
+	        return this.#ledgerApp;
 	    }
 	    get ledgerConn() {
-	        return this.__internal__ledgerConn;
+	        return this.#ledgerConn;
 	    }
 	    get locking() {
-	        return this.__internal__locking;
+	        return this.#locking;
 	    }
 	    get metadataUp() {
-	        return this.__internal__metadataUp;
+	        return this.#metadataUp;
 	    }
 	    get prefix() {
-	        return this.__internal__prefix;
+	        return this.#prefix;
 	    }
 	    get storage() {
-	        return this.__internal__storage;
+	        return this.#storage;
 	    }
 	    get uiMode() {
-	        return this.__internal__uiMode;
+	        return this.#uiMode;
 	    }
 	    get uiTheme() {
-	        return this.__internal__uiTheme;
+	        return this.#uiTheme;
 	    }
 	    get availableCamera() {
 	        return CAMERA;
@@ -1301,43 +1301,43 @@
 	    }
 	    get() {
 	        return {
-	            apiType: this.__internal__apiType,
-	            apiUrl: this.__internal__apiUrl,
-	            camera: this.__internal__camera,
-	            i18nLang: this.__internal__i18nLang,
-	            icon: this.__internal__icon,
-	            ledgerApp: this.__internal__ledgerApp,
-	            ledgerConn: this.__internal__ledgerConn,
-	            locking: this.__internal__locking,
-	            metadataUp: this.__internal__metadataUp,
-	            notification: this.__internal__notification,
-	            prefix: this.__internal__prefix,
-	            storage: this.__internal__storage,
-	            uiMode: this.__internal__uiMode,
-	            uiTheme: this.__internal__uiTheme
+	            apiType: this.#apiType,
+	            apiUrl: this.#apiUrl,
+	            camera: this.#camera,
+	            i18nLang: this.#i18nLang,
+	            icon: this.#icon,
+	            ledgerApp: this.#ledgerApp,
+	            ledgerConn: this.#ledgerConn,
+	            locking: this.#locking,
+	            metadataUp: this.#metadataUp,
+	            notification: this.#notification,
+	            prefix: this.#prefix,
+	            storage: this.#storage,
+	            uiMode: this.#uiMode,
+	            uiTheme: this.#uiTheme
 	        };
 	    }
 	    set(settings) {
-	        this.__internal__apiType = settings.apiType || this.__internal__apiType;
-	        this.__internal__apiUrl = settings.apiUrl || this.__internal__apiUrl;
-	        this.__internal__camera = settings.camera || this.__internal__camera;
-	        this.__internal__ledgerConn = settings.ledgerConn || this.__internal__ledgerConn;
-	        this.__internal__ledgerApp = settings.ledgerApp || this.__internal__ledgerApp;
-	        this.__internal__i18nLang = settings.i18nLang || this.__internal__i18nLang;
-	        this.__internal__icon = settings.icon || this.__internal__icon;
-	        this.__internal__locking = settings.locking || this.__internal__locking;
-	        this.__internal__metadataUp = settings.metadataUp || this.__internal__metadataUp;
-	        this.__internal__notification = settings.notification || this.__internal__notification;
-	        this.__internal__prefix = util$7.isUndefined(settings.prefix) ? this.__internal__prefix : settings.prefix;
-	        this.__internal__storage = settings.storage || this.__internal__storage;
-	        this.__internal__uiMode = settings.uiMode || this.__internal__uiMode;
-	        this.__internal__uiTheme = settings.uiTheme || this.__internal__uiTheme;
+	        this.#apiType = settings.apiType || this.#apiType;
+	        this.#apiUrl = settings.apiUrl || this.#apiUrl;
+	        this.#camera = settings.camera || this.#camera;
+	        this.#ledgerConn = settings.ledgerConn || this.#ledgerConn;
+	        this.#ledgerApp = settings.ledgerApp || this.#ledgerApp;
+	        this.#i18nLang = settings.i18nLang || this.#i18nLang;
+	        this.#icon = settings.icon || this.#icon;
+	        this.#locking = settings.locking || this.#locking;
+	        this.#metadataUp = settings.metadataUp || this.#metadataUp;
+	        this.#notification = settings.notification || this.#notification;
+	        this.#prefix = util$7.isUndefined(settings.prefix) ? this.#prefix : settings.prefix;
+	        this.#storage = settings.storage || this.#storage;
+	        this.#uiMode = settings.uiMode || this.#uiMode;
+	        this.#uiTheme = settings.uiTheme || this.#uiTheme;
 	        const newValues = this.get();
 	        store.set('settings', newValues);
-	        this.__internal__emitter.emit('change', newValues);
+	        this.#emitter.emit('change', newValues);
 	    }
 	    on(type, cb) {
-	        this.__internal__emitter.on(type, cb);
+	        this.#emitter.on(type, cb);
 	    }
 	}
 	const settings = new Settings();
@@ -1346,7 +1346,7 @@
 	    .filter((n) => n.genesisHash.length)
 	    .reduce((chains, { genesisHash, network }) => util$7.objectSpread(chains, { [network]: genesisHash }), {});
 
-	const packageInfo = { name: '@polkadot/ui-settings', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.14.1' };
+	const packageInfo = { name: '@polkadot/ui-settings', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-ui-settings.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '3.15.1' };
 
 	exports.ENDPOINT_DEFAULT = ENDPOINT_DEFAULT;
 	exports.ICON_DEFAULT = ICON_DEFAULT;
