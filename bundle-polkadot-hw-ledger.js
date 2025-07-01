@@ -9408,7 +9408,7 @@
 		hasRequiredPackageInfo = 1;
 		Object.defineProperty(packageInfo, "__esModule", { value: true });
 		packageInfo.packageInfo = void 0;
-		packageInfo.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.5.2' };
+		packageInfo.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.5.3' };
 		return packageInfo;
 	}
 
@@ -9502,9 +9502,9 @@
 	    };
 	}
 	class Ledger {
-	    __internal__ledgerName;
-	    __internal__transportDef;
-	    __internal__app = null;
+	    #ledgerName;
+	    #transportDef;
+	    #app = null;
 	    constructor(transport, chain) {
 	        const ledgerName = ledgerApps[chain];
 	        const transportDef = browser.transports.find(({ type }) => type === transport);
@@ -9514,8 +9514,8 @@
 	        else if (!transportDef) {
 	            throw new Error(`Unsupported Ledger transport ${transport}`);
 	        }
-	        this.__internal__ledgerName = ledgerName;
-	        this.__internal__transportDef = transportDef;
+	        this.#ledgerName = ledgerName;
+	        this.#transportDef = transportDef;
 	    }
 	    async getAddress(confirm = false, accountOffset = 0, addressOffset = 0, { account = LEDGER_DEFAULT_ACCOUNT, addressIndex = LEDGER_DEFAULT_INDEX, change = LEDGER_DEFAULT_CHANGE } = {}) {
 	        return this.withApp(async (app) => {
@@ -9544,14 +9544,14 @@
 	    }
 	    async withApp(fn) {
 	        try {
-	            if (!this.__internal__app) {
-	                const transport = await this.__internal__transportDef.create();
-	                this.__internal__app = dist$1.newSubstrateApp(transport, this.__internal__ledgerName);
+	            if (!this.#app) {
+	                const transport = await this.#transportDef.create();
+	                this.#app = dist$1.newSubstrateApp(transport, this.#ledgerName);
 	            }
-	            return await fn(this.__internal__app);
+	            return await fn(this.#app);
 	        }
 	        catch (error) {
-	            this.__internal__app = null;
+	            this.#app = null;
 	            throw error;
 	        }
 	    }
@@ -9617,11 +9617,11 @@
 	    };
 	}
 	class LedgerGeneric {
-	    __internal__transportDef;
-	    __internal__slip44;
-	    __internal__chainId;
-	    __internal__metaUrl;
-	    __internal__app = null;
+	    #transportDef;
+	    #slip44;
+	    #chainId;
+	    #metaUrl;
+	    #app = null;
 	    constructor(transport, chain, slip44, chainId, metaUrl) {
 	        const ledgerName = ledgerApps[chain];
 	        const transportDef = browser.transports.find(({ type }) => type === transport);
@@ -9631,13 +9631,13 @@
 	        else if (!transportDef) {
 	            throw new Error(`Unsupported Ledger transport ${transport}`);
 	        }
-	        this.__internal__metaUrl = metaUrl;
-	        this.__internal__chainId = chainId;
-	        this.__internal__slip44 = slip44;
-	        this.__internal__transportDef = transportDef;
+	        this.#metaUrl = metaUrl;
+	        this.#chainId = chainId;
+	        this.#slip44 = slip44;
+	        this.#transportDef = transportDef;
 	    }
 	    async getAddress(ss58Prefix, confirm = false, accountIndex = 0, addressOffset = 0) {
-	        const bip42Path = `m/44'/${this.__internal__slip44}'/${accountIndex}'/${0}'/${addressOffset}'`;
+	        const bip42Path = `m/44'/${this.#slip44}'/${accountIndex}'/${0}'/${addressOffset}'`;
 	        return this.withApp(async (app) => {
 	            const { address, pubKey } = await wrapError(app.getAddressEd25519(bip42Path, ss58Prefix, confirm));
 	            return {
@@ -9647,7 +9647,7 @@
 	        });
 	    }
 	    async getAddressEcdsa(confirm = false, accountIndex = 0, addressOffset = 0) {
-	        const bip42Path = `m/44'/${this.__internal__slip44}'/${accountIndex}'/${0}'/${addressOffset}'`;
+	        const bip42Path = `m/44'/${this.#slip44}'/${accountIndex}'/${0}'/${addressOffset}'`;
 	        return this.withApp(async (app) => {
 	            const { address, pubKey } = await wrapError(app.getAddressEcdsa(bip42Path, confirm));
 	            return {
@@ -9667,33 +9667,33 @@
 	        });
 	    }
 	    async sign(message, accountIndex, addressOffset) {
-	        return this.withApp(sign('signEd25519', message, this.__internal__slip44, accountIndex, addressOffset));
+	        return this.withApp(sign('signEd25519', message, this.#slip44, accountIndex, addressOffset));
 	    }
 	    async signRaw(message, accountIndex, addressOffset) {
-	        return this.withApp(sign('signRawEd25519', util$1.u8aWrapBytes(message), this.__internal__slip44, accountIndex, addressOffset));
+	        return this.withApp(sign('signRawEd25519', util$1.u8aWrapBytes(message), this.#slip44, accountIndex, addressOffset));
 	    }
 	    async signEcdsa(message, accountIndex, addressOffset) {
-	        return this.withApp(signEcdsa('signEcdsa', util$1.u8aWrapBytes(message), this.__internal__slip44, accountIndex, addressOffset));
+	        return this.withApp(signEcdsa('signEcdsa', util$1.u8aWrapBytes(message), this.#slip44, accountIndex, addressOffset));
 	    }
 	    async signRawEcdsa(message, accountIndex, addressOffset) {
-	        return this.withApp(signEcdsa('signRawEcdsa', util$1.u8aWrapBytes(message), this.__internal__slip44, accountIndex, addressOffset));
+	        return this.withApp(signEcdsa('signRawEcdsa', util$1.u8aWrapBytes(message), this.#slip44, accountIndex, addressOffset));
 	    }
 	    async signWithMetadata(message, accountIndex, addressOffset, options) {
-	        return this.withApp(signWithMetadata(message, this.__internal__slip44, accountIndex, addressOffset, options));
+	        return this.withApp(signWithMetadata(message, this.#slip44, accountIndex, addressOffset, options));
 	    }
 	    async signWithMetadataEcdsa(message, accountIndex, addressOffset, options) {
-	        return this.withApp(signWithMetadataEcdsa(message, this.__internal__slip44, accountIndex, addressOffset, options));
+	        return this.withApp(signWithMetadataEcdsa(message, this.#slip44, accountIndex, addressOffset, options));
 	    }
 	    async withApp(fn) {
 	        try {
-	            if (!this.__internal__app) {
-	                const transport = await this.__internal__transportDef.create();
-	                this.__internal__app = new dist$1.PolkadotGenericApp(transport, this.__internal__chainId, this.__internal__metaUrl);
+	            if (!this.#app) {
+	                const transport = await this.#transportDef.create();
+	                this.#app = new dist$1.PolkadotGenericApp(transport, this.#chainId, this.#metaUrl);
 	            }
-	            return await fn(this.__internal__app);
+	            return await fn(this.#app);
 	        }
 	        catch (error) {
-	            this.__internal__app = null;
+	            this.#app = null;
 	            throw error;
 	        }
 	    }
