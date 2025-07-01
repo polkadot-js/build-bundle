@@ -1432,7 +1432,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.2.2' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.3.1' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -7445,6 +7445,7 @@
     }
     function createClass({ api, apiType, blockHash, decorateMethod }) {
         const ExtrinsicBase = api.registry.createClass('Extrinsic');
+        const extrinsicInfoMap = new WeakMap();
         class Submittable extends ExtrinsicBase {
             #ignoreStatusCb;
             #transformResult = (util.identity);
@@ -7488,12 +7489,21 @@
             }
             send(statusCb) {
                 const isSubscription = api.hasSubscriptions && (this.#ignoreStatusCb || !!statusCb);
+                const updatedInfo = extrinsicInfoMap.get(this);
+                extrinsicInfoMap.delete(this);
                 return decorateMethod(isSubscription
-                    ? this.#observeSubscribe
-                    : this.#observeSend)(statusCb);
+                    ? () => this.#observeSubscribe(updatedInfo)
+                    : () => this.#observeSend(updatedInfo))(statusCb);
             }
             signAsync(account, partialOptions) {
-                return decorateMethod(() => this.#observeSign(account, partialOptions).pipe(map(() => this)))();
+                return decorateMethod(() => this.#observeSign(account, partialOptions).pipe(map((info) => {
+                    if (info.signedTransaction) {
+                        const extrinsic = new Submittable(api.registry, info.signedTransaction);
+                        extrinsicInfoMap.set(this, info);
+                        return extrinsic;
+                    }
+                    return this;
+                })))();
             }
             signAndSend(account, partialOptions, optionalStatusCb) {
                 const [options, statusCb] = makeSignAndSendOptions(partialOptions, optionalStatusCb);
