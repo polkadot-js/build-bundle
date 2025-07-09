@@ -239,10 +239,38 @@
             switch (this.metadata.version.toString()) {
                 case '4':
                     return this.#decodeEventV4(record);
-                default:
+                case '5':
                     return this.#decodeEventV5(record);
+                default:
+                    return this.#decodeEventV6(record);
             }
         }
+        #decodeEventV6 = (record) => {
+            const topics = record.event.data[2];
+            const signatureTopic = topics[0];
+            const data = record.event.data[1];
+            if (signatureTopic) {
+                const event = this.events.find((e) => e.signatureTopic !== undefined && e.signatureTopic !== null && e.signatureTopic === signatureTopic.toHex());
+                if (event) {
+                    return event.fromU8a(data);
+                }
+            }
+            const amountOfTopics = topics.length;
+            const potentialEvents = this.events.filter((e) => {
+                if (e.signatureTopic !== null && e.signatureTopic !== undefined) {
+                    return false;
+                }
+                const amountIndexed = e.args.filter((a) => a.indexed).length;
+                if (amountIndexed !== amountOfTopics) {
+                    return false;
+                }
+                return true;
+            });
+            if (potentialEvents.length === 1) {
+                return potentialEvents[0].fromU8a(data);
+            }
+            throw new Error('Unable to determine event');
+        };
         #decodeEventV5 = (record) => {
             const signatureTopic = record.topics[0];
             const data = record.event.data[1];
@@ -412,11 +440,12 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api-contract', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.3.1' };
+    const packageInfo = { name: '@polkadot/api-contract', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api-contract.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.4.1' };
 
-    function applyOnEvent(result, types, fn) {
+    function applyOnEvent(result, types, fn, isRevive) {
         if (result.isInBlock || result.isFinalized) {
-            const records = result.filterRecords('contracts', types);
+            const section = isRevive ? 'revive' : 'contracts';
+            const records = result.filterRecords(section, types);
             if (records.length) {
                 return fn(records);
             }
@@ -1059,7 +1088,7 @@
                     return null;
                 }
             })
-                .filter((decoded) => !!decoded))));
+                .filter((decoded) => !!decoded), this._isRevive)));
         };
         #read = (messageOrId, { gasLimit = util.BN_ZERO, storageDepositLimit = null, value = util.BN_ZERO }, params) => {
             const message = this.abi.findMessage(messageOrId);
@@ -1119,7 +1148,7 @@
                     ? new Contract(this.api, this.abi,
                     this.registry.createType('AccountId', '0x'), this._decorateMethod)
                     : undefined)
-                : applyOnEvent(result, ['Instantiated'], ([record]) => new Contract(this.api, this.abi, record.event.data[1], this._decorateMethod))));
+                : applyOnEvent(result, ['Instantiated'], ([record]) => new Contract(this.api, this.abi, record.event.data[1], this._decorateMethod), this._isRevive)));
         };
     }
 
@@ -1170,7 +1199,7 @@
                 ? [blueprint, new Contract(this.api, this.abi, event.data[1], this._decorateMethod)]
                 : this.api.events.contracts.CodeStored.is(event)
                     ? [new Blueprint(this.api, this.abi, event.data[0], this._decorateMethod), contract]
-                    : [blueprint, contract], [undefined, undefined])) || [undefined, undefined])));
+                    : [blueprint, contract], [undefined, undefined]), this._isRevive) || [undefined, undefined])));
         };
     }
 
