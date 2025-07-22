@@ -121,6 +121,7 @@
 
     const DEFAULT_CAPACITY = 1024;
     const DEFAULT_TTL = 30000;
+    const MAX_TTL = 1800_000;
     const DISABLED_TTL = 31_536_000_000;
     class LRUNode {
         key;
@@ -152,6 +153,12 @@
         #tail;
         #ttl;
         constructor(capacity = DEFAULT_CAPACITY, ttl = DEFAULT_TTL) {
+            if (!Number.isInteger(capacity) || capacity < 0) {
+                throw new Error(`LRUCache initialization error: 'capacity' must be a non-negative integer. Received: ${capacity}`);
+            }
+            if (ttl !== null && (!Number.isFinite(ttl) || ttl < 0 || ttl > MAX_TTL)) {
+                throw new Error(`LRUCache initialization error: 'ttl' must be between 0 and ${MAX_TTL} ms or null to disable. Received: ${ttl}`);
+            }
             this.capacity = capacity;
             ttl ? this.#ttl = ttl : this.#ttl = DISABLED_TTL;
             this.#head = this.#tail = new LRUNode('<empty>', this.#ttl);
@@ -1432,7 +1439,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.4.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.4.2' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
