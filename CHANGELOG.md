@@ -2,6 +2,7 @@
 
 ## master
 
+- hw-ledger, keyring, util, util-crypto 13.5.4
 - api, api-contract, types 16.4.2
 - extension-dapp 0.61.4
 - phishing 0.25.15

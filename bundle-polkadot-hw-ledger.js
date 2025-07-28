@@ -9408,7 +9408,7 @@
 		hasRequiredPackageInfo = 1;
 		Object.defineProperty(packageInfo, "__esModule", { value: true });
 		packageInfo.packageInfo = void 0;
-		packageInfo.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.5.3' };
+		packageInfo.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.5.4' };
 		return packageInfo;
 	}
 
@@ -9474,6 +9474,7 @@
 	};
 	const genericLedgerApps = {
 	    bittensor: 'Bittensor',
+	    creditcoin3: 'Creditcoin3',
 	    encointer: 'Encointer',
 	    frequency: 'Frequency',
 	    integritee: 'Integritee',
