@@ -13362,6 +13362,21 @@
                     }
                 },
                 version: 2
+            },
+            {
+                methods: {
+                    convert_transaction: {
+                        description: 'Converts an Ethereum-style transaction to Extrinsic',
+                        params: [
+                            {
+                                name: 'transaction',
+                                type: 'TransactionV3'
+                            }
+                        ],
+                        type: 'Extrinsic'
+                    }
+                },
+                version: 3
             }
         ],
         DebugRuntimeApi: [
@@ -13429,7 +13444,7 @@
             action: 'EthTransactionAction',
             value: 'U256',
             input: 'Bytes',
-            signature: 'EthTransactionSignature'
+            signature: 'EthLegacyTransactionSignature'
         },
         TransactionV0: 'LegacyTransaction'
     };
@@ -13448,9 +13463,7 @@
             value: 'U256',
             input: 'Bytes',
             accessList: 'EthAccessList',
-            oddYParity: 'bool',
-            r: 'H256',
-            s: 'H256'
+            signature: 'EthTransactionSignature'
         },
         TransactionV1: {
             _enum: {
@@ -13475,9 +13488,7 @@
             value: 'U256',
             input: 'Bytes',
             accessList: 'EthAccessList',
-            oddYParity: 'bool',
-            r: 'H256',
-            s: 'H256'
+            signature: 'EthTransactionSignature'
         },
         TransactionV2: {
             _enum: {
@@ -13487,10 +13498,39 @@
             }
         }
     };
+    const V3 = {
+        BlockV3: {
+            header: 'EthHeader',
+            transactions: 'Vec<TransactionV3>',
+            ommers: 'Vec<EthHeader>'
+        },
+        EIP7702Transaction: {
+            chainId: 'u64',
+            nonce: 'U256',
+            maxPriorityFeePerGas: 'U256',
+            maxFeePerGas: 'U256',
+            gasLimit: 'U256',
+            destination: 'EthTransactionAction',
+            value: 'U256',
+            data: 'Bytes',
+            accessList: 'EthAccessList',
+            authorizationList: 'EthAuthorizationList',
+            signature: 'EthTransactionSignature'
+        },
+        TransactionV3: {
+            _enum: {
+                Legacy: 'LegacyTransaction',
+                EIP2930: 'EIP2930Transaction',
+                EIP1559: 'EIP1559Transaction',
+                EIP7702: 'EIP7702Transaction'
+            }
+        }
+    };
     const types = {
         ...V0,
         ...V1,
         ...V2,
+        ...V3,
         EthereumAccountId: 'GenericEthereumAccountId',
         EthereumAddress: 'GenericEthereumAccountId',
         EthereumLookupSource: 'GenericEthereumLookupSource',
@@ -13500,6 +13540,18 @@
             slots: 'Vec<H256>'
         },
         EthAccessList: 'Vec<EthAccessListItem>',
+        EthAuthorizationList: 'Vec<EthAuthorizationListItem>',
+        EthAuthorizationListItem: {
+            chainId: 'u64',
+            address: 'H160',
+            nonce: 'U256',
+            signature: 'EthAuthorizationSignature'
+        },
+        EthAuthorizationSignature: {
+            oddYParity: 'bool',
+            r: 'H256',
+            s: 'H256'
+        },
         EthAccount: {
             address: 'EthAddress',
             balance: 'U256',
@@ -13662,6 +13714,7 @@
         },
         EthReceiptV0: 'EthReceipt',
         EthReceiptV3: 'EthReceipt',
+        EthReceiptV4: 'EthReceipt',
         EthStorageProof: {
             key: 'U256',
             value: 'U256',
@@ -13722,8 +13775,13 @@
             accessList: 'Option<Vec<EthAccessListItem>>',
             transactionType: 'Option<U256>'
         },
-        EthTransactionSignature: {
+        EthLegacyTransactionSignature: {
             v: 'u64',
+            r: 'H256',
+            s: 'H256'
+        },
+        EthTransactionSignature: {
+            oddYParity: 'bool',
             r: 'H256',
             s: 'H256'
         },
@@ -16055,7 +16113,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.4.2' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.4.3' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
@@ -17131,9 +17189,9 @@
         }
     }
 
-    function sign(registry, signerPair, u8a, options) {
+    function sign(_registry, signerPair, u8a, options) {
         const encoded = u8a.length > 256
-            ? registry.hash(u8a)
+            ? utilCrypto.blake2AsU8a(u8a)
             : u8a;
         return signerPair.sign(encoded, options);
     }
