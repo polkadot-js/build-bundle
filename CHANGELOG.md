@@ -2,6 +2,7 @@
 
 ## master
 
+- phishing 0.25.16
 - api, api-contract, types 16.4.3
 - hw-ledger, keyring, util, util-crypto 13.5.4
 - api, api-contract, types 16.4.2
