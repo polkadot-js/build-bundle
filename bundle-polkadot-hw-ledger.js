@@ -9408,7 +9408,7 @@
 		hasRequiredPackageInfo = 1;
 		Object.defineProperty(packageInfo, "__esModule", { value: true });
 		packageInfo.packageInfo = void 0;
-		packageInfo.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.5.4' };
+		packageInfo.packageInfo = { name: '@polkadot/hw-ledger-transports', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.5.5' };
 		return packageInfo;
 	}
 
@@ -9479,6 +9479,7 @@
 	    frequency: 'Frequency',
 	    integritee: 'Integritee',
 	    liberland: 'Liberland',
+	    mythos: 'Mythos',
 	    polimec: 'Polimec',
 	    vara: 'Vara'
 	};
