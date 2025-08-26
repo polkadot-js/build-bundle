@@ -2,6 +2,7 @@
 
 ## master
 
+- phishing 0.25.18
 - hw-ledger, keyring, util, util-crypto 13.5.6
 - wasm-crypto 7.5.1
 - api, api-contract, types 16.4.5
