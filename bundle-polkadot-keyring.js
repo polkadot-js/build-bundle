@@ -280,8 +280,8 @@
         addFromSeed(seed, meta = {}, type = this.type) {
             return this.addPair(createPair({ toSS58: this.encodeAddress, type }, PairFromSeed[type](seed), meta, null));
         }
-        addFromUri(suri, meta = {}, type = this.type, wordlist) {
-            return this.addPair(this.createFromUri(suri, meta, type, wordlist));
+        addFromUri(suri, meta = {}, type = this.type, wordlist, rounds) {
+            return this.addPair(this.createFromUri(suri, meta, type, wordlist, rounds));
         }
         createFromJson({ address, encoded, encoding: { content, type, version }, meta }, ignoreChecksum) {
             if (version === '3' && content[0] !== 'pkcs8') {
@@ -307,7 +307,7 @@
         createFromPair(pair, meta = {}, type = this.type) {
             return createPair({ toSS58: this.encodeAddress, type }, pair, meta, null);
         }
-        createFromUri(_suri, meta = {}, type = this.type, wordlist) {
+        createFromUri(_suri, meta = {}, type = this.type, wordlist, rounds) {
             const suri = _suri.startsWith('//')
                 ? `${DEV_PHRASE}${_suri}`
                 : _suri;
@@ -321,8 +321,8 @@
                 const parts = phrase.split(' ');
                 if ([12, 15, 18, 21, 24].includes(parts.length)) {
                     seed = type === 'ethereum'
-                        ? utilCrypto.mnemonicToLegacySeed(phrase, '', false, 64)
-                        : utilCrypto.mnemonicToMiniSecret(phrase, password, wordlist);
+                        ? utilCrypto.mnemonicToLegacySeed(phrase, '', false, 64, rounds)
+                        : utilCrypto.mnemonicToMiniSecret(phrase, password, wordlist, false, rounds);
                 }
                 else {
                     if (phrase.length > 32) {
@@ -363,7 +363,7 @@
         }
     }
 
-    const packageInfo = { name: '@polkadot/keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.5.5' };
+    const packageInfo = { name: '@polkadot/keyring', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-keyring.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.5.6' };
 
     const PAIRSSR25519 = [
         {
