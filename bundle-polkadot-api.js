@@ -1439,7 +1439,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.4.6' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.4.7' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -6737,9 +6737,9 @@
     function extractCompatRewards(claimedRewardsEras, ledger) {
         const l = ledger
             ? (ledger.legacyClaimedRewards ||
-                ledger.claimedRewards).toArray()
+                ledger.claimedRewards)?.toArray()
             : [];
-        return claimedRewardsEras.toArray().concat(l);
+        return (claimedRewardsEras.toArray() || []).concat(l);
     }
     function parseRewards(api, stashId, [erasPoints, erasPrefs, erasRewards], exposures, claimedRewardsEras) {
         return exposures.map(({ era, isEmpty, isValidator, nominating, validators: eraValidators }) => {
@@ -6818,7 +6818,7 @@
             const index = validators.indexOf(validatorId);
             if (index !== -1) {
                 const valLedger = queryValidators[index].stakingLedger;
-                if (extractCompatRewards(claimedRewardsEras, valLedger).some((e) => reward.era.eq(e))) {
+                if (extractCompatRewards(claimedRewardsEras, valLedger).some((e) => reward.era?.eq(e))) {
                     rm.push(validatorId);
                 }
             }
@@ -6828,7 +6828,7 @@
         });
     }
     function filterRewards(eras, valInfo, { claimedRewardsEras, rewards, stakingLedger }) {
-        const filter = eras.filter((e) => !extractCompatRewards(claimedRewardsEras, stakingLedger).some((s) => s.eq(e)));
+        const filter = eras.filter((e) => !extractCompatRewards(claimedRewardsEras, stakingLedger).some((s) => s?.eq(e)));
         const validators = valInfo.map(([v]) => v);
         const queryValidators = valInfo.map(([, q]) => q);
         return rewards
@@ -6848,7 +6848,7 @@
                 for (const key of valKeys) {
                     const info = queryValidators.find((i) => i.accountId.toString() === key);
                     if (info) {
-                        isClaimed = info.claimedRewardsEras.toArray().some((era) => era.eq(reward.era));
+                        isClaimed = info.claimedRewardsEras?.toArray().some((era) => era.eq(reward.era));
                         break;
                     }
                 }
@@ -8257,7 +8257,8 @@
         {
             minmax: [1002000, undefined],
             types: {
-                Weight: 'WeightV1'
+                Weight: 'WeightV1',
+                ...mapXcmTypes('V4')
             }
         }
     ];
