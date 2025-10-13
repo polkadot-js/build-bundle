@@ -7,7 +7,7 @@
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
     var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
-    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.5.6' };
+    const packageInfo$2 = { name: '@polkadot/x-global', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.5.7' };
 
     function evaluateThis(fn) {
         return fn('return this');
@@ -84,7 +84,7 @@
 
     Object.defineProperty(packageInfo$1, "__esModule", { value: true });
     packageInfo$1.packageInfo = void 0;
-    packageInfo$1.packageInfo = { name: '@polkadot/x-randomvalues', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.5.6' };
+    packageInfo$1.packageInfo = { name: '@polkadot/x-randomvalues', path: typeof __dirname === 'string' ? __dirname : 'auto', type: 'cjs', version: '13.5.7' };
 
     (function (exports) {
     	Object.defineProperty(exports, "__esModule", { value: true });
@@ -723,7 +723,7 @@
     cryptoWaitReady().catch(() => {
     });
 
-    const packageInfo = { name: '@polkadot/util-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.5.6' };
+    const packageInfo = { name: '@polkadot/util-crypto', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-util-crypto.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '13.5.7' };
 
     /*! scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
     function assertNumber(n) {
@@ -7882,10 +7882,7 @@
         return pbkdf2Output(PRF, PRFSalt, DK, prfW, u);
     }
 
-    function pbkdf2Encode(passphrase, salt = randomAsU8a(), rounds = 210000, onlyJs) {
-        if (onlyJs && rounds > 2048) {
-            rounds = 2048;
-        }
+    function pbkdf2Encode(passphrase, salt = randomAsU8a(), rounds = 2048, onlyJs) {
         const u8aPass = util.u8aToU8a(passphrase);
         const u8aSalt = util.u8aToU8a(salt);
         return {
@@ -7918,8 +7915,8 @@
     function deriveChecksumBits(entropyBuffer) {
         return bytesToBinary(Array.from(sha256AsU8a(entropyBuffer))).slice(0, (entropyBuffer.length * 8) / 32);
     }
-    function mnemonicToSeedSync(mnemonic, password, rounds) {
-        return pbkdf2Encode(util.stringToU8a(normalize(mnemonic)), util.stringToU8a(`mnemonic${normalize(password)}`), rounds).password;
+    function mnemonicToSeedSync(mnemonic, password) {
+        return pbkdf2Encode(util.stringToU8a(normalize(mnemonic)), util.stringToU8a(`mnemonic${normalize(password)}`)).password;
     }
     function mnemonicToEntropy$1(mnemonic, wordlist = DEFAULT_WORDLIST) {
         const words = normalize(mnemonic).split(' ');
@@ -7991,7 +7988,7 @@
             : validateMnemonic(mnemonic, wordlist);
     }
 
-    function mnemonicToLegacySeed(mnemonic, password = '', onlyJs, byteLength = 32, rounds) {
+    function mnemonicToLegacySeed(mnemonic, password = '', onlyJs, byteLength = 32) {
         if (!mnemonicValidate(mnemonic)) {
             throw new Error('Invalid bip39 mnemonic specified');
         }
@@ -8001,11 +7998,11 @@
         return byteLength === 32
             ? !util.hasBigInt || (!onlyJs && isReady())
                 ? bip39ToSeed(mnemonic, password)
-                : mnemonicToSeedSync(mnemonic, password, rounds).subarray(0, 32)
-            : mnemonicToSeedSync(mnemonic, password, rounds);
+                : mnemonicToSeedSync(mnemonic, password).subarray(0, 32)
+            : mnemonicToSeedSync(mnemonic, password);
     }
 
-    function mnemonicToMiniSecret(mnemonic, password = '', wordlist, onlyJs, rounds) {
+    function mnemonicToMiniSecret(mnemonic, password = '', wordlist, onlyJs) {
         if (!mnemonicValidate(mnemonic, wordlist, onlyJs)) {
             throw new Error('Invalid bip39 mnemonic specified');
         }
@@ -8014,7 +8011,7 @@
         }
         const entropy = mnemonicToEntropy(mnemonic, wordlist);
         const salt = util.stringToU8a(`mnemonic${password}`);
-        return pbkdf2Encode(entropy, salt, rounds).password.slice(0, 32);
+        return pbkdf2Encode(entropy, salt).password.slice(0, 32);
     }
 
     function ledgerDerivePrivate(xprv, index) {
@@ -8028,8 +8025,8 @@
     }
 
     const ED25519_CRYPTO = 'ed25519 seed';
-    function ledgerMaster(mnemonic, password, rounds) {
-        const seed = mnemonicToSeedSync(mnemonic, password, rounds);
+    function ledgerMaster(mnemonic, password) {
+        const seed = mnemonicToSeedSync(mnemonic, password);
         const chainCode = hmacShaAsU8a(ED25519_CRYPTO, new Uint8Array([1, ...seed]), 256);
         let priv;
         while (!priv || (priv[31] & 0b0010_0000)) {
@@ -8041,7 +8038,7 @@
         return util.u8aConcat(priv, chainCode);
     }
 
-    function hdLedger(_mnemonic, path, rounds) {
+    function hdLedger(_mnemonic, path) {
         const words = _mnemonic
             .split(' ')
             .map((s) => s.trim())
@@ -8059,7 +8056,7 @@
             throw new Error('Invalid derivation path');
         }
         const parts = path.split('/').slice(1);
-        let seed = ledgerMaster(mnemonic, password, rounds);
+        let seed = ledgerMaster(mnemonic, password);
         for (const p of parts) {
             const n = parseInt(p.replace(/'$/, ''), 10);
             seed = ledgerDerivePrivate(seed, (n < HARDENED) ? (n + HARDENED) : n);
