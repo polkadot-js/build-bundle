@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@polkadot/keyring'), require('@polkadot/util'), require('@polkadot/types'), require('@polkadot/types/extrinsic/constants'), require('@polkadot/util-crypto')) :
-    typeof define === 'function' && define.amd ? define(['exports', '@polkadot/keyring', '@polkadot/util', '@polkadot/types', '@polkadot/types/extrinsic/constants', '@polkadot/util-crypto'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.polkadotApi = {}, global.polkadotKeyring, global.polkadotUtil, global.polkadotTypes, global.constants, global.polkadotUtilCrypto));
-})(this, (function (exports, keyring, util, types, constants, utilCrypto) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@polkadot/keyring'), require('@polkadot/util'), require('@polkadot/types'), require('@polkadot/types/extrinsic/constants'), require('@polkadot/util-crypto'), require('@polkadot/types/util')) :
+    typeof define === 'function' && define.amd ? define(['exports', '@polkadot/keyring', '@polkadot/util', '@polkadot/types', '@polkadot/types/extrinsic/constants', '@polkadot/util-crypto', '@polkadot/types/util'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.polkadotApi = {}, global.polkadotKeyring, global.polkadotUtil, global.polkadotTypes, global.constants, global.polkadotUtilCrypto, global.util$1));
+})(this, (function (exports, keyring, util, types, constants, utilCrypto, util$1) { 'use strict';
 
     const global = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : window;
 
@@ -1439,7 +1439,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.4.8' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.4.9' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -3917,7 +3917,7 @@
             this.#storageCache.set(key, value);
         }
         _newType(registry, blockHash, key, input, isEmpty, entryIndex = -1) {
-            const type = key.outputType || 'Raw';
+            const type = key.meta ? registry.createLookupType(util$1.unwrapStorageSi(key.meta.type)) : (key.outputType || 'Raw');
             const meta = key.meta || EMPTY_META;
             const entryNum = entryIndex === -1
                 ? ''
