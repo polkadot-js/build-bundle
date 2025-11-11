@@ -2,6 +2,7 @@
 
 ## master
 
+- wasm-crypto 7.5.2
 - api, api-contract, types 16.5.1
 - extension-dapp 0.62.3
 - react-{identicon, qr}, ui-{keyring, settings}, vue-identicon 3.16.2
