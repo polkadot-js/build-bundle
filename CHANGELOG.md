@@ -2,6 +2,7 @@
 
 ## master
 
+- hw-ledger, keyring, util, util-crypto 13.5.9
 - wasm-crypto 7.5.3
 - extension-dapp 0.62.5
 - extension-dapp 0.62.4
