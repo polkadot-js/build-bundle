@@ -1439,7 +1439,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.5.4' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.5.5' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -4907,7 +4907,7 @@
     }
 
     function subscribeFinalizedBlocks(instanceId, api) {
-        return memo(instanceId, () => api.derive.chain.subscribeFinalizedHeads().pipe(switchMap((header) => api.derive.chain.getBlock(header.createdAtHash || header.hash))));
+        return memo(instanceId, () => api.derive.chain.subscribeFinalizedHeads().pipe(mergeMap((header) => api.derive.chain.getBlock(header.createdAtHash || header.hash))));
     }
 
     function _getHeaderRange(instanceId, api) {
@@ -4918,7 +4918,7 @@
     function subscribeFinalizedHeads(instanceId, api) {
         return memo(instanceId, () => {
             let prevHash = null;
-            return api.rpc.chain.subscribeFinalizedHeads().pipe(switchMap((header) => {
+            return api.rpc.chain.subscribeFinalizedHeads().pipe(mergeMap((header) => {
                 const endHash = prevHash;
                 const startHash = header.parentHash;
                 prevHash = header.createdAtHash = header.hash;
@@ -4930,11 +4930,11 @@
     }
 
     function subscribeNewBlocks(instanceId, api) {
-        return memo(instanceId, () => api.derive.chain.subscribeNewHeads().pipe(switchMap((header) => api.derive.chain.getBlock(header.createdAtHash || header.hash))));
+        return memo(instanceId, () => api.derive.chain.subscribeNewHeads().pipe(mergeMap((header) => api.derive.chain.getBlock(header.createdAtHash || header.hash))));
     }
 
     function subscribeNewHeads(instanceId, api) {
-        return memo(instanceId, () => api.rpc.chain.subscribeNewHeads().pipe(switchMap((header) => getAuthorDetails(api, header)), map(([header, validators, author]) => {
+        return memo(instanceId, () => api.rpc.chain.subscribeNewHeads().pipe(mergeMap((header) => getAuthorDetails(api, header)), map(([header, validators, author]) => {
             header.createdAtHash = header.hash;
             return createHeaderExtended(header.registry, header, validators, author);
         })));
