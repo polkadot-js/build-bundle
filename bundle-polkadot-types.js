@@ -3549,6 +3549,27 @@
     };
 
     const rpc$a = {
+        generateAncestryProof: {
+            description: 'Generate an MMR ancestry proof for the given block number.',
+            params: [
+                {
+                    name: 'prevBlockNumber',
+                    type: 'u64'
+                },
+                {
+                    isOptional: true,
+                    name: 'bestKnownBlockNumber',
+                    type: 'u64'
+                },
+                {
+                    isHistoric: true,
+                    isOptional: true,
+                    name: 'at',
+                    type: 'BlockHash'
+                }
+            ],
+            type: 'MmrAncestryProof'
+        },
         generateProof: {
             description: 'Generate MMR proof for the given block numbers.',
             params: [
@@ -3774,6 +3795,12 @@
         rpc: rpc$a,
         runtime: runtime$k,
         types: {
+            MmrAncestryProof: {
+                prevPeaks: 'Vec<MmrHash>',
+                prevLeafCount: 'MmrNodeIndex',
+                leafCount: 'MmrNodeIndex',
+                items: 'Vec<(MmrNodeIndex, MmrHash)>'
+            },
             MmrBatchProof: {
                 leafIndices: 'Vec<MmrLeafIndex>',
                 leafCount: 'MmrNodeIndex',
@@ -12135,16 +12162,18 @@
                     V2: 'MultiLocationV2',
                     V3: 'MultiLocationV3',
                     V4: 'MultiLocationV4',
-                    v5: 'MultiLocationV5'
+                    V5: 'MultiLocationV5'
                 }
             },
             VersionedResponse: {
-                V0: 'ResponseV0',
-                V1: 'ResponseV1',
-                V2: 'ResponseV2',
-                V3: 'ResponseV3',
-                V4: 'ResponseV4',
-                V5: 'ResponseV5'
+                _enum: {
+                    V0: 'ResponseV0',
+                    V1: 'ResponseV1',
+                    V2: 'ResponseV2',
+                    V3: 'ResponseV3',
+                    V4: 'ResponseV4',
+                    V5: 'ResponseV5'
+                }
             },
             VersionedXcm: {
                 _enum: {
@@ -14054,6 +14083,17 @@
             params: [],
             type: 'Bytes'
         },
+        rotateKeysWithOwner: {
+            description: 'Generate new session keys and returns the corresponding public keys and owner proof',
+            isUnsafe: true,
+            params: [
+                {
+                    name: 'owner',
+                    type: 'Bytes'
+                }
+            ],
+            type: 'GeneratedSessionKeys'
+        },
         submitAndWatchExtrinsic: {
             description: 'Submit and subscribe to watch an extrinsic until unsubscribed',
             isSigned: true,
@@ -14105,6 +14145,13 @@
                     Dropped: 'Null',
                     Invalid: 'Null'
                 }
+            },
+            GeneratedSessionKeys: {
+                _alias: {
+                    sessionKeys: 'keys'
+                },
+                sessionKeys: 'Bytes',
+                proof: 'Option<Bytes>'
             }
         }
     };
@@ -16113,7 +16160,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '16.5.6' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '17.0.1' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
