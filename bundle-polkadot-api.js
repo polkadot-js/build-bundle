@@ -1445,7 +1445,7 @@
         };
     }
 
-    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '17.0.1' };
+    const packageInfo = { name: '@polkadot/api', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-api.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '17.0.2' };
 
     var extendStatics = function(d, b) {
       extendStatics = Object.setPrototypeOf ||
@@ -6450,10 +6450,10 @@
     const erasPrefs =  erasHistoricApply('_erasPrefs');
 
     const CACHE_KEY$1 = 'eraRewards';
-    function mapRewards(eras, optRewards) {
+    function mapRewards(api, eras, optRewards, budgets) {
         return eras.map((era, index) => ({
             era,
-            eraReward: optRewards[index].unwrapOrDefault()
+            eraReward: api.registry.createType('Balance', optRewards[index].unwrapOrDefault().add(budgets[index]))
         }));
     }
     function _erasRewards(instanceId, api) {
@@ -6466,7 +6466,14 @@
             if (!remaining.length) {
                 return of(cached);
             }
-            return api.query.staking.erasValidatorReward.multi(remaining).pipe(map((r) => filterCachedEras(eras, cached, setEraMultiCache(CACHE_KEY$1, withActive, mapRewards(remaining, r)))));
+            const optIncentive = api.query.staking['erasValidatorIncentiveBudget'];
+            const budgets = optIncentive
+                ? optIncentive.multi(remaining)
+                : of(remaining.map(() => api.registry.createType('Balance')));
+            return combineLatest([
+                api.query.staking.erasValidatorReward.multi(remaining),
+                budgets
+            ]).pipe(map(([rewards, budgets]) => filterCachedEras(eras, cached, setEraMultiCache(CACHE_KEY$1, withActive, mapRewards(api, remaining, rewards, budgets)))));
         });
     }
     const erasRewards =  erasHistoricApply('_erasRewards');
@@ -24548,27 +24555,27 @@
             return decorateMethod((keys) => keys.length
                 ? (this.hasSubscriptions
                     ? this._rpcCore.state.subscribeStorage
-                    : this._rpcCore.state.queryStorageAt)(keys.map((args) => Array.isArray(args)
-                    ? args[0].creator.meta.type.isPlain
+                    : this._rpcCore.state.queryStorageAt)(keys.map((args) => 'creator' in args
+                    ? [args.creator]
+                    : args[0].creator.meta.type.isPlain
                         ? [args[0].creator]
                         : args[0].creator.meta.type.asMap.hashers.length === 1
                             ? [args[0].creator, args.slice(1)]
-                            : [args[0].creator, ...args.slice(1)]
-                    : [args.creator]))
+                            : [args[0].creator, ...args.slice(1)]))
                 : of([]));
         }
         _decorateMultiAt(atApi, decorateMethod, blockHash) {
             return decorateMethod((calls) => calls.length
                 ? this._rpcCore.state.queryStorageAt(calls.map((args) => {
-                    if (Array.isArray(args)) {
-                        const { creator } = getAtQueryFn(atApi, args[0].creator);
-                        return creator.meta.type.isPlain
-                            ? [creator]
-                            : creator.meta.type.asMap.hashers.length === 1
-                                ? [creator, args.slice(1)]
-                                : [creator, ...args.slice(1)];
+                    if ('creator' in args) {
+                        return [getAtQueryFn(atApi, args.creator).creator];
                     }
-                    return [getAtQueryFn(atApi, args.creator).creator];
+                    const { creator } = getAtQueryFn(atApi, args[0].creator);
+                    return creator.meta.type.isPlain
+                        ? [creator]
+                        : creator.meta.type.asMap.hashers.length === 1
+                            ? [creator, args.slice(1)]
+                            : [creator, ...args.slice(1)];
                 }), blockHash)
                 : of([]));
         }

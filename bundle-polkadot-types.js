@@ -16160,7 +16160,7 @@
         }));
     }
 
-    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '17.0.1' };
+    const packageInfo = { name: '@polkadot/types', path: (({ url: (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href)) }) && (typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))) ? new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.substring(0, new URL((typeof document === 'undefined' && typeof location === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : typeof document === 'undefined' ? location.href : (_documentCurrentScript && _documentCurrentScript.src || new URL('bundle-polkadot-types.js', document.baseURI).href))).pathname.lastIndexOf('/') + 1) : 'auto', type: 'esm', version: '17.0.2' };
 
     function flattenUniq(list, result = []) {
         for (let i = 0, count = list.length; i < count; i++) {
@@ -17591,12 +17591,18 @@
         #version;
         #preamble;
         constructor(registry, value, opt) {
-            const extTypes = registry.getSignedExtensionTypes();
+            const decoded = GeneralExtrinsic.decodeExtrinsic(registry, value);
+            const transactionExtensionVersion = util.isU8a(decoded)
+                ? decoded[0]
+                : util.isObject(decoded) && 'transactionExtensionVersion' in decoded
+                    ? Number(decoded['transactionExtensionVersion'])
+                    : undefined;
+            const extTypes = registry.getSignedExtensionTypes(transactionExtensionVersion);
             super(registry, util.objectSpread({
                 transactionExtensionVersion: 'u8'
             }, extTypes, {
                 method: 'Call'
-            }), GeneralExtrinsic.decodeExtrinsic(registry, value));
+            }), decoded);
             this.#version = opt?.version || 0b00000101;
             this.#preamble = 0b01000000;
         }
@@ -20012,7 +20018,21 @@
         getSignedExtensionExtra() {
             return expandExtensionTypes(this.#signedExtensions, 'payload', this.#userExtensions);
         }
-        getSignedExtensionTypes() {
+        getSignedExtensionTypes(transactionExtensionVersion) {
+            const extrinsic = this.#metadata?.extrinsic;
+            const extensionIndexes = transactionExtensionVersion === undefined
+                ? undefined
+                : [...(extrinsic?.transactionExtensionsByVersion || [])]
+                    .find(([version]) => version.toNumber() === transactionExtensionVersion)?.[1];
+            if (extensionIndexes && extrinsic) {
+                return extensionIndexes.reduce((result, index) => {
+                    const { identifier, type } = extrinsic.transactionExtensions[index.toNumber()];
+                    const extension = identifier.toString();
+                    return util.objectSpread(result, findUnknownExtensions([extension], this.#userExtensions).length
+                        ? { [extension]: this.createLookupType(type) }
+                        : expandExtensionTypes([extension], 'extrinsic', this.#userExtensions));
+                }, {});
+            }
             return expandExtensionTypes(this.#signedExtensions, 'extrinsic', this.#userExtensions);
         }
         hasClass(name) {
